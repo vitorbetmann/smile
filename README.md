@@ -1,8 +1,8 @@
-# State Machine is Lowkey Elegant (SMILE 😊)
+# Welcome to the SMILE engine repo! 😊
 
-## The SMILE engine is a beginner-friendly state machine-based game engine for making 2D games
+## SMILE stands for State Machine is Lowkey Elegant.
 
----
+## This is a beginner-friendly state machine-based game engine for making 2D games
 
 ## 🔧 Building
 
