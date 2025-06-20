@@ -2,10 +2,11 @@
 
 **SMILE** stands for **State Machine is Lowkey Elegant**.
 
-SMILE is a beginner-friendly game engine for making 2D games in C.
+## SMILE is a beginner-friendly game engine for making 2D games in C.
+
 It uses a state machine architecture inspired by CS50's _Introduction to Game Development_ course engine written in Lua.
 
-## This is a beginner-friendly state machine-based game engine for making 2D games
+---
 
 ## 🔧 Building
 
