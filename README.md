@@ -1,4 +1,8 @@
-# SMILE ENGINE – A beginner-friendly state machine-based game engine for making 2D games
+# State Machine is Lowkey Elegant (SMILE 😊)
+
+## The SMILE engine is a beginner-friendly state machine-based game engine for making 2D games
+
+---
 
 ## 🔧 Building
 
@@ -13,7 +17,7 @@ ninja -C build     # or
 cmake --build build
 ```
 
-This will generate a static library called `libsmile.a` inside `build` folder
+This will generate a static library called `libsmile.a` inside the `build` folder
 
 ---
 
@@ -27,15 +31,7 @@ To compile your game with SMILE, use:
 clang main.c -Ismile_engine/include -Lsmile_engine/build -lsmile -o my_game
 ```
 
-**With GCC:**
-
-```zsh
-gcc main.c -Ismile_engine/include -Lsmile_engine/build -lsmile -o my_game
-```
-
 Replace `my_game` with the desired output name. If needed, also replace `main.c` with your entry source file.
-
----
 
 **With CMake**
 
