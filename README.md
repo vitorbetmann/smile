@@ -2,18 +2,18 @@
 
 ## 🔧 Building
 
-From your C project directory, clone the SMILE engine as a subfolder:
+Inside your C project directory, clone the SMILE engine:
 
 ```zsh
 git clone https://github.com/vitorbetmann/smile_engine.git
 cd smile_engine
 cmake -S . -B build
-# Then build using your preferred builder:
+# Then build using your preferred builder, for example:
 ninja -C build     # or
 cmake --build build
 ```
 
-This will generate a static library called libsmile.a inside build
+This will generate a static library called `libsmile.a` inside `build` folder
 
 ---
 
@@ -37,9 +37,9 @@ Replace `my_game` with the desired output name. If needed, also replace `main.c`
 
 ---
 
-## 🛠️ Using CMake (recommended for multi-file projects)
+**With CMake**
 
-In your `CMakeLists.txt`:
+In your `CMakeLists.txt` add:
 
 ```cmake
 # Link it to the SMILE library
