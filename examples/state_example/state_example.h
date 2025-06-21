@@ -1,10 +1,11 @@
+#ifndef STATE_EXAMPLE_H
+#define STATE_EXAMPLE_H
 // --------------------------------------------------
 // Includes
 // --------------------------------------------------
-#include "../../include/smile.h"
 
 // --------------------------------------------------
-// Defines
+// Other defines
 // --------------------------------------------------
 
 // --------------------------------------------------
@@ -14,24 +15,13 @@
 // --------------------------------------------------
 // Prototypes
 // --------------------------------------------------
+void state_example_enter(void *args);
+void state_example_update(float dt);
+void state_example_draw(void);
+void state_example_exit(void);
 
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
-extern State state_one;
 
-// --------------------------------------------------
-// Functions
-// --------------------------------------------------
-int main(void) {
-  sm_change_state(&state_one, NULL);
-  float dt;
-  bool is_running = true;
-  while (is_running) {
-    // Get dt
-    sm_update(dt);
-    sm_draw();
-  }
-
-  return 0;
-}
+#endif
