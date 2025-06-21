@@ -12,12 +12,12 @@
 // --------------------------------------------------
 // Data types
 // --------------------------------------------------
-typedef struct state {
+typedef struct {
   const char *id;
-  void (*Enter)(void *args);
-  void (*Update)(float dt);
-  void (*Draw)();
-  void (*Exit)();
+  void (*enter)(void *args);
+  void (*update)(float dt);
+  void (*draw)();
+  void (*exit)();
 } State;
 
 // --------------------------------------------------
@@ -34,7 +34,7 @@ typedef struct state {
  *
  * @author Vitor Betmann
  **/
-void SmileInit(void);
+void sm_init(void);
 
 /**
  * @brief Gets the current state the game is in.
@@ -43,7 +43,7 @@ void SmileInit(void);
  *
  * @author Vitor Betmann
  **/
-State *SmileGetCurrState(void);
+State *sm_get_curr_state(void);
 
 /**
  * @brief Changes from current state to a new one.
@@ -58,7 +58,7 @@ State *SmileGetCurrState(void);
  *
  * @author Vitor Betmann
  **/
-void SmileChangeState(State *state, void *args);
+void sm_change_state(State *state, void *args);
 
 /**
  * @brief Calls Update(dt) on the current state.
@@ -71,7 +71,7 @@ void SmileChangeState(State *state, void *args);
  *
  * @author Vitor Betmann
  **/
-void SmileUpdate(float dt);
+void sm_update(float dt);
 
 /**
  * @brief Calls Draw() on the current state.
@@ -82,7 +82,7 @@ void SmileUpdate(float dt);
  *
  * @author Vitor Betmann
  **/
-void SmileDraw(void);
+void sm_draw(void);
 
 /**
  * @brief Safely ends the State Machine.
@@ -94,6 +94,6 @@ void SmileDraw(void);
  *
  * @author Vitor Betmann
  **/
-void SmileShutdown(void);
+void sm_shutdown(void);
 
 #endif

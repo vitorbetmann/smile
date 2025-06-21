@@ -1,8 +1,7 @@
 // --------------------------------------------------
 // Includes
 // --------------------------------------------------
-#include "../include/smile.h"
-#include <string.h>
+#include "../../include/smile.h"
 
 // --------------------------------------------------
 // Defines
@@ -19,42 +18,19 @@
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
-static State *curr_state;
+extern State state_one;
 
 // --------------------------------------------------
 // Functions
 // --------------------------------------------------
-void sm_init(void) { curr_state = NULL; }
+int main(void) {
 
-State *sm_get_curr_state(void) { return curr_state; }
-
-void sm_change_state(State *state, void *args) {
-  if (curr_state && curr_state->exit) {
-    curr_state->exit();
+  sm_change_state(&state_one, NULL);
+  float dt;
+  bool is_running = true;
+  while (is_running) {
+    // Get dt.
+    sm_update(dt);
+    sm_draw();
   }
-
-  curr_state = state;
-
-  if (curr_state && curr_state->enter) {
-    curr_state->enter(args);
-  }
-}
-
-void sm_update(float dt) {
-  if (curr_state && curr_state->update) {
-    curr_state->update(dt);
-  }
-}
-
-void sm_draw(void) {
-  if (curr_state && curr_state->draw) {
-    curr_state->draw();
-  }
-}
-
-void sm_shutdown(void) {
-  if (curr_state && curr_state->exit) {
-    curr_state->exit();
-  }
-  curr_state = NULL;
 }
