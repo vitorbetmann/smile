@@ -35,7 +35,8 @@ To compile your game with SMILE, use:
 clang main.c -Ismile_engine/include -Lsmile_engine/build -lsmile -o my_game
 ```
 
-Replace `my_game` with the desired output name. If needed, also replace `main.c` with your entry source file.
+Replace `my_game` with the desired output name.
+If needed, also replace `main.c` with your entry source file.
 
 **With CMake:**
 
