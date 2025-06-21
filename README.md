@@ -63,11 +63,12 @@ Don't forget to replace `my_game` with the name of your project's executable, if
 #include "smile.h"
 
 extern State example_state;
+bool is_running = true;
+float dt;
 
 int main(void) {
   sm_change_state(&example_state, NULL);
-  float dt;
-  bool is_running = true;
+
   while (is_running) {
     // Get dt
     sm_update(dt);
