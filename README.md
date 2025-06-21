@@ -43,7 +43,7 @@ In your `CMakeLists.txt`, add:
 
 ```cmake
 # Include the SMILE headers
-target_include_directories($my_game PRIVATE
+target_include_directories(my_game PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/smile_engine/include
 )
 
