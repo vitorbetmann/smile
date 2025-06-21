@@ -42,12 +42,14 @@ Replace `my_game` with the desired output name. If needed, also replace `main.c`
 In your `CMakeLists.txt`, add:
 
 ```cmake
-# Link it to the SMILE library
-target_link_libraries(my_game PRIVATE smile)
-
 # Include the SMILE headers
-target_include_directories(my_game PRIVATE
+target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/smile_engine/include
+)
+
+# Link with the SMILE static library
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/smile_engine/build/libsmile.a
 )
 ```
 
