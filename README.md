@@ -25,7 +25,7 @@ This will generate a static library called `libsmile.a` inside the `build` folde
 
 ---
 
-## 🚀 Using SMILE in your game
+## 🎮 Using SMILE in your game
 
 To compile your game with SMILE, use:
 
