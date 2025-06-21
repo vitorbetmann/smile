@@ -24,13 +24,14 @@ extern State state_one;
 // Functions
 // --------------------------------------------------
 int main(void) {
-
   sm_change_state(&state_one, NULL);
   float dt;
   bool is_running = true;
   while (is_running) {
-    // Get dt.
+    // Get dt
     sm_update(dt);
     sm_draw();
   }
+
+  return 0;
 }

@@ -48,7 +48,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 )
 
 # Link with the SMILE static library
-target_link_libraries(${PROJECT_NAME} PRIVATE
+target_link_libraries(my_game PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/smile_engine/build/libsmile.a
 )
 ```
@@ -57,7 +57,7 @@ Don't forget to replace `my_game` with the name of your project's executable, if
 
 ---
 
-## 🧪 Example usage:
+## 🧪 Quick example usage:
 
 ```C
 #include "smile.h"
@@ -65,25 +65,15 @@ Don't forget to replace `my_game` with the name of your project's executable, if
 extern State exampleState;
 
 int main(void) {
-  // ------------------------------
-  // Initialize everything you need
-  // ------------------------------
-
+  sm_change_state(&state_one, NULL);
   float dt;
-  bool isGameRunning = true;
-  SmileInit();
-  SmileChangeState(&exampleState, NULL);
-
-  while (isGameRunning) {
-    // --------------
-    // Get delta time
-    // --------------
-
-    SmileUpdate(dt);
-    SmileDraw();
+  bool is_running = true;
+  while (is_running) {
+    // Get dt
+    sm_update(dt);
+    sm_draw();
   }
 
-  SmileShutdown();
   return 0;
 }
 ```
