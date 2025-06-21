@@ -62,10 +62,10 @@ Don't forget to replace `my_game` with the name of your project's executable, if
 ```C
 #include "smile.h"
 
-extern State exampleState;
+extern State example_state;
 
 int main(void) {
-  sm_change_state(&state_one, NULL);
+  sm_change_state(&example_state, NULL);
   float dt;
   bool is_running = true;
   while (is_running) {
