@@ -19,11 +19,11 @@
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
-State statePlay = {.id = "example_state",
-                   .enter = state_example_enter,
-                   .update = state_example_update,
-                   .draw = state_example_draw,
-                   .exit = state_example_exit};
+State state_example = {.id = "example_state",
+                       .enter = state_example_enter,
+                       .update = state_example_update,
+                       .draw = state_example_draw,
+                       .exit = state_example_exit};
 
 // --------------------------------------------------
 // Functions
