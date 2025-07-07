@@ -19,7 +19,7 @@
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
-State state_example = {.id = "example_state",
+State state_example = {.id = "example",
                        .enter = state_example_enter,
                        .update = state_example_update,
                        .draw = state_example_draw,

@@ -1,7 +1,7 @@
 // --------------------------------------------------
 // Includes
 // --------------------------------------------------
-#include "../include/smile.h"
+#include "../include/Smile.h"
 #include <string.h>
 
 // --------------------------------------------------
@@ -24,11 +24,11 @@ static State *curr_state;
 // --------------------------------------------------
 // Functions
 // --------------------------------------------------
-void sm_init(void) { curr_state = NULL; }
+void SM_Init(void) { curr_state = NULL; }
 
-State *sm_get_curr_state(void) { return curr_state; }
+State *SM_GetCurrState(void) { return curr_state; }
 
-void sm_change_state(State *state, void *args) {
+void SM_ChangeState(State *state, void *args) {
   if (curr_state && curr_state->exit) {
     curr_state->exit();
   }
@@ -40,19 +40,19 @@ void sm_change_state(State *state, void *args) {
   }
 }
 
-void sm_update(float dt) {
+void SM_Update(float dt) {
   if (curr_state && curr_state->update) {
     curr_state->update(dt);
   }
 }
 
-void sm_draw(void) {
+void SM_Draw(void) {
   if (curr_state && curr_state->draw) {
     curr_state->draw();
   }
 }
 
-void sm_shutdown(void) {
+void SM_Shutdown(void) {
   if (curr_state && curr_state->exit) {
     curr_state->exit();
   }

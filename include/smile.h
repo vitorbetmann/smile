@@ -34,7 +34,7 @@ typedef struct {
  *
  * @author Vitor Betmann
  **/
-void sm_init(void);
+void SM_Init(void);
 
 /**
  * @brief Gets the current state the game is in.
@@ -43,7 +43,7 @@ void sm_init(void);
  *
  * @author Vitor Betmann
  **/
-State *sm_get_curr_state(void);
+State *SM_GetCurrState(void);
 
 /**
  * @brief Changes from current state to a new one.
@@ -58,7 +58,7 @@ State *sm_get_curr_state(void);
  *
  * @author Vitor Betmann
  **/
-void sm_change_state(State *state, void *args);
+void SM_ChangeState(State *state, void *args);
 
 /**
  * @brief Calls Update(dt) on the current state.
@@ -71,7 +71,7 @@ void sm_change_state(State *state, void *args);
  *
  * @author Vitor Betmann
  **/
-void sm_update(float dt);
+void SM_Update(float dt);
 
 /**
  * @brief Calls Draw() on the current state.
@@ -82,7 +82,7 @@ void sm_update(float dt);
  *
  * @author Vitor Betmann
  **/
-void sm_draw(void);
+void SM_Draw(void);
 
 /**
  * @brief Safely ends the State Machine.
@@ -94,6 +94,6 @@ void sm_draw(void);
  *
  * @author Vitor Betmann
  **/
-void sm_shutdown(void);
+void SM_Shutdown(void);
 
 #endif

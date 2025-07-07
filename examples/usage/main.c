@@ -27,12 +27,12 @@ bool is_running = true;
 float dt;
 
 int main(void) {
-  sm_change_state(&state_example, NULL);
+  SM_ChangeState(&state_example, NULL);
 
   while (is_running) {
     // Get dt
-    sm_update(dt);
-    sm_draw();
+    SM_Update(dt);
+    SM_Draw();
   }
 
   return 0;
