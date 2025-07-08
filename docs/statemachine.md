@@ -4,6 +4,8 @@ The StateMachine module helps you organize your game's flow using modular state 
 
 It lets you easily swap between different states like menus, gameplay, game over screens, and more, using a clean and well-defined state lifecycle.
 
+---
+
 ## 🧩 How to Use the State Machine pt. 1
 
 The typical lifecycle of a state in the StateMachine module follows these steps: enter → update → draw → exit.
@@ -22,17 +24,20 @@ extern State example_state;
 float dt;
 
 int main(void) {
-  // Init window and all
+  // Init window and all...
 
-  sm_change_state(&example_state, NULL);
+  SM_ChangeState(&example_state, NULL);
 
   while (!WindowShouldClose()) {
     dt = GetFrameTime;
-    sm_update(dt);
-    sm_draw();
+    SM_Update(dt);
+
+    // Begin Drawing and stuff...
+    SM_Draw();
+    // EndDrawing and stuff...
   }
 
-  // Unload stuff, close window
+  // Unload stuff, close window...
 
   return 0;
 }
@@ -47,19 +52,23 @@ You can pass custom data between states using the `args` parameter of `SM_Change
 ```C
 // Passing arguments between states example
 
+#include "StatePlay.h"
+#include "StateGameOver.h"
+
 typedef struct {
   int score;
   float timeElapsed;
 } GameOverArgs;
 
-void gameplay_update(float dt) {
+void StatePlayUpdate(float dt) {
   // Gameplay update logic...
 
   if (playerLost) {
-    GameOverArgs args = { .score = currentScore, .timeElapsed = elapsedTime };
-    sm_change_state(&game_over_state, &args);
+    GameOverArgs args = {
+    .score = currentScore,
+    .timeElapsed = elapsedTime};
+
+    SM_ChangeState(&stateGameOver, &args);
   }
 }
 ```
-
----

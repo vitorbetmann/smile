@@ -64,7 +64,7 @@ bool PS_ShouldDestroy(ParticleSystem *ps);
 /**
  *
  **/
-void UnloadParticleSystem(ParticleSystem *ps);
+void PS_Unload(ParticleSystem *ps);
 /**
  *
  **/

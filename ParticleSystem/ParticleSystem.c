@@ -101,6 +101,7 @@ void PS_SetEmissionArea(ParticleSystem *ps, Distribution dist, float dx,
 
 void PS_SetUniformDist(ParticleSystem *ps, Vector2 particleSize,
                        int colsCount) {
+  ps->distribution = UNIFORM;
   ps->particleSize = particleSize;
   ps->uniformCols = colsCount;
 }
@@ -232,7 +233,7 @@ void ParticleDraw(Particle *p) {
 
 bool PS_ShouldDestroy(ParticleSystem *ps) { return ps->shouldDestroy; }
 
-void UnloadParticleSystem(ParticleSystem *ps) {
+void PS_Unload(ParticleSystem *ps) {
   if (!ps) {
     return;
   }
