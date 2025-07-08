@@ -10,11 +10,11 @@
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
-State stateOne = {.id = "one",
-                  .enter = StateOneEnter,
-                  .update = StateOneUpdate,
-                  .draw = StateOneDraw,
-                  .exit = StateOneExit};
+const State stateOne = {.id = "one",
+                        .enter = StateOneEnter,
+                        .update = StateOneUpdate,
+                        .draw = StateOneDraw,
+                        .exit = StateOneExit};
 
 // --------------------------------------------------
 // Functions

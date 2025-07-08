@@ -1,9 +1,5 @@
 #ifndef SMILE_H
 #define SMILE_H
-// --------------------------------------------------
-// Includes
-// --------------------------------------------------
-#include <stdlib.h>
 
 // --------------------------------------------------
 // Data types
@@ -19,7 +15,6 @@ typedef struct {
 // --------------------------------------------------
 // Prototypes
 // --------------------------------------------------
-
 /**
  * @brief Initializes the SMILE engine.
  * @details Sets current state to NULL.
@@ -39,7 +34,7 @@ void SM_Init(void);
  *
  * @author Vitor Betmann
  **/
-State *SM_GetCurrState(void);
+const State *SM_GetCurrState(void);
 
 /**
  * @brief Changes from current state to a new one.
@@ -54,7 +49,7 @@ State *SM_GetCurrState(void);
  *
  * @author Vitor Betmann
  **/
-void SM_ChangeState(State *state, void *args);
+void SM_ChangeState(const State *state, void *args);
 
 /**
  * @brief Calls Update(dt) on the current state.

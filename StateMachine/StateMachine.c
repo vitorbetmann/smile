@@ -7,16 +7,16 @@
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
-static State *currState;
+static const State *currState;
 
 // --------------------------------------------------
 // Functions
 // --------------------------------------------------
 void SM_Init(void) { currState = NULL; }
 
-State *SM_GetCurrState(void) { return currState; }
+const State *SM_GetCurrState(void) { return currState; }
 
-void SM_ChangeState(State *state, void *args) {
+void SM_ChangeState(const State *state, void *args) {
   if (currState && currState->exit) {
     currState->exit();
   }

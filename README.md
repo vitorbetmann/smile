@@ -78,4 +78,4 @@ Check these docs for detailed usage examples, API references, and integration ti
 
 ---
 
-Making games is already hard enough, so try to have fun and remember to SMILE! 😊
+Making games is hard enough. Try to have fun, and remember to SMILE! 😊

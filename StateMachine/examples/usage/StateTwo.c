@@ -4,11 +4,12 @@
 #include "StateTwo.h"
 #include "../../StateMachine.h"
 #include "StateOne.h"
+#include <stdlib.h>
 
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
-State stateTwo = {
+const State stateTwo = {
     .id = "two",
     .enter = StateTwoEnter,
     .update = StateTwoUpdate,

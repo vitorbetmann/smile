@@ -16,6 +16,6 @@ void StateOneExit(void);
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
-extern State stateOne;
+extern const State stateOne;
 
 #endif
