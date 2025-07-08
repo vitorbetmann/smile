@@ -42,8 +42,8 @@ int main(void) {
             break;
         }
     }
-    PS_Unload(ps);
 
+    PS_Unload(ps);
     // Unload more stuff, close window, return 0...
 }
 ```
