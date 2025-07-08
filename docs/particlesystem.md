@@ -19,6 +19,7 @@ For function documentation, see:
 ```c
 // Example Usage
 
+#include <raylib.h>
 #include "ParticleSystem.h"
 
 int main(void) {
@@ -33,9 +34,9 @@ int main(void) {
     while (!WindowShouldClose()) {
         PS_Emit(ps);
         PS_Update(ps);
-        // Begin Drawing and stuff...
+        // Begin Drawing...
         PS_Draw(ps);
-        // EndDrawing and stuff...
+        // EndDrawing...
 
         if (PS_ShouldDestroy(ps)){
             break;
