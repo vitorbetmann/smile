@@ -16,14 +16,14 @@
 // --------------------------------------------------
 // Prototypes
 // --------------------------------------------------
-void state_example_enter(void *args);
-void state_example_update(float dt);
-void state_example_draw(void);
-void state_example_exit(void);
+void StateExampleEnter(void *args);
+void StateExampleUpdate(float dt);
+void StateExampleDraw(void);
+void StateExampleExit(void);
 
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
-extern State state_example;
+extern State stateExample;
 
 #endif

@@ -5,56 +5,44 @@
 #include <string.h>
 
 // --------------------------------------------------
-// Defines
-// --------------------------------------------------
-
-// --------------------------------------------------
-// Data types
-// --------------------------------------------------
-
-// --------------------------------------------------
-// Prototypes
-// --------------------------------------------------
-
-// --------------------------------------------------
 // Variables
 // --------------------------------------------------
-static State *curr_state;
+static State *currState;
 
 // --------------------------------------------------
 // Functions
 // --------------------------------------------------
-void SM_Init(void) { curr_state = NULL; }
+void SM_Init(void) { currState = NULL; }
 
-State *SM_GetCurrState(void) { return curr_state; }
+State *SM_GetCurrState(void) { return currState; }
 
 void SM_ChangeState(State *state, void *args) {
-  if (curr_state && curr_state->exit) {
-    curr_state->exit();
+  if (currState && currState->exit) {
+    currState->exit();
   }
 
-  curr_state = state;
+  currState = state;
 
-  if (curr_state && curr_state->enter) {
-    curr_state->enter(args);
+  if (currState && currState->enter) {
+    currState->enter(args);
   }
 }
 
 void SM_Update(float dt) {
-  if (curr_state && curr_state->update) {
-    curr_state->update(dt);
+  if (currState && currState->update) {
+    currState->update(dt);
   }
 }
 
 void SM_Draw(void) {
-  if (curr_state && curr_state->draw) {
-    curr_state->draw();
+  if (currState && currState->draw) {
+    currState->draw();
   }
 }
 
 void SM_Shutdown(void) {
-  if (curr_state && curr_state->exit) {
-    curr_state->exit();
+  if (currState && currState->exit) {
+    currState->exit();
   }
-  curr_state = NULL;
+  currState = NULL;
 }

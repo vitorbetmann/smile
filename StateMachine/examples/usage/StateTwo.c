@@ -1,9 +1,9 @@
 // --------------------------------------------------
 // Includes
 // --------------------------------------------------
+#include "StateTwo.h"
 #include "../../StateMachine.h"
 #include "StateOne.h"
-#include "StateTwo.h"
 
 // --------------------------------------------------
 // Defines
@@ -26,11 +26,15 @@ State stateTwo = {.id = "two",
                   .draw = StateTwoDraw,
                   .exit = StateTwoExit};
 
+int someIntData;
+char *someCharData;
 // --------------------------------------------------
 // Functions
 // --------------------------------------------------
 void StateTwoEnter(void *args) {
-  // Init whaetver.
+  StateTwoArgs *myArgs = (StateTwoArgs *)args;
+  someIntData = myArgs->someIntData;
+  someCharData = myArgs->someCharData;
 }
 
 void StateTwoUpdate(float dt) {

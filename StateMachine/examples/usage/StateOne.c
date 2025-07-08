@@ -8,26 +8,6 @@
                         */
 
 // --------------------------------------------------
-// Defines
-// --------------------------------------------------
-
-// --------------------------------------------------
-// Data types
-// --------------------------------------------------
-typedef struct {
-  int some_int_data;
-  char *some_char_data;
-} StateTwoArgs; /*
-                This is the data that will be passed to
-                sm_change_state, if its enter function
-                requires any arguments.
-                */
-
-// --------------------------------------------------
-// Prototypes
-// --------------------------------------------------
-
-// --------------------------------------------------
 // Variables
 // --------------------------------------------------
 State stateOne = {.id = "one",
@@ -43,6 +23,7 @@ static StateTwoArgs *stateTwoArgs;
 // --------------------------------------------------
 void StateOneEnter(void *args) {
   // Init whatever.
+  stateTwoArgs = malloc(sizeof(StateTwoArgs));
 }
 
 void StateOneUpdate(float dt) {
@@ -55,6 +36,7 @@ void StateOneUpdate(float dt) {
                                        Pass in NULL if the next state's
                                        enter function requires no arguments.
                                        */
+  free(stateTwoArgs);
 }
 
 void StateOneDraw(void) {
@@ -62,6 +44,6 @@ void StateOneDraw(void) {
 }
 
 void StateOneExit(void) {
-  stateTwoArgs->some_int_data = 0;
-  stateTwoArgs->some_char_data = "going into state two";
+  stateTwoArgs->someIntData = 0;
+  stateTwoArgs->someCharData = "going into state two";
 }

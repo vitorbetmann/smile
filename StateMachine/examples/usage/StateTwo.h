@@ -6,12 +6,16 @@
 #include "../../StateMachine.h"
 
 // --------------------------------------------------
-// Other defines
-// --------------------------------------------------
-
-// --------------------------------------------------
 // Data types
 // --------------------------------------------------
+typedef struct {
+  int someIntData;
+  char *someCharData;
+} StateTwoArgs; /*
+                This is the data that will be passed to
+                SM_ChangeState, if its enter function
+                requires any arguments.
+                */
 
 // --------------------------------------------------
 // Prototypes

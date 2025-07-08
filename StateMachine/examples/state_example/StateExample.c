@@ -1,8 +1,8 @@
 // --------------------------------------------------
 // Includes
 // --------------------------------------------------
-#include "state_example.h"
-#include "../include/smile.h"
+#include "../../StateMachine.h"
+#include "StateExample.h"
 
 // --------------------------------------------------
 // Defines
@@ -20,26 +20,26 @@
 // Variables
 // --------------------------------------------------
 State state_example = {.id = "example",
-                       .enter = state_example_enter,
-                       .update = state_example_update,
-                       .draw = state_example_draw,
-                       .exit = state_example_exit};
+                       .enter = StateExampleEnter,
+                       .update = StateExampleUpdate,
+                       .draw = StateExampleDraw,
+                       .exit = StateExampleExit};
 
 // --------------------------------------------------
 // Functions
 // --------------------------------------------------
-void state_example_enter(void *args) {
+void StateExampleEnter(void *args) {
   // TODO
 }
 
-void state_example_update(float dt) {
+void StateExampleUpdate(float dt) {
   // TODO
 }
 
-void state_example_draw(void) {
+void StateExampleDraw(void) {
   // TODO
 }
 
-void state_example_exit(void) {
+void StateExampleExit(void) {
   // TODO
 }

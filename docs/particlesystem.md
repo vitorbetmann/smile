@@ -14,7 +14,7 @@ To use the ParticleSystem:
 
 The module uses raylib types like `Vector2` and `Color`, so make sure your project is linked with raylib.
 
-For a full example in action, see the `ParticleSystem/usage/` folder.
+For function documentation, see:
 
 ```c
 // Example Usage
@@ -43,7 +43,6 @@ int main(void) {
     }
     PS_Unload(ps);
 
-    CloseWindow();
-    return 0;
+    // Unload more stuff, close window, return 0...
 }
 ```
