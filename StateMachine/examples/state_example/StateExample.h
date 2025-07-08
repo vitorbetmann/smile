@@ -24,6 +24,6 @@ void StateExampleExit(void);
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
-extern State stateExample;
+extern const State stateExample;
 
 #endif

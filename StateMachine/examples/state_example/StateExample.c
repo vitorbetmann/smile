@@ -1,8 +1,8 @@
 // --------------------------------------------------
 // Includes
 // --------------------------------------------------
-#include "../../StateMachine.h"
 #include "StateExample.h"
+#include "../../StateMachine.h"
 
 // --------------------------------------------------
 // Defines
@@ -19,11 +19,11 @@
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
-State state_example = {.id = "example",
-                       .enter = StateExampleEnter,
-                       .update = StateExampleUpdate,
-                       .draw = StateExampleDraw,
-                       .exit = StateExampleExit};
+const State stateExample = {.id = "example",
+                            .enter = StateExampleEnter,
+                            .update = StateExampleUpdate,
+                            .draw = StateExampleDraw,
+                            .exit = StateExampleExit};
 
 // --------------------------------------------------
 // Functions
