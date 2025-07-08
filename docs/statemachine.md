@@ -12,11 +12,9 @@ Users define states as `State` structs that contain function pointers for these 
 
 Call `SM_ChangeState(&nextState, args)` to trigger a transition. This will first call the exit function of the current state, followed by the enter function of the next state. During the game loop, the update and draw functions of the active state are called each frame.
 
----
-
-## 🧪 Quick Example Usage of the State Machine
-
 ```C
+// First use example
+
 #include <raylib.h>
 #include "StateMachine.h"
 
@@ -46,10 +44,8 @@ int main(void) {
 
 You can pass custom data between states using the `args` parameter of `SM_ChangeState`. Typically, you define a custom struct to hold any data you want to share, and then pass a pointer to this struct as `args`. In the next state's `enter` function, you cast the `void*` argument back to your custom struct type to access the data. This allows flexible communication and state initialization based on dynamic data. For working code examples demonstrating this pattern, check out the `StateMachine/examples/usage` folder.
 
----
-
 ```C
-// Example of defining a state transition with arguments from one state's update function
+// Passing arguments between states example
 
 typedef struct {
   int score;
