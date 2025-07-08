@@ -1,8 +1,8 @@
 // --------------------------------------------------
 // Includes
 // --------------------------------------------------
-#include "state_one.h"
-#include "state_two.h" /*
+#include "StateOne.h"
+#include "StateTwo.h" /*
                         Make sure you include the header 
                         of the state(s) to transition to.
                         */
@@ -30,38 +30,38 @@ typedef struct {
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
-State state_one = {.id = "state_one",
-                   .enter = state_one_enter,
-                   .update = state_one_update,
-                   .draw = state_one_draw,
-                   .exit = state_one_exit};
+State stateOne = {.id = "one",
+                  .enter = StateOneEnter,
+                  .update = StateOneUpdate,
+                  .draw = StateOneDraw,
+                  .exit = StateOneExit};
 
-static StateTwoArgs *state_two_args;
+static StateTwoArgs *stateTwoArgs;
 
 // --------------------------------------------------
 // Functions
 // --------------------------------------------------
-void state_one_enter(void *args) {
+void StateOneEnter(void *args) {
   // Init whatever.
 }
 
-void state_one_update(float dt) {
+void StateOneUpdate(float dt) {
   // Update whatever.
 
   // Let's say that if the user presses "UP_ARROW"
   // they should change state, so, after they press it:
-  sm_change_state(&state_two,
-                  state_two_args); /*
-                                        Pass in NULL if the next state's
-                                        enter function requires no arguments.
-                                        */
+  SM_ChangeState(&stateTwo,
+                 stateTwoArgs); /*
+                                       Pass in NULL if the next state's
+                                       enter function requires no arguments.
+                                       */
 }
 
-void state_one_draw(void) {
+void StateOneDraw(void) {
   // Draw whatever.
 }
 
-void state_one_exit(void) {
-  state_two_args->some_int_data = 0;
-  state_two_args->some_char_data = "going into state two";
+void StateOneExit(void) {
+  stateTwoArgs->some_int_data = 0;
+  stateTwoArgs->some_char_data = "going into state two";
 }

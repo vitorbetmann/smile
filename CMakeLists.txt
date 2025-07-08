@@ -13,8 +13,8 @@ set(RAYLIB_SRC_DIR "${RAYLIB_DIR}/src")
 
 # --- Static library target ---
 add_library(smile STATIC
-    src/Smile.c
-    src/ParticleSystem.c
+    StateMachine/StateMachine.c
+    ParticleSystem/ParticleSystem.c
 )
 
 # Public headers for the library

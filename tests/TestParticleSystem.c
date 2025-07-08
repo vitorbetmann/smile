@@ -1,4 +1,4 @@
-#include "../include/ParticleSystem.h"
+#include "../ParticleSystem/ParticleSystem.h"
 #include <assert.h>
 #include <stdio.h>
 

@@ -1,10 +1,12 @@
+#ifndef STATE_TWO_H
+#define STATE_TWO_H
 // --------------------------------------------------
 // Includes
 // --------------------------------------------------
-#include "../../include/smile.h"
+#include "../../StateMachine.h"
 
 // --------------------------------------------------
-// Defines
+// Other defines
 // --------------------------------------------------
 
 // --------------------------------------------------
@@ -14,30 +16,14 @@
 // --------------------------------------------------
 // Prototypes
 // --------------------------------------------------
+void StateTwoEnter(void *args);
+void StateTwoUpdate(float dt);
+void StateTwoDraw(void);
+void StateTwoExit(void);
 
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
-extern State state_example;
+extern State stateTwo;
 
-// --------------------------------------------------
-// Program main entry point
-// --------------------------------------------------
-bool is_running = true;
-float dt;
-
-int main(void) {
-  SM_ChangeState(&state_example, NULL);
-
-  while (is_running) {
-    // Get dt
-    SM_Update(dt);
-    SM_Draw();
-  }
-
-  return 0;
-}
-
-// --------------------------------------------------
-// Functions
-// --------------------------------------------------
+#endif

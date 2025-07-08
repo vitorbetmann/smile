@@ -5,7 +5,6 @@
 #include "raylib.h"
 #include "stdio.h"
 #include <raymath.h>
-#include <stddef.h>
 #include <stdlib.h>
 // --------------------------------------------------
 // Data types
@@ -30,13 +29,12 @@ struct ParticleSystem {
   int particleCount;
   Particle *particles;
   float minLifetime, maxLifetime, elapsedTime;
-  float *sysLifetime;
   int minLinearAccelerationX, maxLinearAccelerationX;
   int minLinearAccelerationY, maxLinearAccelerationY;
   unsigned int maxSpawnDistanceX, maxSpawnDistanceY;
   Distribution distribution;
   int uniformCols;
-  bool canEmit;
+  bool canEmit, shouldDestroy;
   Color initialColor, finalColor, colorDelta;
 };
 
@@ -46,7 +44,6 @@ struct ParticleSystem {
 void ParticleUpdate(Particle *p, float dt);
 void PS_Draw(ParticleSystem *ps);
 void ParticleDraw(Particle *p);
-void UnloadParticleSystem(ParticleSystem **ps);
 
 // --------------------------------------------------
 // Functions
@@ -70,7 +67,6 @@ ParticleSystem *newParticleSystem(Texture2D *texture, int particleCount,
   ps->pos = pos;
 
   ps->minLifetime = ps->maxLifetime = 1.0f;
-  ps->sysLifetime = &ps->maxLifetime;
 
   ps->distribution = UNIFORM;
 
@@ -179,17 +175,19 @@ void PS_Emit(ParticleSystem *ps) {
 
 void PS_Update(ParticleSystem *ps, float dt) {
 
-  if (!ps->canEmit) {
+  if (!ps || !ps->canEmit) {
     return;
   }
 
   ps->elapsedTime += dt * 1000;
-  if (ps->elapsedTime > *ps->sysLifetime) {
-    UnloadParticleSystem(&ps);
-  } else {
-    for (int i = 0; i < ps->particleCount; i++) {
-      ParticleUpdate(&ps->particles[i], dt);
-    }
+  if (ps->elapsedTime > ps->maxLifetime) {
+    ps->canEmit = false;
+    ps->shouldDestroy = true;
+    return;
+  }
+
+  for (int i = 0; i < ps->particleCount; i++) {
+    ParticleUpdate(&ps->particles[i], dt);
   }
 }
 
@@ -232,8 +230,16 @@ void ParticleDraw(Particle *p) {
   DrawTexture(*p->texture, p->pos.x, p->pos.y, p->currColor);
 }
 
-void UnloadParticleSystem(ParticleSystem **ps) {
-  free((*ps)->particles);
-  free(*ps);
-  *ps = NULL;
+bool PS_ShouldDestroy(ParticleSystem *ps) { return ps->shouldDestroy; }
+
+void UnloadParticleSystem(ParticleSystem *ps) {
+  if (!ps) {
+    return;
+  }
+
+  if (ps->particles) {
+    free(ps->particles);
+  }
+
+  free(ps);
 }

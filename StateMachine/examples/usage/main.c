@@ -1,12 +1,11 @@
-#ifndef STATE_EXAMPLE_H
-#define STATE_EXAMPLE_H
 // --------------------------------------------------
 // Includes
 // --------------------------------------------------
-#include "../../include/smile.h"
+#include "../../StateMachine.h"
+#include <raylib.h>
 
 // --------------------------------------------------
-// Other defines
+// Defines
 // --------------------------------------------------
 
 // --------------------------------------------------
@@ -16,14 +15,29 @@
 // --------------------------------------------------
 // Prototypes
 // --------------------------------------------------
-void state_example_enter(void *args);
-void state_example_update(float dt);
-void state_example_draw(void);
-void state_example_exit(void);
 
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
 extern State state_example;
 
-#endif
+// --------------------------------------------------
+// Program main entry point
+// --------------------------------------------------
+float dt;
+
+int main(void) {
+  SM_ChangeState(&state_example, NULL);
+
+  while (!WindowShouldClose()) {
+    dt = GetFrameTime();
+    SM_Update(dt);
+    SM_Draw();
+  }
+
+  return 0;
+}
+
+// --------------------------------------------------
+// Functions
+// --------------------------------------------------

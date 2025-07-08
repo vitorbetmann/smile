@@ -1,9 +1,9 @@
 // --------------------------------------------------
 // Includes
 // --------------------------------------------------
-#include "state_two.h"
-#include "smile.h"
-#include "state_one.h"
+#include "../../StateMachine.h"
+#include "StateOne.h"
+#include "StateTwo.h"
 
 // --------------------------------------------------
 // Defines
@@ -20,31 +20,31 @@
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
-State state_two = {.id = "state_two",
-                   .enter = state_two_enter,
-                   .update = state_two_update,
-                   .draw = state_two_draw,
-                   .exit = state_two_exit};
+State stateTwo = {.id = "two",
+                  .enter = StateTwoEnter,
+                  .update = StateTwoUpdate,
+                  .draw = StateTwoDraw,
+                  .exit = StateTwoExit};
 
 // --------------------------------------------------
 // Functions
 // --------------------------------------------------
-void state_two_enter(void *args) {
+void StateTwoEnter(void *args) {
   // Init whaetver.
 }
 
-void state_two_update(float dt) {
+void StateTwoUpdate(float dt) {
   // Update whatever.
 
   // Let's say that if the user presses "DOWN_ARROW"
   // they should change state, so, after they press it:
-  sm_change_state(&state_one, NULL); // Pass in NULL if the next state's enter
-                                     // function requires no arguments.
+  SM_ChangeState(&stateOne, NULL); // Pass in NULL if the next state's enter
+                                   // function requires no arguments.
 }
-void state_two_draw(void) {
+void StateTwoDraw(void) {
   // Draw whatever.
 }
 
-void state_two_exit(void) {
+void StateTwoExit(void) {
   // Reset whatever.
 }

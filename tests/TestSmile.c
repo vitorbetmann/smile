@@ -1,4 +1,4 @@
-#include "../include/Smile.h"
+#include "../StateMachine/StateMachine.h"
 #include <assert.h>
 #include <stdio.h>
 

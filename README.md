@@ -1,16 +1,26 @@
-# Welcome to the SMILE Engine! 😊
+# SMILE Engine: Modular Tools for 2D Game Development in C 😊
 
-**SMILE** stands for **State Machine is Lowkey Elegant**.
+## What is SMILE?
 
-## SMILE is a beginner-friendly game engine for making 2D games in C.
+SMILE stands for **State Machine is Lowkey Elegant**.
 
-It uses a state machine architecture inspired by CS50's _Introduction to Game Development_ course engine written in Lua.
+It's a beginner-friendly collection of tools designed to simplify 2D game development in C that builds on top of raylib for rendering, input, and other low-level tasks.
+
+It's ideal for quick prototyping and game jams.
+
+## Included Modules
+
+SMILE is designed with modularity in mind — you only include the modules you need for your project. Current modules include:
+
+- **StateMachine**: A simple and efficient state machine system for managing game states and transitions.
+- **ParticleSystem**: A flexible particle system for creating visual effects like explosions and smoke.
+- _(More modules coming soon!)_
 
 ---
 
-## 🔧 Building
+## Building SMILE
 
-Inside your C project directory, clone the SMILE engine:
+To build SMILE, clone the repository and use CMake:
 
 ```zsh
 git clone https://github.com/vitorbetmann/smile_engine.git
@@ -21,13 +31,13 @@ ninja -C build     # or
 cmake --build build
 ```
 
-This will generate a static library called `libsmile.a` inside the `build` folder.
+This will generate a static library (`libsmile.a`) inside the `build` directory that you can link against in your projects. Note that `libsmile.a` includes the StateMachine and ParticleSystem modules by default.
 
 ---
 
-## 🎮 Using SMILE in your game
+## 🎮 Using the State Machine Module in Your Game
 
-To compile your game with SMILE, use:
+To compile your game with the state machine module, use:
 
 **With Clang:**
 
@@ -57,24 +67,15 @@ Don't forget to replace `my_game` with the name of your project's executable, if
 
 ---
 
-## 🧪 Quick example usage:
+## Documentation
 
-```C
-#include "smile.h"
+Each module has its own documentation to help you get started quickly:
 
-extern State example_state;
-bool is_running = true;
-float dt;
+- [StateMachine Module Docs](./docs/statemachine.md)
+- [ParticleSystem Module Docs](./docs/particlesystem.md)
 
-int main(void) {
-  sm_change_state(&example_state, NULL);
+Check these docs for detailed usage examples, API references, and integration tips.
 
-  while (is_running) {
-    // Get dt
-    sm_update(dt);
-    sm_draw();
-  }
+---
 
-  return 0;
-}
-```
+Making games is already hard enough, so try to have fun and remember to SMILE! 😊
