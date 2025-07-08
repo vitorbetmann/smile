@@ -23,7 +23,6 @@ typedef struct {
 void StateTwoEnter(void *args);
 void StateTwoUpdate(float dt);
 void StateTwoDraw(void);
-void StateTwoExit(void);
 
 // --------------------------------------------------
 // Variables

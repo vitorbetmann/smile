@@ -19,19 +19,20 @@ Call `SM_ChangeState` to trigger a transition. During the game loop, the update 
 ```C
 // First use example
 
-#include <raylib.h>
 #include "StateMachine.h"
+#include "StateExample.h"
+#include <raylib.h>
 
-extern State exampleState;
+extern State stateExample;
 float dt;
 
 int main(void) {
   // Init window and all...
 
-  SM_ChangeState(&exampleState, NULL);
+  SM_ChangeState(&stateExample, NULL);
 
   while (!WindowShouldClose()) {
-    dt = GetFrameTime;
+    dt = GetFrameTime();
     SM_Update(dt);
 
     // Begin Drawing...

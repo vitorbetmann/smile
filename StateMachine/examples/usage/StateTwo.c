@@ -6,25 +6,18 @@
 #include "StateOne.h"
 
 // --------------------------------------------------
-// Defines
-// --------------------------------------------------
-
-// --------------------------------------------------
-// Data types
-// --------------------------------------------------
-
-// --------------------------------------------------
-// Prototypes
-// --------------------------------------------------
-
-// --------------------------------------------------
 // Variables
 // --------------------------------------------------
-State stateTwo = {.id = "two",
-                  .enter = StateTwoEnter,
-                  .update = StateTwoUpdate,
-                  .draw = StateTwoDraw,
-                  .exit = StateTwoExit};
+State stateTwo = {
+    .id = "two",
+    .enter = StateTwoEnter,
+    .update = StateTwoUpdate,
+    .draw = StateTwoDraw,
+    .exit = NULL /* You can set a function pointer to NULL if no need to do
+                    anything inside of it. No need to declare it in the header
+                    file either.
+                    */
+};
 
 int someIntData;
 char *someCharData;
@@ -32,7 +25,7 @@ char *someCharData;
 // Functions
 // --------------------------------------------------
 void StateTwoEnter(void *args) {
-  StateTwoArgs *myArgs = (StateTwoArgs *)args;
+  const StateTwoArgs *myArgs = (const StateTwoArgs *)args;
   someIntData = myArgs->someIntData;
   someCharData = myArgs->someCharData;
 }
@@ -40,15 +33,13 @@ void StateTwoEnter(void *args) {
 void StateTwoUpdate(float dt) {
   // Update whatever.
 
-  // Let's say that if the user presses "DOWN_ARROW"
+  // Let's say that if the user presses "BACKSPACE"
   // they should change state, so, after they press it:
-  SM_ChangeState(&stateOne, NULL); // Pass in NULL if the next state's enter
-                                   // function requires no arguments.
+  SM_ChangeState(&stateOne,
+                 NULL); /* Pass in NULL if the next state's enter
+                                       function requires no arguments.
+                                       */
 }
 void StateTwoDraw(void) {
   // Draw whatever.
-}
-
-void StateTwoExit(void) {
-  // Reset whatever.
 }

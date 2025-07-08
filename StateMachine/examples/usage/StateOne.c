@@ -2,10 +2,10 @@
 // Includes
 // --------------------------------------------------
 #include "StateOne.h"
-#include "StateTwo.h" /*
-                        Make sure you include the header 
-                        of the state(s) to transition to.
-                        */
+#include "../../StateMachine.h"
+#include "StateTwo.h" /*  Make sure you include the header
+                          of the state(s) to transition to.
+                          */
 
 // --------------------------------------------------
 // Variables
@@ -16,27 +16,24 @@ State stateOne = {.id = "one",
                   .draw = StateOneDraw,
                   .exit = StateOneExit};
 
-static StateTwoArgs *stateTwoArgs;
-
 // --------------------------------------------------
 // Functions
 // --------------------------------------------------
 void StateOneEnter(void *args) {
   // Init whatever.
-  stateTwoArgs = malloc(sizeof(StateTwoArgs));
 }
 
 void StateOneUpdate(float dt) {
   // Update whatever.
 
-  // Let's say that if the user presses "UP_ARROW"
+  // Let's say that if the user presses "SPACE"
   // they should change state, so, after they press it:
+  StateTwoArgs args = {.someIntData = 0,
+                       .someCharData = "going into state two"};
   SM_ChangeState(&stateTwo,
-                 stateTwoArgs); /*
-                                       Pass in NULL if the next state's
-                                       enter function requires no arguments.
-                                       */
-  free(stateTwoArgs);
+                 &args); /* Pass in NULL if the next state's
+                                  enter function requires no arguments.
+                                  */
 }
 
 void StateOneDraw(void) {
@@ -44,6 +41,5 @@ void StateOneDraw(void) {
 }
 
 void StateOneExit(void) {
-  stateTwoArgs->someIntData = 0;
-  stateTwoArgs->someCharData = "going into state two";
+  // Exit routine
 }

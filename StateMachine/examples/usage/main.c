@@ -2,42 +2,31 @@
 // Includes
 // --------------------------------------------------
 #include "../../StateMachine.h"
+#include "StateOne.h"
 #include <raylib.h>
-
-// --------------------------------------------------
-// Defines
-// --------------------------------------------------
-
-// --------------------------------------------------
-// Data types
-// --------------------------------------------------
-
-// --------------------------------------------------
-// Prototypes
-// --------------------------------------------------
 
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
-extern State state_example;
+extern State stateOne;
+float dt;
 
 // --------------------------------------------------
 // Program main entry point
 // --------------------------------------------------
-float dt;
-
 int main(void) {
-  SM_ChangeState(&state_example, NULL);
+  // Init window and all...
+
+  SM_ChangeState(&stateOne, NULL);
 
   while (!WindowShouldClose()) {
     dt = GetFrameTime();
     SM_Update(dt);
+
+    // Begin Drawing...
     SM_Draw();
+    // EndDrawing...
   }
 
-  return 0;
+  // Unload stuff, close window, return 0...
 }
-
-// --------------------------------------------------
-// Functions
-// --------------------------------------------------
