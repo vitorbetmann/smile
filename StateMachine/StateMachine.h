@@ -1,5 +1,5 @@
-#ifndef SMILE_H
-#define SMILE_H
+#ifndef STATE_MACHINE_H
+#define STATE_MACHINE_H
 
 // --------------------------------------------------
 // Data types
