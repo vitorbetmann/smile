@@ -2,6 +2,7 @@
 // Includes
 // --------------------------------------------------
 #include "StateMachine.h"
+#include "StateMachineInternal.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -68,6 +69,8 @@ void SM_Init(void) {
   tracker->stateMap = NULL;
   tracker->currState = NULL;
 }
+
+bool SM_IsInitialized(void) { return tracker; }
 
 void SM_RegisterState(const char *name, void (*enterFn)(void *),
                       void (*updateFn)(float), void (*drawFn)(void),
@@ -163,13 +166,6 @@ void SM_Shutdown(void) {
 
 // Getters
 
-/**
- * Set the current active state.
- *
- * This function is for internal use only.
- * It replaces the current state pointer without calling enter/exit functions.
- * Returns early if the state machine is not initialized.
- */
 void SM_SetCurrState(const State *state) {
   if (!tracker) {
     SM_WARN("State Machine not initialized.");
@@ -179,12 +175,6 @@ void SM_SetCurrState(const State *state) {
   tracker->currState = state;
 }
 
-/**
- * Get a pointer to the current active state.
- *
- * This function is for internal use only.
- * Returns NULL if the state machine is not initialized.
- */
 const State *SM_GetCurrState(void) {
 
   if (!tracker) {
@@ -221,5 +211,3 @@ const State *SM_GetState(const char *name) {
 
   return hmget(tracker->stateMap, (char *)name);
 }
-
-bool SM_IsInitialized(void) { return tracker; }
