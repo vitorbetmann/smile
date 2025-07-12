@@ -2,13 +2,20 @@
 // Includes
 // --------------------------------------------------
 #include "StateMachine.h"
-#include "SM_Error.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #define STB_DS_IMPLEMENTATION
 #include "../external/stb_ds.h"
+
+// --------------------------------------------------
+// Other defines
+// --------------------------------------------------
+#define SM_WARN(str, ...)                                                      \
+  fprintf(stderr, "\033[33m[SMILE WARNING]\033[0m " str "\n", ##__VA_ARGS__)
+#define SM_ERR(str, ...)                                                       \
+  fprintf(stderr, "\033[31m[SMILE ERROR]\033[0m " str "\n", ##__VA_ARGS__)
 
 // --------------------------------------------------
 // Data types
@@ -22,7 +29,7 @@ struct State {
 };
 
 typedef struct {
-  char *key;
+  const char *key;
   State *value;
 } StateTable;
 
@@ -41,11 +48,16 @@ static StateTracker *tracker = NULL;
 // --------------------------------------------------
 void SM_Init(void) {
 
-  SM_ASSERT_TRACKER_INIT();
+  if (tracker) {
+    SM_WARN("State Machine already initialized.");
+    return;
+  }
 
   tracker = malloc(sizeof(StateTracker));
-  SM_REQUIRE_TRACKER_OR_RETURN_VOID();
-
+  if (!tracker) {
+    SM_ERR("Failed to allocate memory. State Machine not initialized.");
+    return;
+  }
   tracker->stateMap = NULL;
   tracker->currState = NULL;
 }
@@ -54,14 +66,30 @@ void NewState(const char *name, void (*enterFn)(void *),
               void (*updateFn)(float), void (*drawFn)(void),
               void (*exitFn)(void)) {
 
+  if (!tracker) {
+    SM_ERR("State Machine not initialized.");
+    return;
+  }
+
   if (hmget(tracker->stateMap, (char *)name)) {
-    // TODO add warning log "name already exists"
+    SM_WARN("A state called '%s' already exists. No new state created.", name);
     return;
   }
 
   State *newState = malloc(sizeof(State));
+  if (!newState) {
+    SM_ERR("Failed to allocate memory. No new state '%s' created.", name);
+    return;
+  }
 
-  newState->name = strdup(name);
+  newState->name = malloc(strlen(name));
+  if (!newState->name) {
+    SM_ERR("Failed to allocate memory. No new state '%s' created.", name);
+    free(newState);
+    return;
+  }
+  strcpy((char *)newState->name, name);
+
   newState->enter = enterFn;
   newState->update = updateFn;
   newState->draw = drawFn;
@@ -77,7 +105,7 @@ void SM_ChangeState(const char *name, void *args) {
 
   State *nextState = (State *)SM_GetState(name);
   if (!nextState) {
-    // TODO add warning log "next state notfound"
+    SM_WARN("Failed to find state '%s'. Current state not changed.", name);
     return;
   }
   tracker->currState = nextState;
@@ -100,14 +128,16 @@ void SM_Draw(void) {
 }
 
 void SM_Shutdown(void) {
-  SM_REQUIRE_TRACKER_OR_RETURN_VOID();
+
+  if (!tracker) {
+    SM_WARN("Failed to shutdown. State Machine not initialized.");
+    return;
+  }
 
   if (tracker->currState && tracker->currState->exit) {
     tracker->currState->exit();
   }
   tracker->currState = NULL;
-
-  // TODO free states and their names
 
   for (int i = 0; i < hmlen(tracker->stateMap); i++) {
     State *state = tracker->stateMap[i].value;
@@ -122,17 +152,31 @@ void SM_Shutdown(void) {
 
 // Getters
 const State *SM_GetCurrState(void) {
-  SM_REQUIRE_TRACKER_OR_RETURN_NULL();
+
+  if (!tracker) {
+    SM_WARN("State Machine not initialized.");
+    return NULL;
+  }
+
   return tracker->currState;
 }
 
 const char *SM_GetCurrStateName(void) {
-  SM_REQUIRE_TRACKER_OR_RETURN_NULL();
+
+  if (!tracker) {
+    SM_WARN("State Machine not initialized.");
+    return NULL;
+  }
+
   return tracker->currState ? tracker->currState->name : NULL;
 }
 
 const State *SM_GetState(const char *name) {
-  SM_REQUIRE_TRACKER_OR_RETURN_NULL();
+
+  if (!tracker) {
+    SM_WARN("State Machine not initialized.");
+    return NULL;
+  }
 
   return hmget(tracker->stateMap, (char *)name);
 }
