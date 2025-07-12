@@ -1,6 +1,6 @@
 // TODO create tests
 
-#include "../ParticleSystem/ParticleSystem.h"
+#include "../include/ParticleSystem.h"
 #include <assert.h>
 #include <stdio.h>
 

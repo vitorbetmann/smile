@@ -1,4 +1,4 @@
-#include "../StateMachine/StateMachine.h"
+#include "../include/StateMachine.h"
 #include <assert.h>
 #include <stdio.h>
 
