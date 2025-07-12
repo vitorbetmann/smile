@@ -40,6 +40,14 @@ Initializes the state machine. Must be called before using any other SMILE funct
 ---
 
 ```c
+bool SM_IsInitialized(void);
+```
+
+Returns `true` if the state machine is initialized, otherwise `false`.
+
+---
+
+```c
 void SM_RegisterState(const char *name, EnterFn enterFn, UpdateFn updateFn, DrawFn drawFn, ExitFn exitFn);
 ```
 
@@ -97,34 +105,10 @@ Cleans up all allocated memory and resets the state machine.
 ---
 
 ```c
-const State *SM_GetCurrState(void);
-```
-
-Returns a pointer to the current active state, or `NULL` if none.
-
----
-
-```c
 const char *SM_GetCurrStateName(void);
 ```
 
 Returns the name of the current active state, or `NULL` if none.
-
----
-
-```c
-const State *SM_GetState(const char *name);
-```
-
-Returns a pointer to a registered state by name, or `NULL` if not found.
-
----
-
-```c
-bool SM_IsInitialized(void);
-```
-
-Returns `true` if the state machine is initialized, otherwise `false`.
 
 ---
 

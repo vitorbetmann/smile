@@ -24,14 +24,16 @@ int main(void) {
     // Engine setup
     SM_Init();
 
+    // Register your states
     SM_RegisterState("one", NULL, StateOneUpdate, StateOneDraw, StateOneExit);
     SM_RegisterState("two", StateTwoEnter, StateTwoUpdate, StateTwoDraw, NULL);
 
     // Start in the first state
-    SM_ChangeStateTo("one", NULL);    // No Enter function needed here, so NULL was passed in when registering this state.
+    SM_ChangeStateTo("one", NULL);    // This stat takes no arguments, so we pass in NULL
 
     float dt = 0.016f;                // Mock delta time, about 60 FPS
     while (true) {
+        // Some condition to break
         SM_Update(dt);
         SM_Draw();
     }
