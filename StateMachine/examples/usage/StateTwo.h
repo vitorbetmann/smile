@@ -1,11 +1,6 @@
 #ifndef STATE_TWO_H
 #define STATE_TWO_H
 // --------------------------------------------------
-// Includes
-// --------------------------------------------------
-#include "../../StateMachine.h"
-
-// --------------------------------------------------
 // Data types
 // --------------------------------------------------
 typedef struct {
@@ -23,10 +18,5 @@ typedef struct {
 void StateTwoEnter(void *args);
 void StateTwoUpdate(float dt);
 void StateTwoDraw(void);
-
-// --------------------------------------------------
-// Variables
-// --------------------------------------------------
-extern const State *stateTwo;
 
 #endif
