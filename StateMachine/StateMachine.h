@@ -10,55 +10,54 @@ typedef struct State State;
 // --------------------------------------------------
 
 /**
- * Initializes the SMILE state machine.
+ * Initialize the state machine.
  */
 void SM_Init(void);
 
 /**
- * Returns true if the state machine has been initialized.
+ * Return whether the state machine is initialized.
  */
 bool SM_IsInitialized(void);
 
 /**
- * Registers a new state with the SMILE state machine.
+ * Register a new named state with lifecycle functions.
  */
 void SM_RegisterState(const char *name, void (*enterFn)(void *),
                       void (*updateFn)(float), void (*drawFn)(void),
                       void (*exitFn)(void));
 
 /**
- * Changes the current active state.
+ * Switch to another state by name, optionally passing arguments.
  */
 void SM_ChangeStateTo(const char *name, void *args);
 
 /**
- * Updates the current active state.
+ * Call the update function of the current active state.
  */
 void SM_Update(float dt);
 
 /**
- * Draws the current active state.
+ * Call the draw function of the current active state.
  */
 void SM_Draw(void);
 
 /**
- * Shuts down the SMILE state machine.
+ * Shut down the state machine and free all resources.
  */
 void SM_Shutdown(void);
 
-// Getters
 /**
- * Returns the currently active state.
+ * Get a pointer to the current active state.
  */
 const State *SM_GetCurrState(void);
 
 /**
- * Returns the `StateID` of the currently active state.
+ * Get the name of the current active state.
  */
 const char *SM_GetCurrStateName(void);
 
 /**
- * Finds a state by its registered name.
+ * Look up a state by its registered name.
  */
 const State *SM_GetState(const char *name);
 
