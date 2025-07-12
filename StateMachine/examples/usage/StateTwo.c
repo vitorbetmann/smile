@@ -26,7 +26,7 @@ void StateTwoUpdate(float dt) {
 
   // Let's say that if the user presses "BACKSPACE" they should change state,
   // so, after they press it:
-  SM_ChangeState("one", NULL); /* Pass in NULL if the next state's enter
+  SM_ChangeStateTo("one", NULL); /* Pass in NULL if the next state's enter
                                   function requires no arguments.*/
 }
 void StateTwoDraw(void) {

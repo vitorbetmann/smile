@@ -17,7 +17,7 @@ void StateOneUpdate(float dt) {
   // after they press it:
   StateTwoArgs args = {.someIntData = 0,
                        .someCharData = "going into state two"};
-  SM_ChangeState("two", &args); /* Pass in NULL if the next state's enter
+  SM_ChangeStateTo("two", &args); /* Pass in NULL if the next state's enter
                                    function requires no arguments.*/
 }
 
@@ -26,5 +26,5 @@ void StateOneDraw(void) {
 }
 
 void StateOneExit(void) {
-  // Exit routine
+  // Exit cleanup
 }

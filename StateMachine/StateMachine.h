@@ -22,14 +22,14 @@ bool SM_IsInitialized(void);
 /**
  * Registers a new state with the SMILE state machine.
  */
-void NewState(const char *name, void (*enterFn)(void *),
-              void (*updateFn)(float), void (*drawFn)(void),
-              void (*exitFn)(void));
+void SM_RegisterState(const char *name, void (*enterFn)(void *),
+                      void (*updateFn)(float), void (*drawFn)(void),
+                      void (*exitFn)(void));
 
 /**
  * Changes the current active state.
  */
-void SM_ChangeState(const char *name, void *args);
+void SM_ChangeStateTo(const char *name, void *args);
 
 /**
  * Updates the current active state.

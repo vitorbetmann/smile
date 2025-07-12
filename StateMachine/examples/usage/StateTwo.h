@@ -8,7 +8,7 @@ typedef struct {
   char *someCharData;
 } StateTwoArgs; /*
                 This is the data that will be passed to
-                SM_ChangeState, if its enter function
+                SM_ChangeStateTo, if its enter function
                 requires any arguments.
                 */
 

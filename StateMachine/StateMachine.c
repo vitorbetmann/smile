@@ -62,9 +62,9 @@ void SM_Init(void) {
   tracker->currState = NULL;
 }
 
-void NewState(const char *name, void (*enterFn)(void *),
-              void (*updateFn)(float), void (*drawFn)(void),
-              void (*exitFn)(void)) {
+void SM_RegisterState(const char *name, void (*enterFn)(void *),
+                      void (*updateFn)(float), void (*drawFn)(void),
+                      void (*exitFn)(void)) {
 
   if (!tracker) {
     SM_ERR("State Machine not initialized.");
@@ -98,7 +98,7 @@ void NewState(const char *name, void (*enterFn)(void *),
   hmput(tracker->stateMap, (char *)newState->name, newState);
 }
 
-void SM_ChangeState(const char *name, void *args) {
+void SM_ChangeStateTo(const char *name, void *args) {
   if (tracker->currState && tracker->currState->exit) {
     tracker->currState->exit();
   }

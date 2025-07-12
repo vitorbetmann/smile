@@ -14,16 +14,14 @@ int main(void) {
   // Engine setup
   SM_Init();
 
-  NewState("one", NULL, StateOneUpdate, StateOneDraw, StateOneExit);
-  NewState("two", StateTwoEnter, StateTwoUpdate, StateTwoDraw, NULL);
+  SM_RegisterState("one", NULL, StateOneUpdate, StateOneDraw, StateOneExit);
+  SM_RegisterState("two", StateTwoEnter, StateTwoUpdate, StateTwoDraw, NULL);
 
   // Start in the state one
-  SM_ChangeState("one", NULL);
+  SM_ChangeStateTo("one", NULL);
 
-  float dt;
-  // Main loop
+  float dt = 0.016f; // Mock delta time, about 60 FPS
   while (true) {
-    // dt = some delta time
     SM_Update(dt);
     SM_Draw();
   }

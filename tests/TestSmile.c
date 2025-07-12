@@ -9,8 +9,8 @@
 // }
 
 // State dummy = {0};
-// void Test_SM_ChangeStateWorks(void) {
-//   SM_ChangeState(&dummy, NULL);
+// void Test_SM_ChangeStateToWorks(void) {
+//   SM_ChangeStateTo(&dummy, NULL);
 //   assert(SM_GetCurrState() == &dummy);
 //   puts("\t[PASS] sm_change_state works correctly");
 // }
@@ -26,7 +26,7 @@ int main() {
   // puts("Testing Initialization");
   // Test_SM_Init_SetsStateToNull();
   // puts("Testing Transition");
-  // Test_SM_ChangeStateWorks();
+  // Test_SM_ChangeStateToWorks();
   // puts("Testing Shutdown");
   // Test_SM_Shutdown_SetsStateToNull();
   // puts("");
