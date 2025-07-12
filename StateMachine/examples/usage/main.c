@@ -3,30 +3,31 @@
 // --------------------------------------------------
 #include "../../StateMachine.h"
 #include "StateOne.h"
+#include "StateTwo.h"
 #include <raylib.h>
-
-// --------------------------------------------------
-// Variables
-// --------------------------------------------------
-extern State stateOne;
-float dt;
+#include <stdlib.h>
 
 // --------------------------------------------------
 // Program main entry point
 // --------------------------------------------------
 int main(void) {
-  // Init window and all...
+  // Engine setup
+  SM_Init(NULL);
 
-  SM_ChangeState(&stateOne, NULL);
+  NewState("one", NULL, StateOneUpdate, StateOneDraw, StateOneExit);
+  NewState("two", StateTwoEnter, StateTwoUpdate, StateTwoDraw, NULL);
 
+  // Start in the state one
+  SM_ChangeStateByName("one", NULL); // or SM_ChangeStateByNum(0, NULL);
+
+  float dt;
+  // Main loop
   while (!WindowShouldClose()) {
     dt = GetFrameTime();
     SM_Update(dt);
-
-    // Begin Drawing...
     SM_Draw();
-    // EndDrawing...
   }
 
-  // Unload stuff, close window, return 0...
+  // Shutdown
+  SM_Shutdown();
 }

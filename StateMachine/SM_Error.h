@@ -31,7 +31,7 @@
 #define SM_ASSERT_STATE_OVERLOAD()                                             \
   if (tracker->stateCount >= tracker->maxStates) {                             \
     fprintf(stderr, SM_MAX_STATES_REACHED);                                    \
-    return NULL;                                                               \
+    return;                                                                    \
   }
 
 #define SM_ASSERT_TRACKER_INIT()                                               \

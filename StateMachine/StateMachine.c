@@ -7,43 +7,29 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define STB_DS_IMPLEMENTATION
+#include "../external/stb_ds.h"
+
 // --------------------------------------------------
 // Data types
 // --------------------------------------------------
 struct State {
-  StateID id;
+  const char *name;
   void (*enter)(void *args);
   void (*update)(float dt);
   void (*draw)();
   void (*exit)();
 };
 
-struct StateNode {
-  const State *state;
-  struct StateNode *next;
-};
-
-typedef enum {
-  ARRAY,
-  LINKED_LIST,
-} ListType;
-
-typedef union {
-  StateNode *head;
-  State *states;
-} StateList;
+typedef struct {
+  char *key;
+  State *value;
+} StateTable;
 
 typedef struct {
-  ListType type;
-  StateList list;
+  StateTable *stateMap;
   const State *currState;
-  unsigned int stateCount, maxStates;
 } StateTracker;
-
-// --------------------------------------------------
-// Prototypes
-// --------------------------------------------------
-void ListUnload(void);
 
 // --------------------------------------------------
 // Variables
@@ -53,78 +39,48 @@ static StateTracker *tracker = NULL;
 // --------------------------------------------------
 // Functions
 // --------------------------------------------------
-void SM_Init(ConfigArgs *configArgs) {
+void SM_Init(void) {
 
   SM_ASSERT_TRACKER_INIT();
 
   tracker = malloc(sizeof(StateTracker));
   SM_REQUIRE_TRACKER_OR_RETURN_VOID();
 
-  tracker->stateCount = 0;
-  if (!configArgs) {
-    tracker->type = LINKED_LIST;
-    tracker->list.head = NULL;
-  } else {
-    tracker->maxStates = configArgs->maxStates;
-    tracker->type = ARRAY;
-    tracker->list.states = malloc(tracker->maxStates * sizeof(State));
-    if (!tracker->list.states) {
-      free(tracker);
-      tracker = NULL;
-      SM_MEMALLOC_FAILED_MSG();
-      return;
-    }
-  }
+  tracker->stateMap = NULL;
   tracker->currState = NULL;
 }
 
-const State *NewState(const char *name, void (*enterFn)(void *),
-                      void (*updateFn)(float), void (*drawFn)(void),
-                      void (*exitFn)(void)) {
+void NewState(const char *name, void (*enterFn)(void *),
+              void (*updateFn)(float), void (*drawFn)(void),
+              void (*exitFn)(void)) {
 
-  State *newState;
-
-  switch (tracker->type) {
-  case ARRAY:
-    SM_ASSERT_STATE_OVERLOAD();
-    newState = &tracker->list.states[tracker->stateCount];
-    break;
-
-  case LINKED_LIST:
-    newState = malloc(sizeof(State));
-    if (!newState) {
-      return NULL;
-    }
-
-    StateNode *newNode = malloc(sizeof(StateNode));
-    if (!newNode) {
-      free(newState);
-      return NULL;
-    }
-
-    newNode->state = newState;
-    newNode->next = tracker->list.head;
-    tracker->list.head = newNode;
-    break;
+  if (hmget(tracker->stateMap, (char *)name)) {
+    // TODO add warning log "name already exists"
+    return;
   }
 
-  newState->id.name = strdup(name);
-  newState->id.num = tracker->stateCount;
+  State *newState = malloc(sizeof(State));
+
+  newState->name = strdup(name);
   newState->enter = enterFn;
   newState->update = updateFn;
   newState->draw = drawFn;
   newState->exit = exitFn;
 
-  tracker->stateCount++;
-  return newState;
+  hmput(tracker->stateMap, (char *)newState->name, newState);
 }
 
-void SM_ChangeState(const State *state, void *args) {
+void SM_ChangeState(const char *name, void *args) {
   if (tracker->currState && tracker->currState->exit) {
     tracker->currState->exit();
   }
 
-  tracker->currState = state;
+  State *nextState = (State *)SM_GetState(name);
+  if (!nextState) {
+    // TODO add warning log "next state notfound"
+    return;
+  }
+  tracker->currState = nextState;
 
   if (tracker->currState && tracker->currState->enter) {
     tracker->currState->enter(args);
@@ -149,106 +105,36 @@ void SM_Shutdown(void) {
   if (tracker->currState && tracker->currState->exit) {
     tracker->currState->exit();
   }
-
   tracker->currState = NULL;
 
-  switch (tracker->type) {
-  case ARRAY:
-    if (!tracker->list.states) {
-      return;
-    }
+  // TODO free states and their names
 
-    for (int i = 0; i < tracker->stateCount; i++) {
-      free((char *)tracker->list.states[i].id.name);
-    }
-    free(tracker->list.states);
-    break;
-
-  case LINKED_LIST:
-    ListUnload();
-    break;
+  for (int i = 0; i < hmlen(tracker->stateMap); i++) {
+    State *state = tracker->stateMap[i].value;
+    free((char *)state->name);
+    free(state);
   }
+  hmfree(tracker->stateMap);
 
   free(tracker);
   tracker = NULL;
 }
 
-void ListUnload(void) {
-  StateNode *cursor = tracker->list.head;
-  while (cursor) {
-    StateNode *next = cursor->next;
-    free((char *)cursor->state->id.name);
-    free((State *)cursor->state);
-    free(cursor);
-    cursor = next;
-  }
-}
-
 // Getters
 const State *SM_GetCurrState(void) {
   SM_REQUIRE_TRACKER_OR_RETURN_NULL();
-  return tracker->currState ? tracker->currState : NULL;
+  return tracker->currState;
 }
 
-const StateID *SM_GetCurrStateID(void) {
+const char *SM_GetCurrStateName(void) {
   SM_REQUIRE_TRACKER_OR_RETURN_NULL();
-  return tracker->currState ? &tracker->currState->id : NULL;
+  return tracker->currState ? tracker->currState->name : NULL;
 }
 
-const State *SM_GetStateByIDName(const char *name) {
-  SM_REQUIRE_TRACKER_OR_RETURN_NULL();
-
-  switch (tracker->type) {
-  case ARRAY:
-    // TODO improve this, I want faster lookup
-    for (unsigned int i = 0; i < tracker->stateCount; i++) {
-      State *temp = &tracker->list.states[i];
-      if (strcmp(name, temp->id.name) == 0) {
-        return temp;
-      }
-    }
-    break;
-
-  case LINKED_LIST:
-    for (StateNode *ptr = tracker->list.head; ptr; ptr = ptr->next) {
-      State *temp = (State *)ptr->state;
-      if (strcmp(name, temp->id.name) == 0) {
-        return temp;
-      }
-    }
-    break;
-  }
-
-  return NULL;
-}
-const State *SM_GetStateByIDNum(unsigned int num) {
+const State *SM_GetState(const char *name) {
   SM_REQUIRE_TRACKER_OR_RETURN_NULL();
 
-  switch (tracker->type) {
-  case ARRAY:
-    // TODO improve this, I want faster lookup
-    for (unsigned int i = 0; i < tracker->stateCount; i++) {
-      State *temp = &tracker->list.states[i];
-      if (temp->id.num == num) {
-        return temp;
-      }
-    }
-    break;
-
-  case LINKED_LIST:
-    for (StateNode *ptr = tracker->list.head; ptr; ptr = ptr->next) {
-      State *temp = (State *)ptr->state;
-      if (temp->id.num == num) {
-        return temp;
-      }
-    }
-    break;
-  }
-
-  return NULL;
+  return hmget(tracker->stateMap, (char *)name);
 }
 
-const StateID *SM_GetStateID(const State *state) {
-  SM_REQUIRE_TRACKER_OR_RETURN_NULL();
-  return state ? &state->id : NULL;
-}
+bool SM_IsInitialized(void) { return tracker; }

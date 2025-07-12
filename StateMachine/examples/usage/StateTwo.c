@@ -9,16 +9,6 @@
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
-const State stateTwo = {
-    .id = "two",
-    .enter = StateTwoEnter,
-    .update = StateTwoUpdate,
-    .draw = StateTwoDraw,
-    .exit = NULL /* You can set a function pointer to NULL if no need to do
-                    anything inside of it. No need to declare it in the header
-                    file either.
-                    */
-};
 
 int someIntData;
 char *someCharData;
@@ -34,12 +24,10 @@ void StateTwoEnter(void *args) {
 void StateTwoUpdate(float dt) {
   // Update whatever.
 
-  // Let's say that if the user presses "BACKSPACE"
-  // they should change state, so, after they press it:
-  SM_ChangeState(&stateOne,
-                 NULL); /* Pass in NULL if the next state's enter
-                                       function requires no arguments.
-                                       */
+  // Let's say that if the user presses "BACKSPACE" they should change state,
+  // so, after they press it:
+  SM_ChangeState(stateOne, NULL); /* Pass in NULL if the next state's enter
+                                     function requires no arguments.*/
 }
 void StateTwoDraw(void) {
   // Draw whatever.

@@ -27,6 +27,6 @@ void StateTwoDraw(void);
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
-extern const State stateTwo;
+extern const State *stateTwo;
 
 #endif

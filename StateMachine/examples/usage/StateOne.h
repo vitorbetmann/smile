@@ -8,7 +8,6 @@
 // --------------------------------------------------
 // Prototypes
 // --------------------------------------------------
-void StateOneEnter(void *args);
 void StateOneUpdate(float dt);
 void StateOneDraw(void);
 void StateOneExit(void);
@@ -16,6 +15,6 @@ void StateOneExit(void);
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
-extern const State stateOne;
+extern const State *stateOne;
 
 #endif

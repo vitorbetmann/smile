@@ -1,43 +1,65 @@
 #ifndef STATE_MACHINE_H
 #define STATE_MACHINE_H
-
 // --------------------------------------------------
 // Data types
 // --------------------------------------------------
 typedef struct State State;
-typedef struct StateNode StateNode;
-
-typedef struct {
-  const char *name;
-  unsigned int num;
-} StateID;
-
-typedef struct {
-  unsigned int maxStates;
-} ConfigArgs;
 
 // --------------------------------------------------
 // Prototypes
 // --------------------------------------------------
-void SM_Init(ConfigArgs *configArgs);
 
-const State *NewState(const char *name, void (*enterFn)(void *),
-                      void (*updateFn)(float), void (*drawFn)(void),
-                      void (*exitFn)(void));
+/**
+ * Initializes the SMILE state machine.
+ */
+void SM_Init(void);
 
-void SM_ChangeState(const State *state, void *args);
+/**
+ * Returns true if the state machine has been initialized.
+ */
+bool SM_IsInitialized(void);
 
+/**
+ * Registers a new state with the SMILE state machine.
+ */
+void NewState(const char *name, void (*enterFn)(void *),
+              void (*updateFn)(float), void (*drawFn)(void),
+              void (*exitFn)(void));
+
+/**
+ * Changes the current active state.
+ */
+void SM_ChangeState(const char *name, void *args);
+
+/**
+ * Updates the current active state.
+ */
 void SM_Update(float dt);
+
+/**
+ * Draws the current active state.
+ */
 void SM_Draw(void);
 
+/**
+ * Shuts down the SMILE state machine.
+ */
 void SM_Shutdown(void);
 
 // Getters
+/**
+ * Returns the currently active state.
+ */
 const State *SM_GetCurrState(void);
-const StateID *SM_GetCurrStateID(void);
 
-const State *SM_GetStateByIDName(const char *name);
-const State *SM_GetStateByIDNum(unsigned int num);
-const StateID *SM_GetStateID(const State *state);
+/**
+ * Returns the `StateID` of the currently active state.
+ */
+const char *SM_GetCurrStateName(void);
+
+/**
+ * Finds a state by its registered name.
+ */
+const State *SM_GetState(const char *name);
 
 #endif
