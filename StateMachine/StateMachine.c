@@ -3,6 +3,7 @@
 // --------------------------------------------------
 #include "StateMachine.h"
 #include "StateMachineInternal.h"
+#include "StateMachineTestAccess.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -164,7 +165,19 @@ void SM_Shutdown(void) {
   tracker = NULL;
 }
 
-// Getters
+const char *SM_GetCurrStateName(void) {
+
+  if (!tracker) {
+    SM_WARN("State Machine not initialized.");
+    return NULL;
+  }
+
+  return tracker->currState ? tracker->currState->name : NULL;
+}
+
+// --------------------------------------------------
+// Functions - Internal
+// --------------------------------------------------
 
 void SM_SetCurrState(const State *state) {
   if (!tracker) {
@@ -185,23 +198,6 @@ const State *SM_GetCurrState(void) {
   return tracker->currState;
 }
 
-const char *SM_GetCurrStateName(void) {
-
-  if (!tracker) {
-    SM_WARN("State Machine not initialized.");
-    return NULL;
-  }
-
-  return tracker->currState ? tracker->currState->name : NULL;
-}
-
-/**
- * Look up a state by its registered name.
- *
- * This function is for internal use only.
- * Returns NULL if the state machine is not initialized or if the state is not
- * found.
- */
 const State *SM_GetState(const char *name) {
 
   if (!tracker) {
@@ -211,3 +207,9 @@ const State *SM_GetState(const char *name) {
 
   return hmget(tracker->stateMap, (char *)name);
 }
+
+// --------------------------------------------------
+// Functions - Tests
+// --------------------------------------------------
+
+const void *SM_Test_GetTracker(void) { return tracker; }

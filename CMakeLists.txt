@@ -34,7 +34,7 @@ target_include_directories(smile PRIVATE "${RAYLIB_SRC_DIR}")
 # --- Test executables for StateMachine and ParticleSystem modules ---
 
 # StateMachine test
-add_executable(TestStateMachine tests/TestStateMachine.c)
+add_executable(TestStateMachine tests/StateMachine/Test_SM.c)
 target_link_libraries(TestStateMachine PRIVATE smile "${RAYLIB_SRC_DIR}/libraylib.a")
 target_include_directories(TestStateMachine PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
