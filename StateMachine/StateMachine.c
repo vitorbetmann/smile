@@ -39,6 +39,13 @@ typedef struct {
 } StateTracker;
 
 // --------------------------------------------------
+// Prototypes
+// --------------------------------------------------
+void SM_SetCurrState(const State *state);
+const State *SM_GetCurrState(void);
+const State *SM_GetState(const char *name);
+
+// --------------------------------------------------
 // Variables
 // --------------------------------------------------
 static StateTracker *tracker = NULL;
@@ -99,8 +106,9 @@ void SM_RegisterState(const char *name, void (*enterFn)(void *),
 }
 
 void SM_ChangeStateTo(const char *name, void *args) {
-  if (tracker->currState && tracker->currState->exit) {
-    tracker->currState->exit();
+  State *currState = (State *)SM_GetCurrState();
+  if (currState && currState->exit) {
+    currState->exit();
   }
 
   State *nextState = (State *)SM_GetState(name);
@@ -108,22 +116,25 @@ void SM_ChangeStateTo(const char *name, void *args) {
     SM_WARN("Failed to find state '%s'. Current state not changed.", name);
     return;
   }
-  tracker->currState = nextState;
+  SM_SetCurrState(nextState);
 
-  if (tracker->currState && tracker->currState->enter) {
-    tracker->currState->enter(args);
+  currState = (State *)SM_GetCurrState();
+  if (currState && currState->enter) {
+    currState->enter(args);
   }
 }
 
 void SM_Update(float dt) {
-  if (tracker->currState && tracker->currState->update) {
-    tracker->currState->update(dt);
+  State *currState = (State *)SM_GetCurrState();
+  if (currState && currState->update) {
+    currState->update(dt);
   }
 }
 
 void SM_Draw(void) {
-  if (tracker->currState && tracker->currState->draw) {
-    tracker->currState->draw();
+  State *currState = (State *)SM_GetCurrState();
+  if (currState && currState->draw) {
+    currState->draw();
   }
 }
 
@@ -134,11 +145,11 @@ void SM_Shutdown(void) {
     return;
   }
 
-  if (tracker->currState && tracker->currState->exit) {
-    tracker->currState->exit();
+  State *currState = (State *)SM_GetCurrState();
+  if (currState && currState->exit) {
+    currState->exit();
   }
-  tracker->currState = NULL;
-
+  SM_SetCurrState(NULL);
   for (int i = 0; i < hmlen(tracker->stateMap); i++) {
     State *state = tracker->stateMap[i].value;
     free((char *)state->name);
@@ -151,6 +162,29 @@ void SM_Shutdown(void) {
 }
 
 // Getters
+
+/**
+ * Set the current active state.
+ *
+ * This function is for internal use only.
+ * It replaces the current state pointer without calling enter/exit functions.
+ * Returns early if the state machine is not initialized.
+ */
+void SM_SetCurrState(const State *state) {
+  if (!tracker) {
+    SM_WARN("State Machine not initialized.");
+    return;
+  }
+
+  tracker->currState = state;
+}
+
+/**
+ * Get a pointer to the current active state.
+ *
+ * This function is for internal use only.
+ * Returns NULL if the state machine is not initialized.
+ */
 const State *SM_GetCurrState(void) {
 
   if (!tracker) {
@@ -171,6 +205,13 @@ const char *SM_GetCurrStateName(void) {
   return tracker->currState ? tracker->currState->name : NULL;
 }
 
+/**
+ * Look up a state by its registered name.
+ *
+ * This function is for internal use only.
+ * Returns NULL if the state machine is not initialized or if the state is not
+ * found.
+ */
 const State *SM_GetState(const char *name) {
 
   if (!tracker) {

@@ -47,18 +47,8 @@ void SM_Draw(void);
 void SM_Shutdown(void);
 
 /**
- * Get a pointer to the current active state.
- */
-const State *SM_GetCurrState(void);
-
-/**
  * Get the name of the current active state.
  */
 const char *SM_GetCurrStateName(void);
-
-/**
- * Look up a state by its registered name.
- */
-const State *SM_GetState(const char *name);
 
 #endif

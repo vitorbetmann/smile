@@ -171,9 +171,3 @@ Dive deeper with the full API references:
 
 - [State Machine API](./docs/StateMachine/SM_API.md)
 - [Particle System API](./docs/ParticleSystem/PS_API.md)
-
----
-
-## Closing
-
-Here’s to new creations powered by SMILE. 😊
