@@ -47,7 +47,7 @@ Current modules:
 
 Before building SMILE, ensure the following are installed:
 
-- CMake version 3.16 or higher
+- CMake version 4.0.2 or higher
 - A build tool such as Ninja or Make
 - A C compiler (e.g., Clang or GCC)
 

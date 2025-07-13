@@ -1,5 +1,5 @@
-#include "../StateMachine/StateMachineTestAccess.h"
 #include "../include/StateMachine.h"
+#include "StateMachineTestAccess.h"
 #include <assert.h>
 #include <stdio.h>
 

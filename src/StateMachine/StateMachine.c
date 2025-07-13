@@ -2,8 +2,8 @@
 // Includes
 // --------------------------------------------------
 #include "StateMachine.h"
+#include "../tests/StateMachine/StateMachineTestAccess.h"
 #include "StateMachineInternal.h"
-#include "StateMachineTestAccess.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
