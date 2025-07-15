@@ -128,12 +128,3 @@ Calls the `exit` function of the current state (if defined) before cleanup. Afte
 
 **Returns:**  
 The name of the current state, or `NULL` if no state is active or the machine is uninitialized.
-
----
-
-## ⚠️ Notes
-
-- State names must be unique.
-- Do not call SMILE functions before `SM_Init()` or after `SM_Shutdown()`.
-- All lifecycle functions are optional (`NULL` is allowed).
-- Arguments passed to `SM_ChangeStateTo` must remain valid until used.
