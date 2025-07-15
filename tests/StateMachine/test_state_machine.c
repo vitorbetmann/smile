@@ -19,7 +19,7 @@
  * This naming pattern helps organize and clearly communicate test purposes.
  */
 
-// TODO add tests for failed memory allocation in SM_RegisterState and
+// TODO add tests for failed memory allocation in SM_RegisterState
 
 #include "../include/StateMachine.h"
 #include "../src/StateMachine/StateMachineInternal.h"
