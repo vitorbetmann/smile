@@ -4,12 +4,9 @@
 #include "StateMachine.h"
 #include "../tests/StateMachine/StateMachineTestAccess.h"
 #include "StateMachineInternal.h"
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-
-#define STB_DS_IMPLEMENTATION
-#include "../external/stb_ds.h"
 
 // --------------------------------------------------
 // Other defines
@@ -20,155 +17,221 @@
   fprintf(stderr, "\033[31m[SMILE ERROR]\033[0m " str "\n", ##__VA_ARGS__)
 
 // --------------------------------------------------
-// Data types
-// --------------------------------------------------
-struct State {
-  const char *name;
-  void (*enter)(void *args);
-  void (*update)(float dt);
-  void (*draw)();
-  void (*exit)();
-};
-
-typedef struct {
-  const char *key;
-  State *value;
-} StateTable;
-
-typedef struct {
-  StateTable *stateMap;
-  const State *currState;
-} StateTracker;
-
-// --------------------------------------------------
-// Prototypes
-// --------------------------------------------------
-void SM_SetCurrState(const State *state);
-const State *SM_GetCurrState(void);
-const State *SM_GetState(const char *name);
-
-// --------------------------------------------------
 // Variables
 // --------------------------------------------------
-static StateTracker *tracker = NULL;
+static int stateCount;
+static StateTracker *tracker;
+static bool canMalloc = true;
 
 // --------------------------------------------------
 // Functions
 // --------------------------------------------------
-void SM_Init(void) {
+
+bool SM_Init(void) {
 
   if (tracker) {
     SM_WARN("State Machine already initialized.");
-    return;
+    return false;
   }
 
-  tracker = malloc(sizeof(StateTracker));
+  tracker = SM_Test_Malloc(sizeof(StateTracker));
   if (!tracker) {
     SM_ERR("Failed to allocate memory. State Machine not initialized.");
-    return;
+    return false;
   }
   tracker->stateMap = NULL;
   tracker->currState = NULL;
+  stateCount = 0;
+
+  return true;
 }
 
 bool SM_IsInitialized(void) { return tracker; }
 
-void SM_RegisterState(const char *name, void (*enterFn)(void *),
+bool SM_RegisterState(const char *name, void (*enterFn)(void *),
                       void (*updateFn)(float), void (*drawFn)(void),
                       void (*exitFn)(void)) {
 
   if (!tracker) {
     SM_ERR("State Machine not initialized.");
-    return;
+    return false;
   }
 
-  if (hmget(tracker->stateMap, (char *)name)) {
+  if (!name) {
+    SM_ERR("Can't register state with NULL name. No new state created.");
+    return false;
+  }
+
+  if (strlen(name) == 0) {
+    SM_ERR("Can't register state with empty name. No new state created.");
+    return false;
+  }
+
+  if (SM_IsStateRegistered((char *)name)) {
     SM_WARN("A state called '%s' already exists. No new state created.", name);
-    return;
+    return false;
+  }
+
+  if (!enterFn && !updateFn && !drawFn && !exitFn) {
+    SM_ERR("State '%s' has no valid functions. No new state created.", name);
+    return false;
   }
 
   State *newState = malloc(sizeof(State));
   if (!newState) {
     SM_ERR("Failed to allocate memory. No new state '%s' created.", name);
-    return;
+    return false;
   }
 
-  newState->name = malloc(strlen(name));
-  if (!newState->name) {
+  char *stateName = malloc(strlen(name) + 1);
+  if (!stateName) {
     SM_ERR("Failed to allocate memory. No new state '%s' created.", name);
     free(newState);
-    return;
+    return false;
   }
-  strcpy((char *)newState->name, name);
+  strcpy(stateName, name);
 
+  newState->name = stateName;
   newState->enter = enterFn;
   newState->update = updateFn;
   newState->draw = drawFn;
   newState->exit = exitFn;
 
-  hmput(tracker->stateMap, (char *)newState->name, newState);
+  StateMap *temp = malloc(sizeof(StateMap));
+  if (!temp) {
+    free((char *)newState->name);
+    free(newState);
+    SM_ERR("Failed to allocate memory. No new state '%s' created.", name);
+    return false;
+  }
+  temp->state = newState;
+  temp->name = newState->name;
+  HASH_ADD_STR(tracker->stateMap, name, temp);
+
+  stateCount++;
+
+  return true;
 }
 
-void SM_ChangeStateTo(const char *name, void *args) {
-  State *currState = (State *)SM_GetCurrState();
+bool SM_IsStateRegistered(char *name) {
+  if (!tracker) {
+    SM_ERR("Can't find state. State Machine not initialized.");
+    return false;
+  }
+
+  StateMap *entry;
+  HASH_FIND_STR(tracker->stateMap, name, entry);
+  return entry;
+}
+
+bool SM_ChangeStateTo(const char *name, void *args) {
+
+  if (!tracker) {
+    SM_ERR("Can't change state. State Machine not initialized.");
+    return false;
+  }
+
+  if (!name) {
+    SM_ERR("Can't change to state with NULL name.");
+    return false;
+  }
+
+  State *currState = (State *)SM_Internal_GetCurrState();
   if (currState && currState->exit) {
     currState->exit();
   }
 
-  State *nextState = (State *)SM_GetState(name);
+  State *nextState = (State *)SM_Internal_GetState(name);
   if (!nextState) {
     SM_WARN("Failed to find state '%s'. Current state not changed.", name);
-    return;
+    return false;
   }
-  SM_SetCurrState(nextState);
+  SM_Internal_SetCurrState(nextState);
 
-  currState = (State *)SM_GetCurrState();
+  currState = (State *)SM_Internal_GetCurrState();
   if (currState && currState->enter) {
     currState->enter(args);
   }
+
+  return true;
 }
 
-void SM_Update(float dt) {
-  State *currState = (State *)SM_GetCurrState();
-  if (currState && currState->update) {
-    currState->update(dt);
+bool SM_Update(float dt) {
+  if (!tracker) {
+    SM_ERR("Not possible to update. State Machine not initialized.");
+    return false;
   }
-}
 
-void SM_Draw(void) {
-  State *currState = (State *)SM_GetCurrState();
-  if (currState && currState->draw) {
-    currState->draw();
+  State *currState = (State *)SM_Internal_GetCurrState();
+
+  if (!currState) {
+    SM_ERR("Not possible to update. No state set to current.");
+    return false;
   }
+
+  if (!currState->update) {
+    SM_ERR("Not possible to update. Update function is NULL.");
+    return false;
+  }
+
+  currState->update(dt);
+  return true;
 }
 
-void SM_Shutdown(void) {
+bool SM_Draw(void) {
+  if (!tracker) {
+    SM_ERR("Not possible to draw. State Machine not initialized.");
+    return false;
+  }
+
+  State *currState = (State *)SM_Internal_GetCurrState();
+
+  if (!currState) {
+    SM_ERR("Not possible to draw. No state set to current.");
+    return false;
+  }
+
+  if (!currState->draw) {
+    SM_ERR("Not possible to draw. Draw function is NULL.");
+    return false;
+  }
+
+  currState->draw();
+  return true;
+}
+
+bool SM_Shutdown(void) {
 
   if (!tracker) {
-    SM_WARN("Failed to shutdown. State Machine not initialized.");
-    return;
+    SM_ERR("Failed to shutdown. State Machine not initialized.");
+    return false;
   }
 
-  State *currState = (State *)SM_GetCurrState();
+  State *currState = (State *)SM_Internal_GetCurrState();
   if (currState && currState->exit) {
     currState->exit();
   }
-  SM_SetCurrState(NULL);
-  for (int i = 0; i < hmlen(tracker->stateMap); i++) {
-    State *state = tracker->stateMap[i].value;
-    free((char *)state->name);
-    free(state);
+  SM_Internal_SetCurrState(NULL);
+
+  StateMap *el, *tmp;
+  HASH_ITER(hh, tracker->stateMap, el, tmp) {
+    HASH_DEL(tracker->stateMap, el);
+    free((char *)el->state->name);
+    free(el->state);
+    free(el);
+    stateCount--;
   }
-  hmfree(tracker->stateMap);
 
   free(tracker);
   tracker = NULL;
+
+  return true;
 }
 
 const char *SM_GetCurrStateName(void) {
 
   if (!tracker) {
-    SM_WARN("State Machine not initialized.");
+    SM_ERR("Can't get current state name. State Machine not initialized.");
     return NULL;
   }
 
@@ -179,37 +242,62 @@ const char *SM_GetCurrStateName(void) {
 // Functions - Internal
 // --------------------------------------------------
 
-void SM_SetCurrState(const State *state) {
+bool SM_Internal_SetCurrState(const State *state) {
   if (!tracker) {
-    SM_WARN("State Machine not initialized.");
-    return;
+    SM_ERR("State Machine not initialized.");
+    return false;
   }
 
   tracker->currState = state;
+  return true;
 }
 
-const State *SM_GetCurrState(void) {
+const State *SM_Internal_GetCurrState(void) {
 
   if (!tracker) {
-    SM_WARN("State Machine not initialized.");
+    SM_ERR("State Machine not initialized.");
     return NULL;
   }
 
   return tracker->currState;
 }
 
-const State *SM_GetState(const char *name) {
+const State *SM_Internal_GetState(const char *name) {
 
   if (!tracker) {
-    SM_WARN("State Machine not initialized.");
+    SM_ERR("State Machine not initialized.");
     return NULL;
   }
 
-  return hmget(tracker->stateMap, (char *)name);
+  StateMap *sm;
+  HASH_FIND_STR(tracker->stateMap, name, sm);
+  return sm ? sm->state : NULL;
 }
 
 // --------------------------------------------------
 // Functions - Tests
 // --------------------------------------------------
 
-const void *SM_Test_GetTracker(void) { return tracker; }
+const StateTracker *SM_Test_GetTracker(void) {
+
+  if (!tracker) {
+    SM_ERR("State Machine not initialized.");
+    return NULL;
+  }
+
+  return tracker;
+}
+
+const int SM_Test_GetStateCount(void) { return stateCount; }
+
+bool SM_Test_SetCanMalloc(bool toggle) {
+  canMalloc = toggle;
+  return toggle;
+}
+
+void *SM_Test_Malloc(size_t size) {
+  if (!canMalloc) {
+    return NULL;
+  }
+  return malloc(size);
+}

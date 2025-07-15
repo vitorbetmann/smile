@@ -29,86 +29,105 @@ The SMILE engine provides a modular, lightweight, and flexible state machine sys
 
 ## 📚 Function Reference
 
-### Function Signatures
+### `bool SM_Init(void);`
 
-```c
-void SM_Init(void);
-```
+**Initializes the state machine.**  
+Allocates internal structures and prepares the system to register and run states.
 
-Initializes the state machine. Must be called before using any other SMILE functions.
+> **Note:** This function is safe to call multiple times. If the machine is already initialized, it returns `false` without error.
 
----
-
-```c
-bool SM_IsInitialized(void);
-```
-
-Returns `true` if the state machine is initialized, otherwise `false`.
+**Returns:**  
+`true` if initialized successfully, `false` if already initialized or if memory allocation failed.
 
 ---
 
-```c
-void SM_RegisterState(const char *name, EnterFn enterFn, UpdateFn updateFn, DrawFn drawFn, ExitFn exitFn);
-```
+### `bool SM_IsInitialized(void);`
 
-Registers a new state with the system.
+**Checks whether the state machine has been initialized.**
 
-- `name`: Unique string name for the state.
-- `enterFn`: Called when the state is entered.
-- `updateFn`: Called every frame during the game loop.
-- `drawFn`: Called every frame for rendering.
-- `exitFn`: Called when leaving the state.
-
-**Note:** All function pointers may be `NULL`.
+**Returns:**  
+`true` if initialized, `false` otherwise.
 
 ---
 
-```c
-void SM_ChangeStateTo(const char *name, void *args);
-```
+### `bool SM_RegisterState(const char *name, void (*enterFn)(void *), void (*updateFn)(float), void (*drawFn)(void), void (*exitFn)(void));`
 
-Transitions to the state identified by `name`.
+**Registers a new named state with optional lifecycle callbacks.**  
+Each state must have a unique name. At least one lifecycle function must be non-`NULL`.
 
-- `name`: Name of the state to switch to.
-- `args`: Optional data passed to the next state's `enter` function.
+- `name`: The name of the state (must be non-`NULL` and non-empty).
+- `enterFn`: Called when entering this state (can be `NULL`).
+- `updateFn`: Called every update tick while this state is active (can be `NULL`).
+- `drawFn`: Called every frame while this state is active (can be `NULL`).
+- `exitFn`: Called when exiting this state (can be `NULL`).
 
-If `name` is the current state, `exit` and `enter` are still invoked.
-
----
-
-```c
-void SM_Update(float dt);
-```
-
-Calls the `update` function of the current active state.
-
-- `dt`: Delta time (in seconds) since the last frame.
+**Returns:**  
+`true` if registration succeeds, `false` otherwise.
 
 ---
 
-```c
-void SM_Draw(void);
-```
+### `bool SM_IsStateRegistered(char *name);`
 
-Calls the `draw` function of the current active state.
+**Checks whether a state with the given name is registered.**
 
----
+- `name`: The name of the state to check.
 
-```c
-void SM_Shutdown(void);
-```
-
-Cleans up all allocated memory and resets the state machine.
-
-**Warning:** Do not access any `State` pointers after shutdown.
+**Returns:**  
+`true` if a state with the given name exists, `false` otherwise.
 
 ---
 
-```c
-const char *SM_GetCurrStateName(void);
-```
+### `bool SM_ChangeStateTo(const char *name, void *args);`
 
-Returns the name of the current active state, or `NULL` if none.
+**Switches to a different state by name, optionally passing arguments.**  
+Exits the current state (if any) and enters the new one. Will also re-enter the same state if the requested name matches the current state's name.
+
+- `name`: The name of the state to switch to.
+- `args`: Optional arguments to pass to the new state's `enter` function.
+
+**Returns:**  
+`true` if the state change succeeded, `false` otherwise.
+
+---
+
+### `bool SM_Update(float dt);`
+
+**Calls the update function of the current active state.**  
+Does nothing if the state machine is not initialized or if no update function is defined.
+
+- `dt`: Delta time since last update.
+
+**Returns:**  
+`true` if update was successful, `false` otherwise.
+
+---
+
+### `bool SM_Draw(void);`
+
+**Calls the draw function of the current active state.**  
+Does nothing if the state machine is not initialized or if no draw function is defined.
+
+**Returns:**  
+`true` if draw was successful, `false` otherwise.
+
+---
+
+### `bool SM_Shutdown(void);`
+
+**Shuts down the state machine and frees all internal memory.**  
+Calls the `exit` function of the current state (if defined) before cleanup. After shutdown, all registered states are discarded and the tracker is reset.
+
+**Returns:**  
+`true` if shutdown succeeded, `false` if the machine was not initialized.
+
+---
+
+### `const char *SM_GetCurrStateName(void);`
+
+**Gets the name of the current active state.**
+
+**Returns:**  
+The name of the current state, or `NULL` if no state is active or the machine is uninitialized.
 
 ---
 

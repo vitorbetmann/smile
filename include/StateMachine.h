@@ -1,8 +1,10 @@
 #ifndef STATE_MACHINE_H
 #define STATE_MACHINE_H
+
 // --------------------------------------------------
 // Data types
 // --------------------------------------------------
+typedef struct StateTracker StateTracker;
 typedef struct State State;
 
 // --------------------------------------------------
@@ -10,44 +12,102 @@ typedef struct State State;
 // --------------------------------------------------
 
 /**
- * Initialize the state machine.
+ * @brief Initializes the state machine.
+ *
+ * Allocates internal structures and prepares the system to register and run
+ * states.
+ *
+ * @note This function is safe to call multiple times. If the machine is already
+ * initialized, it returns false without error.
+ *
+ * @return true if initialized successfully, false if already initialized or if
+ * memory allocation failed.
  */
-void SM_Init(void);
+bool SM_Init(void);
 
 /**
- * Return whether the state machine is initialized.
+ * @brief Checks whether the state machine has been initialized.
+ *
+ * @return true if initialized, false otherwise.
  */
 bool SM_IsInitialized(void);
 
 /**
- * Register a new named state with lifecycle functions.
+ * @brief Registers a new named state with optional lifecycle callbacks.
+ *
+ * Each state must have a unique name. At least one lifecycle function must be
+ * non-NULL.
+ *
+ * @param name     The name of the state (must be non-NULL and non-empty).
+ * @param enterFn  Called when entering this state (can be NULL).
+ * @param updateFn Called every update tick while this state is active (can be
+ * NULL).
+ * @param drawFn   Called every frame while this state is active (can be NULL).
+ * @param exitFn   Called when exiting this state (can be NULL).
+ *
+ * @return true if registration succeeds, false otherwise.
  */
-void SM_RegisterState(const char *name, void (*enterFn)(void *),
+bool SM_RegisterState(const char *name, void (*enterFn)(void *),
                       void (*updateFn)(float), void (*drawFn)(void),
                       void (*exitFn)(void));
 
 /**
- * Switch to another state by name, optionally passing arguments.
+ * @brief Checks whether a state with the given name is registered.
+ *
+ * @param name The name of the state to check.
+ * @return true if a state with the given name exists, false otherwise.
  */
-void SM_ChangeStateTo(const char *name, void *args);
+bool SM_IsStateRegistered(char *name);
 
 /**
- * Call the update function of the current active state.
+ * @brief Switches to a different state by name, optionally passing arguments.
+ *
+ * Exits the current state (if any) and enters the new one. Will re-enter
+ * the same state if the requested name matches the current state's name.
+ *
+ * @param name The name of the state to switch to.
+ * @param args Optional arguments to pass to the new state's enter function.
+ *
+ * @return true if the state change succeeded, false otherwise.
  */
-void SM_Update(float dt);
+bool SM_ChangeStateTo(const char *name, void *args);
 
 /**
- * Call the draw function of the current active state.
+ * @brief Calls the update function of the current active state.
+ *
+ * If no update function is defined or if the machine is not initialized,
+ * returns false.
+ *
+ * @param dt Delta time since last update.
+ * @return true if update was successful, false otherwise.
  */
-void SM_Draw(void);
+bool SM_Update(float dt);
 
 /**
- * Shut down the state machine and free all resources.
+ * @brief Calls the draw function of the current active state.
+ *
+ * If no draw function is defined or if the machine is not initialized, returns
+ * false.
+ *
+ * @return true if draw was successful, false otherwise.
  */
-void SM_Shutdown(void);
+bool SM_Draw(void);
 
 /**
- * Get the name of the current active state.
+ * @brief Shuts down the state machine and frees all internal memory.
+ *
+ * Calls the exit function of the current state (if defined) before cleanup.
+ * After shutdown, all registered states are discarded and the tracker is reset.
+ *
+ * @return true if shutdown succeeded, false if the machine was not initialized.
+ */
+bool SM_Shutdown(void);
+
+/**
+ * @brief Gets the name of the current active state.
+ *
+ * @return The name of the current state, or NULL if no state is active or the
+ * machine is uninitialized.
  */
 const char *SM_GetCurrStateName(void);
 
