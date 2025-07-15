@@ -32,7 +32,7 @@ cmake -B build
 cmake --build build
 ```
 
-> Requires CMake 4.0.2+ and a working C compiler (Clang, GCC, or MSVC).
+> Requires CMake 3.25+ and a working C compiler (Clang, GCC, or MSVC).
 
 To enable test builds:
 
@@ -60,12 +60,23 @@ Test sources live under `tests/`, one per module.
 ## 🗂 Project Structure
 
 ```
-/src              → Engine modules
-  /StateMachine
-  /ParticleSystem
-/include          → Public headers
-/tests            → Per-module unit tests
-/docs             → Documentation
+/smile_engine/
+├── src/                # Engine modules, source files, internal headers
+│   ├── StateMachine/
+│   │   ├── StateMachine.c
+│   │   └── StateMachineInternal.h
+│   └── ParticleSystem/
+├── include/            # Public headers
+│   ├── StateMachine/
+│   │   └── StateMachine.h
+├── tests/              # Unit tests with test sources and headers
+│   ├── StateMachine/
+│   │   ├── StateMachineTestAccess.h
+│   │   └── test_state_machine.c
+├── docs/               # Documentation files
+│   ├── StateMachine/
+│   │   ├── SM_API.md
+│   │   └── SM_GettingStarted.md
 ```
 
 ---
@@ -121,19 +132,15 @@ The following conventions apply to both engine modules and tests.
 
 ### 🧪 Test Naming Convention
 
-Test functions follow the format:
+Test function names start with `Test_`, followed by the exact function name including its module prefix, and then a short description of the expected behavior.
+
+For example, since the function is named `SM_Init`, a test for it might be named:
 
 ```c
-Test_<Function>_<ExpectedBehavior>
+Test_SM_Init_ReturnsFalseIfCalledTwice
 ```
 
-For example:
-
-```c
-Test_SM_RegisterState_ReturnsFalseIfNameIsNULL
-```
-
-This makes it easy to scan and understand what each test is verifying.
+This keeps names clear and avoids redundant module prefixes.
 
 ---
 
@@ -169,6 +176,12 @@ Before opening a new issue:
 3. For features, use the label `type: proposal`
 
 If you're unsure how to label your issue, just open it — we'll take care of it.
+
+---
+
+## 🙋 Need Help?
+
+If you have questions or want to discuss anything related to SMILE, feel free to reach out directly to Vitor Betmann by opening an issue labeled `type: question` on GitHub.
 
 ---
 

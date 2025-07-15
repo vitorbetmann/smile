@@ -1,5 +1,5 @@
 # Minimum required CMake version
-cmake_minimum_required(VERSION 4.0.2)
+cmake_minimum_required(VERSION 3.25)
 
 # Set project name and metadata
 cmake_path(GET CMAKE_CURRENT_SOURCE_DIR FILENAME PROJECT_NAME)
