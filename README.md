@@ -152,6 +152,8 @@ There are many ways to contribute:
 This is a space to build skills, grow confidence, and collaborate on something meaningful.  
 Whether you're here to level up your C programming, explore game dev concepts, or just try something new — you're welcome here. 😊
 
+To learn more, check out [Contributions](./docs/_Contributing/).
+
 ---
 
 ## License

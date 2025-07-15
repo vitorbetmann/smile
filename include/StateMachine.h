@@ -22,6 +22,7 @@ typedef struct State State;
  *
  * @return true if initialized successfully, false if already initialized or if
  * memory allocation failed.
+ * @author Vitor Betmann
  */
 bool SM_Init(void);
 
@@ -29,6 +30,7 @@ bool SM_Init(void);
  * @brief Checks whether the state machine has been initialized.
  *
  * @return true if initialized, false otherwise.
+ * @author Vitor Betmann
  */
 bool SM_IsInitialized(void);
 
@@ -46,6 +48,7 @@ bool SM_IsInitialized(void);
  * @param exitFn   Called when exiting this state (can be NULL).
  *
  * @return true if registration succeeds, false otherwise.
+ * @author Vitor Betmann
  */
 bool SM_RegisterState(const char *name, void (*enterFn)(void *),
                       void (*updateFn)(float), void (*drawFn)(void),
@@ -56,6 +59,7 @@ bool SM_RegisterState(const char *name, void (*enterFn)(void *),
  *
  * @param name The name of the state to check.
  * @return true if a state with the given name exists, false otherwise.
+ * @author Vitor Betmann
  */
 bool SM_IsStateRegistered(char *name);
 
@@ -69,6 +73,7 @@ bool SM_IsStateRegistered(char *name);
  * @param args Optional arguments to pass to the new state's enter function.
  *
  * @return true if the state change succeeded, false otherwise.
+ * @author Vitor Betmann
  */
 bool SM_ChangeStateTo(const char *name, void *args);
 
@@ -80,6 +85,7 @@ bool SM_ChangeStateTo(const char *name, void *args);
  *
  * @param dt Delta time since last update.
  * @return true if update was successful, false otherwise.
+ * @author Vitor Betmann
  */
 bool SM_Update(float dt);
 
@@ -90,6 +96,7 @@ bool SM_Update(float dt);
  * false.
  *
  * @return true if draw was successful, false otherwise.
+ * @author Vitor Betmann
  */
 bool SM_Draw(void);
 
@@ -100,6 +107,7 @@ bool SM_Draw(void);
  * After shutdown, all registered states are discarded and the tracker is reset.
  *
  * @return true if shutdown succeeded, false if the machine was not initialized.
+ * @author Vitor Betmann
  */
 bool SM_Shutdown(void);
 
@@ -108,6 +116,7 @@ bool SM_Shutdown(void);
  *
  * @return The name of the current state, or NULL if no state is active or the
  * machine is uninitialized.
+ * @author Vitor Betmann
  */
 const char *SM_GetCurrStateName(void);
 

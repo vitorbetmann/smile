@@ -1,2 +1,25 @@
-build/
-.cache/
+# CMake build folders
+/build/
+/CMakeFiles/
+/CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Ninja build files
+/build.ninja
+/.ninja_log
+/.ninja_deps
+
+# Compiled test binaries
+/tests/*.out
+/tests/*_tests
+/tests/*Test*
+
+# macOS system files
+.DS_Store
+
+# VS Code
+.vscode/
+
+# Generated files
+compile_commands.json

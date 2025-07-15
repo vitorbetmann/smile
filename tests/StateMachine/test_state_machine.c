@@ -3,7 +3,7 @@
  *
  * Each test function is named following the pattern:
  *
- *   Test_SM_<FunctionName>_<ExpectedBehavior>
+ *   Test_<FunctionName>_<ExpectedBehavior>
  *
  * where:
  *   - Test_SM_: prefix indicating this is a StateMachine test.

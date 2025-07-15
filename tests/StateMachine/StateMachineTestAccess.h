@@ -8,7 +8,7 @@
 #include "stdlib.h"
 
 // --------------------------------------------------
-// Prototypes (Test Access Only)
+// Prototypes
 // --------------------------------------------------
 
 /**
@@ -18,6 +18,7 @@
  *
  * @return const StateTracker* Pointer to internal tracker, or NULL if not
  * initialized.
+ * @author Vitor Betmann
  */
 const StateTracker *SM_Test_GetTracker(void);
 
@@ -27,6 +28,7 @@ const StateTracker *SM_Test_GetTracker(void);
  * Used for verifying internal state count in tests.
  *
  * @return const int Number of states currently registered.
+ * @author Vitor Betmann
  */
 const int SM_Test_GetStateCount(void);
 
@@ -38,6 +40,7 @@ const int SM_Test_GetStateCount(void);
  *
  * @param toggle true to allow malloc, false to simulate failure.
  * @return true if malloc is now allowed, false if it is disabled.
+ * @author Vitor Betmann
  */
 bool SM_Test_SetCanMalloc(bool toggle);
 
@@ -49,6 +52,7 @@ bool SM_Test_SetCanMalloc(bool toggle);
  *
  * @param size Number of bytes to allocate.
  * @return void* Pointer to allocated memory or NULL if disabled.
+ * @author Vitor Betmann
  */
 void *SM_Test_Malloc(size_t size);
 

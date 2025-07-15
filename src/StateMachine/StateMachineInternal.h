@@ -54,6 +54,7 @@ struct StateTracker {
  * @param state Pointer to the state to set as current.
  * @return true if the tracker was initialized and the state was set, false
  * otherwise.
+ * @author Vitor Betmann
  */
 bool SM_Internal_SetCurrState(const State *state);
 
@@ -64,6 +65,7 @@ bool SM_Internal_SetCurrState(const State *state);
  * or no state is active.
  *
  * @return const State* Pointer to the current state, or NULL.
+ * @author Vitor Betmann
  */
 const State *SM_Internal_GetCurrState(void);
 
@@ -76,6 +78,7 @@ const State *SM_Internal_GetCurrState(void);
  * @param name Name of the state to find.
  * @return const State* Pointer to the matching state, or NULL if not found or
  * uninitialized.
+ * @author Vitor Betmann
  */
 const State *SM_Internal_GetState(const char *name);
 
