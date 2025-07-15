@@ -70,7 +70,7 @@ Your Source Directory should now look something like this:
 │   ├── StateMachine/
 │   │   ├── StateMachine.c
 │   │   └── StateMachineInternal.h
-│   └── ParticleSystem/
+│   ├── ParticleSystem/
 ├── include/            # Public headers
 │   ├── StateMachine/
 │   │   └── StateMachine.h
