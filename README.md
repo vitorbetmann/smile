@@ -70,18 +70,25 @@ Your Source Directory should now look something like this:
 │   ├── StateMachine/
 │   │   ├── StateMachine.c
 │   │   └── StateMachineInternal.h
-│   └── ParticleSystem/
+│   ├── ParticleSystem/
+│   │   └── ...
 ├── include/            # Public headers
 │   ├── StateMachine/
 │   │   └── StateMachine.h
+│   ├── ParticleSystem/
+│   │   └── ...
 ├── tests/              # Unit tests with test sources and headers
 │   ├── StateMachine/
 │   │   ├── StateMachineTestAccess.h
 │   │   └── test_state_machine.c
+│   ├── ParticleSystem/
+│   │   └── ...
 ├── docs/               # Documentation files
 │   ├── StateMachine/
 │   │   ├── SM_API.md
 │   │   └── SM_GettingStarted.md
+│   ├── ParticleSystem/
+│   │   └── ...
 ```
 
 ---
