@@ -47,7 +47,7 @@ Current modules:
 
 Before building SMILE, ensure the following are installed:
 
-- CMake version 4.0.2 or higher
+- CMake version 3.25 or higher
 - A build tool such as Ninja or Make
 - A C compiler (e.g., Clang or GCC)
 
@@ -64,14 +64,24 @@ This builds libsmile.a — a static library that includes the StateMachine and P
 
 Your Source Directory should now look something like this:
 
-```zsh
-/my_game_project/
-├── main.c                # Your game's entry point
-└── smile_engine/         # SMILE cloned or copied here
-    ├── include/
-    ├── StateMachine/
-    ├── ParticleSystem/
-    └── ...
+```plaintext
+/smile_engine/
+├── src/                # Engine modules, source files, internal headers
+│   ├── StateMachine/
+│   │   ├── StateMachine.c
+│   │   └── StateMachineInternal.h
+│   └── ParticleSystem/
+├── include/            # Public headers
+│   ├── StateMachine/
+│   │   └── StateMachine.h
+├── tests/              # Unit tests with test sources and headers
+│   ├── StateMachine/
+│   │   ├── StateMachineTestAccess.h
+│   │   └── test_state_machine.c
+├── docs/               # Documentation files
+│   ├── StateMachine/
+│   │   ├── SM_API.md
+│   │   └── SM_GettingStarted.md
 ```
 
 ---
