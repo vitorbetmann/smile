@@ -26,7 +26,7 @@ int main(void) {
     // Engine setup
     SM_Init();
 
-    // Register your states. Funcitons declares in respective header files.
+    // Register your states. Callback functions declared in respective header files.
     SM_RegisterState("one", NULL, StateOneUpdate, StateOneDraw, StateOneExit);
     SM_RegisterState("two", StateTwoEnter, StateTwoUpdate, StateTwoDraw, NULL);
 
