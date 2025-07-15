@@ -19,12 +19,14 @@ Call `SM_ChangeStateTo` to trigger a transition. During the game loop, the updat
 ```c
 // main.c
 #include "StateMachine.h"
+#include "StateOne.h"
+#include "StateTwo.h"
 
 int main(void) {
     // Engine setup
     SM_Init();
 
-    // Register your states
+    // Register your states. Funcitons declares in respective header files.
     SM_RegisterState("one", NULL, StateOneUpdate, StateOneDraw, StateOneExit);
     SM_RegisterState("two", StateTwoEnter, StateTwoUpdate, StateTwoDraw, NULL);
 
