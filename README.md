@@ -72,8 +72,8 @@ Your Source Directory should now look something like this:
 │   │   └── StateMachineInternal.h
 │   ├── ParticleSystem/
 ├── include/            # Public headers
-│   ├── StateMachine/
-│   │   └── StateMachine.h
+│   ├── StateMachine.h
+│   ├── ParticleSystem.h
 ├── tests/              # Unit tests with test sources and headers
 │   ├── StateMachine/
 │   │   ├── StateMachineTestAccess.h

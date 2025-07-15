@@ -67,8 +67,8 @@ Test sources live under `tests/`, one per module.
 │   │   └── StateMachineInternal.h
 │   └── ParticleSystem/
 ├── include/            # Public headers
-│   ├── StateMachine/
-│   │   └── StateMachine.h
+│   ├── StateMachine.h
+│   ├── ParticleSystem.h
 ├── tests/              # Unit tests with test sources and headers
 │   ├── StateMachine/
 │   │   ├── StateMachineTestAccess.h
@@ -128,7 +128,7 @@ The following conventions apply to both engine modules and tests.
 
 - Comments should be concise and aligned
 - Documentation uses **Doxygen-style comments** for consistency and to enable automated doc generation.
-- See [StateMachine.h](../../include/StateMachine/StateMachine.h) for a good example of consistent documentation.
+- See [StateMachine.h](../../include/StateMachine.h) for a good example of consistent documentation.
 
 ### 🧪 Test Naming Convention
 
