@@ -22,7 +22,7 @@ Ideal for rapid prototyping, learning C through small games, or game jam entries
 
 Whether you're a first-year university student, a self-taught coder, or a professional branching into new areas, SMILE welcomes contributors who are curious, motivated, and eager to learn.
 
-The engine is designed to grow gradually through thoughtful community involvement, with a focus on learning, clarity, and steady improvement — not rushing to build everything at once.
+The engine is meant to grow slowly and thoughtfully, with help from a community that values learning, clarity, experimentation, and shared growth — not just shipping features.
 
 ---
 
