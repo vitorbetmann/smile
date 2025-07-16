@@ -12,11 +12,11 @@ Ideal for rapid prototyping, learning C through small games, or game jam entries
 
 ### Mission
 
-> I built SMILE to be the open source project I wish I had in my early programming days:
+> _"I built SMILE to be the open source project I wish I had in my early programming days:_
 >
-> 1. Low barrier of entry
-> 2. Well documented
-> 3. Learning-first environment
+> _1. Low barrier of entry_  
+> _2. Well documented_  
+> _3. Learning-first environment"_
 >
 > — Betmann, creator of SMILE
 
@@ -138,7 +138,7 @@ There are many ways to contribute:
 This is a space to build skills, grow confidence, and collaborate on something meaningful.  
 Whether you're here to level up your C programming, explore game dev concepts, or just try something new — you're welcome here. 😊
 
-To learn more, check out [Contributions](./docs/_Contributing/).
+To learn more, check out [how to contribute](./docs/Contributing.md).
 
 ---
 

@@ -11,7 +11,7 @@ SMILE stands for **State Machine Is Lowkey Elegant**.
 
 It’s a modular collection of tools designed to simplify 2D game development in C, aimed at providing a lightweight and extensible foundation for developers at all skill levels.
 
-To learn more about it, please see this [README](../../README.md).
+To learn more about it, please see this [README](../README.md).
 
 ---
 
@@ -137,7 +137,11 @@ if (is_running)
 
 ### Naming
 
-- Use PascalCase for function names: `SM_Init`, `PS_Emit`.
+- Prefix all function names with their corresponding module acronym to make their origin clear and avoid name collisions:
+
+  - For example, functions from the State Machine module start with `SM_`, like `SM_Init()` or `SM_ChangeState()`.
+  - Functions from the Particle System module use `PS_`, like `PS_Emit()` or `PS_ResetParticles()`.
+
 - Constants use PascalCase as well; normal variables use camelCase.
 - Prefix functions with the module acronym (e.g., `SM_` for State Machine, `PS_` for Particle System).
 - Non-public functions (e.g., internal helpers or test-only utilities) follow the same PascalCase naming style, but are prefixed clearly to indicate their context:
@@ -146,8 +150,6 @@ if (is_running)
     Example: `SM_Internal_GetCurrState()`
   - Use `Module_Test_` for functions exposed for unit testing purposes.  
     Example: `SM_Test_GetStateCount()`
-
-  This makes the function’s purpose and visibility explicit, improves readability, and reduces the chance of accidental misuse.
 
 ### Formatting
 
@@ -180,7 +182,7 @@ For example
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
-static float myFloat = 0.016;
+static float myFloat = 0.016f;
 
 // --------------------------------------------------
 // Prototypes
@@ -192,7 +194,7 @@ static float myFloat = 0.016;
  * @return true if it did something, otherwise false.
  * @author Vitor Betmann
  */
-bool AB_DoSomething(void);
+bool ABC_DoSomething(void);
 ```
 
 ### Documentation
@@ -200,7 +202,7 @@ bool AB_DoSomething(void);
 - Use Doxygen-style comments for all functions, including internal helpers and test utilities.
 - Add your name as `@author` if you create or substantially modify a file.
 
-See [StateMachineInternal.h](../../src/StateMachine/StateMachineInternal.h) for a well-documented example.
+See [StateMachineInternal.h](../src/StateMachine/StateMachineInternal.h) for a well-documented example.
 
 ### 🧪 Test Function Naming
 
@@ -224,7 +226,7 @@ This keeps names clear and informative.
 - [ ] Passed all tests
 - [ ] Followed coding style
 - [ ] Documented all functions — including public APIs, internal helpers, and test-only utilities like `SM_Test_GetTracker()` (Doxygen-style)
-- [ ] When creating or significantly editing a function or file, remember to add yourself as an author. 😉
+- Take some credit: Add your name as `@author` if you create or substantially modify a file. 😉
 
 ### ✈️ How to submit
 
@@ -240,7 +242,7 @@ This keeps names clear and informative.
 
 ---
 
-## 🐛 Submitting Issues
+## 🐛 Submitting GitHub Issues
 
 Found a bug or have an idea? Let us know!
 
@@ -259,7 +261,7 @@ If you're unsure how to label your issue, just open it — we'll take care of it
 
 ## 🙋 Need Help?
 
-If you have questions or want to discuss anything related to SMILE, feel free to reach out directly to Vitor Betmann by opening an issue labeled `type: question` on GitHub.
+If you have questions or want to discuss anything related to SMILE, feel free to reach out directly to Betmann by opening an issue labeled `type: question` on GitHub.
 
 ---
 

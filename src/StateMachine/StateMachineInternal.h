@@ -15,6 +15,7 @@
  * @brief Internal representation of a state.
  *
  * Each state can optionally define enter, update, draw, and exit callbacks.
+ * @author Vitor Betmann
  */
 struct State {
   const char *name;
@@ -26,6 +27,7 @@ struct State {
 
 /**
  * @brief Internal hash entry mapping a state's name to its struct.
+ * @author Vitor Betmann
  */
 typedef struct {
   const char *name;
@@ -35,6 +37,7 @@ typedef struct {
 
 /**
  * @brief Internal tracker holding the registered states and the current state.
+ * @author Vitor Betmann
  */
 struct StateTracker {
   StateMap *stateMap;
