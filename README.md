@@ -1,4 +1,4 @@
-# SMILE Engine 😊: Modular Tools for 2D Game Development in C
+# SMILE 😊: A modular 2D game engine in C
 
 ## What is SMILE?
 
