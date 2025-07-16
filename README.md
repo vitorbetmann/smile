@@ -16,7 +16,7 @@ Ideal for rapid prototyping, learning C through small games, or game jam entries
 >
 > _1. Low barrier of entry_  
 > _2. Well documented_  
-> _3. Learning-first environment"_
+> _3. Pressure-free and learning-focused environment"_
 >
 > — Betmann, creator of SMILE
 
