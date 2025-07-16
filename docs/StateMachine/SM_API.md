@@ -27,6 +27,40 @@ The SMILE engine provides a modular, lightweight, and flexible state machine sys
 
 ---
 
+## 🧪 Example Usage
+
+```c
+// main.c
+#include "StateMachine.h"
+#include "StateOne.h"
+#include "StateTwo.h"
+
+int main(void) {
+
+   // Other SM_ functions will not work if SM_Init not called
+    SM_Init();
+
+   // Register your states. Callback functions declared in respective header files.
+   SM_RegisterState("one", NULL, StateOneUpdate, StateOneDraw, StateOneExit);
+   SM_RegisterState("two", StateTwoEnter, StateTwoUpdate, StateTwoDraw, NULL);
+
+   // Start in the first state
+   SM_ChangeStateTo("one", NULL);    // This example state requires no arguments, so we pass in NULL
+
+   float dt = 0.016f;                // Mock delta time, about 60 FPS
+   bool isRunning = true;
+   while (isRunning) {
+      SM_Update(dt);
+      SM_Draw();
+   }
+
+   // Don't end you program without calling SM_Shutdown. Risk of memory leak.
+   SM_Shutdown();
+}
+```
+
+---
+
 ## 📚 Function Reference
 
 ### `bool SM_Init(void);`
@@ -80,7 +114,7 @@ Each state must have a unique name. At least one lifecycle function must be non-
 ### `bool SM_ChangeStateTo(const char *name, void *args);`
 
 **Switches to a different state by name, optionally passing arguments.**  
-Exits the current state (if any) and enters the new one. Will also re-enter the same state if the requested name matches the current state's name.
+Calls the current state's exit function (if any) and the new state's enter one. Will exit and re-enter the same state if the requested name matches the current state's
 
 - `name`: The name of the state to switch to.
 - `args`: Optional arguments to pass to the new state's `enter` function.

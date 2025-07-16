@@ -17,6 +17,7 @@
  *     Tests that SM_RegisterState returns false when the provided name is NULL.
  *
  * This naming pattern helps organize and clearly communicate test purposes.
+ * @author Vitor Betmann
  */
 
 /*
@@ -34,7 +35,7 @@ Related file: `StateMachine.c`
 
 #include "../include/StateMachine.h"
 #include "../src/StateMachine/StateMachineInternal.h"
-#include "StateMachineTestAccess.h"
+#include "StateMachineTest.h"
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
@@ -510,7 +511,7 @@ void Test_SM_Draw_ReturnsFalseAfterShutdown(void) {
 // Stress tests
 // --------------------------------------------------
 
-void Test_SM_RegisteringMultipleStates_CausesNoSkips(void) {
+void Test_SM_RegisteringMultipleStatesCausesNoSkips(void) {
   SM_Init();
   for (int i = 0; i < MULTIPLE_STATES; i++) {
     char buffer[16];
@@ -518,12 +519,12 @@ void Test_SM_RegisteringMultipleStates_CausesNoSkips(void) {
     SM_RegisterState(buffer, mockEnter, mockUpdate, mockDraw, mockExit);
   }
   assert(SM_Test_GetStateCount() == MULTIPLE_STATES);
-  printf("\t[PASS] Test_SM_RegisteringMultipleStates_CausesNoSkips: %d states "
+  printf("\t[PASS] Test_SM_RegisteringMultipleStatesCausesNoSkips: %d states "
          "registered\n",
          MULTIPLE_STATES);
 }
 
-void Test_SM_ChangingStatesOften_CausesNoSkips(void) {
+void Test_SM_ChangingStatesOftenCausesNoSkips(void) {
   md.enteredTimes = 0;
   md.exitedTimes = 0;
   for (int i = 0; i < MULTIPLE_STATES; i++) {
@@ -540,15 +541,16 @@ void Test_SM_ChangingStatesOften_CausesNoSkips(void) {
       MULTIPLE_STATES);
 }
 
-void Test_SM_Shutdown_FreeingMultipleStates_CausesNoSkips(void) {
+void Test_SM_Shutdown_FreeingMultipleStatesCausesNoSkips(void) {
   SM_Shutdown();
   assert(SM_Test_GetStateCount() == 0);
-  printf("\t[PASS] Test_SM_Shutdown_FreeingMultipleStates_CausesNoSkips\n");
+  printf("\t[PASS] Test_SM_Shutdown_FreeingMultipleStatesCausesNoSkips\n");
 }
 
 // --------------------------------------------------
 // Finger's crossed!
 // --------------------------------------------------
+
 int main() {
   puts("");
   puts("Testing Pre-initialization - Internal");
@@ -657,9 +659,9 @@ int main() {
   puts("");
 
   puts("Testing Stress Tests");
-  Test_SM_RegisteringMultipleStates_CausesNoSkips();
-  Test_SM_ChangingStatesOften_CausesNoSkips();
-  Test_SM_Shutdown_FreeingMultipleStates_CausesNoSkips();
+  Test_SM_RegisteringMultipleStatesCausesNoSkips();
+  Test_SM_ChangingStatesOftenCausesNoSkips();
+  Test_SM_Shutdown_FreeingMultipleStatesCausesNoSkips();
   puts("");
 
   puts("All tests completed successfully!");

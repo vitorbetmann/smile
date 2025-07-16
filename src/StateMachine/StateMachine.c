@@ -1,16 +1,18 @@
 // --------------------------------------------------
 // Includes
 // --------------------------------------------------
+
 #include "StateMachine.h"
-#include "../tests/StateMachine/StateMachineTestAccess.h"
+#include "../tests/StateMachine/StateMachineTest.h"
 #include "StateMachineInternal.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 // --------------------------------------------------
-// Other defines
+// Defines
 // --------------------------------------------------
+
 #define SM_WARN(str, ...)                                                      \
   fprintf(stderr, "\033[33m[SMILE WARNING]\033[0m " str "\n", ##__VA_ARGS__)
 #define SM_ERR(str, ...)                                                       \
@@ -19,6 +21,7 @@
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
+
 static int stateCount;
 static StateTracker *tracker;
 static bool canMalloc = true;

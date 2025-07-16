@@ -2,9 +2,9 @@
 
 ## What is SMILE?
 
-SMILE stands for **State Machine is Lowkey Elegant**.
+SMILE stands for **State Machine Is Lowkey Elegant**.
 
-It’s a modular collection of tools designed to simplify 2D game development in C. Built on top of [raylib](https://www.raylib.com/) for rendering, sound, input, and window management, SMILE aims to provide a lightweight and extensible foundation for developers at all skill levels.
+It’s a modular collection of tools designed to simplify 2D game development in C, aimed at providing a lightweight and extensible foundation for developers at all skill levels.
 
 Ideal for rapid prototyping, learning C through small games, or game jam entries where full control without bloat is desired.
 
@@ -12,9 +12,15 @@ Ideal for rapid prototyping, learning C through small games, or game jam entries
 
 ### Mission
 
-SMILE is built to be open, accessible, and inviting — a place where developers at all stages can learn and grow through real-world programming experience.
+> I built SMILE to be the open source project I wish I had in my early programming days:
+>
+> 1. Low barrier of entry
+> 2. Well documented
+> 3. Learning-first environment
+>
+> — Betmann, creator of SMILE
 
-Whether you're a university student in your first few semesters, a self-taught coder building your first engine, or a professional branching into new areas like graphics or game systems, SMILE welcomes contributors who are curious, motivated, and eager to improve.
+Whether you're a first-year university student, a self-taught coder, or a professional branching into new areas, SMILE welcomes contributors who are curious, motivated, and eager to learn.
 
 The engine is designed to grow gradually through thoughtful community involvement, with a focus on learning, clarity, and steady improvement — not rushing to build everything at once.
 
@@ -22,16 +28,7 @@ The engine is designed to grow gradually through thoughtful community involvemen
 
 ## ✨ Features
 
-- Lightweight and modular C engine
-- Simple state machine system
-- Flexible particle system for visual effects
-- No dynamic memory allocation required by the user
-
----
-
-## 📦 Included Modules
-
-SMILE is modular—include only what you need.
+SMILE is modular, so you can include only what you need.
 
 Current modules:
 
@@ -48,8 +45,8 @@ Current modules:
 Before building SMILE, ensure the following are installed:
 
 - CMake version 3.25 or higher
-- A build tool such as Ninja or Make
-- A C compiler (e.g., Clang or GCC)
+- A build tool such as Make or Ninja
+- A C compiler such as Clang or GCC
 
 ### Clone and Build
 
@@ -57,7 +54,7 @@ Before building SMILE, ensure the following are installed:
 git clone https://github.com/vitorbetmann/smile_engine.git
 cd smile_engine
 cmake -S . -B build
-cmake --build build # or ninja -C build
+cmake --build build
 ```
 
 This builds libsmile.a — a static library that includes the StateMachine and ParticleSystem modules by default.
@@ -65,23 +62,9 @@ This builds libsmile.a — a static library that includes the StateMachine and P
 Your Source Directory should now look something like this:
 
 ```plaintext
-/smile_engine/
-├── src/                # Engine modules, source files, internal headers
-│   ├── StateMachine/
-│   │   ├── StateMachine.c
-│   │   └── StateMachineInternal.h
-│   ├── ParticleSystem/
-├── include/            # Public headers
-│   ├── StateMachine.h
-│   ├── ParticleSystem.h
-├── tests/              # Unit tests with test sources and headers
-│   ├── StateMachine/
-│   │   ├── StateMachineTestAccess.h
-│   │   └── test_state_machine.c
-├── docs/               # Documentation files
-│   ├── StateMachine/
-│   │   ├── SM_API.md
-│   │   └── SM_GettingStarted.md
+/my_game_project/
+├── main.c                # Your game's entry point
+└── smile_engine/         # SMILE cloned or copied here
 ```
 
 ---
@@ -90,10 +73,9 @@ Your Source Directory should now look something like this:
 
 There are two common ways to compile your game using SMILE:
 
-**With Clang:**
+**With Clang (from your source directory):**
 
 ```zsh
-# From your source directory, run:
 clang main.c -Ismile_engine/include -Lsmile_engine/build -lsmile -o my_game
 ```
 
@@ -113,14 +95,8 @@ Your Source Directory should look similar to this:
 In your `CMakeLists.txt`, add:
 
 ```cmake
-cmake_minimum_required(VERSION 3.16)
-project(my_game C)
-
 # Add SMILE engine as a subdirectory
 add_subdirectory(smile_engine)
-
-# Create your game executable
-add_executable(my_game main.c)
 
 # Include SMILE headers
 target_include_directories(my_game PRIVATE
@@ -139,7 +115,7 @@ Don't forget to replace `my_game` with the name of your project's executable, if
 
 SMILE is a place to learn, experiment, and grow — especially if you're still early in your programming journey.
 
-### SMILE might be the right place for you if you're:
+### SMILE is the right place for you! No matter if you're:
 
 - A first-year computer science student curious about how game engines work.
 - An experienced web developer looking to explore graphics.
@@ -182,4 +158,3 @@ Explore each module’s documentation for detailed guides and examples:
 Dive deeper with the full API references:
 
 - [State Machine API](./docs/StateMachine/SM_API.md)
-- [Particle System API](./docs/ParticleSystem/PS_API.md)

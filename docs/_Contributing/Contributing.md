@@ -1,16 +1,17 @@
 # Contributing to SMILE Engine 😊
 
 Thank you for your interest in contributing to SMILE!  
-This project is designed to be beginner-friendly and modular — feel free to explore, fix bugs, add features, or just learn.
+This project is designed to be beginner-friendly and modular—feel free to explore, fix bugs, add features, or simply learn.
 
 ---
 
 ## 📦 About the Project
 
-SMILE is a lightweight C game engine built around clear, modular systems.  
-Modules include a state machine and a particle system, with many more to come.
+SMILE stands for **State Machine Is Lowkey Elegant**.
 
-Each module is standalone and testable.
+It’s a modular collection of tools designed to simplify 2D game development in C, aimed at providing a lightweight and extensible foundation for developers at all skill levels.
+
+To learn more about it, please see this [README](../../README.md).
 
 ---
 
@@ -28,17 +29,11 @@ cd smile_engine
 SMILE uses a simple, portable CMake build system.
 
 ```sh
-cmake -B build
+cmake -S . -B build -DBUILD_TESTS=ON
 cmake --build build
 ```
 
-> Requires CMake 3.25+ and a working C compiler (Clang, GCC, or MSVC).
-
-To enable test builds:
-
-```sh
-cmake -B build -DBUILD_TESTS=ON
-```
+> Requires CMake 3.25+ and a C compiler (Clang, GCC...).
 
 ---
 
@@ -46,14 +41,15 @@ cmake -B build -DBUILD_TESTS=ON
 
 When `BUILD_TESTS=ON`, SMILE compiles unit tests for individual modules.
 
-After building, run the test executables manually:
+After building, run the test executables manually, for example:
 
 ```sh
 ./build/TestStateMachine
-./build/TestParticleSystem
 ```
 
-Test sources live under `tests/`, one per module.
+Note: Test executable names may vary by module; check your build output for exact names.
+
+Test sources live under `tests/`.
 
 ---
 
@@ -86,16 +82,17 @@ Test sources live under `tests/`, one per module.
 - Fix a bug (see [issues](https://github.com/vitorbetmann/smile_engine/issues))
 - Add edge-case tests
 - Improve documentation
-- Propose or prototype a new module (e.g. SaveSystem, Logging)
+- Propose or prototype a new module (e.g., SaveLoadSystem, RigidBodyPhysics...)
+- Create bindings for other languages (Python, Lua, C++...)
 - Reduce dependencies (e.g. abstract raylib for portability)
+- Add or help maintain a Code of Conduct or Style Guide to foster a welcoming community.
 
 ### 🤖 Using AI Tools
 
-damn
-AI can be a helpful assistant — just remember to use it to support your learning, not replace it.  
-Whether you're learning to code, write documentation, plan architecture, or design tests, try doing it yourself first.  
-Use AI to review, suggest, or guide you, especially when you're stuck or want a second opinion.  
-This isn’t mandatory — but if you're here to grow, you'll only be cheating yourself.
+- AI can be a helpful assistant—just remember to use it to support your learning, not replace it.
+- Whether you're learning to code, write documentation, plan architecture, or design tests, try doing it yourself first.
+- Use AI to review, suggest, or guide you, especially when you're stuck or want a second opinion.
+- This isn't mandatory – but if you're here to grow, you'll only be cheating yourself.
 
 ---
 
@@ -108,57 +105,138 @@ This isn’t mandatory — but if you're here to grow, you'll only be cheating y
 
 ---
 
-## 🧷 Coding Style
+## 🧷 Coding Style Guide
 
-The following conventions apply to both engine modules and tests.
+The following conventions apply to all engine modules, tests, and documentation. Stick to them when writing or editing code to keep things clean and consistent.
 
-- C23 only
-- Function names use PascalCase: `SM_Init`, `SM_ChangeState`
-- Function names prepend the module's acronym followed by an underscore.  
-  For example: `SM_Init` (State Machine), `PS_Emit` (Particle System)
-- Pointers use `Type *ptr`, not `Type* ptr`
-- **Always use braces**, even for one-line control statements:
+### Language and Syntax
+
+- C23 standard only.
+- Use `void` for functions that take no arguments (but omit `void` in function calls).
+
+```c
+// ✅ OK
+void init_game(void);
+
+// ❌ Don't do this
+void init_game();
+```
+
+- Always use braces `{}` even for single-line control statements.
+
+```c
+// ✅ OK
+if (is_running) {
+    update();
+}
+
+// ❌ Don't do this
+if (is_running)
+    update();
+```
+
+### Naming
+
+- Use PascalCase for function names: `SM_Init`, `PS_Emit`.
+- Constants use PascalCase as well; normal variables use camelCase.
+- Prefix functions with the module acronym (e.g., `SM_` for State Machine, `PS_` for Particle System).
+- Non-public functions (e.g., internal helpers or test-only utilities) follow the same PascalCase naming style, but are prefixed clearly to indicate their context:
+
+  - Use `Module_Internal_` for private/internal-use functions within a module.  
+    Example: `SM_Internal_GetCurrState()`
+  - Use `Module_Test_` for functions exposed for unit testing purposes.  
+    Example: `SM_Test_GetStateCount()`
+
+  This makes the function’s purpose and visibility explicit, improves readability, and reduces the chance of accidental misuse.
+
+### Formatting
+
+- Indent with **2 spaces**.
+- Use `Type *ptr` (space after type) for pointer declarations.
+- Align comments and keep them short and clear.
+- Organize files using clearly marked sections and follow this order:
+
+  1. `#include <...>`
+  2. `#define` macros
+  3. Data types (e.g., `struct`, `enum`)
+  4. Variables
+  5. Function prototypes
+  6. `main()` (if present)
+  7. Function definitions
+
+  > In test files, place function definitions before main().
+
+  Use comment headers to clearly separate each section:
 
   ```c
-  if (foo) {
-      doSomething();
-  }
-
+  // --------------------------------------------------
+  // Section Name (e.g., Includes, Prototypes)
+  // --------------------------------------------------
   ```
 
-- Comments should be concise and aligned
-- Documentation uses **Doxygen-style comments** for consistency and to enable automated doc generation.
-- See [StateMachine.h](../../include/StateMachine.h) for a good example of consistent documentation.
+For example
 
-### 🧪 Test Naming Convention
+```c
+// --------------------------------------------------
+// Variables
+// --------------------------------------------------
+static float myFloat = 0.016;
+
+// --------------------------------------------------
+// Prototypes
+// --------------------------------------------------
+
+/**
+ * @brief Does something.
+ *
+ * @return true if it did something, otherwise false.
+ * @author Vitor Betmann
+ */
+bool AB_DoSomething(void);
+```
+
+### Documentation
+
+- Use Doxygen-style comments for all functions, including internal helpers and test utilities.
+- Add your name as `@author` if you create or substantially modify a file.
+
+See [StateMachineInternal.h](../../src/StateMachine/StateMachineInternal.h) for a well-documented example.
+
+### 🧪 Test Function Naming
 
 Test function names start with `Test_`, followed by the exact function name including its module prefix, and then a short description of the expected behavior.
 
 For example, since the function is named `SM_Init`, a test for it might be named:
 
 ```c
-Test_SM_Init_ReturnsFalseIfCalledTwice
+Test_SM_Init_ReturnsFalseIfCalledTwice()
 ```
 
-This keeps names clear and avoids redundant module prefixes.
+This keeps names clear and informative.
 
 ---
 
 ## 📨 Submitting a Pull Request
 
-### ✅ Before You Submit
+### ✅ Before You Submit Checklist
 
 - [ ] Compiled successfully
 - [ ] Passed all tests
 - [ ] Followed coding style
 - [ ] Documented all functions — including public APIs, internal helpers, and test-only utilities like `SM_Test_GetTracker()` (Doxygen-style)
+- [ ] When creating or significantly editing a function or file, remember to add yourself as an author. 😉
+
+### ✈️ How to submit
 
 1. Fork the repo
-2. Create a new branch
-   `git checkout -b fix-state-crash`
-3. Commit your changes
-4. Push to your fork
-5. Open a PR with a clear summary
+2. Create a new branch  
+   `git checkout -b fix-state-crash`, for example
+3. Keep branches focused and sync with the main branch before submitting a PR.
+4. Commit your changes
+5. Push to your fork
+6. Open a PR with a clear summary
+
+### ‼️ ATTENTION! Pull requests without tests or with failing tests will not be accepted.
 
 ---
 

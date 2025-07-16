@@ -66,8 +66,9 @@ bool SM_IsStateRegistered(char *name);
 /**
  * @brief Switches to a different state by name, optionally passing arguments.
  *
- * Exits the current state (if any) and enters the new one. Will re-enter
- * the same state if the requested name matches the current state's name.
+ * Calls the current state's exit function (if any) and the new state's enter
+ * one. Will exit and re-enter the same state if the requested name matches the
+ * current state's name.
  *
  * @param name The name of the state to switch to.
  * @param args Optional arguments to pass to the new state's enter function.

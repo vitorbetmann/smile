@@ -31,7 +31,7 @@ target_include_directories(smile PRIVATE "${RAYLIB_SRC_DIR}")
 option(BUILD_TESTS "Build test executables" OFF)
 if(BUILD_TESTS)
     # Add and link StateMachine test
-    add_executable(TestStateMachine tests/StateMachine/test_state_machine.c)
+    add_executable(TestStateMachine tests/StateMachine/TestStateMachine.c)
     target_link_libraries(TestStateMachine PRIVATE smile "${RAYLIB_SRC_DIR}/libraylib.a")
     target_include_directories(TestStateMachine PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
@@ -39,7 +39,7 @@ if(BUILD_TESTS)
     )
 
     # Add and link ParticleSystem test
-    add_executable(TestParticleSystem tests/ParticleSystem/test_particle_system.c)
+    add_executable(TestParticleSystem tests/ParticleSystem/TestParticleSystem.c)
     target_link_libraries(TestParticleSystem PRIVATE smile "${RAYLIB_SRC_DIR}/libraylib.a")
     target_include_directories(TestParticleSystem PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
