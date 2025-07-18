@@ -183,8 +183,8 @@ bool SM_Update(float dt) {
   }
 
   if (!currState->update) {
-    SM_ERR("Not possible to update state: \"%s\". Update function is NULL.",
-           currState->name);
+    SM_WARN("Not possible to update state: \"%s\". Update function is NULL.",
+            currState->name);
     return false;
   }
 
@@ -206,8 +206,8 @@ bool SM_Draw(void) {
   }
 
   if (!currState->draw) {
-    SM_ERR("Not possible to draw state: \"%s\". Draw function is NULL.",
-           currState->name);
+    SM_WARN("Not possible to draw state: \"%s\". Draw function is NULL.",
+            currState->name);
     return false;
   }
 
