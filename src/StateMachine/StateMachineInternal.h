@@ -85,4 +85,6 @@ const State *SM_Internal_GetCurrState(void);
  */
 const State *SM_Internal_GetState(const char *name);
 
+void SM_Internal_EnableWarnings(bool toggle);
+
 #endif

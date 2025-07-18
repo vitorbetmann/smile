@@ -14,14 +14,18 @@
 // --------------------------------------------------
 
 #define SM_WARN(str, ...)                                                      \
-  fprintf(stderr, "\033[33m[SMILE WARNING]\033[0m " str "\n", ##__VA_ARGS__)
+  if (warningsEnabled) {                                                       \
+    fprintf(stderr, "\033[33m[SMILE WARNING]\033[0m " str "\n",                \
+            ##__VA_ARGS__);                                                    \
+  }
+
 #define SM_ERR(str, ...)                                                       \
   fprintf(stderr, "\033[31m[SMILE ERROR]\033[0m " str "\n", ##__VA_ARGS__)
 
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
-
+static bool warningsEnabled = true;
 static int stateCount;
 static StateTracker *tracker;
 static bool canMalloc = true;
@@ -46,8 +50,14 @@ bool SM_Init(void) {
   tracker->currState = NULL;
   stateCount = 0;
 
+#if !defined(SMILE_RELEASE) && !defined(SMILE_WARNINGS)
+  SM_Internal_EnableWarnings(false);
+#endif
+
   return true;
 }
+
+void SM_Internal_EnableWarnings(bool toggle) { warningsEnabled = toggle; }
 
 bool SM_IsInitialized(void) { return tracker; }
 
@@ -173,7 +183,8 @@ bool SM_Update(float dt) {
   }
 
   if (!currState->update) {
-    SM_ERR("Not possible to update. Update function is NULL.");
+    SM_ERR("Not possible to update state: \"%s\". Update function is NULL.",
+           currState->name);
     return false;
   }
 
@@ -195,7 +206,8 @@ bool SM_Draw(void) {
   }
 
   if (!currState->draw) {
-    SM_ERR("Not possible to draw. Draw function is NULL.");
+    SM_ERR("Not possible to draw state: \"%s\". Draw function is NULL.",
+           currState->name);
     return false;
   }
 
