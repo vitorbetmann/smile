@@ -25,7 +25,7 @@
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
-static bool warningsEnabled = true;
+static bool warningsEnabled;
 static int stateCount;
 static StateTracker *tracker;
 static bool canMalloc = true;
@@ -50,8 +50,8 @@ bool SM_Init(void) {
   tracker->currState = NULL;
   stateCount = 0;
 
-#if !defined(SMILE_RELEASE) && !defined(SMILE_WARNINGS)
-  SM_Internal_EnableWarnings(false);
+#if defined(SMILE_WARNINGS) && !defined(SMILE_RELEASE)
+  SM_Internal_EnableWarnings(true);
 #endif
 
   return true;
