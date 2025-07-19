@@ -1,3 +1,6 @@
+// TODO(#1) add tests for failed memory allocation in SM_RegisterState
+// TODO(#10) implement tests for `SM_Internal_EnableWarnings()`
+
 /*
  * Test Naming Convention:
  *
@@ -19,20 +22,6 @@
  * This naming pattern helps organize and clearly communicate test purposes.
  * @author Vitor Betmann
  */
-
-/*
-TODO(#1) add tests for failed memory allocation in SM_RegisterState
-TODO(#10) implement tests for `SM_Internal_EnableWarnings()`
-
-Add tests that simulate memory allocation failure during SM_RegisterState,
-to ensure all partially-allocated memory is cleaned up and the function fails
-safely.
-
-This requires replacing all malloc() calls in the function with SM_Test_Malloc()
-and writing a test that disables allocation mid-way.
-
-Related file: `StateMachine.c`
-*/
 
 #include "../include/StateMachine.h"
 #include "../src/StateMachine/StateMachineInternal.h"
