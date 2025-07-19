@@ -22,6 +22,7 @@
 
 /*
 TODO(#1) add tests for failed memory allocation in SM_RegisterState
+TODO(#10) implement tests for `SM_Internal_EnableWarnings()`
 
 Add tests that simulate memory allocation failure during SM_RegisterState,
 to ensure all partially-allocated memory is cleaned up and the function fails

@@ -1,3 +1,7 @@
+// TODO(#7) trim state name when registering state and reject whitespace only
+// TODO(#8) trim state name when changing states and reject whitespace only
+// TODO(#9) create internal function to trim leading and trailing whitespace
+
 // --------------------------------------------------
 // Includes
 // --------------------------------------------------
@@ -145,7 +149,18 @@ bool SM_ChangeStateTo(const char *name, void *args) {
   }
 
   if (!name) {
-    SM_ERR("Can't change to state with NULL name.");
+    SM_ERR("Can't change to state with NULL name. Current state not changed.");
+    return false;
+  }
+
+  if (strlen(name) == 0) {
+    SM_ERR("Can't change to state with empty name. Current state not changed.");
+    return false;
+  }
+
+  State *nextState = (State *)SM_Internal_GetState(name);
+  if (!nextState) {
+    SM_WARN("Failed to find state '%s'. Current state not changed.", name);
     return false;
   }
 
@@ -154,11 +169,6 @@ bool SM_ChangeStateTo(const char *name, void *args) {
     currState->exit();
   }
 
-  State *nextState = (State *)SM_Internal_GetState(name);
-  if (!nextState) {
-    SM_WARN("Failed to find state '%s'. Current state not changed.", name);
-    return false;
-  }
   SM_Internal_SetCurrState(nextState);
 
   currState = (State *)SM_Internal_GetCurrState();
