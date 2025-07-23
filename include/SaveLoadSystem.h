@@ -5,6 +5,8 @@
 // Includes
 // --------------------------------------------------
 
+#include <stdlib.h>
+
 // --------------------------------------------------
 // Other defines
 // --------------------------------------------------
@@ -159,6 +161,26 @@ bool SLS_HasNext(void);
  * @author Vitor Betmann
  */
 char *SLS_LoadNext(void);
+
+/**
+ * @brief Reads the next line of text from the open save file into a
+ * user-provided buffer.
+ *
+ * This is a lower-level alternative to SLS_LoadNext(). Instead of allocating
+ * a new string, this function fills the provided buffer with the next line of
+ * text from the currently open save session.
+ *
+ * @param dest Pointer to the destination buffer where the line will be copied.
+ *             Must not be NULL.
+ * @param size The size of the destination buffer, including space for the null
+ * terminator.
+ * @return true if a line was read successfully, false if an error occurred or
+ * EOF was reached. The contents of @p dest are not modified on failure.
+ * @note If the line ends with a newline character, it is removed.
+ *       To check for EOF manually, use SLS_HasNext() before calling this.
+ * @author Vitor Betmann
+ */
+bool SLS_LoadNextTo(char *dest, size_t size);
 
 /**
  * @brief Ends the current load session, closing the file.

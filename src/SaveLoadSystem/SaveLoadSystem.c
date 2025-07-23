@@ -3,7 +3,6 @@
 // --------------------------------------------------
 #include "SaveLoadSystem.h"
 #include "SaveLoadSystemInternal.h"
-#include <stdlib.h>
 #include <string.h>
 
 // --------------------------------------------------
@@ -26,7 +25,7 @@
     return NULL;                                                               \
   }
 
-#define ASSERT_SAVE_SESSION_CLOSED_OR_RETURNFALSE()                            \
+#define ASSERT_SAVE_SESSION_CLOSED_OR_RETURN_FALSE()                           \
   if (tracker->saveStream) {                                                   \
     /* TODO add SaveSessionOpenError */                                        \
     return false;                                                              \
@@ -214,7 +213,7 @@ char *SLS_LoadNext(void) {
   }
 
   if (counter == 0 && cursor == EOF) {
-    // TODO add EOFReachedWarn
+    // TODO add EOFReachedOrEmptyLineWarn
     return NULL;
   }
 
@@ -244,6 +243,29 @@ char *SLS_LoadNext(void) {
   }
 
   return buffer;
+}
+
+bool SLS_LoadNextTo(char *dest, size_t size) {
+
+  ASSERT_SLS_INITIALIZED_OR_RETURN_FALSE();
+  ASSERT_LOAD_SESSION_OPEN_OR_RETURN_FALSE();
+
+  if (!dest) {
+    // TODO add InvalidDestWarn
+    return false;
+  }
+
+  if (!fgets(dest, size, tracker->loadStream)) {
+    // TODO add CorruptedDataError or EOFReachedWarn
+    return false;
+  }
+
+  size_t len = strlen(dest);
+  if (len > 0 && dest[len - 1] == '\n') {
+    dest[len - 1] = '\0';
+  }
+
+  return true;
 }
 
 bool SLS_EndLoadSession() {
@@ -315,7 +337,7 @@ bool SLS_Internal_BeginSession(FileInteractionMode mode, const char *file) {
   char *openAs;
   switch (mode) {
   case SAVE:
-    ASSERT_SAVE_SESSION_CLOSED_OR_RETURNFALSE();
+    ASSERT_SAVE_SESSION_CLOSED_OR_RETURN_FALSE();
     currStream = &tracker->saveStream;
     openAs = "w";
     break;
