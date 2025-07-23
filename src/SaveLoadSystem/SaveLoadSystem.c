@@ -237,7 +237,6 @@ char *SLS_LoadNext(void) {
   }
 
   size_t len = strlen(buffer);
-  // len should never be 0, but you never know...
   if (len > 0 && buffer[len - 1] == '\n') {
     buffer[len - 1] = '\0';
   }

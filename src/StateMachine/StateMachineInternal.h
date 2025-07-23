@@ -10,6 +10,16 @@
 #include "StateMachine.h"
 
 // --------------------------------------------------
+// Other defines
+// --------------------------------------------------
+
+#define STATE_MACHINE_NAME "StateMachine"
+
+#define LOG_MSG_STATE_NOT_FOUND "State '%s' not found."
+#define LOG_MSG_DRAW_FN_NULL "Draw function is NULL."
+#define LOG_MSG_UPDATE_FN_NULL "Update function is NULL."
+
+// --------------------------------------------------
 // Data types
 // --------------------------------------------------
 

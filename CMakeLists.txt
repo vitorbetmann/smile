@@ -19,6 +19,9 @@ set(RAYLIB_INCLUDE "${RAYLIB_DIR}/include")
 add_library(smile STATIC
     src/StateMachine/StateMachine.c
     src/ParticleSystem/ParticleSystem.c
+    src/SaveLoadSystem/SaveLoadSystem.c
+
+    src/_Internals/Log/Log.c
 )
 
 # Include raylib headers for Smile
@@ -63,6 +66,7 @@ if(SMILE_TESTS)
 
     # Add and link StateMachine test
     add_executable(TestStateMachine tests/StateMachine/TestStateMachine.c)
+    target_link_libraries(TestStateMachine PRIVATE smile)
     target_include_directories(TestStateMachine PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
     )
