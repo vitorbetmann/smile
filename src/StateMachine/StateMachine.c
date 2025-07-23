@@ -19,6 +19,15 @@
 // Defines
 // --------------------------------------------------
 
+// Helper macro to check initialization and return (with error log)
+#define RETURN_IF_NOT_INITIALIZED(suffix)                                      \
+  do {                                                                         \
+    if (!tracker) {                                                            \
+      SMILE_ERR(STATE_MACHINE_NAME, LOG_MSG_NOT_INITIALIZED " " suffix);       \
+      return false;                                                            \
+    }                                                                          \
+  } while (0)
+
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
@@ -34,27 +43,26 @@ static bool canMalloc = true;
 bool SM_Init(void) {
 
   if (tracker) {
-    SMILE_INFO(STATE_MACHINE_NAME, LOG_MSG_ALREADY_INITIALIZED);
+    SMILE_WARN(STATE_MACHINE_NAME,
+               LOG_MSG_ALREADY_INITIALIZED " " LOG_MSG_INIT_ABORTED);
     return false;
   }
 
   tracker = SM_Test_Malloc(sizeof(StateTracker));
   if (!tracker) {
-    SMILE_ERR(STATE_MACHINE_NAME, LOG_MSG_MEM_ALLOC_FAILED);
+    SMILE_ERR(STATE_MACHINE_NAME,
+              LOG_MSG_MEM_ALLOC_FAILED " " LOG_MSG_INIT_ABORTED);
     return false;
   }
+
   tracker->stateMap = NULL;
   tracker->currState = NULL;
   stateCount = 0;
 
-#if defined(SMILE_WARNINGS) && !defined(SMILE_RELEASE)
-  SM_Internal_EnableWarnings(true);
-#endif
+  SMILE_INFO(STATE_MACHINE_NAME, LOG_MSG_INIT_SUCCESSFUL);
 
   return true;
 }
-
-void SM_Internal_EnableWarnings(bool toggle) { warningsEnabled = toggle; }
 
 bool SM_IsInitialized(void) { return tracker; }
 
@@ -62,47 +70,43 @@ bool SM_RegisterState(const char *name, void (*enterFn)(void *),
                       void (*updateFn)(float), void (*drawFn)(void),
                       void (*exitFn)(void)) {
 
-  if (!tracker) {
-    SMILE_ERR(STATE_MACHINE_NAME, "State Machine not initialized.");
-    return false;
-  }
+  RETURN_IF_NOT_INITIALIZED(LOG_SUFFIX_REGISTER_STATE_ABORTED);
 
   if (!name) {
     SMILE_ERR(STATE_MACHINE_NAME,
-              "Can't register state with NULL name. No new state created.");
+              LOG_CAUSE_NULL_NAME " " LOG_EFFECT_REGISTER_STATE_ABORTED);
     return false;
   }
 
   if (strlen(name) == 0) {
     SMILE_ERR(STATE_MACHINE_NAME,
-              "Can't register state with empty name. No new state created.");
+              LOG_CAUSE_EMPTY_NAME " " LOG_EFFECT_REGISTER_STATE_ABORTED);
     return false;
   }
 
   if (SM_IsStateRegistered((char *)name)) {
-    SMILE_WARN(STATE_MACHINE_NAME,
-               "A state called '%s' already exists. No new state created.",
-               name);
+    SMILE_ERR(STATE_MACHINE_NAME, "%s '%s'. %s", LOG_CAUSE_ALREADY_EXISTS, name,
+              LOG_EFFECT_REGISTER_STATE_ABORTED);
     return false;
   }
 
   if (!enterFn && !updateFn && !drawFn && !exitFn) {
-    SMILE_ERR(STATE_MACHINE_NAME,
-              "State '%s' has no valid functions. No new state created.", name);
+    SMILE_ERR(STATE_MACHINE_NAME, "%s '%s'. %s", LOG_CAUSE_NO_VALID_FUNCTIONS,
+              name, LOG_EFFECT_REGISTER_STATE_ABORTED);
     return false;
   }
 
   State *newState = malloc(sizeof(State));
   if (!newState) {
     SMILE_ERR(STATE_MACHINE_NAME,
-              "Failed to allocate memory. No new state '%s' created.", name);
+              LOG_MSG_MEM_ALLOC_FAILED " " LOG_SUFFIX_REGISTER_STATE_ABORTED);
     return false;
   }
 
   char *stateName = malloc(strlen(name) + 1);
   if (!stateName) {
     SMILE_ERR(STATE_MACHINE_NAME,
-              "Failed to allocate memory. No new state '%s' created.", name);
+              LOG_MSG_MEM_ALLOC_FAILED " " LOG_SUFFIX_REGISTER_STATE_ABORTED);
     free(newState);
     return false;
   }
@@ -119,7 +123,7 @@ bool SM_RegisterState(const char *name, void (*enterFn)(void *),
     free((char *)newState->name);
     free(newState);
     SMILE_ERR(STATE_MACHINE_NAME,
-              "Failed to allocate memory. No new state '%s' created.", name);
+              LOG_MSG_MEM_ALLOC_FAILED " " LOG_SUFFIX_REGISTER_STATE_ABORTED);
     return false;
   }
   temp->state = newState;
@@ -128,15 +132,14 @@ bool SM_RegisterState(const char *name, void (*enterFn)(void *),
 
   stateCount++;
 
+  SMILE_INFO(STATE_MACHINE_NAME, "%s '%s'. Total states: %d.",
+             LOG_MSG_STATE_CREATION_SUCCESSFUL, name, stateCount);
+
   return true;
 }
 
 bool SM_IsStateRegistered(char *name) {
-  if (!tracker) {
-    SMILE_ERR(STATE_MACHINE_NAME,
-              "Can't find state. State Machine not initialized.");
-    return false;
-  }
+  RETURN_IF_NOT_INITIALIZED(LOG_SUFFIX_IS_STATE_REGISTERED_ABORTED);
 
   StateMap *entry;
   HASH_FIND_STR(tracker->stateMap, name, entry);
@@ -145,30 +148,24 @@ bool SM_IsStateRegistered(char *name) {
 
 bool SM_ChangeStateTo(const char *name, void *args) {
 
-  if (!tracker) {
-    SMILE_ERR(STATE_MACHINE_NAME,
-              "Can't change state. State Machine not initialized.");
-    return false;
-  }
+  RETURN_IF_NOT_INITIALIZED(LOG_SUFFIX_CHANGE_STATE_TO_ABORTED);
 
   if (!name) {
-    SMILE_ERR(
-        STATE_MACHINE_NAME,
-        "Can't change to state with NULL name. Current state not changed.");
+    SMILE_ERR(STATE_MACHINE_NAME,
+              LOG_CAUSE_NULL_NAME " " LOG_EFFECT_CHANGE_STATE_ABORTED);
     return false;
   }
 
   if (strlen(name) == 0) {
-    SMILE_ERR(
-        STATE_MACHINE_NAME,
-        "Can't change to state with empty name. Current state not changed.");
+    SMILE_ERR(STATE_MACHINE_NAME,
+              LOG_CAUSE_EMPTY_NAME " " LOG_EFFECT_CHANGE_STATE_ABORTED);
     return false;
   }
 
   State *nextState = (State *)SM_Internal_GetState(name);
   if (!nextState) {
-    SMILE_WARN(STATE_MACHINE_NAME,
-               "Failed to find state '%s'. Current state not changed.", name);
+    SMILE_WARN(STATE_MACHINE_NAME, "%s '%s'. %s", LOG_CAUSE_STATE_NOT_FOUND,
+               name, LOG_EFFECT_CHANGE_STATE_ABORTED);
     return false;
   }
 
@@ -184,28 +181,26 @@ bool SM_ChangeStateTo(const char *name, void *args) {
     currState->enter(args);
   }
 
+  SMILE_INFO(STATE_MACHINE_NAME, "%s '%s'.", LOG_MSG_STATE_CHANGE_SUCCESSFUL,
+             name);
+
   return true;
 }
 
 bool SM_Update(float dt) {
-  if (!tracker) {
-    SMILE_ERR(STATE_MACHINE_NAME,
-              "Not possible to update. State Machine not initialized.");
-    return false;
-  }
+  RETURN_IF_NOT_INITIALIZED(LOG_SUFFIX_UPDATE_ABORTED);
 
   State *currState = (State *)SM_Internal_GetCurrState();
 
   if (!currState) {
-    SMILE_ERR(STATE_MACHINE_NAME,
-              "Not possible to update. No state set to current.");
+    SMILE_ERR(STATE_MACHINE_NAME, LOG_CAUSE_STATE_NOT_FOUND
+              " " LOG_MSG_CURRENT_STATE_NULL " " LOG_EFFECT_UPDATE_ABORTED);
     return false;
   }
 
   if (!currState->update) {
-    SMILE_WARN(STATE_MACHINE_NAME,
-               "Not possible to update state: \"%s\". Update function is NULL.",
-               currState->name);
+    SMILE_WARN(STATE_MACHINE_NAME, "%s '%s'. %s", LOG_MSG_UPDATE_FUNCTION_NULL,
+               currState->name, LOG_EFFECT_UPDATE_ABORTED);
     return false;
   }
 
@@ -214,24 +209,19 @@ bool SM_Update(float dt) {
 }
 
 bool SM_Draw(void) {
-  if (!tracker) {
-    SMILE_ERR(STATE_MACHINE_NAME,
-              "Not possible to draw. State Machine not initialized.");
-    return false;
-  }
+  RETURN_IF_NOT_INITIALIZED(LOG_SUFFIX_DRAW_ABORTED);
 
   State *currState = (State *)SM_Internal_GetCurrState();
 
   if (!currState) {
-    SMILE_ERR(STATE_MACHINE_NAME,
-              "Not possible to draw. No state set to current.");
+    SMILE_ERR(STATE_MACHINE_NAME, LOG_CAUSE_STATE_NOT_FOUND
+              " " LOG_MSG_CURRENT_STATE_NULL " " LOG_EFFECT_DRAW_ABORTED);
     return false;
   }
 
   if (!currState->draw) {
-    SMILE_WARN(STATE_MACHINE_NAME,
-               "Not possible to draw state: \"%s\". Draw function is NULL.",
-               currState->name);
+    SMILE_WARN(STATE_MACHINE_NAME, "%s '%s'. %s", LOG_MSG_DRAW_FUNCTION_NULL,
+               currState->name, LOG_EFFECT_DRAW_ABORTED);
     return false;
   }
 
@@ -241,11 +231,7 @@ bool SM_Draw(void) {
 
 bool SM_Shutdown(void) {
 
-  if (!tracker) {
-    SMILE_ERR(STATE_MACHINE_NAME,
-              "Failed to shutdown. State Machine not initialized.");
-    return false;
-  }
+  RETURN_IF_NOT_INITIALIZED(LOG_SUFFIX_SHUTDOWN_ABORTED);
 
   State *currState = (State *)SM_Internal_GetCurrState();
   if (currState && currState->exit) {
@@ -265,14 +251,16 @@ bool SM_Shutdown(void) {
   free(tracker);
   tracker = NULL;
 
+  SMILE_INFO(STATE_MACHINE_NAME, LOG_MSG_SHUTDOWN_SUCCESSFUL);
+
   return true;
 }
 
 const char *SM_GetCurrStateName(void) {
 
   if (!tracker) {
-    SMILE_ERR(STATE_MACHINE_NAME,
-              "Can't get current state name. State Machine not initialized.");
+    SMILE_ERR(STATE_MACHINE_NAME, LOG_MSG_NOT_INITIALIZED
+              " " LOG_SUFFIX_GET_CURR_STATE_NAME_ABORTED);
     return NULL;
   }
 
@@ -284,10 +272,8 @@ const char *SM_GetCurrStateName(void) {
 // --------------------------------------------------
 
 bool SM_Internal_SetCurrState(const State *state) {
-  if (!tracker) {
-    SMILE_ERR(STATE_MACHINE_NAME, "State Machine not initialized.");
-    return false;
-  }
+
+  RETURN_IF_NOT_INITIALIZED(LOG_SUFFIX_INTERNAL_SET_CURR_STATE_ABORTED);
 
   tracker->currState = state;
   return true;
@@ -296,7 +282,8 @@ bool SM_Internal_SetCurrState(const State *state) {
 const State *SM_Internal_GetCurrState(void) {
 
   if (!tracker) {
-    SMILE_ERR(STATE_MACHINE_NAME, "State Machine not initialized.");
+    SMILE_ERR(STATE_MACHINE_NAME, LOG_MSG_NOT_INITIALIZED
+              " " LOG_SUFFIX_INTERNAL_GET_CURR_STATE_ABORTED);
     return NULL;
   }
 
@@ -306,7 +293,9 @@ const State *SM_Internal_GetCurrState(void) {
 const State *SM_Internal_GetState(const char *name) {
 
   if (!tracker) {
-    SMILE_ERR(STATE_MACHINE_NAME, "State Machine Not initialized.");
+    SMILE_ERR(STATE_MACHINE_NAME, "%s %s '%s'. %s", LOG_MSG_NOT_INITIALIZED,
+              LOG_CAUSE_STATE_NOT_FOUND, name,
+              LOG_SUFFIX_INTERNAL_GET_STATE_ABORTED);
     return NULL;
   }
 
@@ -315,19 +304,13 @@ const State *SM_Internal_GetState(const char *name) {
   return sm ? sm->state : NULL;
 }
 
+void SM_Internal_EnableWarnings(bool toggle) { warningsEnabled = toggle; }
+
 // --------------------------------------------------
 // Functions - Tests
 // --------------------------------------------------
 
-const StateTracker *SM_Test_GetTracker(void) {
-
-  if (!tracker) {
-    SMILE_ERR(STATE_MACHINE_NAME, "State Machine not initialized.");
-    return NULL;
-  }
-
-  return tracker;
-}
+const StateTracker *SM_Test_GetTracker(void) { return tracker; }
 
 const int SM_Test_GetStateCount(void) { return stateCount; }
 
