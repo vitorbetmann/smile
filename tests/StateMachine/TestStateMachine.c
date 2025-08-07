@@ -649,9 +649,9 @@ int main() {
   puts("");
 
   puts("Testing Stress Tests");
-  // Test_SM_RegisteringMultipleStatesCausesNoSkips();
-  // Test_SM_ChangingStatesOftenCausesNoSkips();
-  // Test_SM_Shutdown_FreeingMultipleStatesCausesNoSkips();
+  Test_SM_RegisteringMultipleStatesCausesNoSkips();
+  Test_SM_ChangingStatesOftenCausesNoSkips();
+  Test_SM_Shutdown_FreeingMultipleStatesCausesNoSkips();
   puts("");
 
   puts("All tests completed successfully!");

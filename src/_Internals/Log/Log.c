@@ -26,17 +26,33 @@ void SMILE_Log(LogType type, const char *module, const char *message, ...) {
   // determine color based on type
   switch (type) {
   case SMILE_LOG_INFO:
+#ifdef SMILE_INFO_ENABLED
     color = SMILE_CYAN;
     prefix = "INFO";
     break;
+#else
+    return;
+#endif
   case SMILE_LOG_WARNING:
+#ifdef SMILE_WARNINGS_ENABLED
     color = SMILE_YELLOW;
     prefix = "WARNING";
     break;
+#else
+    return;
+#endif
   case SMILE_LOG_ERROR:
     color = SMILE_RED;
     prefix = "ERROR";
     break;
+  case SMILE_LOG_DEBUG:
+#ifdef SMILE_DEBUG_ENABLED
+    color = SMILE_DEFAULT_COLOR;
+    prefix = "DEBUG";
+    break;
+#else
+    return;
+#endif
   }
 
   fprintf(stderr, "%s[SMILE %s from %s]: ", color, prefix, module);

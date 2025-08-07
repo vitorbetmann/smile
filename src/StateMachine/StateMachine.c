@@ -11,6 +11,7 @@
 #include "../_Internals/Log/LogMessages.h"
 #include "../tests/StateMachine/StateMachineTest.h"
 #include "StateMachineInternal.h"
+#include "StateMachineMessages.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,7 +32,6 @@
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
-static bool warningsEnabled;
 static int stateCount;
 static StateTracker *tracker;
 static bool canMalloc = true;
@@ -303,8 +303,6 @@ const State *SM_Internal_GetState(const char *name) {
   HASH_FIND_STR(tracker->stateMap, name, sm);
   return sm ? sm->state : NULL;
 }
-
-void SM_Internal_EnableWarnings(bool toggle) { warningsEnabled = toggle; }
 
 // --------------------------------------------------
 // Functions - Tests

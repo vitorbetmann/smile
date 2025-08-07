@@ -11,6 +11,8 @@
   SMILE_Log(SMILE_LOG_WARNING, module, message, ##__VA_ARGS__)
 #define SMILE_ERR(module, message, ...)                                        \
   SMILE_Log(SMILE_LOG_ERROR, module, message, ##__VA_ARGS__)
+#define SMILE_DEBUG(module, message, ...)                                      \
+  SMILE_Log(SMILE_LOG_DEBUG, module, message, ##__VA_ARGS__)
 
 // --------------------------------------------------
 // Data types
@@ -20,6 +22,7 @@ typedef enum {
   SMILE_LOG_INFO,
   SMILE_LOG_WARNING,
   SMILE_LOG_ERROR,
+  SMILE_LOG_DEBUG,
 } LogType;
 
 // --------------------------------------------------

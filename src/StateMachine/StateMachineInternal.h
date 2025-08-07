@@ -12,49 +12,6 @@
 // --------------------------------------------------
 #define STATE_MACHINE_NAME "StateMachine"
 
-// Module specific messages
-#define LOG_MSG_DRAW_FUNCTION_NULL "Draw function is NULL."
-#define LOG_MSG_UPDATE_FUNCTION_NULL "Update function is NULL."
-#define LOG_MSG_CURRENT_STATE_NULL "Current state is NULL."
-
-// Causes
-#define LOG_CAUSE_ALREADY_EXISTS "State already exists"
-#define LOG_CAUSE_NO_VALID_FUNCTIONS "State has no valid functions"
-#define LOG_CAUSE_STATE_NOT_FOUND "State not found"
-
-// Effects (Consequence)
-#define LOG_EFFECT_REGISTER_STATE_ABORTED "RegisterState aborted"
-#define LOG_EFFECT_CHANGE_STATE_ABORTED "ChangeStateTo aborted"
-#define LOG_EFFECT_DRAW_ABORTED "Draw aborted"
-#define LOG_EFFECT_UPDATE_ABORTED "Update aborted"
-
-// Requires something after
-#define LOG_MSG_STATE_NOT_FOUND "State not found:"
-#define LOG_MSG_NO_VALID_FUNCTIONS "State has no valid functions:"
-#define LOG_MSG_STATE_ALREADY_EXISTS "State already exists:"
-#define LOG_MSG_STATE_CREATION_SUCCESSFUL "Successful state creation:"
-#define LOG_MSG_STATE_CHANGE_SUCCESSFUL "Successful state change to:"
-
-// Suffixes - Public
-#define LOG_SUFFIX_DRAW_ABORTED "Draw aborted."
-#define LOG_SUFFIX_UPDATE_ABORTED "Update aborted."
-#define LOG_SUFFIX_REGISTER_STATE_ABORTED "RegisterState aborted."
-#define LOG_SUFFIX_GET_CURR_STATE_NAME_ABORTED "GetCurrStateName aborted."
-#define LOG_SUFFIX_CHANGE_STATE_TO_ABORTED "ChangeStateTo aborted."
-#define LOG_SUFFIX_IS_STATE_REGISTERED_ABORTED "IsStateRegistered aborted."
-
-// Suffixes - Internal
-#define LOG_SUFFIX_INTERNAL_GET_TRACKER_ABORTED "Internal_GetTracker aborted."
-#define LOG_SUFFIX_INTERNAL_SET_CURR_STATE_ABORTED                             \
-  "Internal_SetCurrState aborted."
-#define LOG_SUFFIX_INTERNAL_GET_CURR_STATE_ABORTED                             \
-  "Internal_GetCurrState aborted."
-#define LOG_SUFFIX_INTERNAL_GET_STATE_ABORTED "Internal_GetState aborted."
-
-// Suffixes - Tests
-#define LOG_SUFFIX_TEST_GET_STATE_COUNT_ABORTED                                \
-  "Internal_GetStateCount aborted."
-
 // --------------------------------------------------
 // Data types
 // --------------------------------------------------
@@ -132,21 +89,5 @@ const State *SM_Internal_GetCurrState(void);
  * @author Vitor Betmann
  */
 const State *SM_Internal_GetState(const char *name);
-
-/**
- * @brief Enables or disables debug-mode warnings at runtime.
- *
- * For internal use only. This function controls whether SMILE logs non-fatal
- * debug warnings (e.g., NULL pointers passed to lifecycle callbacks).
- *
- * This setting only takes effect if the engine was compiled with
- * `-DSMILE_WARNINGS=ON`. If compiled with warnings disabled, this function has
- * no effect.
- *
- * @param toggle If true, warnings are shown at runtime. If false, they are
- * suppressed.
- * @author Vitor Betmann
- */
-void SM_Internal_EnableWarnings(bool toggle);
 
 #endif
