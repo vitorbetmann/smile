@@ -17,7 +17,7 @@
 #define LOG_EFFECT_DRAW_ABORTED "Draw aborted"
 #define LOG_EFFECT_UPDATE_ABORTED "Update aborted"
 
-// Requires something after
+// Requires argument after
 #define LOG_MSG_STATE_NOT_FOUND "State not found:"
 #define LOG_MSG_NO_VALID_FUNCTIONS "State has no valid functions:"
 #define LOG_MSG_STATE_ALREADY_EXISTS "State already exists:"

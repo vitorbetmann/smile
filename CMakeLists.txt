@@ -72,12 +72,12 @@ else()
     message(STATUS "SMILE: Info logs DISABLED")
 endif()
 
-if(SMILE_DEBUG_ENABLED AND NOT SMILE_RELEASE)
-    message(STATUS "SMILE: Debug logs ENABLED")
-    add_compile_definitions(SMILE_DEBUG_ENABLED)
-else()
-    message(STATUS "SMILE: Debug logs DISABLED")
-endif()
+# if(SMILE_DEBUG_ENABLED AND NOT SMILE_RELEASE)
+#     message(STATUS "SMILE: Debug logs ENABLED")
+#     add_compile_definitions(SMILE_DEBUG_ENABLED)
+# else()
+#     message(STATUS "SMILE: Debug logs DISABLED")
+# endif()
 
 # Option to enable test builds
 option(SMILE_TESTS "Build test executables" OFF)

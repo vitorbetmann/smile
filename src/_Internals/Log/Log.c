@@ -33,6 +33,7 @@ void SMILE_Log(LogType type, const char *module, const char *message, ...) {
 #else
     return;
 #endif
+
   case SMILE_LOG_WARNING:
 #ifdef SMILE_WARNINGS_ENABLED
     color = SMILE_YELLOW;
@@ -41,18 +42,20 @@ void SMILE_Log(LogType type, const char *module, const char *message, ...) {
 #else
     return;
 #endif
+
   case SMILE_LOG_ERROR:
     color = SMILE_RED;
     prefix = "ERROR";
     break;
-  case SMILE_LOG_DEBUG:
-#ifdef SMILE_DEBUG_ENABLED
-    color = SMILE_DEFAULT_COLOR;
-    prefix = "DEBUG";
-    break;
-#else
-    return;
-#endif
+
+    //   case SMILE_LOG_DEBUG:
+    // #ifdef SMILE_DEBUG_ENABLED
+    //     color = SMILE_DEFAULT_COLOR;
+    //     prefix = "DEBUG";
+    //     break;
+    // #else
+    //     return;
+    // #endif
   }
 
   fprintf(stderr, "%s[SMILE %s from %s]: ", color, prefix, module);

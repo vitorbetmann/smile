@@ -1,0 +1,63 @@
+#ifndef SAVE_LOAD_SYSTEM_MESSAGES_H
+#define SAVE_LOAD_SYSTEM_MESSAGES_H
+
+// --------------------------------------------------
+// Module name
+// --------------------------------------------------
+#define MODULE_NAME "SaveLoadSystem"
+
+// --------------------------------------------------
+// Causes
+// --------------------------------------------------
+#define LOG_CAUSE_SAVE_SESSION_NOT_OPEN "Save Session not open."
+#define LOG_CAUSE_LOAD_SESSION_NOT_OPEN "Load Session not open."
+#define LOG_CAUSE_SAVE_SESSION_ALREADY_OPEN "Save Session already open."
+#define LOG_CAUSE_LOAD_SESSION_ALREADY_OPEN "Load Session already open."
+#define LOG_CAUSE_DEST_FILE_NOT_SET "Destination file not set."
+#define LOG_CAUSE_FAILED_TO_CLOSE_FILE "Failed to close saveStream."
+#define LOG_CAUSE_DIR_NOT_FOUND "Target directory not found."
+#define LOG_CAUSE_FILE_NOT_FOUND "Target file not found."
+#define LOG_CAUSE_NULL_DATA "Data is NULL."
+#define LOG_CAUSE_INVALID_DEST "Destination buffer is NULL."
+#define LOG_CAUSE_NO_MORE_DATA "No more data to read."
+#define LOG_CAUSE_DATA_TRUNCATED_FORMATTING "Data truncated during formatting."
+#define LOG_CAUSE_DATA_TRUNCATED_WRITING "Data truncated during writing."
+#define LOG_CAUSE_INDICATOR_NOT_RESET "Failed to reposition stream indicator."
+#define LOG_CAUSE_ERROR_LOADING_DATA "Error loading data."
+
+// --------------------------------------------------
+// Messages - Positive / Informational
+// --------------------------------------------------
+#define LOG_MSG_INIT_SUCCESSFUL "Init successful."
+#define LOG_MSG_SAVE_SESSION_STARTED "Save session started."
+#define LOG_MSG_SAVE_SESSION_ENDED "Save session ended."
+#define LOG_MSG_LOAD_SESSION_STARTED "Load session started."
+#define LOG_MSG_LOAD_SESSION_ENDED "Load session ended."
+#define LOG_MSG_SAVE_SUCCESSFUL "Data saved successfully."
+#define LOG_MSG_LOAD_SUCCESSFUL "Data loaded successfully."
+#define LOG_MSG_LOAD_TO_SUCCESSFUL "Data loaded to buffer successfully."
+#define LOG_MSG_HAS_NEXT_SUCCESSFUL "Next data found successfully."
+
+// --------------------------------------------------
+// Effects / Suffixes - Public
+// --------------------------------------------------
+#define LOG_SUFFIX_SAVE_NEXT_ABORTED "SaveNext aborted."
+#define LOG_SUFFIX_BEGIN_SAVE_SESSION_ABORTED "BeginSaveSession aborted."
+#define LOG_SUFFIX_END_SAVE_SESSION_ABORTED "EndSaveSession aborted."
+#define LOG_SUFFIX_BEGIN_LOAD_SESSION_ABORTED "BeginLoadSession aborted."
+#define LOG_SUFFIX_HAS_NEXT_ABORTED "HasNext aborted."
+#define LOG_SUFFIX_END_LOAD_SESSION_ABORTED "EndLoadSession aborted."
+#define LOG_SUFFIX_LOAD_NEXT_ABORTED "LoadNext aborted."
+#define LOG_SUFFIX_LOAD_NEXT_TO_ABORTED "LoadNextTo aborted."
+#define LOG_SUFFIX_SHUTDOWN_ABORTED "Shutdown aborted."
+
+// --------------------------------------------------
+// Effects / Suffixes - Internal
+// --------------------------------------------------
+#define LOG_SUFFIX_INTERNAL_BEGIN_SESSION_ABORTED                              \
+  "Internal BeginSession aborted."
+#define LOG_SUFFIX_INTERNAL_GET_DIR_NAME_ABORTED "Internal GetDirName aborted."
+#define LOG_SUFFIX_INTERNAL_GET_GAME_NAME_ABORTED                              \
+  "Internal GetGameName aborted."
+
+#endif

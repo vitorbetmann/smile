@@ -3,6 +3,9 @@
 // --------------------------------------------------
 #include "SaveLoadSystem.h"
 #include "SaveLoadSystemInternal.h"
+#include "src/SaveLoadSystem/SaveLoadSystemMessages.h"
+#include "src/_Internals/Log/Log.h"
+#include "src/_Internals/Log/LogMessages.h"
 #include <string.h>
 
 // --------------------------------------------------
@@ -12,48 +15,13 @@
 // --------------------------------------------------
 // Defines - Funcs
 // --------------------------------------------------
-
-#define ASSERT_SLS_INITIALIZED_OR_RETURN_FALSE()                               \
-  if (!tracker) {                                                              \
-    /* TODO add error SaveLoadSystemNotInitialized */                          \
-    return false;                                                              \
-  }
-
-#define ASSERT_SLS_INITIALIZED_OR_RETURN_NULL()                                \
-  if (!tracker) {                                                              \
-    /* TODO add error SaveLoadSystemNotInitialized */                          \
-    return NULL;                                                               \
-  }
-
-#define ASSERT_SAVE_SESSION_CLOSED_OR_RETURN_FALSE()                           \
-  if (tracker->saveStream) {                                                   \
-    /* TODO add SaveSessionOpenError */                                        \
-    return false;                                                              \
-  }
-
-#define ASSERT_SAVE_SESSION_OPEN_OR_RETURN_FALSE()                             \
-  if (!tracker->saveStream) {                                                  \
-    /* TODO add SaveSessionClosedError */                                      \
-    return false;                                                              \
-  }
-
-#define ASSERT_LOAD_SESSION_CLOSED_OR_RETURN_FALSE()                           \
-  if (tracker->loadStream) {                                                   \
-    /* TODO add SaveSessionOpenError */                                        \
-    return false;                                                              \
-  }
-
-#define ASSERT_LOAD_SESSION_OPEN_OR_RETURN_NULL()                              \
-  if (!tracker->loadStream) {                                                  \
-    /* TODO add SaveSessionOpenError */                                        \
-    return NULL;                                                               \
-  }
-
-#define ASSERT_LOAD_SESSION_OPEN_OR_RETURN_FALSE()                             \
-  if (!tracker->loadStream) {                                                  \
-    /* TODO add SaveSessionClosedError */                                      \
-    return false;                                                              \
-  }
+#define RETURN_IF_NOT_INITIALIZED(suffix)                                      \
+  do {                                                                         \
+    if (!tracker) {                                                            \
+      SMILE_ERR(MODULE_NAME, LOG_MSG_NOT_INITIALIZED " " suffix);              \
+      return false;                                                            \
+    }                                                                          \
+  } while (0)
 
 // --------------------------------------------------
 // Variables
@@ -80,19 +48,20 @@ static SaveLoadSystemTracker *tracker;
 bool SLS_Init(const char *file, const char *dir) {
 
   if (tracker) {
-    // TODO add error SaveLoadSystemAlreadyInitialized
+    SMILE_WARN(MODULE_NAME,
+               LOG_MSG_ALREADY_INITIALIZED " " LOG_MSG_INIT_ABORTED);
     return false;
   }
 
   tracker = calloc(1, sizeof(SaveLoadSystemTracker));
   if (!tracker) {
-    // TODO add MemAllocFailedError
+    SMILE_ERR(MODULE_NAME, LOG_MSG_MEM_ALLOC_FAILED " " LOG_MSG_INIT_ABORTED);
     return false;
   }
 
   tracker->dirPath = SLS_Internal_GetDirName(dir);
   if (!tracker->dirPath) {
-    // TODO add TargetDirNotFoundError
+    SMILE_ERR(MODULE_NAME, LOG_CAUSE_DIR_NOT_FOUND " " LOG_MSG_INIT_ABORTED);
     free(tracker);
     return false;
   }
@@ -103,7 +72,7 @@ bool SLS_Init(const char *file, const char *dir) {
 
   tracker->filePath = malloc(totalLen);
   if (!tracker->filePath) {
-    // TODO add MemAllocFailedError
+    SMILE_ERR(MODULE_NAME, LOG_MSG_MEM_ALLOC_FAILED " " LOG_MSG_INIT_ABORTED);
     free(tracker->dirPath);
     free(tracker);
     return false;
@@ -113,78 +82,117 @@ bool SLS_Init(const char *file, const char *dir) {
   int filePathLen = snprintf(tracker->filePath, totalLen, "%s%s",
                              tracker->dirPath, targetFile);
   if (filePathLen < 0 || filePathLen >= totalLen) {
+    SMILE_ERR(MODULE_NAME, LOG_CAUSE_DATA_TRUNCATED " " LOG_MSG_INIT_ABORTED);
     free(tracker->dirPath);
     free(tracker->filePath);
     free(tracker);
-    // TODO add DataTruncatedError
     return false;
   }
 
+  SMILE_INFO(MODULE_NAME, LOG_MSG_INIT_SUCCESSFUL);
   return true;
 }
 
 bool SLS_BeginSaveSession(const char *file) {
 
-  return SLS_Internal_BeginSession(SAVE, file);
+  RETURN_IF_NOT_INITIALIZED(LOG_SUFFIX_BEGIN_SAVE_SESSION_ABORTED);
+
+  if (SLS_Internal_BeginSession(SAVE, file)) {
+    SMILE_INFO(MODULE_NAME, LOG_MSG_SAVE_SESSION_STARTED);
+    return true;
+  }
+
+  SMILE_ERR(MODULE_NAME, LOG_SUFFIX_BEGIN_SAVE_SESSION_ABORTED);
+  return false;
 }
 
 bool SLS_SaveNext(const char *data) {
 
-  ASSERT_SLS_INITIALIZED_OR_RETURN_FALSE();
-  ASSERT_SAVE_SESSION_OPEN_OR_RETURN_FALSE();
+  RETURN_IF_NOT_INITIALIZED(LOG_SUFFIX_SAVE_NEXT_ABORTED);
 
-  if (!data) {
-    // TODO add NullDataError
+  if (!tracker->saveStream) {
+    SMILE_ERR(MODULE_NAME,
+              LOG_CAUSE_SAVE_SESSION_NOT_OPEN " " LOG_SUFFIX_SAVE_NEXT_ABORTED);
     return false;
   }
 
-  size_t bufferSize = strlen(data) + 2;
-  char *buffer = malloc(bufferSize);
-  if (!buffer)
-    // TODO add MemAllocFailedError
+  if (!data) {
+    SMILE_ERR(MODULE_NAME,
+              LOG_CAUSE_NULL_DATA " " LOG_SUFFIX_SAVE_NEXT_ABORTED);
     return false;
+  }
+
+  size_t bufferSize = strlen(data) + 2; // '\n' + '\0'
+  char *buffer = malloc(bufferSize);
+  if (!buffer) {
+    SMILE_ERR(MODULE_NAME,
+              LOG_MSG_MEM_ALLOC_FAILED " " LOG_SUFFIX_SAVE_NEXT_ABORTED);
+    return false;
+  }
 
   int bufferLen = snprintf(buffer, bufferSize, "%s\n", data);
   if (bufferLen < 0 || bufferLen >= bufferSize) {
-    // TODO add DataTruncatedError
+    SMILE_ERR(MODULE_NAME, LOG_CAUSE_DATA_TRUNCATED_FORMATTING
+              " " LOG_SUFFIX_SAVE_NEXT_ABORTED);
     free(buffer);
     return false;
   }
 
   bool success = true;
   if (fwrite(buffer, bufferLen, 1, tracker->saveStream) != 1) {
-    // TODO add DataNotSavedError
+    SMILE_ERR(MODULE_NAME, LOG_CAUSE_DATA_TRUNCATED_WRITING
+              " " LOG_SUFFIX_SAVE_NEXT_ABORTED);
     success = false;
   }
 
   free(buffer);
-
+  SMILE_INFO(MODULE_NAME, LOG_MSG_SAVE_SUCCESSFUL);
   return success;
 }
 
 bool SLS_EndSaveSession() {
 
-  ASSERT_SLS_INITIALIZED_OR_RETURN_FALSE();
-  ASSERT_SAVE_SESSION_OPEN_OR_RETURN_FALSE();
+  RETURN_IF_NOT_INITIALIZED(LOG_SUFFIX_END_SAVE_SESSION_ABORTED);
+
+  if (!tracker->saveStream) {
+    SMILE_ERR(MODULE_NAME, LOG_CAUSE_SAVE_SESSION_NOT_OPEN
+              " " LOG_SUFFIX_END_SAVE_SESSION_ABORTED);
+    return false;
+  }
 
   if (fclose(tracker->saveStream) == EOF) {
-    // TODO add FileFailedToCloseProperlyError
+    SMILE_ERR(MODULE_NAME, LOG_CAUSE_FAILED_TO_CLOSE_FILE
+              " " LOG_SUFFIX_END_SAVE_SESSION_ABORTED);
     return false;
   }
 
   tracker->saveStream = NULL;
+  SMILE_INFO(MODULE_NAME, LOG_MSG_SAVE_SESSION_ENDED);
   return true;
 }
 
 bool SLS_BeginLoadSession(const char *file) {
 
-  return SLS_Internal_BeginSession(LOAD, file);
+  RETURN_IF_NOT_INITIALIZED(LOG_SUFFIX_BEGIN_LOAD_SESSION_ABORTED);
+
+  if (SLS_Internal_BeginSession(LOAD, file)) {
+    SMILE_INFO(MODULE_NAME, LOG_MSG_LOAD_SESSION_STARTED);
+    return true;
+  }
+
+  SMILE_ERR(MODULE_NAME, LOG_SUFFIX_BEGIN_LOAD_SESSION_ABORTED);
+  return false;
 }
 
 bool SLS_HasNext(void) {
 
-  ASSERT_SLS_INITIALIZED_OR_RETURN_FALSE();
-  ASSERT_LOAD_SESSION_OPEN_OR_RETURN_FALSE();
+  RETURN_IF_NOT_INITIALIZED(LOG_SUFFIX_HAS_NEXT_ABORTED);
+
+  if (!tracker->loadStream) {
+    SMILE_ERR(MODULE_NAME,
+              LOG_CAUSE_LOAD_SESSION_NOT_OPEN " " LOG_SUFFIX_HAS_NEXT_ABORTED);
+    return false;
+  }
 
   int pos = ftell(tracker->loadStream);
 
@@ -193,46 +201,63 @@ bool SLS_HasNext(void) {
   }
 
   if (fseek(tracker->loadStream, pos, SEEK_SET) != 0) {
-    // TODO add CorruptedDataError
+    SMILE_ERR(MODULE_NAME,
+              LOG_CAUSE_INDICATOR_NOT_RESET " " LOG_SUFFIX_HAS_NEXT_ABORTED);
     return false;
   }
+
+  SMILE_INFO(MODULE_NAME, LOG_MSG_HAS_NEXT_SUCCESSFUL);
   return true;
 }
 
 char *SLS_LoadNext(void) {
 
-  ASSERT_SLS_INITIALIZED_OR_RETURN_NULL();
-  ASSERT_LOAD_SESSION_OPEN_OR_RETURN_NULL();
+  if (!tracker) {
+    SMILE_ERR(MODULE_NAME,
+              LOG_MSG_NOT_INITIALIZED " " LOG_SUFFIX_LOAD_NEXT_ABORTED);
+    return NULL;
+  }
+
+  if (!tracker->loadStream) {
+    SMILE_ERR(MODULE_NAME,
+              LOG_CAUSE_LOAD_SESSION_NOT_OPEN " " LOG_SUFFIX_LOAD_NEXT_ABORTED);
+    return NULL;
+  }
 
   long startPos = ftell(tracker->loadStream);
   long counter = 0;
   int cursor;
 
+  // Find out line length and store it in counter
   while ((cursor = fgetc(tracker->loadStream)) != EOF && cursor != '\n') {
     counter++;
   }
 
   if (counter == 0 && cursor == EOF) {
-    // TODO add EOFReachedOrEmptyLineWarn
+    SMILE_WARN(MODULE_NAME,
+               LOG_CAUSE_NO_MORE_DATA " " LOG_SUFFIX_LOAD_NEXT_ABORTED);
     return NULL;
   }
 
   int bufferSize = counter + 2; // room for '\n' and '\0'
   char *buffer = malloc(bufferSize);
   if (!buffer) {
-    // TODO add MemAllocFailedError
+    SMILE_ERR(MODULE_NAME,
+              LOG_MSG_MEM_ALLOC_FAILED " " LOG_SUFFIX_LOAD_NEXT_ABORTED);
     return NULL;
   }
 
   if (fseek(tracker->loadStream, startPos, SEEK_SET) != 0) {
     free(buffer);
-    // TODO add CorruptedDataError
+    SMILE_ERR(MODULE_NAME,
+              LOG_CAUSE_INDICATOR_NOT_RESET " " LOG_SUFFIX_LOAD_NEXT_ABORTED);
     return NULL;
   }
 
   if (!fgets(buffer, bufferSize, tracker->loadStream)) {
     free(buffer);
-    // TODO add CorruptedDataError or EOFReachedWarn
+    SMILE_WARN(MODULE_NAME,
+               LOG_CAUSE_ERROR_LOADING_DATA " " LOG_SUFFIX_LOAD_NEXT_ABORTED);
     return NULL;
   }
 
@@ -241,21 +266,29 @@ char *SLS_LoadNext(void) {
     buffer[len - 1] = '\0';
   }
 
+  SMILE_INFO(MODULE_NAME, LOG_MSG_LOAD_SUCCESSFUL);
   return buffer;
 }
 
 bool SLS_LoadNextTo(char *dest, size_t size) {
 
-  ASSERT_SLS_INITIALIZED_OR_RETURN_FALSE();
-  ASSERT_LOAD_SESSION_OPEN_OR_RETURN_FALSE();
+  RETURN_IF_NOT_INITIALIZED(LOG_SUFFIX_LOAD_NEXT_TO_ABORTED);
+
+  if (!tracker->loadStream) {
+    SMILE_ERR(MODULE_NAME, LOG_CAUSE_LOAD_SESSION_NOT_OPEN
+              " " LOG_SUFFIX_LOAD_NEXT_TO_ABORTED);
+    return NULL;
+  }
 
   if (!dest) {
-    // TODO add InvalidDestWarn
+    SMILE_WARN(MODULE_NAME,
+               LOG_CAUSE_INVALID_DEST " " LOG_SUFFIX_LOAD_NEXT_TO_ABORTED);
     return false;
   }
 
   if (!fgets(dest, size, tracker->loadStream)) {
-    // TODO add CorruptedDataError or EOFReachedWarn
+    SMILE_WARN(MODULE_NAME, LOG_CAUSE_ERROR_LOADING_DATA
+               " " LOG_SUFFIX_LOAD_NEXT_TO_ABORTED);
     return false;
   }
 
@@ -264,25 +297,34 @@ bool SLS_LoadNextTo(char *dest, size_t size) {
     dest[len - 1] = '\0';
   }
 
+  SMILE_INFO(MODULE_NAME, LOG_MSG_LOAD_SUCCESSFUL);
   return true;
 }
 
 bool SLS_EndLoadSession() {
 
-  ASSERT_LOAD_SESSION_OPEN_OR_RETURN_FALSE();
+  RETURN_IF_NOT_INITIALIZED(LOG_SUFFIX_END_LOAD_SESSION_ABORTED);
+
+  if (!tracker->loadStream) {
+    SMILE_ERR(MODULE_NAME, LOG_CAUSE_LOAD_SESSION_NOT_OPEN
+              " " LOG_SUFFIX_END_LOAD_SESSION_ABORTED);
+    return NULL;
+  }
 
   if (fclose(tracker->loadStream) == EOF) {
+    SMILE_ERR(MODULE_NAME, LOG_CAUSE_FAILED_TO_CLOSE_FILE
+              " " LOG_SUFFIX_END_LOAD_SESSION_ABORTED);
     return false;
   }
 
   tracker->loadStream = NULL;
+  SMILE_INFO(MODULE_NAME, LOG_MSG_LOAD_SESSION_ENDED);
   return true;
 }
 
 bool SLS_Shutdown(void) {
 
-  ASSERT_SLS_INITIALIZED_OR_RETURN_FALSE();
-
+  RETURN_IF_NOT_INITIALIZED();
   if (tracker->saveStream) {
     fclose(tracker->saveStream);
     tracker->saveStream = NULL;
@@ -311,10 +353,13 @@ bool SLS_Shutdown(void) {
 
 char *SLS_Internal_GetDirName(const char *dir) {
 
+  if (!tracker) {
+    SMILE_ERR(MODULE_NAME, LOG_MSG_NOT_INITIALIZED
+              " " LOG_SUFFIX_INTERNAL_GET_DIR_NAME_ABORTED);
+    return NULL;
+  }
+
   // TODO improve this, make system dependand like in LOVE2D
-
-  ASSERT_SLS_INITIALIZED_OR_RETURN_NULL();
-
   char *buffer = malloc(3);
   strcpy(buffer, "./");
   return buffer;
@@ -322,7 +367,11 @@ char *SLS_Internal_GetDirName(const char *dir) {
 
 char *SLS_Internal_GetGameName(void) {
 
-  ASSERT_SLS_INITIALIZED_OR_RETURN_NULL();
+  if (!tracker) {
+    SMILE_ERR(MODULE_NAME, LOG_MSG_NOT_INITIALIZED
+              " " LOG_SUFFIX_INTERNAL_GET_GAME_NAME_ABORTED);
+    return NULL;
+  }
 
   // TODO get root dir name
   return "breakout.txt";
@@ -330,18 +379,23 @@ char *SLS_Internal_GetGameName(void) {
 
 bool SLS_Internal_BeginSession(FileInteractionMode mode, const char *file) {
 
-  ASSERT_SLS_INITIALIZED_OR_RETURN_FALSE();
-
+  RETURN_IF_NOT_INITIALIZED();
   FILE **currStream;
   char *openAs;
   switch (mode) {
   case SAVE:
-    ASSERT_SAVE_SESSION_CLOSED_OR_RETURN_FALSE();
+    if (tracker->saveStream) {
+      SMILE_WARN(MODULE_NAME, LOG_CAUSE_SAVE_SESSION_ALREADY_OPEN);
+      return false;
+    }
     currStream = &tracker->saveStream;
     openAs = "w";
     break;
   case LOAD:
-    ASSERT_LOAD_SESSION_CLOSED_OR_RETURN_FALSE();
+    if (tracker->loadStream) {
+      SMILE_WARN(MODULE_NAME, LOG_CAUSE_LOAD_SESSION_ALREADY_OPEN);
+      return false;
+    }
     currStream = &tracker->loadStream;
     openAs = "r";
     break;
@@ -352,7 +406,7 @@ bool SLS_Internal_BeginSession(FileInteractionMode mode, const char *file) {
 
   if (!file) {
     if (!tracker->filePath) {
-      // TODO add DestFileNotSetError
+      SMILE_ERR(MODULE_NAME, LOG_CAUSE_DEST_FILE_NOT_SET);
       return false;
     }
     targetFile = tracker->filePath;
@@ -360,7 +414,7 @@ bool SLS_Internal_BeginSession(FileInteractionMode mode, const char *file) {
     int totalLen = strlen(tracker->dirPath) + strlen(file) + 1;
     targetFile = malloc(totalLen);
     if (!targetFile) {
-      // TODO add MemAllocFailedError
+      SMILE_ERR(MODULE_NAME, LOG_MSG_MEM_ALLOC_FAILED);
       return false;
     }
 
@@ -368,7 +422,7 @@ bool SLS_Internal_BeginSession(FileInteractionMode mode, const char *file) {
     int targetFileLen =
         snprintf(targetFile, totalLen, "%s%s", tracker->dirPath, file);
     if (targetFileLen < 0 || targetFileLen >= totalLen) {
-      // TODO add DataTruncatedError
+      SMILE_ERR(MODULE_NAME, LOG_CAUSE_DATA_TRUNCATED_FORMATTING);
       free(targetFile);
       return false;
     }
@@ -378,7 +432,7 @@ bool SLS_Internal_BeginSession(FileInteractionMode mode, const char *file) {
   bool success = true;
   *currStream = fopen(targetFile, openAs);
   if (!*currStream) {
-    // TODO add FileNotFoundError
+    SMILE_ERR(MODULE_NAME, LOG_CAUSE_FILE_NOT_FOUND);
     success = false;
   }
 
