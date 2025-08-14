@@ -2,17 +2,16 @@
 #define LOG_H
 
 // --------------------------------------------------
-// Defines
+// Other defines
 // --------------------------------------------------
 
-#define SMILE_INFO(module, message, ...)                                       \
-  SMILE_Log(SMILE_LOG_INFO, module, message, ##__VA_ARGS__)
-#define SMILE_WARN(module, message, ...)                                       \
-  SMILE_Log(SMILE_LOG_WARNING, module, message, ##__VA_ARGS__)
-#define SMILE_ERR(module, message, ...)                                        \
-  SMILE_Log(SMILE_LOG_ERROR, module, message, ##__VA_ARGS__)
-#define SMILE_DEBUG(module, message, ...)                                      \
-  SMILE_Log(SMILE_LOG_DEBUG, module, message, ##__VA_ARGS__)
+#define SMILE_INFO(module, msg) SMILE_Log(SMILE_LOG_INFO, module, "%s", msg)
+#define SMILE_WARN(module, cause, conseq)                                      \
+  SMILE_Log(SMILE_LOG_WARNING, module, "%s %s", cause, conseq)
+#define SMILE_ERR(module, cause, conseq)                                       \
+  SMILE_Log(SMILE_LOG_ERROR, module, "%s %s", cause, conseq)
+// #define SMILE_DEBUG_MSG(module, msg)                                           \
+//   SMILE_Log(SMILE_LOG_DEBUG, module, "%s", msg)
 
 // --------------------------------------------------
 // Data types

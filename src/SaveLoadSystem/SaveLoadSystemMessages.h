@@ -14,7 +14,8 @@
 #define LOG_CAUSE_SAVE_SESSION_ALREADY_OPEN "Save Session already open."
 #define LOG_CAUSE_LOAD_SESSION_ALREADY_OPEN "Load Session already open."
 #define LOG_CAUSE_DEST_FILE_NOT_SET "Destination file not set."
-#define LOG_CAUSE_FAILED_TO_CLOSE_FILE "Failed to close saveStream."
+#define LOG_CAUSE_FAILED_TO_OPEN_FILE "Failed to open file."
+#define LOG_CAUSE_FAILED_TO_CLOSE_FILE "Failed to close file."
 #define LOG_CAUSE_DIR_NOT_FOUND "Target directory not found."
 #define LOG_CAUSE_FILE_NOT_FOUND "Target file not found."
 #define LOG_CAUSE_NULL_DATA "Data is NULL."
@@ -28,36 +29,37 @@
 // --------------------------------------------------
 // Messages - Positive / Informational
 // --------------------------------------------------
-#define LOG_MSG_INIT_SUCCESSFUL "Init successful."
-#define LOG_MSG_SAVE_SESSION_STARTED "Save session started."
-#define LOG_MSG_SAVE_SESSION_ENDED "Save session ended."
-#define LOG_MSG_LOAD_SESSION_STARTED "Load session started."
-#define LOG_MSG_LOAD_SESSION_ENDED "Load session ended."
-#define LOG_MSG_SAVE_SUCCESSFUL "Data saved successfully."
-#define LOG_MSG_LOAD_SUCCESSFUL "Data loaded successfully."
-#define LOG_MSG_LOAD_TO_SUCCESSFUL "Data loaded to buffer successfully."
-#define LOG_MSG_HAS_NEXT_SUCCESSFUL "Next data found successfully."
+#define LOG_INFO_INIT_SUCCESSFUL "Init successful."
+#define LOG_INFO_SAVE_SESSION_STARTED "Save session started."
+#define LOG_INFO_SAVE_SESSION_ENDED "Save session ended."
+#define LOG_INFO_LOAD_SESSION_STARTED "Load session started."
+#define LOG_INFO_LOAD_SESSION_ENDED "Load session ended."
+#define LOG_INFO_SAVE_SUCCESSFUL "Data saved successfully."
+#define LOG_INFO_LOAD_SUCCESSFUL "Data loaded successfully."
+#define LOG_INFO_LOAD_TO_SUCCESSFUL "Data loaded to buffer successfully."
+#define LOG_INFO_HAS_NEXT_SUCCESSFUL "Next data found successfully."
 
 // --------------------------------------------------
-// Effects / Suffixes - Public
+// Effects / CONSEQes - Public
 // --------------------------------------------------
-#define LOG_SUFFIX_SAVE_NEXT_ABORTED "SaveNext aborted."
-#define LOG_SUFFIX_BEGIN_SAVE_SESSION_ABORTED "BeginSaveSession aborted."
-#define LOG_SUFFIX_END_SAVE_SESSION_ABORTED "EndSaveSession aborted."
-#define LOG_SUFFIX_BEGIN_LOAD_SESSION_ABORTED "BeginLoadSession aborted."
-#define LOG_SUFFIX_HAS_NEXT_ABORTED "HasNext aborted."
-#define LOG_SUFFIX_END_LOAD_SESSION_ABORTED "EndLoadSession aborted."
-#define LOG_SUFFIX_LOAD_NEXT_ABORTED "LoadNext aborted."
-#define LOG_SUFFIX_LOAD_NEXT_TO_ABORTED "LoadNextTo aborted."
-#define LOG_SUFFIX_SHUTDOWN_ABORTED "Shutdown aborted."
+#define LOG_CONSEQ_SAVE_NEXT_ABORTED "SaveNext aborted."
+#define LOG_CONSEQ_BEGIN_SAVE_SESSION_ABORTED "BeginSaveSession aborted."
+#define LOG_CONSEQ_END_SAVE_SESSION_ABORTED "EndSaveSession aborted."
+#define LOG_CONSEQ_BEGIN_LOAD_SESSION_ABORTED "BeginLoadSession aborted."
+#define LOG_CONSEQ_HAS_NEXT_ABORTED "HasNext aborted."
+#define LOG_CONSEQ_END_LOAD_SESSION_ABORTED "EndLoadSession aborted."
+#define LOG_CONSEQ_LOAD_NEXT_ABORTED "LoadNext aborted."
+#define LOG_CONSEQ_LOAD_NEXT_TO_ABORTED "LoadNextTo aborted."
+#define LOG_CONSEQ_SHUTDOWN_ABORTED "Shutdown aborted."
+#define LOG_CONSEQ_LOAD_GAME_ABORTED "LoadGame aborted."
 
 // --------------------------------------------------
-// Effects / Suffixes - Internal
+// Effects / CONSEQes - Internal
 // --------------------------------------------------
-#define LOG_SUFFIX_INTERNAL_BEGIN_SESSION_ABORTED                              \
+#define LOG_CONSEQ_INTERNAL_BEGIN_SESSION_ABORTED                              \
   "Internal BeginSession aborted."
-#define LOG_SUFFIX_INTERNAL_GET_DIR_NAME_ABORTED "Internal GetDirName aborted."
-#define LOG_SUFFIX_INTERNAL_GET_GAME_NAME_ABORTED                              \
+#define LOG_CONSEQ_INTERNAL_GET_DIR_NAME_ABORTED "Internal GetDirName aborted."
+#define LOG_CONSEQ_INTERNAL_GET_GAME_NAME_ABORTED                              \
   "Internal GetGameName aborted."
 
 #endif

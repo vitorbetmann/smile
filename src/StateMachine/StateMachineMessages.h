@@ -24,24 +24,24 @@
 #define LOG_MSG_STATE_CREATION_SUCCESSFUL "Successful state creation:"
 #define LOG_MSG_STATE_CHANGE_SUCCESSFUL "Successful state change to:"
 
-// Suffixes - Public
-#define LOG_SUFFIX_DRAW_ABORTED "Draw aborted."
-#define LOG_SUFFIX_UPDATE_ABORTED "Update aborted."
-#define LOG_SUFFIX_REGISTER_STATE_ABORTED "RegisterState aborted."
-#define LOG_SUFFIX_GET_CURR_STATE_NAME_ABORTED "GetCurrStateName aborted."
-#define LOG_SUFFIX_CHANGE_STATE_TO_ABORTED "ChangeStateTo aborted."
-#define LOG_SUFFIX_IS_STATE_REGISTERED_ABORTED "IsStateRegistered aborted."
+// CONSEQes - Public
+#define LOG_CONSEQ_DRAW_ABORTED "Draw aborted."
+#define LOG_CONSEQ_UPDATE_ABORTED "Update aborted."
+#define LOG_CONSEQ_REGISTER_STATE_ABORTED "RegisterState aborted."
+#define LOG_CONSEQ_GET_CURR_STATE_NAME_ABORTED "GetCurrStateName aborted."
+#define LOG_CONSEQ_CHANGE_STATE_TO_ABORTED "ChangeStateTo aborted."
+#define LOG_CONSEQ_IS_STATE_REGISTERED_ABORTED "IsStateRegistered aborted."
 
-// Suffixes - Internal
-#define LOG_SUFFIX_INTERNAL_GET_TRACKER_ABORTED "Internal_GetTracker aborted."
-#define LOG_SUFFIX_INTERNAL_SET_CURR_STATE_ABORTED                             \
+// CONSEQes - Internal
+#define LOG_CONSEQ_INTERNAL_GET_TRACKER_ABORTED "Internal_GetTracker aborted."
+#define LOG_CONSEQ_INTERNAL_SET_CURR_STATE_ABORTED                             \
   "Internal_SetCurrState aborted."
-#define LOG_SUFFIX_INTERNAL_GET_CURR_STATE_ABORTED                             \
+#define LOG_CONSEQ_INTERNAL_GET_CURR_STATE_ABORTED                             \
   "Internal_GetCurrState aborted."
-#define LOG_SUFFIX_INTERNAL_GET_STATE_ABORTED "Internal_GetState aborted."
+#define LOG_CONSEQ_INTERNAL_GET_STATE_ABORTED "Internal_GetState aborted."
 
-// Suffixes - Tests
-#define LOG_SUFFIX_TEST_GET_STATE_COUNT_ABORTED                                \
+// CONSEQes - Tests
+#define LOG_CONSEQ_TEST_GET_STATE_COUNT_ABORTED                                \
   "Internal_GetStateCount aborted."
 
 #endif

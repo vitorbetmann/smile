@@ -33,6 +33,7 @@ char *SLS_Internal_GetDirName(const char *dir);
 char *SLS_Internal_GetGameName(void);
 void SLS_Internal_SetFileFormat(const char *file);
 bool SLS_Internal_EndsWith(const char *str, const char *suffix);
-bool SLS_Internal_BeginSession(FileInteractionMode mode, const char *file);
+bool SLS_Internal_BeginSession(FileInteractionMode mode, const char *file,
+                               const char *conseqAbort);
 
 #endif

@@ -21,10 +21,10 @@
 // --------------------------------------------------
 
 // Helper macro to check initialization and return (with error log)
-#define RETURN_IF_NOT_INITIALIZED(suffix)                                      \
+#define RETURN_IF_NOT_INITIALIZED(CONSEQ)                                      \
   do {                                                                         \
     if (!tracker) {                                                            \
-      SMILE_ERR(STATE_MACHINE_NAME, LOG_MSG_NOT_INITIALIZED " " suffix);       \
+      SMILE_ERR(STATE_MACHINE_NAME, LOG_CAUSE_NOT_INITIALIZED, CONSEQ);        \
       return false;                                                            \
     }                                                                          \
   } while (0)
@@ -43,15 +43,15 @@ static bool canMalloc = true;
 bool SM_Init(void) {
 
   if (tracker) {
-    SMILE_WARN(STATE_MACHINE_NAME,
-               LOG_MSG_ALREADY_INITIALIZED " " LOG_MSG_INIT_ABORTED);
+    SMILE_WARN(STATE_MACHINE_NAME, LOG_CAUSE_ALREADY_INITIALIZED,
+               LOG_CONSEQ_INIT_ABORTED);
     return false;
   }
 
   tracker = SM_Test_Malloc(sizeof(StateTracker));
   if (!tracker) {
-    SMILE_ERR(STATE_MACHINE_NAME,
-              LOG_MSG_MEM_ALLOC_FAILED " " LOG_MSG_INIT_ABORTED);
+    SMILE_ERR(STATE_MACHINE_NAME, LOG_CAUSE_MEM_ALLOC_FAILED,
+              LOG_CONSEQ_INIT_ABORTED);
     return false;
   }
 
@@ -59,7 +59,7 @@ bool SM_Init(void) {
   tracker->currState = NULL;
   stateCount = 0;
 
-  SMILE_INFO(STATE_MACHINE_NAME, LOG_MSG_INIT_SUCCESSFUL);
+  SMILE_INFO(STATE_MACHINE_NAME, LOG_INFO_INIT_SUCCESSFUL);
 
   return true;
 }
@@ -70,17 +70,17 @@ bool SM_RegisterState(const char *name, void (*enterFn)(void *),
                       void (*updateFn)(float), void (*drawFn)(void),
                       void (*exitFn)(void)) {
 
-  RETURN_IF_NOT_INITIALIZED(LOG_SUFFIX_REGISTER_STATE_ABORTED);
+  RETURN_IF_NOT_INITIALIZED(LOG_CONSEQ_REGISTER_STATE_ABORTED);
 
   if (!name) {
-    SMILE_ERR(STATE_MACHINE_NAME,
-              LOG_CAUSE_NULL_NAME " " LOG_EFFECT_REGISTER_STATE_ABORTED);
+    SMILE_ERR(STATE_MACHINE_NAME, LOG_CAUSE_NULL_NAME,
+              LOG_EFFECT_REGISTER_STATE_ABORTED);
     return false;
   }
 
   if (strlen(name) == 0) {
-    SMILE_ERR(STATE_MACHINE_NAME,
-              LOG_CAUSE_EMPTY_NAME " " LOG_EFFECT_REGISTER_STATE_ABORTED);
+    SMILE_ERR(STATE_MACHINE_NAME, LOG_CAUSE_EMPTY_NAME,
+              LOG_EFFECT_REGISTER_STATE_ABORTED);
     return false;
   }
 
@@ -98,15 +98,15 @@ bool SM_RegisterState(const char *name, void (*enterFn)(void *),
 
   State *newState = malloc(sizeof(State));
   if (!newState) {
-    SMILE_ERR(STATE_MACHINE_NAME,
-              LOG_MSG_MEM_ALLOC_FAILED " " LOG_SUFFIX_REGISTER_STATE_ABORTED);
+    SMILE_ERR(STATE_MACHINE_NAME, LOG_CAUSE_MEM_ALLOC_FAILED,
+              LOG_CONSEQ_REGISTER_STATE_ABORTED);
     return false;
   }
 
   char *stateName = malloc(strlen(name) + 1);
   if (!stateName) {
-    SMILE_ERR(STATE_MACHINE_NAME,
-              LOG_MSG_MEM_ALLOC_FAILED " " LOG_SUFFIX_REGISTER_STATE_ABORTED);
+    SMILE_ERR(STATE_MACHINE_NAME, LOG_CAUSE_MEM_ALLOC_FAILED,
+              LOG_CONSEQ_REGISTER_STATE_ABORTED);
     free(newState);
     return false;
   }
@@ -122,8 +122,8 @@ bool SM_RegisterState(const char *name, void (*enterFn)(void *),
   if (!temp) {
     free((char *)newState->name);
     free(newState);
-    SMILE_ERR(STATE_MACHINE_NAME,
-              LOG_MSG_MEM_ALLOC_FAILED " " LOG_SUFFIX_REGISTER_STATE_ABORTED);
+    SMILE_ERR(STATE_MACHINE_NAME, LOG_CAUSE_MEM_ALLOC_FAILED,
+              LOG_CONSEQ_REGISTER_STATE_ABORTED);
     return false;
   }
   temp->state = newState;
@@ -133,13 +133,13 @@ bool SM_RegisterState(const char *name, void (*enterFn)(void *),
   stateCount++;
 
   SMILE_INFO(STATE_MACHINE_NAME, "%s '%s'. Total states: %d.",
-             LOG_MSG_STATE_CREATION_SUCCESSFUL, name, stateCount);
+             LOG_INFO_STATE_CREATION_SUCCESSFUL, name, stateCount);
 
   return true;
 }
 
 bool SM_IsStateRegistered(char *name) {
-  RETURN_IF_NOT_INITIALIZED(LOG_SUFFIX_IS_STATE_REGISTERED_ABORTED);
+  RETURN_IF_NOT_INITIALIZED(LOG_CONSEQ_IS_STATE_REGISTERED_ABORTED);
 
   StateMap *entry;
   HASH_FIND_STR(tracker->stateMap, name, entry);
@@ -148,17 +148,17 @@ bool SM_IsStateRegistered(char *name) {
 
 bool SM_ChangeStateTo(const char *name, void *args) {
 
-  RETURN_IF_NOT_INITIALIZED(LOG_SUFFIX_CHANGE_STATE_TO_ABORTED);
+  RETURN_IF_NOT_INITIALIZED(LOG_CONSEQ_CHANGE_STATE_TO_ABORTED);
 
   if (!name) {
-    SMILE_ERR(STATE_MACHINE_NAME,
-              LOG_CAUSE_NULL_NAME " " LOG_EFFECT_CHANGE_STATE_ABORTED);
+    SMILE_ERR(STATE_MACHINE_NAME, LOG_CAUSE_NULL_NAME,
+              LOG_EFFECT_CHANGE_STATE_ABORTED);
     return false;
   }
 
   if (strlen(name) == 0) {
-    SMILE_ERR(STATE_MACHINE_NAME,
-              LOG_CAUSE_EMPTY_NAME " " LOG_EFFECT_CHANGE_STATE_ABORTED);
+    SMILE_ERR(STATE_MACHINE_NAME, LOG_CAUSE_EMPTY_NAME,
+              LOG_EFFECT_CHANGE_STATE_ABORTED);
     return false;
   }
 
@@ -181,25 +181,25 @@ bool SM_ChangeStateTo(const char *name, void *args) {
     currState->enter(args);
   }
 
-  SMILE_INFO(STATE_MACHINE_NAME, "%s '%s'.", LOG_MSG_STATE_CHANGE_SUCCESSFUL,
+  SMILE_INFO(STATE_MACHINE_NAME, "%s '%s'.", LOG_INFO_STATE_CHANGE_SUCCESSFUL,
              name);
 
   return true;
 }
 
 bool SM_Update(float dt) {
-  RETURN_IF_NOT_INITIALIZED(LOG_SUFFIX_UPDATE_ABORTED);
+  RETURN_IF_NOT_INITIALIZED(LOG_CONSEQ_UPDATE_ABORTED);
 
   State *currState = (State *)SM_Internal_GetCurrState();
 
   if (!currState) {
-    SMILE_ERR(STATE_MACHINE_NAME, LOG_CAUSE_STATE_NOT_FOUND
-              " " LOG_MSG_CURRENT_STATE_NULL " " LOG_EFFECT_UPDATE_ABORTED);
+    SMILE_ERR(STATE_MACHINE_NAME, LOG_CAUSE_STATE_NOT_FOUND,
+              LOG_INFO_CURRENT_STATE_NULL, LOG_EFFECT_UPDATE_ABORTED);
     return false;
   }
 
   if (!currState->update) {
-    SMILE_WARN(STATE_MACHINE_NAME, "%s '%s'. %s", LOG_MSG_UPDATE_FUNCTION_NULL,
+    SMILE_WARN(STATE_MACHINE_NAME, "%s '%s'. %s", LOG_INFO_UPDATE_FUNCTION_NULL,
                currState->name, LOG_EFFECT_UPDATE_ABORTED);
     return false;
   }
@@ -209,18 +209,18 @@ bool SM_Update(float dt) {
 }
 
 bool SM_Draw(void) {
-  RETURN_IF_NOT_INITIALIZED(LOG_SUFFIX_DRAW_ABORTED);
+  RETURN_IF_NOT_INITIALIZED(LOG_CONSEQ_DRAW_ABORTED);
 
   State *currState = (State *)SM_Internal_GetCurrState();
 
   if (!currState) {
-    SMILE_ERR(STATE_MACHINE_NAME, LOG_CAUSE_STATE_NOT_FOUND
-              " " LOG_MSG_CURRENT_STATE_NULL " " LOG_EFFECT_DRAW_ABORTED);
+    SMILE_ERR(STATE_MACHINE_NAME, LOG_CAUSE_STATE_NOT_FOUND,
+              LOG_INFO_CURRENT_STATE_NULL, LOG_EFFECT_DRAW_ABORTED);
     return false;
   }
 
   if (!currState->draw) {
-    SMILE_WARN(STATE_MACHINE_NAME, "%s '%s'. %s", LOG_MSG_DRAW_FUNCTION_NULL,
+    SMILE_WARN(STATE_MACHINE_NAME, "%s '%s'. %s", LOG_INFO_DRAW_FUNCTION_NULL,
                currState->name, LOG_EFFECT_DRAW_ABORTED);
     return false;
   }
@@ -231,7 +231,7 @@ bool SM_Draw(void) {
 
 bool SM_Shutdown(void) {
 
-  RETURN_IF_NOT_INITIALIZED(LOG_SUFFIX_SHUTDOWN_ABORTED);
+  RETURN_IF_NOT_INITIALIZED(LOG_CONSEQ_SHUTDOWN_ABORTED);
 
   State *currState = (State *)SM_Internal_GetCurrState();
   if (currState && currState->exit) {
@@ -251,7 +251,7 @@ bool SM_Shutdown(void) {
   free(tracker);
   tracker = NULL;
 
-  SMILE_INFO(STATE_MACHINE_NAME, LOG_MSG_SHUTDOWN_SUCCESSFUL);
+  SMILE_INFO(STATE_MACHINE_NAME, LOG_INFO_SHUTDOWN_SUCCESSFUL);
 
   return true;
 }
@@ -259,8 +259,8 @@ bool SM_Shutdown(void) {
 const char *SM_GetCurrStateName(void) {
 
   if (!tracker) {
-    SMILE_ERR(STATE_MACHINE_NAME, LOG_MSG_NOT_INITIALIZED
-              " " LOG_SUFFIX_GET_CURR_STATE_NAME_ABORTED);
+    SMILE_ERR(STATE_MACHINE_NAME, LOG_CAUSE_NOT_INITIALIZED,
+              LOG_CONSEQ_GET_CURR_STATE_NAME_ABORTED);
     return NULL;
   }
 
@@ -273,7 +273,7 @@ const char *SM_GetCurrStateName(void) {
 
 bool SM_Internal_SetCurrState(const State *state) {
 
-  RETURN_IF_NOT_INITIALIZED(LOG_SUFFIX_INTERNAL_SET_CURR_STATE_ABORTED);
+  RETURN_IF_NOT_INITIALIZED(LOG_CONSEQ_INTERNAL_SET_CURR_STATE_ABORTED);
 
   tracker->currState = state;
   return true;
@@ -282,8 +282,8 @@ bool SM_Internal_SetCurrState(const State *state) {
 const State *SM_Internal_GetCurrState(void) {
 
   if (!tracker) {
-    SMILE_ERR(STATE_MACHINE_NAME, LOG_MSG_NOT_INITIALIZED
-              " " LOG_SUFFIX_INTERNAL_GET_CURR_STATE_ABORTED);
+    SMILE_ERR(STATE_MACHINE_NAME, LOG_CAUSE_NOT_INITIALIZED,
+              LOG_CONSEQ_INTERNAL_GET_CURR_STATE_ABORTED);
     return NULL;
   }
 
@@ -293,9 +293,9 @@ const State *SM_Internal_GetCurrState(void) {
 const State *SM_Internal_GetState(const char *name) {
 
   if (!tracker) {
-    SMILE_ERR(STATE_MACHINE_NAME, "%s %s '%s'. %s", LOG_MSG_NOT_INITIALIZED,
+    SMILE_ERR(STATE_MACHINE_NAME, "%s %s '%s'. %s", LOG_INFO_NOT_INITIALIZED,
               LOG_CAUSE_STATE_NOT_FOUND, name,
-              LOG_SUFFIX_INTERNAL_GET_STATE_ABORTED);
+              LOG_CONSEQ_INTERNAL_GET_STATE_ABORTED);
     return NULL;
   }
 

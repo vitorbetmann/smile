@@ -5,6 +5,7 @@
 #include "Log.h"
 #include <stdarg.h>
 #include <stdio.h>
+#include <time.h>
 
 // --------------------------------------------------
 // Defines
@@ -23,7 +24,7 @@ void SMILE_Log(LogType type, const char *module, const char *message, ...) {
   const char *color;
   const char *prefix;
 
-  // determine color based on type
+  // Determine color based on type
   switch (type) {
   case SMILE_LOG_INFO:
 #ifdef SMILE_INFO_ENABLED
@@ -58,7 +59,14 @@ void SMILE_Log(LogType type, const char *module, const char *message, ...) {
     // #endif
   }
 
-  fprintf(stderr, "%s[SMILE %s from %s]: ", color, prefix, module);
+  time_t epochTime = time(NULL);
+  struct tm localTime;
+  localtime_r(&epochTime, &localTime);
+  char timeBuffer[9];
+  strftime(timeBuffer, sizeof(timeBuffer), "%H:%M:%S", &localTime);
+
+  fprintf(stderr, "%s [%s] [SMILE %s from %s]: ", color, timeBuffer, prefix,
+          module);
   va_list args;
   va_start(args, message);
   vfprintf(stderr, message, args);
