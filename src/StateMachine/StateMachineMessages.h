@@ -2,27 +2,20 @@
 #define STATE_MACHINE_MESSAGES_H
 
 // Module specific messages
-#define LOG_MSG_DRAW_FUNCTION_NULL "Draw function is NULL."
-#define LOG_MSG_UPDATE_FUNCTION_NULL "Update function is NULL."
-#define LOG_MSG_CURRENT_STATE_NULL "Current state is NULL."
+#define LOG_INFO_DRAW_FUNCTION_NULL "Draw function is NULL."
+#define LOG_INFO_UPDATE_FUNCTION_NULL "Update function is NULL."
+// Requires argument after
+#define LOG_INFO_STATE_NOT_FOUND "State not found:"
+#define LOG_INFO_NO_VALID_FUNCTIONS "State has no valid functions:"
+#define LOG_INFO_STATE_ALREADY_EXISTS "State already exists:"
+#define LOG_INFO_STATE_CREATION_SUCCESSFUL "Successful state creation:"
+#define LOG_INFO_STATE_CHANGE_SUCCESSFUL "Successful state change to:"
 
 // Causes
+#define LOG_CAUSE_CURRENT_STATE_NULL "Current state is NULL."
 #define LOG_CAUSE_ALREADY_EXISTS "State already exists"
 #define LOG_CAUSE_NO_VALID_FUNCTIONS "State has no valid functions"
 #define LOG_CAUSE_STATE_NOT_FOUND "State not found"
-
-// Effects (Consequence)
-#define LOG_EFFECT_REGISTER_STATE_ABORTED "RegisterState aborted"
-#define LOG_EFFECT_CHANGE_STATE_ABORTED "ChangeStateTo aborted"
-#define LOG_EFFECT_DRAW_ABORTED "Draw aborted"
-#define LOG_EFFECT_UPDATE_ABORTED "Update aborted"
-
-// Requires argument after
-#define LOG_MSG_STATE_NOT_FOUND "State not found:"
-#define LOG_MSG_NO_VALID_FUNCTIONS "State has no valid functions:"
-#define LOG_MSG_STATE_ALREADY_EXISTS "State already exists:"
-#define LOG_MSG_STATE_CREATION_SUCCESSFUL "Successful state creation:"
-#define LOG_MSG_STATE_CHANGE_SUCCESSFUL "Successful state change to:"
 
 // CONSEQes - Public
 #define LOG_CONSEQ_DRAW_ABORTED "Draw aborted."
