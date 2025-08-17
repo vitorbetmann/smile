@@ -4,13 +4,14 @@
 #include "SaveLoadSystem.h"
 #include "SaveLoadSystemInternal.h"
 #include "src/SaveLoadSystem/SaveLoadSystemMessages.h"
-#include "src/_Internals/Log/Log.h"
+#include "src/_Internals/Log/LogInternal.h"
 #include "src/_Internals/Log/LogMessages.h"
 #include <string.h>
 
 // --------------------------------------------------
 // Defines - Values
 // --------------------------------------------------
+#define MODULE_NAME "SaveLoadSystem"
 
 typedef enum {
   SUCCESS,

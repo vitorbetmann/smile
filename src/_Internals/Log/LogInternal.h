@@ -1,5 +1,5 @@
-#ifndef LOG_H
-#define LOG_H
+#ifndef LOG_INTERNAL_H
+#define LOG_INTERNAL_H
 
 // --------------------------------------------------
 // Other defines
@@ -28,6 +28,13 @@
 // #define SMILE_DEBUG_MSG(module, msg)                                           \
 //   SMILE_Log(SMILE_LOG_DEBUG, module, "%s", msg)
 
+#define SMILE_FATAL(module, cause, conseq)                                     \
+  SMILE_Log(SMILE_LOG_FATAL, module, "%s %s", cause, conseq)
+#define SMILE_FATAL_WITH_NAME(module, cause, name, conseq)                     \
+  SMILE_Log(SMILE_LOG_FATAL, module, "%s '%s'. %s", cause, name, conseq)
+#define SMILE_FATAL_FMT(module, fmt, ...)                                      \
+  SMILE_Log(SMILE_LOG_FATAL, module, fmt, __VA_ARGS__)
+
 // --------------------------------------------------
 // Data types
 // --------------------------------------------------
@@ -37,12 +44,27 @@ typedef enum {
   SMILE_LOG_WARNING,
   SMILE_LOG_ERROR,
   SMILE_LOG_DEBUG,
+  SMILE_LOG_FATAL,
+  SMILE_LOG_USER,
 } LogType;
 
 // --------------------------------------------------
 // Prototypes
 // --------------------------------------------------
 
-void SMILE_Log(LogType type, const char *module, const char *message, ...);
+/**
+ * @brief Logs a message with a specified type and module name.
+ *
+ * Formats and outputs a log message to stderr with timestamp, color coding,
+ * and a prefix based on the log type. Supports printf-style format strings.
+ *
+ * @param type   The log message type (INFO, WARNING, ERROR, FATAL, USER).
+ * @param module The name of the originating module.
+ * @param msg      The format string (printf-style).
+ * @param ...    Arguments matching the format string.
+ *
+ * @return void
+ */
+void SMILE_Log(LogType type, const char *module, const char *msg, ...);
 
 #endif

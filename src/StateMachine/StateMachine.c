@@ -7,7 +7,7 @@
 // --------------------------------------------------
 
 #include "StateMachine.h"
-#include "../_Internals/Log/Log.h"
+#include "../_Internals/Log/LogInternal.h"
 #include "../_Internals/Log/LogMessages.h"
 #include "../tests/StateMachine/StateMachineTest.h"
 #include "StateMachineInternal.h"
@@ -28,6 +28,14 @@
     if (!tracker) {                                                            \
       SMILE_ERR(MODULE_NAME, LOG_CAUSE_NOT_INITIALIZED, CONSEQ);               \
       return false;                                                            \
+    }                                                                          \
+  } while (0)
+
+#define RETURN_NULL_IF_NOT_INITIALIZED(CONSEQ)                                 \
+  do {                                                                         \
+    if (!tracker) {                                                            \
+      SMILE_ERR(MODULE_NAME, LOG_CAUSE_NOT_INITIALIZED, CONSEQ);               \
+      return NULL;                                                             \
     }                                                                          \
   } while (0)
 
@@ -292,11 +300,7 @@ const State *SM_Internal_GetCurrState(void) {
 
 const State *SM_Internal_GetState(const char *name) {
 
-  if (!tracker) {
-    SMILE_ERR(MODULE_NAME, LOG_CAUSE_NOT_INITIALIZED,
-              LOG_CONSEQ_INTERNAL_GET_STATE_ABORTED);
-    return NULL;
-  }
+  RETURN_NULL_IF_NOT_INITIALIZED(LOG_CONSEQ_INTERNAL_GET_STATE_ABORTED);
 
   StateMap *sm;
   HASH_FIND_STR(tracker->stateMap, name, sm);
