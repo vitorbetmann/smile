@@ -16,14 +16,17 @@ typedef void (*SMILE_FatalHandler)(void);
 // --------------------------------------------------
 
 /**
- * @brief Logs a user-level message from a specified location.
+ * @brief Logs a formatted SMILE-style message to the terminal.
  *
- * This is a convenience wrapper around SMILE_Log() that always logs with
- * the USER log type. It is intended for application-level or ad-hoc messages,
- * rather than system diagnostics.
+ * Each message includes a timestamp, the SMILE USER tag, the origin,
+ * and the user-provided text. Output is written to standard error with
+ * coloring for readability. A newline is automatically appended.
  *
- * @param location A string identifying the origin of the message
- *                 (e.g., a function name or where in the program).
+ * Example output:
+ * [09:10:11] [SMILE USER from main]: Starting my new game.
+ *
+ * @param origin   A string identifying the source of the message (e.g.,
+ *                 function name or point in the program).
  * @param msg      The format string (printf-style).
  * @param ...      Arguments matching the format string.
  *
@@ -31,14 +34,14 @@ typedef void (*SMILE_FatalHandler)(void);
  *
  * @author Vitor Betmann
  */
-void LOG(const char *location, const char *msg, ...);
+void LOG(const char *origin, const char *msg, ...);
 
 /**
  * @brief Sets a custom handler for fatal log events.
  *
- * By default, fatal logs terminate the program via SMILE_DefaultFatalHandler().
- * You can override this behavior by providing your own function. Passing NULL
- * restores the default handler.
+ * By default, fatal logs terminate the program immediately via
+ * SMILE_DefaultFatalHandler(). You can override this behavior by providing your
+ * own function. Passing NULL restores the default handler.
  *
  * @param handler Pointer to a function with no parameters and no return value.
  *

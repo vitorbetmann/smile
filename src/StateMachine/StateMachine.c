@@ -147,7 +147,7 @@ bool SM_RegisterState(const char *name, void (*enterFn)(void *),
   return true;
 }
 
-bool SM_IsStateRegistered(char *name) {
+bool SM_IsStateRegistered(const char *name) {
   RETURN_FALSE_IF_NOT_INITIALIZED(LOG_CONSEQ_IS_STATE_REGISTERED_ABORTED);
 
   StateMap *entry;

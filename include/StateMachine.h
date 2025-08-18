@@ -61,7 +61,7 @@ bool SM_RegisterState(const char *name, void (*enterFn)(void *),
  * @return true if a state with the given name exists, false otherwise.
  * @author Vitor Betmann
  */
-bool SM_IsStateRegistered(char *name);
+bool SM_IsStateRegistered(const char *name);
 
 /**
  * @brief Switches to a different state by name, optionally passing arguments.

@@ -64,10 +64,10 @@ SMILE_FatalHandler fatalHandler = SMILE_DefaultFatalHandler;
 // Functions - Public
 // --------------------------------------------------
 
-void LOG(const char *location, const char *msg, ...) {
+void LOG(const char *origin, const char *msg, ...) {
   va_list args;
   va_start(args, msg);
-  SMILE_LogV(SMILE_LOG_USER, location, msg, args);
+  SMILE_LogV(SMILE_LOG_USER, origin, msg, args);
   va_end(args);
 }
 
