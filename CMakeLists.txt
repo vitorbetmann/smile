@@ -19,6 +19,9 @@ set(RAYLIB_INCLUDE "${RAYLIB_DIR}/include")
 add_library(smile STATIC
     src/StateMachine/StateMachine.c
     src/ParticleSystem/ParticleSystem.c
+    src/SaveLoadSystem/SaveLoadSystem.c
+
+    src/_Internals/Log/Log.c
 )
 
 # Include raylib headers for Smile
@@ -39,7 +42,13 @@ target_include_directories(smile PRIVATE "${RAYLIB_SRC_DIR}")
 option(SMILE_RELEASE "Compile SMILE in release mode" OFF)
 
 # Option to enable/disable warnings
-option(SMILE_WARNINGS "Enable runtime warning messages from SMILE" ON)
+option(SMILE_WARNINGS_ENABLED "Enable runtime warning messages from SMILE" ON)
+
+# Option to enable/disable info logs
+option(SMILE_INFO_ENABLED "Enable runtime info messages from SMILE" ON)
+
+# Option to enable/disable debug logs
+option(SMILE_DEBUG_ENABLED "Enable debug messages from SMILE" OFF)
 
 # Inform user
 if(SMILE_RELEASE)
@@ -49,12 +58,26 @@ else()
     message(STATUS "SMILE: Compiling in DEBUG mode")
 endif()
 
-if(SMILE_WARNINGS AND NOT SMILE_RELEASE)
+if(SMILE_WARNINGS_ENABLED AND NOT SMILE_RELEASE)
     message(STATUS "SMILE: Warnings ENABLED")
-    add_compile_definitions(SMILE_WARNINGS)
+    add_compile_definitions(SMILE_WARNINGS_ENABLED)
 else()
     message(STATUS "SMILE: Warnings DISABLED")
 endif()
+
+if(SMILE_INFO_ENABLED AND NOT SMILE_RELEASE)
+    message(STATUS "SMILE: Info logs ENABLED")
+    add_compile_definitions(SMILE_INFO_ENABLED)
+else()
+    message(STATUS "SMILE: Info logs DISABLED")
+endif()
+
+# if(SMILE_DEBUG_ENABLED AND NOT SMILE_RELEASE)
+#     message(STATUS "SMILE: Debug logs ENABLED")
+#     add_compile_definitions(SMILE_DEBUG_ENABLED)
+# else()
+#     message(STATUS "SMILE: Debug logs DISABLED")
+# endif()
 
 # Option to enable test builds
 option(SMILE_TESTS "Build test executables" OFF)
@@ -63,6 +86,7 @@ if(SMILE_TESTS)
 
     # Add and link StateMachine test
     add_executable(TestStateMachine tests/StateMachine/TestStateMachine.c)
+    target_link_libraries(TestStateMachine PRIVATE smile)
     target_include_directories(TestStateMachine PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
     )

@@ -2,11 +2,11 @@
 
 ## What is SMILE?
 
-SMILE stands for **State Machine Is Lowkey Elegant**.
+SMILE stands for **Simple Modularity Is Lowkey Elegant**.
 
 It’s a modular collection of tools designed to simplify 2D game development in C, aimed at providing a lightweight and extensible foundation for developers at all skill levels.
 
-Ideal for rapid prototyping, learning C through small games, or game jam entries where full control without bloat is desired.
+Ideal for game jams and rapid prototyping, thanks to thoughtful abstractions that provide full control without bloat.
 
 ---
 
@@ -32,8 +32,10 @@ SMILE is modular, so you can include only what you need.
 
 Current modules:
 
-- **StateMachine**: A clean and efficient way to manage game states and transitions.
-- **ParticleSystem**: A simple but flexible system for effects like explosions, smoke, and more.
+- **StateMachine**: Manage your game states and transitions cleanly and efficiently.  
+- **ParticleSystem**: Add explosions, smoke, and other effects with a simple yet flexible system built on raylib. 
+- **Log**: Create custom logs for debugging and customize how fatal errors are handled.
+- **SaveLoad**: Save and load your game with simple one-shot functions or detailed session control.
 - _More modules coming soon!_
 
 ---
@@ -158,3 +160,4 @@ Explore each module’s documentation for detailed guides and examples:
 Dive deeper with the full API references:
 
 - [State Machine API](./docs/StateMachine/SM_API.md)
+- [Log API](./docs/Log/LOG_API.md)

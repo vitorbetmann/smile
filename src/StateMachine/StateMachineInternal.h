@@ -1,5 +1,3 @@
-// TODO(#9) create internal function to trim leading and trailing whitespace
-
 #ifndef STATE_MACHINE_INTERNAL_H
 #define STATE_MACHINE_INTERNAL_H
 
@@ -86,21 +84,5 @@ const State *SM_Internal_GetCurrState(void);
  * @author Vitor Betmann
  */
 const State *SM_Internal_GetState(const char *name);
-
-/**
- * @brief Enables or disables debug-mode warnings at runtime.
- *
- * For internal use only. This function controls whether SMILE logs non-fatal
- * debug warnings (e.g., NULL pointers passed to lifecycle callbacks).
- *
- * This setting only takes effect if the engine was compiled with
- * `-DSMILE_WARNINGS=ON`. If compiled with warnings disabled, this function has
- * no effect.
- *
- * @param toggle If true, warnings are shown at runtime. If false, they are
- * suppressed.
- * @author Vitor Betmann
- */
-void SM_Internal_EnableWarnings(bool toggle);
 
 #endif
