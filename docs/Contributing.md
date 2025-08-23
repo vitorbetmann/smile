@@ -7,7 +7,7 @@ This project is designed to be beginner-friendly and modular—feel free to expl
 
 ## 📦 About the Project
 
-SMILE stands for **State Machine Is Lowkey Elegant**.
+SMILE stands for **Simple Modularity Is Lowkey Elegant**.
 
 It’s a modular collection of tools designed to simplify 2D game development in C, aimed at providing a lightweight and extensible foundation for developers at all skill levels.
 
@@ -67,8 +67,8 @@ Test sources live under `tests/`.
 │   ├── ParticleSystem.h
 ├── tests/              # Unit tests with test sources and headers
 │   ├── StateMachine/
-│   │   ├── StateMachineTestAccess.h
-│   │   └── test_state_machine.c
+│   │   ├── StateMachineTest.h
+│   │   └── TestStateMachine.c
 ├── docs/               # Documentation files
 │   ├── StateMachine/
 │   │   ├── SM_API.md
