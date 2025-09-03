@@ -85,17 +85,20 @@ if(SMILE_TESTS)
     message(STATUS "SMILE: Compiling TEST files")
 
     # Add and link StateMachine test
-    add_executable(TestStateMachine tests/StateMachine/TestStateMachine.c)
-    target_link_libraries(TestStateMachine PRIVATE smile)
-    target_include_directories(TestStateMachine PRIVATE
+    add_executable(StateMachineTest tests/StateMachine/StateMachineTest.c)
+    target_link_libraries(StateMachineTest PRIVATE smile)
+    target_include_directories(StateMachineTest PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
     )
 
     # Add and link ParticleSystem test
-    add_executable(TestParticleSystem tests/ParticleSystem/TestParticleSystem.c)
-    target_link_libraries(TestParticleSystem PRIVATE smile "${RAYLIB_LIB}")
-    target_include_directories(TestParticleSystem PRIVATE
+    add_executable(ParticleSystemTest tests/ParticleSystem/ParticleSystemTest.c)
+    target_link_libraries(ParticleSystemTest PRIVATE smile "${RAYLIB_LIB}")
+    target_include_directories(ParticleSystemTest PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         "${RAYLIB_INCLUDE}"
     )
+
+    # TODO #13 Add and link Log test
+
 endif()
