@@ -8,7 +8,7 @@
 // --------------------------------------------------
 // Other defines
 // --------------------------------------------------
-#define SAVE_LOAD_SYSTEM_NAME "SaveLoadSystem"
+#define SAVE_LOAD_SYSTEM_NAME "SaveLoad"
 
 // --------------------------------------------------
 // Data types
