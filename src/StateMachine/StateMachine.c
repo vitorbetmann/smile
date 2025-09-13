@@ -23,18 +23,18 @@
 #define MODULE_NAME "StateMachine"
 
 // Helper macro to check initialization and return (with error log)
-#define RETURN_FALSE_IF_NOT_INITIALIZED(CONSEQ)                                \
+#define RETURN_FALSE_IF_NOT_INITIALIZED(conseq)                                \
   do {                                                                         \
     if (!tracker) {                                                            \
-      SMILE_ERR(MODULE_NAME, LOG_CAUSE_NOT_INITIALIZED, CONSEQ);               \
+      SMILE_ERR(MODULE_NAME, LOG_CAUSE_NOT_INITIALIZED, conseq);               \
       return false;                                                            \
     }                                                                          \
   } while (0)
 
-#define RETURN_NULL_IF_NOT_INITIALIZED(CONSEQ)                                 \
+#define RETURN_NULL_IF_NOT_INITIALIZED(conseq)                                 \
   do {                                                                         \
     if (!tracker) {                                                            \
-      SMILE_ERR(MODULE_NAME, LOG_CAUSE_NOT_INITIALIZED, CONSEQ);               \
+      SMILE_ERR(MODULE_NAME, LOG_CAUSE_NOT_INITIALIZED, conseq);               \
       return NULL;                                                             \
     }                                                                          \
   } while (0)

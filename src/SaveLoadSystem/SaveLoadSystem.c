@@ -6,6 +6,7 @@
 #include "src/SaveLoadSystem/SaveLoadSystemMessages.h"
 #include "src/_Internals/Log/LogInternal.h"
 #include "src/_Internals/Log/LogMessages.h"
+#include <stddef.h>
 #include <string.h>
 
 // --------------------------------------------------
@@ -13,24 +14,22 @@
 // --------------------------------------------------
 #define MODULE_NAME "SaveLoadSystem"
 
-typedef enum {
-  SUCCESS,
-  SAVE_SESSION_ALREADY_OPEN,
-  LOAD_SESSION_ALREADY_OPEN,
-  DEST_FILE_NOT_SET,
-  MEM_ALLOC_FAILED,
-  DATA_TRUNCATED_FORMATTING,
-  FAILED_TO_OPEN_FILE
-} BeginSessionStatus;
-
 // --------------------------------------------------
 // Defines - Funcs
 // --------------------------------------------------
-#define RETURN_IF_NOT_INITIALIZED(conseq)                                      \
+#define RETURN_FALSE_IF_NOT_INITIALIZED(conseq)                                \
   do {                                                                         \
     if (!tracker) {                                                            \
       SMILE_ERR(MODULE_NAME, LOG_CAUSE_NOT_INITIALIZED, conseq);               \
       return false;                                                            \
+    }                                                                          \
+  } while (0)
+
+#define RETURN_NULL_IF_NOT_INITIALIZED(conseq)                                 \
+  do {                                                                         \
+    if (!tracker) {                                                            \
+      SMILE_ERR(MODULE_NAME, LOG_CAUSE_NOT_INITIALIZED, conseq);               \
+      return NULL;                                                             \
     }                                                                          \
   } while (0)
 
@@ -82,7 +81,10 @@ bool SLS_Init(const char *file, const char *dir) {
     return false;
   }
 
-  // TODO check if dirPath ends with a '/', and if not, add one at the end
+  /*
+  TODO check if dirPath ends with a '/', and if not, add one at the end
+  This should be responsibility of SLS_Internal_GetDirName, I think
+  */
   int filePathLen = snprintf(tracker->filePath, totalLen, "%s%s",
                              tracker->dirPath, targetFile);
   if (filePathLen < 0 || filePathLen >= totalLen) {
@@ -111,7 +113,7 @@ bool SLS_BeginSaveSession(const char *file) {
 
 bool SLS_SaveNext(const char *data) {
 
-  RETURN_IF_NOT_INITIALIZED(LOG_CONSEQ_SAVE_NEXT_ABORTED);
+  RETURN_FALSE_IF_NOT_INITIALIZED(LOG_CONSEQ_SAVE_NEXT_ABORTED);
 
   if (!tracker->saveStream) {
     SMILE_ERR(MODULE_NAME, LOG_CAUSE_SAVE_SESSION_NOT_OPEN,
@@ -157,7 +159,7 @@ bool SLS_SaveNext(const char *data) {
 
 bool SLS_EndSaveSession() {
 
-  RETURN_IF_NOT_INITIALIZED(LOG_CONSEQ_END_SAVE_SESSION_ABORTED);
+  RETURN_FALSE_IF_NOT_INITIALIZED(LOG_CONSEQ_END_SAVE_SESSION_ABORTED);
 
   if (!tracker->saveStream) {
     SMILE_ERR(MODULE_NAME, LOG_CAUSE_SAVE_SESSION_NOT_OPEN,
@@ -189,17 +191,11 @@ bool SLS_BeginLoadSession(const char *file) {
 
 bool SLS_HasNext(void) {
 
-  RETURN_IF_NOT_INITIALIZED(LOG_CONSEQ_HAS_NEXT_ABORTED);
+  RETURN_FALSE_IF_NOT_INITIALIZED(LOG_CONSEQ_HAS_NEXT_ABORTED);
 
   if (!tracker->loadStream) {
     SMILE_ERR(MODULE_NAME, LOG_CAUSE_LOAD_SESSION_NOT_OPEN,
               LOG_CONSEQ_HAS_NEXT_ABORTED);
-    return false;
-  }
-
-  long pos = ftell(tracker->loadStream);
-  if (pos == -1L) {
-    // TODO add error here
     return false;
   }
 
@@ -209,9 +205,9 @@ bool SLS_HasNext(void) {
   }
 
   if (ungetc(c, tracker->loadStream) == EOF) {
-    SMILE_ERR(MODULE_NAME, LOG_CAUSE_INDICATOR_NOT_RESET,
-              LOG_CONSEQ_HAS_NEXT_ABORTED);
-    return false;
+    SMILE_FATAL(MODULE_NAME, LOG_CAUSE_INDICATOR_NOT_RESET,
+                LOG_CONSEQ_HAS_NEXT_ABORTED);
+    return false; // This line should never be reached
   }
 
   SMILE_INFO(MODULE_NAME, LOG_INFO_HAS_NEXT_SUCCESSFUL);
@@ -220,11 +216,7 @@ bool SLS_HasNext(void) {
 
 char *SLS_LoadNext(void) {
 
-  if (!tracker) {
-    SMILE_ERR(MODULE_NAME, LOG_CAUSE_NOT_INITIALIZED,
-              LOG_CONSEQ_LOAD_NEXT_ABORTED);
-    return NULL;
-  }
+  RETURN_NULL_IF_NOT_INITIALIZED(LOG_CONSEQ_LOAD_NEXT_ABORTED);
 
   if (!tracker->loadStream) {
     SMILE_ERR(MODULE_NAME, LOG_CAUSE_LOAD_SESSION_NOT_OPEN,
@@ -247,7 +239,7 @@ char *SLS_LoadNext(void) {
     return NULL;
   }
 
-  int bufferSize = counter + 2; // room for '\n' and '\0'
+  size_t bufferSize = counter + 2; // room for '\n' and '\0'
   char *buffer = malloc(bufferSize);
   if (!buffer) {
     SMILE_ERR(MODULE_NAME, LOG_CAUSE_MEM_ALLOC_FAILED,
@@ -280,7 +272,7 @@ char *SLS_LoadNext(void) {
 
 bool SLS_LoadNextTo(char *dest, size_t size) {
 
-  RETURN_IF_NOT_INITIALIZED(LOG_CONSEQ_LOAD_NEXT_TO_ABORTED);
+  RETURN_FALSE_IF_NOT_INITIALIZED(LOG_CONSEQ_LOAD_NEXT_TO_ABORTED);
 
   if (!tracker->loadStream) {
     SMILE_ERR(MODULE_NAME, LOG_CAUSE_LOAD_SESSION_NOT_OPEN,
@@ -309,9 +301,9 @@ bool SLS_LoadNextTo(char *dest, size_t size) {
   return true;
 }
 
-bool SLS_EndLoadSession() {
+bool SLS_EndLoadSession(void) {
 
-  RETURN_IF_NOT_INITIALIZED(LOG_CONSEQ_END_LOAD_SESSION_ABORTED);
+  RETURN_FALSE_IF_NOT_INITIALIZED(LOG_CONSEQ_END_LOAD_SESSION_ABORTED);
 
   if (!tracker->loadStream) {
     SMILE_ERR(MODULE_NAME, LOG_CAUSE_LOAD_SESSION_NOT_OPEN,
@@ -332,7 +324,7 @@ bool SLS_EndLoadSession() {
 
 bool SLS_Shutdown(void) {
 
-  RETURN_IF_NOT_INITIALIZED(LOG_CONSEQ_SHUTDOWN_ABORTED);
+  RETURN_FALSE_IF_NOT_INITIALIZED(LOG_CONSEQ_SHUTDOWN_ABORTED);
   if (tracker->saveStream) {
     fclose(tracker->saveStream);
     tracker->saveStream = NULL;
@@ -361,11 +353,7 @@ bool SLS_Shutdown(void) {
 
 char *SLS_Internal_GetDirName(const char *dir) {
 
-  if (!tracker) {
-    SMILE_ERR(MODULE_NAME, LOG_CAUSE_NOT_INITIALIZED,
-              LOG_CONSEQ_INTERNAL_GET_DIR_NAME_ABORTED);
-    return NULL;
-  }
+  RETURN_NULL_IF_NOT_INITIALIZED(LOG_CONSEQ_INTERNAL_GET_DIR_NAME_ABORTED);
 
   // TODO improve this, make system dependand like in LOVE2D
   char *buffer = malloc(3);
@@ -375,22 +363,15 @@ char *SLS_Internal_GetDirName(const char *dir) {
 
 char *SLS_Internal_GetGameName(void) {
 
-  if (!tracker) {
-    SMILE_ERR(MODULE_NAME, LOG_CAUSE_NOT_INITIALIZED,
-              LOG_CONSEQ_INTERNAL_GET_GAME_NAME_ABORTED);
-    return NULL;
-  }
-
+  RETURN_NULL_IF_NOT_INITIALIZED(LOG_CONSEQ_INTERNAL_GET_GAME_NAME_ABORTED);
   // TODO get root dir name
   return "breakout.txt";
 }
 
 bool SLS_Internal_BeginSession(FileInteractionMode mode, const char *file,
                                const char *conseqAbort) {
-  if (!tracker) {
-    SMILE_ERR(MODULE_NAME, LOG_CAUSE_NOT_INITIALIZED, conseqAbort);
-    return false; // or create a dedicated NOT_INITIALIZED enum
-  }
+
+  RETURN_FALSE_IF_NOT_INITIALIZED(conseqAbort);
 
   FILE **currStream = NULL;
   const char *causeAlreadyOpen = NULL;
