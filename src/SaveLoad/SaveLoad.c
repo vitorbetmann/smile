@@ -1,9 +1,9 @@
 // --------------------------------------------------
 // Includes
 // --------------------------------------------------
-#include "SaveLoadSystem.h"
-#include "SaveLoadSystemInternal.h"
-#include "src/SaveLoadSystem/SaveLoadSystemMessages.h"
+#include "SaveLoad.h"
+#include "SaveLoadInternal.h"
+#include "src/SaveLoad/SaveLoadMessages.h"
 #include "src/_Internals/Log/LogInternal.h"
 #include "src/_Internals/Log/LogMessages.h"
 #include <stddef.h>
@@ -43,13 +43,13 @@ static SaveLoadSystemTracker *tracker;
 // --------------------------------------------------
 
 // bool SetGameDir(char *dir) {}
-// bool SLS_SetGameFile(char *file) {}
-// bool SLS_SetGameName(char* name){}
-// bool SLS_DirExists(char *dir) {}
-// bool SLS_FileExists(char *file) {}
-// bool SLS_DeleteSave(void) {}
+// bool SL_SetGameFile(char *file) {}
+// bool SL_SetGameName(char* name){}
+// bool SL_DirExists(char *dir) {}
+// bool SL_FileExists(char *file) {}
+// bool SL_DeleteSave(void) {}
 
-bool SLS_Init(const char *file, const char *dir) {
+bool SL_Init(const char *file, const char *dir) {
 
   if (tracker) {
     SMILE_WARN(MODULE_NAME, LOG_CAUSE_ALREADY_INITIALIZED,
@@ -63,14 +63,14 @@ bool SLS_Init(const char *file, const char *dir) {
     return false;
   }
 
-  tracker->dirPath = dir ? (char *)dir : SLS_Internal_GetDefaultOSDir();
+  tracker->dirPath = dir ? (char *)dir : SL_Internal_GetDefaultOSDir();
   if (!tracker->dirPath) {
     SMILE_ERR(MODULE_NAME, LOG_CAUSE_DIR_NOT_FOUND, LOG_CONSEQ_INIT_ABORTED);
     free(tracker);
     return false;
   }
 
-  const char *targetFile = file ? file : SLS_Internal_GetGameName();
+  const char *targetFile = file ? file : SL_Internal_GetGameName();
   size_t fileLen = strlen(targetFile);
   size_t totalLen = strlen(tracker->dirPath) + fileLen + 1;
 
@@ -97,10 +97,10 @@ bool SLS_Init(const char *file, const char *dir) {
   return true;
 }
 
-bool SLS_BeginSaveSession(const char *file) {
+bool SL_BeginSaveSession(const char *file) {
 
   const char *conseq = LOG_CONSEQ_BEGIN_SAVE_SESSION_ABORTED;
-  if (SLS_Internal_BeginSession(SAVE, file, conseq)) {
+  if (SL_Internal_BeginSession(SAVE, file, conseq)) {
     SMILE_INFO(MODULE_NAME, LOG_INFO_SAVE_SESSION_STARTED);
     return true;
   }
@@ -108,7 +108,7 @@ bool SLS_BeginSaveSession(const char *file) {
   return false;
 }
 
-bool SLS_SaveNext(const char *data) {
+bool SL_SaveNext(const char *data) {
 
   RETURN_FALSE_IF_NOT_INITIALIZED(LOG_CONSEQ_SAVE_NEXT_ABORTED);
 
@@ -154,7 +154,7 @@ bool SLS_SaveNext(const char *data) {
   return success;
 }
 
-bool SLS_EndSaveSession() {
+bool SL_EndSaveSession() {
 
   RETURN_FALSE_IF_NOT_INITIALIZED(LOG_CONSEQ_END_SAVE_SESSION_ABORTED);
 
@@ -175,10 +175,10 @@ bool SLS_EndSaveSession() {
   return true;
 }
 
-bool SLS_BeginLoadSession(const char *file) {
+bool SL_BeginLoadSession(const char *file) {
 
   const char *conseq = LOG_CONSEQ_BEGIN_LOAD_SESSION_ABORTED;
-  if (SLS_Internal_BeginSession(LOAD, file, conseq)) {
+  if (SL_Internal_BeginSession(LOAD, file, conseq)) {
     SMILE_INFO(MODULE_NAME, LOG_INFO_LOAD_SESSION_STARTED);
     return true;
   }
@@ -186,7 +186,7 @@ bool SLS_BeginLoadSession(const char *file) {
   return false;
 }
 
-bool SLS_HasNext(void) {
+bool SL_HasNext(void) {
 
   RETURN_FALSE_IF_NOT_INITIALIZED(LOG_CONSEQ_HAS_NEXT_ABORTED);
 
@@ -211,7 +211,7 @@ bool SLS_HasNext(void) {
   return true;
 }
 
-char *SLS_LoadNext(void) {
+char *SL_LoadNext(void) {
 
   RETURN_NULL_IF_NOT_INITIALIZED(LOG_CONSEQ_LOAD_NEXT_ABORTED);
 
@@ -267,7 +267,7 @@ char *SLS_LoadNext(void) {
   return buffer;
 }
 
-bool SLS_LoadNextTo(char *dest, size_t size) {
+bool SL_LoadNextTo(char *dest, size_t size) {
 
   RETURN_FALSE_IF_NOT_INITIALIZED(LOG_CONSEQ_LOAD_NEXT_TO_ABORTED);
 
@@ -298,7 +298,7 @@ bool SLS_LoadNextTo(char *dest, size_t size) {
   return true;
 }
 
-bool SLS_EndLoadSession(void) {
+bool SL_EndLoadSession(void) {
 
   RETURN_FALSE_IF_NOT_INITIALIZED(LOG_CONSEQ_END_LOAD_SESSION_ABORTED);
 
@@ -319,7 +319,7 @@ bool SLS_EndLoadSession(void) {
   return true;
 }
 
-bool SLS_Shutdown(void) {
+bool SL_Shutdown(void) {
 
   RETURN_FALSE_IF_NOT_INITIALIZED(LOG_CONSEQ_SHUTDOWN_ABORTED);
 
@@ -363,7 +363,7 @@ bool SLS_Shutdown(void) {
 // Internal
 // --------------------------------------------------
 
-char *SLS_Internal_GetDefaultOSDir() {
+char *SL_Internal_GetDefaultOSDir() {
 
 #ifdef __APPLE__
 #endif
@@ -375,21 +375,21 @@ char *SLS_Internal_GetDefaultOSDir() {
   // TODO improve this, make system dependand like in LOVE2D
   /*
 TODO check if dirPath ends with a '/', and if not, add one at the end
-This should be responsibility of SLS_Internal_GetDirName, I think
+This should be responsibility of SL_Internal_GetDirName, I think
 */
   char *buffer = malloc(3);
   strcpy(buffer, "./");
   return buffer;
 }
 
-char *SLS_Internal_GetGameName(void) {
+char *SL_Internal_GetGameName(void) {
 
   // TODO get root dir name
   return "breakout.txt";
 }
 
-bool SLS_Internal_BeginSession(FileInteractionMode mode, const char *file,
-                               const char *conseqAbort) {
+bool SL_Internal_BeginSession(FileInteractionMode mode, const char *file,
+                              const char *conseqAbort) {
 
   RETURN_FALSE_IF_NOT_INITIALIZED(conseqAbort);
 
