@@ -44,6 +44,7 @@ static SaveLoadSystemTracker *tracker;
 
 // bool SetGameDir(char *dir) {}
 // bool SLS_SetGameFile(char *file) {}
+// bool SLS_SetGameName(char* name){}
 // bool SLS_DirExists(char *dir) {}
 // bool SLS_FileExists(char *file) {}
 // bool SLS_DeleteSave(void) {}
@@ -62,7 +63,7 @@ bool SLS_Init(const char *file, const char *dir) {
     return false;
   }
 
-  tracker->dirPath = SLS_Internal_GetDirName(dir);
+  tracker->dirPath = dir ? (char *)dir : SLS_Internal_GetDefaultOSDir();
   if (!tracker->dirPath) {
     SMILE_ERR(MODULE_NAME, LOG_CAUSE_DIR_NOT_FOUND, LOG_CONSEQ_INIT_ABORTED);
     free(tracker);
@@ -81,10 +82,6 @@ bool SLS_Init(const char *file, const char *dir) {
     return false;
   }
 
-  /*
-  TODO check if dirPath ends with a '/', and if not, add one at the end
-  This should be responsibility of SLS_Internal_GetDirName, I think
-  */
   int filePathLen = snprintf(tracker->filePath, totalLen, "%s%s",
                              tracker->dirPath, targetFile);
   if (filePathLen < 0 || filePathLen >= totalLen) {
@@ -207,7 +204,7 @@ bool SLS_HasNext(void) {
   if (ungetc(c, tracker->loadStream) == EOF) {
     SMILE_FATAL(MODULE_NAME, LOG_CAUSE_INDICATOR_NOT_RESET,
                 LOG_CONSEQ_HAS_NEXT_ABORTED);
-    return false; // This line should never be reached
+    return false;
   }
 
   SMILE_INFO(MODULE_NAME, LOG_INFO_HAS_NEXT_SUCCESSFUL);
@@ -325,13 +322,20 @@ bool SLS_EndLoadSession(void) {
 bool SLS_Shutdown(void) {
 
   RETURN_FALSE_IF_NOT_INITIALIZED(LOG_CONSEQ_SHUTDOWN_ABORTED);
+
+  bool isFatal = false;
+
   if (tracker->saveStream) {
-    fclose(tracker->saveStream);
+    if (fclose(tracker->saveStream) == EOF) {
+      isFatal = true;
+    }
     tracker->saveStream = NULL;
   }
 
   if (tracker->loadStream) {
-    fclose(tracker->loadStream);
+    if (fclose(tracker->loadStream) == EOF) {
+      isFatal = true;
+    }
     tracker->loadStream = NULL;
   }
 
@@ -344,6 +348,14 @@ bool SLS_Shutdown(void) {
   free(tracker);
   tracker = NULL;
 
+  if (isFatal) {
+    SMILE_FATAL_WITH_NAME(
+        MODULE_NAME, LOG_CAUSE_FAILED_TO_CLOSE_FILE, "name",
+        LOG_CONSEQ_SHUTDOWN_ABORTED); // TODO get load file name
+    return false;
+  }
+
+  SMILE_INFO(MODULE_NAME, LOG_INFO_SHUTDOWN_SUCCESSFUL);
   return true;
 }
 
@@ -351,11 +363,20 @@ bool SLS_Shutdown(void) {
 // Internal
 // --------------------------------------------------
 
-char *SLS_Internal_GetDirName(const char *dir) {
+char *SLS_Internal_GetDefaultOSDir() {
 
-  RETURN_NULL_IF_NOT_INITIALIZED(LOG_CONSEQ_INTERNAL_GET_DIR_NAME_ABORTED);
+#ifdef __APPLE__
+#endif
+#ifdef _WIN32
+#endif
+#ifdef __linux__
+#endif
 
   // TODO improve this, make system dependand like in LOVE2D
+  /*
+TODO check if dirPath ends with a '/', and if not, add one at the end
+This should be responsibility of SLS_Internal_GetDirName, I think
+*/
   char *buffer = malloc(3);
   strcpy(buffer, "./");
   return buffer;
@@ -363,7 +384,6 @@ char *SLS_Internal_GetDirName(const char *dir) {
 
 char *SLS_Internal_GetGameName(void) {
 
-  RETURN_NULL_IF_NOT_INITIALIZED(LOG_CONSEQ_INTERNAL_GET_GAME_NAME_ABORTED);
   // TODO get root dir name
   return "breakout.txt";
 }

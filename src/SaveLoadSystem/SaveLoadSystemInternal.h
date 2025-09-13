@@ -29,7 +29,7 @@ typedef struct {
 // --------------------------------------------------
 // Prototypes
 // --------------------------------------------------
-char *SLS_Internal_GetDirName(const char *dir);
+char *SLS_Internal_GetDefaultOSDir(void);
 char *SLS_Internal_GetGameName(void);
 void SLS_Internal_SetFileFormat(const char *file);
 bool SLS_Internal_EndsWith(const char *str, const char *suffix);
