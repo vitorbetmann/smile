@@ -64,7 +64,8 @@
 // --------------------------------------------------
 #define LOG_CONSEQ_INTERNAL_BEGIN_SESSION_ABORTED                              \
   "Internal BeginSession aborted."
-#define LOG_CONSEQ_INTERNAL_GET_DIR_NAME_ABORTED "Internal GetDirName aborted."
+#define LOG_CONSEQ_INTERNAL_GET_DEFAULT_OS_DIR_ABORTED                         \
+  "Internal GetDefaultOSDir aborted."
 #define LOG_CONSEQ_INTERNAL_GET_GAME_NAME_ABORTED                              \
   "Internal GetGameName aborted."
 

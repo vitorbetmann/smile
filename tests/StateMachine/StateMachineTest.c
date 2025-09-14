@@ -16,8 +16,7 @@
  *                        often stating the expected outcome or condition.
  *
  * Example:
- *   Test_SM_RegisterState_ReturnsFalseIfNameIsNULL
- *     Tests that SM_RegisterState returns false when the provided name is NULL.
+ *   Test_SM_Init_ReturnsFalseIfMallocFails
  *
  * @author Vitor Betmann
  */

@@ -111,11 +111,13 @@ bool SL_SetGameDir(char *dir) {
   return true;
 }
 
-bool SL_SetGameFile(char *file) {}
+char *SL_GetGameDir(void) { return NULL; }
 
-bool SL_DirExists(char *dir) {}
+bool SL_SetGameFile(char *file) { return false; }
 
-bool SL_FileExists(char *file) {}
+bool SL_DirExists(char *dir) { return false; }
+
+bool SL_FileExists(char *file) { return false; }
 
 bool SL_BeginSaveSession(const char *file) {
 
@@ -339,7 +341,7 @@ bool SL_EndLoadSession(void) {
   return true;
 }
 
-bool SL_DeleteSave(void) {}
+bool SL_DeleteSave(void) { return false; }
 
 bool SL_Shutdown(void) {
 
@@ -387,6 +389,9 @@ bool SL_Shutdown(void) {
 
 char *SL_Internal_GetDefaultOSDir() {
 
+  RETURN_NULL_IF_NOT_INITIALIZED(
+      LOG_CONSEQ_INTERNAL_GET_DEFAULT_OS_DIR_ABORTED);
+
 #ifdef __APPLE__
 #endif
 #ifdef _WIN32
@@ -405,6 +410,8 @@ This should be responsibility of SL_Internal_GetDirName, I think
 }
 
 char *SL_Internal_GetGameName(void) {
+
+  RETURN_NULL_IF_NOT_INITIALIZED(LOG_CONSEQ_INTERNAL_GET_GAME_NAME_ABORTED);
 
   // TODO get root dir name
   return "breakout.txt";

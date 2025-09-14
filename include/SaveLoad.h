@@ -40,7 +40,9 @@ bool SL_IsInitialized(void);
  * @return true if the directory is valid and set successfully, false otherwise.
  * @author Vitor Betmann
  */
-bool SetGameDir(char *dir);
+bool SL_SetGameDir(char *dir);
+
+char *SL_GetGameDir(void);
 
 /**
  * @brief Sets a custom save file name.
@@ -50,6 +52,8 @@ bool SetGameDir(char *dir);
  * @author Vitor Betmann
  */
 bool SL_SetGameFile(char *file);
+
+char *SL_GetGameFile(void);
 
 /**
  * @brief Checks if the specified directory exists.
@@ -111,7 +115,7 @@ bool SL_DeleteSave(void);
  *
  * @param file Optional override of the default save file.
  *             If NULL, the system will use the default save file set during
- * initialization.
+ * initialization or when SL_SetGameFile was called.
  * @return true if session started, false otherwise.
  * @author Vitor Betmann
  */
@@ -139,7 +143,7 @@ bool SL_EndSaveSession(void);
  *
  * @param file Optional override of the default save file.
  *             If NULL, the system will use the default save file set during
- * initialization.
+ * initialization or when SL_SetGameFile was called.
  * @return true if session started, false otherwise.
  * @author Vitor Betmann
  */
