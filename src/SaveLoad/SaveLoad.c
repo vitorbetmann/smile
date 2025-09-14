@@ -42,13 +42,6 @@ static SaveLoadSystemTracker *tracker;
 // Functions
 // --------------------------------------------------
 
-// bool SetGameDir(char *dir) {}
-// bool SL_SetGameFile(char *file) {}
-// bool SL_SetGameName(char* name){}
-// bool SL_DirExists(char *dir) {}
-// bool SL_FileExists(char *file) {}
-// bool SL_DeleteSave(void) {}
-
 bool SL_Init(const char *file, const char *dir) {
 
   if (tracker) {
@@ -96,6 +89,33 @@ bool SL_Init(const char *file, const char *dir) {
   SMILE_INFO(MODULE_NAME, LOG_INFO_INIT_SUCCESSFUL);
   return true;
 }
+
+bool SL_IsInitialized(void) { return tracker; }
+
+bool SL_SetGameDir(char *dir) {
+
+  if (!dir) {
+    SMILE_ERR(MODULE_NAME, LOG_CAUSE_NULL_ARGUMENT,
+              LOG_CONSEQ_DIR_EXISTS_ABORTED);
+    return false;
+  }
+
+  if (!SL_DirExists(dir)) {
+    SMILE_ERR_WITH_NAME(MODULE_NAME, LOG_CAUSE_DIR_NOT_FOUND, dir,
+                        LOG_CONSEQ_DIR_EXISTS_ABORTED);
+    return false;
+  }
+
+  tracker->dirPath = dir;
+  SMILE_INFO(MODULE_NAME, LOG_INFO_SET_GAME_DIR_SUCCESSFUL);
+  return true;
+}
+
+bool SL_SetGameFile(char *file) {}
+
+bool SL_DirExists(char *dir) {}
+
+bool SL_FileExists(char *file) {}
 
 bool SL_BeginSaveSession(const char *file) {
 
@@ -318,6 +338,8 @@ bool SL_EndLoadSession(void) {
   SMILE_INFO(MODULE_NAME, LOG_INFO_LOAD_SESSION_ENDED);
   return true;
 }
+
+bool SL_DeleteSave(void) {}
 
 bool SL_Shutdown(void) {
 

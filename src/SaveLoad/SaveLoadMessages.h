@@ -5,6 +5,7 @@
 // INFO no arguments
 // --------------------------------------------------
 #define LOG_INFO_INIT_SUCCESSFUL "Init successful."
+#define LOG_INFO_SET_GAME_DIR_SUCCESSFUL "SetGameDir successful."
 #define LOG_INFO_SAVE_SESSION_STARTED "Save session started."
 #define LOG_INFO_SAVE_SESSION_ENDED "Save session ended."
 #define LOG_INFO_LOAD_SESSION_STARTED "Load session started."
@@ -27,6 +28,7 @@
 #define LOG_CAUSE_LOAD_SESSION_ALREADY_OPEN "Load Session already open."
 #define LOG_CAUSE_DEST_FILE_NOT_SET "Destination file not set."
 #define LOG_CAUSE_NULL_DATA "Data is NULL."
+#define LOG_CAUSE_NULL_ARGUMENT "Argument is NULL."
 #define LOG_CAUSE_INVALID_DEST "Destination buffer is NULL."
 #define LOG_CAUSE_NO_MORE_DATA "No more data to read."
 #define LOG_CAUSE_DATA_TRUNCATED_FORMATTING "Data truncated during formatting."
@@ -55,6 +57,7 @@
 #define LOG_CONSEQ_LOAD_NEXT_TO_ABORTED "LoadNextTo aborted."
 #define LOG_CONSEQ_SHUTDOWN_ABORTED "Shutdown aborted."
 #define LOG_CONSEQ_LOAD_GAME_ABORTED "LoadGame aborted."
+#define LOG_CONSEQ_DIR_EXISTS_ABORTED "SetGameDir aborted."
 
 // --------------------------------------------------
 // CONSEQes - Internal

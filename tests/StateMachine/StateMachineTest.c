@@ -19,23 +19,16 @@
  *   Test_SM_RegisterState_ReturnsFalseIfNameIsNULL
  *     Tests that SM_RegisterState returns false when the provided name is NULL.
  *
- * This naming pattern helps organize and clearly communicate test purposes.
  * @author Vitor Betmann
  */
 
 #include "../include/StateMachine.h"
 #include "../src/StateMachine/StateMachineInternal.h"
+#include "../src/_Internals/Test/TestInternal.h"
 #include "StateMachineTest.h"
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
-
-// --------------------------------------------------
-// Data types
-// --------------------------------------------------
-
-#define SM_COMP_NAME(name1, name2) strcmp(name1, name2) == 0
-#define TEST_PASS(funcName) printf("\t[PASS] %s\n", funcName)
 
 // --------------------------------------------------
 // Data types
@@ -543,14 +536,14 @@ void Test_SM_Shutdown_FreeingMultipleStatesCausesNoSkips(void) {
 
 int main() {
   puts("");
-  puts("Testing Pre-initialization - Internal");
+  puts("Testing Pre-Initialization - Internal");
   Test_SM_Internal_SetCurrState_ReturnsFalseBeforeInitialization();
   Test_SM_Internal_GetCurrState_ReturnsNullBeforeInitialization();
   Test_SM_Internal_GetState_ReturnsNullBeforeInitialization();
   Test_SM_Test_GetTracker_ReturnsNullBeforeInitialization();
   puts("");
 
-  puts("Testing Pre-initialization - Public");
+  puts("Testing Pre-Initialization - Public");
   Test_SM_IsInitialized_ReturnsFalseBeforeInitialization();
   Test_SM_RegisterState_ReturnsFalseBeforeInitialization();
   Test_SM_ChangeStateTo_ReturnsFalseBeforeInitialization();
@@ -590,7 +583,7 @@ int main() {
   Test_SM_Internal_GetState_ReturnsRegisteredStateByName();
   puts("");
 
-  puts("Testing Pre-transitions");
+  puts("Testing Pre-Transitions");
   Test_SM_GetCurrStateName_ReturnsNullIfCurrentStateIsNULL();
   Test_SM_Update_ReturnsFalseIfCurrentStateIsNULL();
   Test_SM_Draw_ReturnsFalseIfCurrentStateIsNULL();
@@ -654,6 +647,6 @@ int main() {
   Test_SM_Shutdown_FreeingMultipleStatesCausesNoSkips();
   puts("");
 
-  puts("All tests completed successfully!");
+  puts("All Tests Completed Successfully!");
   return 0;
 }

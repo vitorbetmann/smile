@@ -19,7 +19,7 @@ set(RAYLIB_INCLUDE "${RAYLIB_DIR}/include")
 add_library(smile STATIC
     src/StateMachine/StateMachine.c
     src/ParticleSystem/ParticleSystem.c
-    src/SaveLoadSystem/SaveLoadSystem.c
+    src/SaveLoad/SaveLoad.c
 
     src/_Internals/Log/Log.c
 )
@@ -97,6 +97,13 @@ if(SMILE_TESTS)
     target_include_directories(ParticleSystemTest PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         "${RAYLIB_INCLUDE}"
+    )
+
+    # Add and link SaveLoad test
+    add_executable(SaveLoadTest tests/SaveLoad/SaveLoadTest.c)
+    target_link_libraries(SaveLoadTest PRIVATE smile)
+    target_include_directories(SaveLoadTest PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
     )
 
     # TODO #13 Add and link Log test
