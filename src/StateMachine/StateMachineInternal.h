@@ -39,7 +39,7 @@ typedef struct {
  * @brief Internal tracker holding the registered states and the current state.
  * @author Vitor Betmann
  */
-struct StateTracker {
+struct StateMachineTracker {
   StateMap *stateMap;
   const State *currState;
 };

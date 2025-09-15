@@ -97,27 +97,6 @@ void Test_SM_Test_GetTracker_ReturnsNullBeforeInitialization(void) {
   TEST_PASS("Test_SM_Test_GetTracker_ReturnsNullBeforeInitialization");
 }
 
-void Test_SM_Test_SetCanMalloc_TogglesCorrectly(void) {
-  TEST_PASS("Test_SM_Test_SetCanMalloc_TogglesCorrectly (true)");
-  assert(SM_Test_SetCanMalloc(true));
-
-  TEST_PASS("Test_SM_Test_SetCanMalloc_TogglesCorrectly (false)");
-  assert(!SM_Test_SetCanMalloc(false));
-}
-
-void Test_SM_Test_Malloc_ReturnsNullIfNotAllowed(void) {
-  SM_Test_SetCanMalloc(false);
-  void *temp = SM_Test_Malloc(sizeof(int));
-  TEST_PASS("Test_SM_Test_Malloc_ReturnsNullIfNotAllowed");
-  assert(!temp);
-
-  SM_Test_SetCanMalloc(true);
-  temp = SM_Test_Malloc(sizeof(int));
-  TEST_PASS("Test_SM_Test_Malloc_ReturnsValidPointerIfAllowed");
-  assert(temp);
-  free(temp);
-}
-
 // --------------------------------------------------
 // Pre-initialization - Public
 // --------------------------------------------------
@@ -163,14 +142,14 @@ void Test_SM_GetCurrStateName_ReturnsNullBeforeInitialization(void) {
 // --------------------------------------------------
 
 void Test_SM_Init_ReturnsFalseIfMallocFails(void) {
-  SM_Test_SetCanMalloc(false);
+  TEST_SetCanMalloc(false);
   SM_Init();
   assert(!SM_Test_GetTracker());
   TEST_PASS("Test_SM_Init_ReturnsFalseIfMallocFails");
 }
 
 void Test_SM_Init_ReturnsTrueAndInitializesTracker(void) {
-  SM_Test_SetCanMalloc(true);
+  TEST_SetCanMalloc(true);
   SM_Init();
   assert(SM_Test_GetTracker());
   TEST_PASS("Test_SM_Init_ReturnsTrueAndInitializesTracker");

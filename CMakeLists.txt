@@ -22,6 +22,7 @@ add_library(smile STATIC
     src/SaveLoad/SaveLoad.c
 
     src/_Internals/Log/Log.c
+    src/_Internals/Test/TestInternal.c
 )
 
 # Include raylib headers for Smile

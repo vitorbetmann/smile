@@ -12,6 +12,7 @@
 #include "../tests/StateMachine/StateMachineTest.h"
 #include "StateMachineInternal.h"
 #include "StateMachineMessages.h"
+#include "src/_Internals/Test/TestInternal.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,9 +43,9 @@
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
+
 static int stateCount;
-static StateTracker *tracker;
-static bool canMalloc = true;
+static StateMachineTracker *tracker;
 
 // --------------------------------------------------
 // Functions
@@ -58,7 +59,7 @@ bool SM_Init(void) {
     return false;
   }
 
-  tracker = SM_Test_Malloc(sizeof(StateTracker));
+  tracker = TEST_Malloc(sizeof(StateMachineTracker));
   if (!tracker) {
     SMILE_ERR(MODULE_NAME, LOG_CAUSE_MEM_ALLOC_FAILED, LOG_CONSEQ_INIT_ABORTED);
     return false;
@@ -311,18 +312,6 @@ const State *SM_Internal_GetState(const char *name) {
 // Functions - Tests
 // --------------------------------------------------
 
-const StateTracker *SM_Test_GetTracker(void) { return tracker; }
+const StateMachineTracker *SM_Test_GetTracker(void) { return tracker; }
 
 const int SM_Test_GetStateCount(void) { return stateCount; }
-
-bool SM_Test_SetCanMalloc(bool toggle) {
-  canMalloc = toggle;
-  return toggle;
-}
-
-void *SM_Test_Malloc(size_t size) {
-  if (!canMalloc) {
-    return NULL;
-  }
-  return malloc(size);
-}

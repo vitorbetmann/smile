@@ -2,10 +2,38 @@
 #define TEST_INTERNAL_H
 
 // --------------------------------------------------
+// Includes
+// --------------------------------------------------
+
+#include <stdlib.h>
+
+// --------------------------------------------------
 // Other defines
 // --------------------------------------------------
 
 #define SM_COMP_NAME(name1, name2) strcmp(name1, name2) == 0
 #define TEST_PASS(funcName) printf("\t[PASS] %s\n", funcName)
+
+// --------------------------------------------------
+// Prototypes
+// --------------------------------------------------
+
+/**
+ * @brief Enables or disables simulated malloc behavior for testing.
+ *
+ * When set to false, TEST_SetCanMalloc will return NULL to simulate allocation
+ * failure.
+ *
+ * @param toggle true to allow malloc, false to simulate failure.
+ * @return true if malloc is now allowed, false if it is disabled.
+ * @author Vitor Betmann
+ */
+bool TEST_SetCanMalloc(bool toggle);
+
+bool TEST_SetCanCalloc(bool toggle);
+
+void *TEST_Malloc(size_t size);
+
+void *TEST_Calloc(size_t num, size_t size);
 
 #endif

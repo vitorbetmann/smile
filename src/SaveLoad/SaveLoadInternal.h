@@ -24,7 +24,7 @@ typedef struct {
   char *filePath;
   FILE *saveStream;
   FILE *loadStream;
-} SaveLoadSystemTracker;
+} SaveLoadTracker;
 
 // --------------------------------------------------
 // Prototypes

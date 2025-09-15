@@ -4,7 +4,7 @@
 // --------------------------------------------------
 // Data types
 // --------------------------------------------------
-typedef struct StateTracker StateTracker;
+typedef struct StateMachineTracker StateMachineTracker;
 typedef struct State State;
 
 // --------------------------------------------------

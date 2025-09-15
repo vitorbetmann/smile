@@ -6,6 +6,7 @@
 #include "src/SaveLoad/SaveLoadMessages.h"
 #include "src/_Internals/Log/LogInternal.h"
 #include "src/_Internals/Log/LogMessages.h"
+#include "src/_Internals/Test/TestInternal.h"
 #include <stddef.h>
 #include <string.h>
 
@@ -36,30 +37,34 @@
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
-static SaveLoadSystemTracker *tracker;
+static SaveLoadTracker *tracker;
 
 // --------------------------------------------------
 // Functions
 // --------------------------------------------------
 
 bool SL_Init(const char *file, const char *dir) {
-
   if (tracker) {
     SMILE_WARN(MODULE_NAME, LOG_CAUSE_ALREADY_INITIALIZED,
                LOG_CONSEQ_INIT_ABORTED);
+
     return false;
   }
 
-  tracker = calloc(1, sizeof(SaveLoadSystemTracker));
+  tracker = TEST_Calloc(1, sizeof(SaveLoadTracker));
   if (!tracker) {
     SMILE_ERR(MODULE_NAME, LOG_CAUSE_MEM_ALLOC_FAILED, LOG_CONSEQ_INIT_ABORTED);
+
     return false;
   }
 
   tracker->dirPath = dir ? (char *)dir : SL_Internal_GetDefaultOSDir();
   if (!tracker->dirPath) {
     SMILE_ERR(MODULE_NAME, LOG_CAUSE_DIR_NOT_FOUND, LOG_CONSEQ_INIT_ABORTED);
+
     free(tracker);
+    tracker = NULL;
+
     return false;
   }
 
@@ -67,11 +72,16 @@ bool SL_Init(const char *file, const char *dir) {
   size_t fileLen = strlen(targetFile);
   size_t totalLen = strlen(tracker->dirPath) + fileLen + 1;
 
-  tracker->filePath = malloc(totalLen);
+  tracker->filePath = TEST_Malloc(totalLen);
   if (!tracker->filePath) {
     SMILE_ERR(MODULE_NAME, LOG_CAUSE_MEM_ALLOC_FAILED, LOG_CONSEQ_INIT_ABORTED);
+
     free(tracker->dirPath);
+    tracker->dirPath = NULL;
+
     free(tracker);
+    tracker = NULL;
+
     return false;
   }
 
@@ -80,9 +90,16 @@ bool SL_Init(const char *file, const char *dir) {
   if (filePathLen < 0 || filePathLen >= totalLen) {
     SMILE_ERR(MODULE_NAME, LOG_CAUSE_DATA_TRUNCATED_FORMATTING,
               LOG_CONSEQ_INIT_ABORTED);
+
     free(tracker->dirPath);
+    tracker->dirPath = NULL;
+
     free(tracker->filePath);
+    tracker->filePath = NULL;
+
     free(tracker);
+    tracker = NULL;
+
     return false;
   }
 

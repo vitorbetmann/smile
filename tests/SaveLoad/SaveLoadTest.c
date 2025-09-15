@@ -123,17 +123,26 @@ void Test_SL_Shutdown_ReturnsFalseBeforeInitialization(void) {
 // Initialization
 // --------------------------------------------------
 
-void Test_SL_Init_ReturnsFalseIfMallocFails(void) {
-  // TODO add CanMalloc func here
+void Test_SL_Init_ReturnsFalseIfCallocFails(void) {
+  TEST_SetCanCalloc(false);
   assert(!SL_Init(NULL, NULL));
+  TEST_SetCanCalloc(true);
+  TEST_PASS("Test_SL_Init_ReturnsFalseIfCallocFails");
+}
+void Test_SL_Init_ReturnsFalseIfMallocFails(void) {
+  TEST_SetCanMalloc(false);
+  assert(!SL_Init(NULL, NULL));
+  TEST_SetCanMalloc(true);
   TEST_PASS("Test_SL_Init_ReturnsFalseIfMallocFails");
 }
-void Test_SL_Init_ReturnsTrueAndInitializesTracker(void) {
-  // TODO separate tracker checking from returns true
+void Test_SL_Init_ReturnsTrueOnFirstCall(void) {
   assert(SL_Init(NULL, NULL));
-  TEST_PASS("Test_SL_Init_ReturnsTrueAndInitializesTracker");
+  TEST_PASS("Test_SL_Init_ReturnsTrueOnFirstCall");
 }
-void Test_SL_Init_ReturnsFalseIfCalledTwice(void) {}
+void Test_SL_Init_ReturnsFalseIfCalledTwice(void) {
+  assert(!SL_Init(NULL, NULL));
+  TEST_PASS("Test_SL_Init_ReturnsFalseIfCalledTwice");
+}
 
 // --------------------------------------------------
 // Post-Initialization - Internal
@@ -141,6 +150,11 @@ void Test_SL_Init_ReturnsFalseIfCalledTwice(void) {}
 // --------------------------------------------------
 // Post-Initialization - Public
 // --------------------------------------------------
+
+void Test_SL_IsInitialized_ReturnsTrueAfterInitialization(void) {
+  assert(SL_IsInitialized());
+  TEST_PASS("Test_SL_IsInitialized_ReturnsTrueAfterInitialization");
+}
 
 // --------------------------------------------------
 // State Registration
@@ -208,12 +222,16 @@ int main() {
   puts("");
 
   puts("Testing Initialization");
-  // Test_SL_Init_ReturnsFalseIfMallocFails();
-  // Test_SL_Init_ReturnsTrueAndInitializesTracker();
-  // Test_SL_Init_ReturnsFalseIfCalledTwice();
+  Test_SL_Init_ReturnsFalseIfCallocFails();
+  Test_SL_Init_ReturnsFalseIfMallocFails();
+  Test_SL_Init_ReturnsTrueOnFirstCall();
+  Test_SL_Init_ReturnsFalseIfCalledTwice();
   puts("");
 
   puts("Testing Post-Initialization - Internal");
+  puts("");
+
+  puts("Testing Post-Initialization - Public");
   puts("");
 
   puts("All Tests Completed Successfully!");
