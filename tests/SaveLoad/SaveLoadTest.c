@@ -120,7 +120,7 @@ void Test_SL_Shutdown_ReturnsFalseBeforeInitialization(void) {
 }
 
 // --------------------------------------------------
-// Initialization
+// Initialization - Fail Mem Alloc
 // --------------------------------------------------
 
 void Test_SL_Init_ReturnsFalseIfCallocFails(void) {
@@ -135,7 +135,12 @@ void Test_SL_Init_ReturnsFalseIfMallocFails(void) {
   TEST_SetCanMalloc(true);
   TEST_PASS("Test_SL_Init_ReturnsFalseIfMallocFails");
 }
-void Test_SL_Init_ReturnsTrueOnFirstCall(void) {
+
+// --------------------------------------------------
+// Initialization - NULL Args
+// --------------------------------------------------
+
+void Test_SL_Init_ReturnsTrueWithNULLArguments(void) {
   assert(SL_Init(NULL, NULL));
   TEST_PASS("Test_SL_Init_ReturnsTrueOnFirstCall");
 }
@@ -145,9 +150,6 @@ void Test_SL_Init_ReturnsFalseIfCalledTwice(void) {
 }
 
 // --------------------------------------------------
-// Post-Initialization - Internal
-// --------------------------------------------------
-// --------------------------------------------------
 // Post-Initialization - Public
 // --------------------------------------------------
 
@@ -155,37 +157,57 @@ void Test_SL_IsInitialized_ReturnsTrueAfterInitialization(void) {
   assert(SL_IsInitialized());
   TEST_PASS("Test_SL_IsInitialized_ReturnsTrueAfterInitialization");
 }
+// Get game dir
+// Set game dir
+// Get game dir again
 
-// --------------------------------------------------
-// State Registration
-// --------------------------------------------------
-// --------------------------------------------------
-// Post-Registration - Internal
-// --------------------------------------------------
-// --------------------------------------------------
-// Pre-transitions
-// --------------------------------------------------
-// --------------------------------------------------
-// Transitions
-// --------------------------------------------------
-// --------------------------------------------------
-// Getters
-// --------------------------------------------------
-// --------------------------------------------------
-// Checks
-// --------------------------------------------------
-// --------------------------------------------------
-// Update and Draw
-// --------------------------------------------------
+// Get game name
+// Set game name
+// Get game name again
+
+// char *SL_GetGameDir(void) { return NULL; }
+
+// bool SL_SetGameFile(char *file) { return false; }
+
+// bool SL_DirExists(char *dir) { return false; }
+
+// bool SL_FileExists(char *file) { return false; }
+
 // --------------------------------------------------
 // Shutdown
 // --------------------------------------------------
+
+void Test_SL_Shutdown_ReturnsTrueAfterInitialization(void) {
+  assert(SL_Shutdown());
+  TEST_PASS("Test_SL_Shutdown_ReturnsTrueAfterInitialization");
+}
+
 // --------------------------------------------------
 // Post-Shutdown access - Public
 // --------------------------------------------------
+
+void Test_SL_Shutdown_ReturnsFalseIfCalledTwice(void) {
+  assert(!SL_Shutdown());
+  TEST_PASS("Test_SL_Shutdown_ReturnsFalseIfCalledTwice");
+}
+
+void Test_SL_IsInitialized_ReturnsFalseAfterShutdown(void) {
+  assert(!SL_IsInitialized());
+  TEST_PASS("Test_SL_IsInitialized_ReturnsFalseAfterShutdown");
+}
+
 // --------------------------------------------------
-// Post-Shutdown access - Internal
+// Initialization -  Non-NULL file
 // --------------------------------------------------
+
+// --------------------------------------------------
+// Initialization -  Non-NULL dir
+// --------------------------------------------------
+
+// --------------------------------------------------
+// Initialization -  Non-NULL Args
+// --------------------------------------------------
+
 // --------------------------------------------------
 // Stress tests
 // --------------------------------------------------
@@ -221,17 +243,30 @@ int main() {
   Test_SL_Shutdown_ReturnsFalseBeforeInitialization();
   puts("");
 
-  puts("Testing Initialization");
+  puts("Testing Initialization - Fail Mem Alloc");
   Test_SL_Init_ReturnsFalseIfCallocFails();
   Test_SL_Init_ReturnsFalseIfMallocFails();
-  Test_SL_Init_ReturnsTrueOnFirstCall();
+  puts("");
+
+  puts("Testing Initialization - NULL Args");
+  Test_SL_Init_ReturnsTrueWithNULLArguments();
   Test_SL_Init_ReturnsFalseIfCalledTwice();
   puts("");
 
-  puts("Testing Post-Initialization - Internal");
+  puts("Testing Post-Initialization - Public");
+  Test_SL_IsInitialized_ReturnsTrueAfterInitialization();
   puts("");
 
-  puts("Testing Post-Initialization - Public");
+  puts("Testing Shutdown");
+  Test_SL_Shutdown_ReturnsTrueAfterInitialization();
+  puts("");
+
+  puts("Testing Post-Shutdown - Public");
+  Test_SL_Shutdown_ReturnsFalseIfCalledTwice();
+  Test_SL_IsInitialized_ReturnsFalseAfterShutdown();
+  puts("");
+
+  puts("Testing Initialization - Non-NULL Args");
   puts("");
 
   puts("All Tests Completed Successfully!");

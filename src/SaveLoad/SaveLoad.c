@@ -37,6 +37,7 @@
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
+
 static SaveLoadTracker *tracker;
 
 // --------------------------------------------------
@@ -364,7 +365,7 @@ bool SL_Shutdown(void) {
 
   RETURN_FALSE_IF_NOT_INITIALIZED(LOG_CONSEQ_SHUTDOWN_ABORTED);
 
-  bool isFatal = false;
+  bool isFatal = TEST_Fatal();
 
   if (tracker->saveStream) {
     if (fclose(tracker->saveStream) == EOF) {

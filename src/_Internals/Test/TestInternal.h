@@ -32,8 +32,12 @@ bool TEST_SetCanMalloc(bool toggle);
 
 bool TEST_SetCanCalloc(bool toggle);
 
+bool TEST_SetCanFatal(bool toggle);
+
 void *TEST_Malloc(size_t size);
 
 void *TEST_Calloc(size_t num, size_t size);
+
+bool TEST_Fatal(void);
 
 #endif
