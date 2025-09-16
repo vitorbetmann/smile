@@ -1,5 +1,10 @@
-// TODO add instructions to text below about how to create mocks and how to name
-// them perhaps a few more details on how to name stuff
+/* TODO add instructions to text below about how to create mocks and how to name
+ * them perhaps a few more details on how to name stuff
+ *
+ * Like for example, when using NULL in the name of a func, call it Null for
+ * readability
+ */
+
 /*
  * Test Naming Convention:
  *
@@ -31,7 +36,7 @@
 // Pre-Init - Internal
 // --------------------------------------------------
 
-void Test_SL_Internal_GetDefaultSysDir_ReturnsNULLPreInit(void) {
+void Test_SL_Internal_GetDefaultSysDir_ReturnsNullPreInit(void) {
   assert(!SL_Internal_GetDefaultSysDir());
   TEST_PASS("Test_SL_Internal_GetDefaultSysDir_ReturnsNULLPreInit");
 }
@@ -90,7 +95,7 @@ void Test_SL_HasNext_ReturnsFalsePreInit(void) {
   assert(!SL_HasNext());
   TEST_PASS("Test_SL_HasNext_ReturnsFalsePreInit");
 }
-void Test_SL_LoadNext_ReturnsNULLPreInit(void) {
+void Test_SL_LoadNext_ReturnsNullPreInit(void) {
   assert(!SL_LoadNext());
   TEST_PASS("Test_SL_LoadNext_ReturnsNULLPreInit");
 }
@@ -132,7 +137,7 @@ void Test_SL_Init_ReturnsFalseIfMallocFails(void) {
 // Init - NULL Args
 // --------------------------------------------------
 
-void Test_SL_Init_ReturnsTrueWithAllNULLArgs(void) {
+void Test_SL_Init_ReturnsTrueWithAllNullArgs(void) {
   assert(SL_Init(NULL, NULL));
   TEST_PASS("Test_SL_Init_ReturnsTrueOnFirstCall");
 }
@@ -301,7 +306,7 @@ void Test_SL_Init_ReturnsTrueWithNoNULLArgs(void) {
 int main() {
   puts("");
   puts("Testing Pre-Init - Internal");
-  Test_SL_Internal_GetDefaultSysDir_ReturnsNULLPreInit();
+  Test_SL_Internal_GetDefaultSysDir_ReturnsNullPreInit();
   Test_SL_Internal_BeginSession_OnSaveModeReturnsFalsePreInit();
   Test_SL_Internal_BeginSession_OnLoadModeReturnsFalsePreInit();
   puts("");
@@ -317,7 +322,7 @@ int main() {
   Test_SL_EndSaveSession_ReturnsFalsePreInit();
   Test_SL_BeginLoadSession_ReturnsFalsePreInit();
   Test_SL_HasNext_ReturnsFalsePreInit();
-  Test_SL_LoadNext_ReturnsNULLPreInit();
+  Test_SL_LoadNext_ReturnsNullPreInit();
   Test_SL_LoadNextTo_ReturnsFalsePreInit();
   Test_SL_EndLoadSession_ReturnsFalsePreInit();
   Test_SL_DeleteSave_ReturnsFalsePreInit();
@@ -330,7 +335,7 @@ int main() {
   puts("");
 
   puts("Testing Init - NULL Args");
-  Test_SL_Init_ReturnsTrueWithAllNULLArgs();
+  Test_SL_Init_ReturnsTrueWithAllNullArgs();
   Test_SL_Init_ReturnsFalseIfCalledTwice();
   puts("");
 

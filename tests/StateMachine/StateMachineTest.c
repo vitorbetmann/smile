@@ -184,7 +184,7 @@ void Test_SM_Internal_SetCurrState_SetsValidStateCorrectly(void) {
   TEST_PASS("Test_SM_Internal_SetCurrState_SetsValidStateCorrectly");
 }
 
-void Test_SM_Internal_SetCurrState_SetsNULLStateCorrectly(void) {
+void Test_SM_Internal_SetCurrState_SetsNullStateCorrectly(void) {
   SM_Internal_SetCurrState(NULL);
   assert(!SM_Internal_GetCurrState());
   TEST_PASS("Test_SM_Internal_SetCurrState_SetsNULLStateCorrectly");
@@ -215,21 +215,21 @@ void Test_SM_RegisterState_ReturnsFalseIfNameAlreadyExists(void) {
   TEST_PASS("Test_SM_RegisterState_ReturnsFalseIfNameAlreadyExists");
 }
 
-void Test_SM_RegisterState_ReturnsTrueIfEnterAndUpdateNULL(void) {
+void Test_SM_RegisterState_ReturnsTrueIfEnterAndUpdateNull(void) {
   assert(SM_RegisterState("testNULLEnterAndUpdate", NULL, NULL, mockDraw,
                           mockExit));
-  TEST_PASS("Test_SM_RegisterState_ReturnsTrueIfEnterAndUpdateNULL");
+  TEST_PASS("Test_SM_RegisterState_ReturnsTrueIfEnterAndUpdateNull");
 }
 
-void Test_SM_RegisterState_ReturnsTrueIfDrawAndExitNULL(void) {
+void Test_SM_RegisterState_ReturnsTrueIfDrawAndExitNull(void) {
   assert(SM_RegisterState("testNULLDrawAndExit", mockEnter, mockUpdate, NULL,
                           NULL));
-  TEST_PASS("Test_SM_RegisterState_ReturnsTrueIfDrawAndExitNULL");
+  TEST_PASS("Test_SM_RegisterState_ReturnsTrueIfDrawAndExitNull");
 }
 
-void Test_SM_RegisterState_ReturnsFalseIfAllFunctionsNULL(void) {
+void Test_SM_RegisterState_ReturnsFalseIfAllFunctionsNull(void) {
   assert(!SM_RegisterState("testAllNULL", NULL, NULL, NULL, NULL));
-  TEST_PASS("Test_SM_RegisterState_ReturnsFalseIfAllFunctionsNULL");
+  TEST_PASS("Test_SM_RegisterState_ReturnsFalseIfAllFunctionsNull");
 }
 
 // --------------------------------------------------
@@ -247,29 +247,29 @@ void Test_SM_Internal_GetState_ReturnsRegisteredStateByName(void) {
 // Pre-transitions
 // --------------------------------------------------
 
-void Test_SM_GetCurrStateName_ReturnsNullIfCurrentStateIsNULL(void) {
+void Test_SM_GetCurrStateName_ReturnsNullIfCurrentStateIsNull(void) {
   assert(!SM_GetCurrStateName());
-  TEST_PASS("Test_SM_GetCurrStateName_ReturnsNullIfCurrentStateIsNULL");
+  TEST_PASS("Test_SM_GetCurrStateName_ReturnsNullIfCurrentStateIsNull");
 }
 
-void Test_SM_Update_ReturnsFalseIfCurrentStateIsNULL(void) {
+void Test_SM_Update_ReturnsFalseIfCurrentStateIsNull(void) {
   assert(!SM_Update(mockDT));
-  TEST_PASS("Test_SM_Update_ReturnsFalseIfCurrentStateIsNULL");
+  TEST_PASS("Test_SM_Update_ReturnsFalseIfCurrentStateIsNull");
 }
 
-void Test_SM_Draw_ReturnsFalseIfCurrentStateIsNULL(void) {
+void Test_SM_Draw_ReturnsFalseIfCurrentStateIsNull(void) {
   assert(!SM_Draw());
-  TEST_PASS("Test_SM_Draw_ReturnsFalseIfCurrentStateIsNULL");
+  TEST_PASS("Test_SM_Draw_ReturnsFalseIfCurrentStateIsNull");
 }
 
 // --------------------------------------------------
 // Transitions
 // --------------------------------------------------
 
-void Test_SM_ChangeStateTo_ReturnsTrueChangingFromNULLToValidState(void) {
+void Test_SM_ChangeStateTo_ReturnsTrueChangingFromNullToValidState(void) {
   assert(SM_ChangeStateTo("testNoNULL", NULL));
   puts(
-      "\t[PASS] Test_SM_ChangeStateTo_ReturnsTrueChangingFromNULLToValidState");
+      "\t[PASS] Test_SM_ChangeStateTo_ReturnsTrueChangingFromNullToValidState");
 }
 
 void Test_SM_ChangeStateTo_ReturnsFalseIfNameIsNULL(void) {
@@ -545,7 +545,7 @@ int main() {
   puts("Testing Pre-Registration - Internal");
   Test_SM_Internal_GetCurrState_ReturnsNullIfNoCurrentState();
   Test_SM_Internal_SetCurrState_SetsValidStateCorrectly();
-  Test_SM_Internal_SetCurrState_SetsNULLStateCorrectly();
+  Test_SM_Internal_SetCurrState_SetsNullStateCorrectly();
   puts("");
 
   puts("Testing State Registration");
@@ -553,9 +553,9 @@ int main() {
   Test_SM_RegisterState_ReturnsFalseIfNameIsEmpty();
   Test_SM_RegisterState_ReturnsTrueIfAllFunctionsPresent();
   Test_SM_RegisterState_ReturnsFalseIfNameAlreadyExists();
-  Test_SM_RegisterState_ReturnsTrueIfEnterAndUpdateNULL();
-  Test_SM_RegisterState_ReturnsTrueIfDrawAndExitNULL();
-  Test_SM_RegisterState_ReturnsFalseIfAllFunctionsNULL();
+  Test_SM_RegisterState_ReturnsTrueIfEnterAndUpdateNull();
+  Test_SM_RegisterState_ReturnsTrueIfDrawAndExitNull();
+  Test_SM_RegisterState_ReturnsFalseIfAllFunctionsNull();
   puts("");
 
   puts("Testing Post-Registration - Internal");
@@ -563,13 +563,13 @@ int main() {
   puts("");
 
   puts("Testing Pre-Transitions");
-  Test_SM_GetCurrStateName_ReturnsNullIfCurrentStateIsNULL();
-  Test_SM_Update_ReturnsFalseIfCurrentStateIsNULL();
-  Test_SM_Draw_ReturnsFalseIfCurrentStateIsNULL();
+  Test_SM_GetCurrStateName_ReturnsNullIfCurrentStateIsNull();
+  Test_SM_Update_ReturnsFalseIfCurrentStateIsNull();
+  Test_SM_Draw_ReturnsFalseIfCurrentStateIsNull();
   puts("");
 
   puts("Testing Transitions");
-  Test_SM_ChangeStateTo_ReturnsTrueChangingFromNULLToValidState();
+  Test_SM_ChangeStateTo_ReturnsTrueChangingFromNullToValidState();
   Test_SM_ChangeStateTo_ReturnsFalseIfNameIsNULL();
   Test_SM_ChangeStateTo_ReturnsFalseIfStateIsUnregistered();
   Test_SM_ChangeStateTo_ReturnsTrueChangingFromOneValidStateToAnother();
