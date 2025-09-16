@@ -77,68 +77,68 @@ void mockExit(void) {
 }
 
 // --------------------------------------------------
-// Pre-initialization - Internal
+// Pre-Init - Internal
 // --------------------------------------------------
 
-void Test_SM_Internal_SetCurrState_ReturnsFalseBeforeInitialization(void) {
+void Test_SM_Internal_SetCurrState_ReturnsFalsePreInit(void) {
   assert(!SM_Internal_SetCurrState(&mockState));
-  TEST_PASS("Test_SM_Internal_SetCurrState_ReturnsFalseBeforeInitialization");
+  TEST_PASS("Test_SM_Internal_SetCurrState_ReturnsFalsePreInit");
 }
-void Test_SM_Internal_GetCurrState_ReturnsNullBeforeInitialization(void) {
+void Test_SM_Internal_GetCurrState_ReturnsNullPreInit(void) {
   assert(!SM_Internal_GetCurrState());
-  TEST_PASS("Test_SM_Internal_GetCurrState_ReturnsNullBeforeInitialization");
+  TEST_PASS("Test_SM_Internal_GetCurrState_ReturnsNullPreInit");
 }
-void Test_SM_Internal_GetState_ReturnsNullBeforeInitialization(void) {
+void Test_SM_Internal_GetState_ReturnsNullPreInit(void) {
   assert(!SM_Internal_GetState("mockState"));
-  TEST_PASS("Test_SM_Internal_GetState_ReturnsNullBeforeInitialization");
+  TEST_PASS("Test_SM_Internal_GetState_ReturnsNullPreInit");
 }
-void Test_SM_Test_GetTracker_ReturnsNullBeforeInitialization(void) {
+void Test_SM_Test_GetTracker_ReturnsNullPreInit(void) {
   assert(!SM_Test_GetTracker());
-  TEST_PASS("Test_SM_Test_GetTracker_ReturnsNullBeforeInitialization");
+  TEST_PASS("Test_SM_Test_GetTracker_ReturnsNullPreInit");
 }
 
 // --------------------------------------------------
-// Pre-initialization - Public
+// Pre-Init - Public
 // --------------------------------------------------
 
-void Test_SM_IsInitialized_ReturnsFalseBeforeInitialization(void) {
+void Test_SM_IsInitialized_ReturnsFalsePreInit(void) {
   assert(!SM_IsInitialized());
-  TEST_PASS("Test_SM_IsInitialized_ReturnsFalseBeforeInitialization");
+  TEST_PASS("Test_SM_IsInitialized_ReturnsFalsePreInit");
 }
 
-void Test_SM_RegisterState_ReturnsFalseBeforeInitialization(void) {
+void Test_SM_RegisterState_ReturnsFalsePreInit(void) {
   assert(!SM_RegisterState("setToFail", mockEnter, mockUpdate, mockDraw,
                            mockExit));
-  TEST_PASS("Test_SM_RegisterState_ReturnsFalseBeforeInitialization");
+  TEST_PASS("Test_SM_RegisterState_ReturnsFalsePreInit");
 }
 
-void Test_SM_ChangeStateTo_ReturnsFalseBeforeInitialization(void) {
-  assert(!SM_ChangeStateTo("testBeforeInit", NULL));
-  TEST_PASS("Test_SM_ChangeStateTo_ReturnsFalseBeforeInitialization");
+void Test_SM_ChangeStateTo_ReturnsFalsePreInit(void) {
+  assert(!SM_ChangeStateTo("testPreInit", NULL));
+  TEST_PASS("Test_SM_ChangeStateTo_ReturnsFalsePreInit");
 }
 
-void Test_SM_Update_ReturnsFalseBeforeInitialization(void) {
+void Test_SM_Update_ReturnsFalsePreInit(void) {
   assert(!SM_Update(mockDT));
-  TEST_PASS("Test_SM_Update_ReturnsFalseBeforeInitialization");
+  TEST_PASS("Test_SM_Update_ReturnsFalsePreInit");
 }
 
-void Test_SM_Draw_ReturnsFalseBeforeInitialization(void) {
+void Test_SM_Draw_ReturnsFalsePreInit(void) {
   assert(!SM_Draw());
-  TEST_PASS("Test_SM_Draw_ReturnsFalseBeforeInitialization");
+  TEST_PASS("Test_SM_Draw_ReturnsFalsePreInit");
 }
 
-void Test_SM_Shutdown_ReturnsFalseBeforeInitialization(void) {
+void Test_SM_Shutdown_ReturnsFalsePreInit(void) {
   assert(!SM_Shutdown());
-  TEST_PASS("Test_SM_Shutdown_ReturnsFalseBeforeInitialization");
+  TEST_PASS("Test_SM_Shutdown_ReturnsFalsePreInit");
 }
 
-void Test_SM_GetCurrStateName_ReturnsNullBeforeInitialization(void) {
+void Test_SM_GetCurrStateName_ReturnsNullPreInit(void) {
   assert(!SM_GetCurrStateName());
-  TEST_PASS("Test_SM_GetCurrStateName_ReturnsNullBeforeInitialization");
+  TEST_PASS("Test_SM_GetCurrStateName_ReturnsNullPreInit");
 }
 
 // --------------------------------------------------
-// Initialization
+// Init
 // --------------------------------------------------
 
 void Test_SM_Init_ReturnsFalseIfMallocFails(void) {
@@ -161,12 +161,12 @@ void Test_SM_Init_ReturnsFalseIfCalledTwice(void) {
 }
 
 // --------------------------------------------------
-// Post-Initialization - Internal
+// Post-Init - Internal
 // --------------------------------------------------
 
-void Test_SM_Test_GetTracker_ReturnsTrackerAfterInitialization(void) {
+void Test_SM_Test_GetTracker_ReturnsTrackerAfterInit(void) {
   assert(SM_Test_GetTracker());
-  TEST_PASS("Test_SM_Test_GetTracker_ReturnsTrackerAfterInitialization");
+  TEST_PASS("Test_SM_Test_GetTracker_ReturnsTrackerAfterInit");
 }
 
 // --------------------------------------------------
@@ -331,9 +331,9 @@ void Test_SM_GetCurrStateName_ReturnsCurrentStateName(void) {
 // Checks
 // --------------------------------------------------
 
-void Test_SM_IsInitialized_ReturnsTrueAfterInitialization(void) {
+void Test_SM_IsInitialized_ReturnsTrueAfterInit(void) {
   assert(SM_IsInitialized());
-  TEST_PASS("Test_SM_IsInitialized_ReturnsTrueAfterInitialization");
+  TEST_PASS("Test_SM_IsInitialized_ReturnsTrueAfterInit");
 }
 
 void Test_SM_IsStateRegistered_ReturnsTrueForValidStateName(void) {
@@ -429,7 +429,7 @@ void Test_SM_RegisterState_ReturnsFalseAfterShutdown(void) {
 }
 
 void Test_SM_ChangeStateTo_ReturnsFalseAfterShutdown(void) {
-  assert(!SM_ChangeStateTo("testBeforeInit", NULL));
+  assert(!SM_ChangeStateTo("testPreInit", NULL));
   TEST_PASS("Test_SM_ChangeStateTo_ReturnsFalseAfterShutdown");
 }
 
@@ -515,31 +515,31 @@ void Test_SM_Shutdown_FreeingMultipleStatesCausesNoSkips(void) {
 
 int main() {
   puts("");
-  puts("Testing Pre-Initialization - Internal");
-  Test_SM_Internal_SetCurrState_ReturnsFalseBeforeInitialization();
-  Test_SM_Internal_GetCurrState_ReturnsNullBeforeInitialization();
-  Test_SM_Internal_GetState_ReturnsNullBeforeInitialization();
-  Test_SM_Test_GetTracker_ReturnsNullBeforeInitialization();
+  puts("Testing Pre-Init - Internal");
+  Test_SM_Internal_SetCurrState_ReturnsFalsePreInit();
+  Test_SM_Internal_GetCurrState_ReturnsNullPreInit();
+  Test_SM_Internal_GetState_ReturnsNullPreInit();
+  Test_SM_Test_GetTracker_ReturnsNullPreInit();
   puts("");
 
-  puts("Testing Pre-Initialization - Public");
-  Test_SM_IsInitialized_ReturnsFalseBeforeInitialization();
-  Test_SM_RegisterState_ReturnsFalseBeforeInitialization();
-  Test_SM_ChangeStateTo_ReturnsFalseBeforeInitialization();
-  Test_SM_Update_ReturnsFalseBeforeInitialization();
-  Test_SM_Draw_ReturnsFalseBeforeInitialization();
-  Test_SM_Shutdown_ReturnsFalseBeforeInitialization();
-  Test_SM_GetCurrStateName_ReturnsNullBeforeInitialization();
+  puts("Testing Pre-Init - Public");
+  Test_SM_IsInitialized_ReturnsFalsePreInit();
+  Test_SM_RegisterState_ReturnsFalsePreInit();
+  Test_SM_ChangeStateTo_ReturnsFalsePreInit();
+  Test_SM_Update_ReturnsFalsePreInit();
+  Test_SM_Draw_ReturnsFalsePreInit();
+  Test_SM_Shutdown_ReturnsFalsePreInit();
+  Test_SM_GetCurrStateName_ReturnsNullPreInit();
   puts("");
 
-  puts("Testing Initialization");
+  puts("Testing Init");
   Test_SM_Init_ReturnsFalseIfMallocFails();
   Test_SM_Init_ReturnsTrueAndInitializesTracker();
   Test_SM_Init_ReturnsFalseIfCalledTwice();
   puts("");
 
-  puts("Testing Post-Initialization - Internal");
-  Test_SM_Test_GetTracker_ReturnsTrackerAfterInitialization();
+  puts("Testing Post-Init - Internal");
+  Test_SM_Test_GetTracker_ReturnsTrackerAfterInit();
   puts("");
 
   puts("Testing Pre-Registration - Internal");
@@ -584,7 +584,7 @@ int main() {
   puts("");
 
   puts("Testing Checks");
-  Test_SM_IsInitialized_ReturnsTrueAfterInitialization();
+  Test_SM_IsInitialized_ReturnsTrueAfterInit();
   Test_SM_IsStateRegistered_ReturnsTrueForValidStateName();
   Test_SM_IsStateRegistered_ReturnsFalseForInvalidStateName();
   puts("");

@@ -424,9 +424,9 @@ char *SL_Internal_GetDefaultSysDir() {
 
 #ifdef __APPLE__
 #endif
-#ifdef _WIN32
-#endif
 #ifdef __linux__
+#endif
+#ifdef _WIN32
 #endif
   // TODO improve this, make system dependand like in LOVE2D
 

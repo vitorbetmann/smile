@@ -31,84 +31,84 @@
 // Pre-Init - Internal
 // --------------------------------------------------
 
-void Test_SL_Internal_GetDefaultSysDir_ReturnsNULLBeforeInit(void) {
+void Test_SL_Internal_GetDefaultSysDir_ReturnsNULLPreInit(void) {
   assert(!SL_Internal_GetDefaultSysDir());
-  TEST_PASS("Test_SL_Internal_GetDefaultSysDir_ReturnsNULLBeforeInit");
+  TEST_PASS("Test_SL_Internal_GetDefaultSysDir_ReturnsNULLPreInit");
 }
-void Test_SL_Internal_BeginSession_OnSaveModeReturnsFalseBeforeInit(void) {
+void Test_SL_Internal_BeginSession_OnSaveModeReturnsFalsePreInit(void) {
   assert(!SL_Internal_BeginSession(SAVE, NULL,
                                    LOG_CONSEQ_INTERNAL_BEGIN_SESSION_ABORTED));
-  TEST_PASS("Test_SL_Internal_BeginSession_OnSaveModeReturnsFalseBeforeInit");
+  TEST_PASS("Test_SL_Internal_BeginSession_OnSaveModeReturnsFalsePreInit");
 }
-void Test_SL_Internal_BeginSession_OnLoadModeReturnsFalseBeforeInit(void) {
+void Test_SL_Internal_BeginSession_OnLoadModeReturnsFalsePreInit(void) {
   assert(!SL_Internal_BeginSession(LOAD, NULL,
                                    LOG_CONSEQ_INTERNAL_BEGIN_SESSION_ABORTED));
-  TEST_PASS("Test_SL_Internal_BeginSession_OnLoadModeReturnsFalseBeforeInit");
+  TEST_PASS("Test_SL_Internal_BeginSession_OnLoadModeReturnsFalsePreInit");
 }
 
 // --------------------------------------------------
 // Pre-Init - Public
 // --------------------------------------------------
 
-void Test_SL_IsInitialized_ReturnsFalseBeforeInit(void) {
+void Test_SL_IsInitialized_ReturnsFalsePreInit(void) {
   assert(!SL_IsInitialized());
-  TEST_PASS("Test_SL_IsInitialized_ReturnsFalseBeforeInit");
+  TEST_PASS("Test_SL_IsInitialized_ReturnsFalsePreInit");
 }
-void Test_SL_SetGameDir_ReturnsFalseBeforeInit(void) {
+void Test_SL_SetGameDir_ReturnsFalsePreInit(void) {
   assert(!SL_SetGameDir(NULL));
-  TEST_PASS("Test_SL_SetGameDir_ReturnsFalseBeforeInit");
+  TEST_PASS("Test_SL_SetGameDir_ReturnsFalsePreInit");
 }
-void Test_SL_SetGameFile_ReturnsFalseBeforeInit(void) {
+void Test_SL_SetGameFile_ReturnsFalsePreInit(void) {
   assert(!SL_SetGameFile(NULL));
-  TEST_PASS("Test_SL_SetGameFile_ReturnsFalseBeforeInit");
+  TEST_PASS("Test_SL_SetGameFile_ReturnsFalsePreInit");
 }
-void Test_SL_DirExists_ReturnsFalseBeforeInit(void) {
+void Test_SL_DirExists_ReturnsFalsePreInit(void) {
   assert(!SL_DirExists(NULL));
-  TEST_PASS("Test_SL_DirExists_ReturnsFalseBeforeInit");
+  TEST_PASS("Test_SL_DirExists_ReturnsFalsePreInit");
 }
-void Test_SL_FileExists_ReturnsFalseBeforeInit(void) {
+void Test_SL_FileExists_ReturnsFalsePreInit(void) {
   assert(!SL_FileExists(NULL));
-  TEST_PASS("Test_SL_FileExists_ReturnsFalseBeforeInit");
+  TEST_PASS("Test_SL_FileExists_ReturnsFalsePreInit");
 }
-void Test_SL_BeginSaveSession_ReturnsFalseBeforeInit(void) {
+void Test_SL_BeginSaveSession_ReturnsFalsePreInit(void) {
   assert(!SL_BeginSaveSession(NULL));
-  TEST_PASS("Test_SL_BeginSaveSession_ReturnsFalseBeforeInit");
+  TEST_PASS("Test_SL_BeginSaveSession_ReturnsFalsePreInit");
 }
-void Test_SL_SaveNext_ReturnsFalseBeforeInit(void) {
+void Test_SL_SaveNext_ReturnsFalsePreInit(void) {
   assert(!SL_SaveNext(NULL));
-  TEST_PASS("Test_SL_SaveNext_ReturnsFalseBeforeInit");
+  TEST_PASS("Test_SL_SaveNext_ReturnsFalsePreInit");
 }
-void Test_SL_EndSaveSession_ReturnsFalseBeforeInit(void) {
+void Test_SL_EndSaveSession_ReturnsFalsePreInit(void) {
   assert(!SL_EndSaveSession());
-  TEST_PASS("Test_SL_EndSaveSession_ReturnsFalseBeforeInit");
+  TEST_PASS("Test_SL_EndSaveSession_ReturnsFalsePreInit");
 }
-void Test_SL_BeginLoadSession_ReturnsFalseBeforeInit(void) {
+void Test_SL_BeginLoadSession_ReturnsFalsePreInit(void) {
   assert(!SL_BeginLoadSession(NULL));
-  TEST_PASS("Test_SL_BeginLoadSession_ReturnsFalseBeforeInit");
+  TEST_PASS("Test_SL_BeginLoadSession_ReturnsFalsePreInit");
 }
-void Test_SL_HasNext_ReturnsFalseBeforeInit(void) {
+void Test_SL_HasNext_ReturnsFalsePreInit(void) {
   assert(!SL_HasNext());
-  TEST_PASS("Test_SL_HasNext_ReturnsFalseBeforeInit");
+  TEST_PASS("Test_SL_HasNext_ReturnsFalsePreInit");
 }
-void Test_SL_LoadNext_ReturnsNULLBeforeInit(void) {
+void Test_SL_LoadNext_ReturnsNULLPreInit(void) {
   assert(!SL_LoadNext());
-  TEST_PASS("Test_SL_LoadNext_ReturnsNULLBeforeInit");
+  TEST_PASS("Test_SL_LoadNext_ReturnsNULLPreInit");
 }
-void Test_SL_LoadNextTo_ReturnsFalseBeforeInit(void) {
+void Test_SL_LoadNextTo_ReturnsFalsePreInit(void) {
   assert(!SL_LoadNextTo(NULL, 0));
-  TEST_PASS("Test_SL_LoadNextTo_ReturnsFalseBeforeInit");
+  TEST_PASS("Test_SL_LoadNextTo_ReturnsFalsePreInit");
 }
-void Test_SL_EndLoadSession_ReturnsFalseBeforeInit(void) {
+void Test_SL_EndLoadSession_ReturnsFalsePreInit(void) {
   assert(!SL_EndLoadSession());
-  TEST_PASS("Test_SL_EndLoadSession_ReturnsFalseBeforeInit");
+  TEST_PASS("Test_SL_EndLoadSession_ReturnsFalsePreInit");
 }
-void Test_SL_DeleteSave_ReturnsFalseBeforeInit(void) {
+void Test_SL_DeleteSave_ReturnsFalsePreInit(void) {
   assert(!SL_DeleteSave());
-  TEST_PASS("Test_SL_DeleteSave_ReturnsFalseBeforeInit");
+  TEST_PASS("Test_SL_DeleteSave_ReturnsFalsePreInit");
 }
-void Test_SL_Shutdown_ReturnsFalseBeforeInit(void) {
+void Test_SL_Shutdown_ReturnsFalsePreInit(void) {
   assert(!SL_Shutdown());
-  TEST_PASS("Test_SL_Shutdown_ReturnsFalseBeforeInit");
+  TEST_PASS("Test_SL_Shutdown_ReturnsFalsePreInit");
 }
 
 // --------------------------------------------------
@@ -149,6 +149,7 @@ void Test_SL_IsInitialized_ReturnsTrueAfterInit(void) {
   assert(SL_IsInitialized());
   TEST_PASS("Test_SL_IsInitialized_ReturnsTrueAfterInit");
 }
+#ifdef __APPLE__
 void Test_SL_GetGameDir_ReturnsDefaultSysDirOnApple(void) {
   char *buffer = SL_GetGameDir();
   assert(TEST_COMP_NAME(buffer, "./"));
@@ -164,6 +165,20 @@ void Test_SL_GetGameDir_ReturnsAltSysDirOnApple(void) {
   buffer = NULL;
   TEST_PASS("Test_SL_GetGameDir_ReturnsAltSysDirOnApple");
 }
+void Test_SL_SetGameDir_ReturnsFalseForInvalidDirOnApple(void) {
+  // bool SL_SetGameDir(char *dir);
+  TEST_PASS("Test_SL_SetGameDir_ReturnsFalseForInvalidDirOnApple");
+}
+void Test_SL_SetGameDir_ReturnsTrueForValidDirOnApple(void) {
+  // bool SL_SetGameDir(char *dir);
+  TEST_PASS("Test_SL_SetGameDir_ReturnsTrueForValidDirOnApple");
+}
+void Test_SL_GetGameDir_ReturnsCorrectDirAfterSetGameDirOnApple(void) {
+  // do something
+  TEST_PASS("Test_SL_GetGameDir_ReturnsCorrectDirAfterSetGameDirOnApple");
+}
+#endif
+#ifdef __linux__
 void Test_SL_GetGameDir_ReturnsDefaultSysDirOnLinux(void) {
   char *buffer = SL_GetGameDir();
   assert(TEST_COMP_NAME(buffer, "./"));
@@ -179,6 +194,20 @@ void Test_SL_GetGameDir_ReturnsAltSysDirOnLinux(void) {
   buffer = NULL;
   TEST_PASS("Test_SL_GetGameDir_ReturnsAltSysDirOnLinux");
 }
+void Test_SL_SetGameDir_ReturnsFalseForInvalidDirOnLinux(void) {
+  // bool SL_SetGameDir(char *dir);
+  TEST_PASS("Test_SL_SetGameDir_ReturnsFalseForInvalidDirOnLinux");
+}
+void Test_SL_SetGameDir_ReturnsTrueForValidDirOnLinux(void) {
+  // bool SL_SetGameDir(char *dir);
+  TEST_PASS("Test_SL_SetGameDir_ReturnsTrueForValidDirOnLinux");
+}
+void Test_SL_GetGameDir_ReturnsCorrectDirAfterSetGameDirOnLinux(void) {
+  // do something
+  TEST_PASS("Test_SL_GetGameDir_ReturnsCorrectDirAfterSetGameDirOnLinux");
+}
+#endif
+#ifdef _WIN32
 void Test_SL_GetGameDir_ReturnsDefaultSysDirOnWindows(void) {
   char *buffer = SL_GetGameDir();
   assert(TEST_COMP_NAME(buffer, "./"));
@@ -194,19 +223,29 @@ void Test_SL_GetGameDir_ReturnsAltSysDirOnWindows(void) {
   buffer = NULL;
   TEST_PASS("Test_SL_GetGameDir_ReturnsAltSysDirOnWindows");
 }
-
-// bool SL_SetGameDir(char *dir);
-// char *SL_GetGameDir(void) { return NULL; } again
+void Test_SL_SetGameDir_ReturnsFalseForInvalidDirOnWindows(void) {
+  // bool SL_SetGameDir(char *dir);
+  TEST_PASS("Test_SL_SetGameDir_ReturnsFalseForInvalidDirOnWindows");
+}
+void Test_SL_SetGameDir_ReturnsTrueForValidDirOnWindows(void) {
+  // bool SL_SetGameDir(char *dir);
+  TEST_PASS("Test_SL_SetGameDir_ReturnsTrueForValidDirOnWindows");
+}
+void Test_SL_GetGameDir_ReturnsCorrectDirAfterSetGameDirOnWindows(void) {
+  // do something
+  TEST_PASS("Test_SL_GetGameDir_ReturnsCorrectDirAfterSetGameDirOnWindows");
+}
+#endif
 
 // char *SL_GetGameFile(void);
 // bool SL_SetGameFile(char *file) { return false; }
 // char *SL_GetGameFile(void); again
 
-// bool SL_DirExists(char *dir) { return false; }
-// bool SL_DirExists(char *dir) { return false; }
+// bool SL_DirExists(char *dir) { return false; } valid dir
+// bool SL_DirExists(char *dir) { return false; } invalid dir
 
-// bool SL_FileExists(char *file) { return false; }
-// bool SL_FileExists(char *file) { return false; }
+// bool SL_FileExists(char *file) { return false; } valid file
+// bool SL_FileExists(char *file) { return false; } invalid file
 
 // --------------------------------------------------
 // Shutdown
@@ -262,27 +301,27 @@ void Test_SL_Init_ReturnsTrueWithNoNULLArgs(void) {
 int main() {
   puts("");
   puts("Testing Pre-Init - Internal");
-  Test_SL_Internal_GetDefaultSysDir_ReturnsNULLBeforeInit();
-  Test_SL_Internal_BeginSession_OnSaveModeReturnsFalseBeforeInit();
-  Test_SL_Internal_BeginSession_OnLoadModeReturnsFalseBeforeInit();
+  Test_SL_Internal_GetDefaultSysDir_ReturnsNULLPreInit();
+  Test_SL_Internal_BeginSession_OnSaveModeReturnsFalsePreInit();
+  Test_SL_Internal_BeginSession_OnLoadModeReturnsFalsePreInit();
   puts("");
 
   puts("Testing Pre-Init - Public");
-  Test_SL_IsInitialized_ReturnsFalseBeforeInit();
-  Test_SL_SetGameDir_ReturnsFalseBeforeInit();
-  Test_SL_SetGameFile_ReturnsFalseBeforeInit();
-  Test_SL_DirExists_ReturnsFalseBeforeInit();
-  Test_SL_FileExists_ReturnsFalseBeforeInit();
-  Test_SL_BeginSaveSession_ReturnsFalseBeforeInit();
-  Test_SL_SaveNext_ReturnsFalseBeforeInit();
-  Test_SL_EndSaveSession_ReturnsFalseBeforeInit();
-  Test_SL_BeginLoadSession_ReturnsFalseBeforeInit();
-  Test_SL_HasNext_ReturnsFalseBeforeInit();
-  Test_SL_LoadNext_ReturnsNULLBeforeInit();
-  Test_SL_LoadNextTo_ReturnsFalseBeforeInit();
-  Test_SL_EndLoadSession_ReturnsFalseBeforeInit();
-  Test_SL_DeleteSave_ReturnsFalseBeforeInit();
-  Test_SL_Shutdown_ReturnsFalseBeforeInit();
+  Test_SL_IsInitialized_ReturnsFalsePreInit();
+  Test_SL_SetGameDir_ReturnsFalsePreInit();
+  Test_SL_SetGameFile_ReturnsFalsePreInit();
+  Test_SL_DirExists_ReturnsFalsePreInit();
+  Test_SL_FileExists_ReturnsFalsePreInit();
+  Test_SL_BeginSaveSession_ReturnsFalsePreInit();
+  Test_SL_SaveNext_ReturnsFalsePreInit();
+  Test_SL_EndSaveSession_ReturnsFalsePreInit();
+  Test_SL_BeginLoadSession_ReturnsFalsePreInit();
+  Test_SL_HasNext_ReturnsFalsePreInit();
+  Test_SL_LoadNext_ReturnsNULLPreInit();
+  Test_SL_LoadNextTo_ReturnsFalsePreInit();
+  Test_SL_EndLoadSession_ReturnsFalsePreInit();
+  Test_SL_DeleteSave_ReturnsFalsePreInit();
+  Test_SL_Shutdown_ReturnsFalsePreInit();
   puts("");
 
   puts("Testing Init - Fail Mem Alloc");
@@ -300,14 +339,20 @@ int main() {
 #ifdef __APPLE__
   Test_SL_GetGameDir_ReturnsDefaultSysDirOnApple();
   Test_SL_GetGameDir_ReturnsAltSysDirOnApple();
-#endif
-#ifdef _WIN32
-  Test_SL_GetGameDir_ReturnsDefaultSysDirOnLinux();
-  Test_SL_GetGameDir_ReturnsAltSysDirOnLinux();
+  Test_SL_SetGameDir_ReturnsFalseForInvalidDirOnApple();
+  Test_SL_SetGameDir_ReturnsTrueForValidDirOnApple();
 #endif
 #ifdef __linux__
+  Test_SL_GetGameDir_ReturnsDefaultSysDirOnLinux();
+  Test_SL_GetGameDir_ReturnsAltSysDirOnLinux();
+  Test_SL_SetGameDir_ReturnsFalseForInvalidDirOnLinux();
+  Test_SL_SetGameDir_ReturnsTrueForValidDirOnLinux();
+#endif
+#ifdef _WIN32
   Test_SL_GetGameDir_ReturnsDefaultSysDirOnWindows();
   Test_SL_GetGameDir_ReturnsAltSysDirOnWindows();
+  Test_SL_SetGameDir_ReturnsFalseForInvalidDirOnWindows();
+  Test_SL_SetGameDir_ReturnsTrueForValidDirOnWindows();
 #endif
   puts("");
 
