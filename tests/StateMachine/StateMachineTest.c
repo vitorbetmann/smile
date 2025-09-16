@@ -180,7 +180,7 @@ void Test_SM_Internal_GetCurrState_ReturnsNullIfNoCurrentState(void) {
 
 void Test_SM_Internal_SetCurrState_SetsValidStateCorrectly(void) {
   SM_Internal_SetCurrState(&mockState);
-  assert(SM_COMP_NAME(SM_Internal_GetCurrState()->name, mockState.name));
+  assert(TEST_COMP_NAME(SM_Internal_GetCurrState()->name, mockState.name));
   TEST_PASS("Test_SM_Internal_SetCurrState_SetsValidStateCorrectly");
 }
 
@@ -238,7 +238,8 @@ void Test_SM_RegisterState_ReturnsFalseIfAllFunctionsNULL(void) {
 
 void Test_SM_Internal_GetState_ReturnsRegisteredStateByName(void) {
   SM_RegisterState("mockState", mockEnter, NULL, NULL, NULL);
-  assert(SM_COMP_NAME(SM_Internal_GetState("mockState")->name, mockState.name));
+  assert(
+      TEST_COMP_NAME(SM_Internal_GetState("mockState")->name, mockState.name));
   TEST_PASS("Test_SM_Internal_GetState_ReturnsRegisteredStateByName");
 }
 
@@ -322,7 +323,7 @@ void Test_SM_ChangeStateTo_CallsEnterFunctionWithArgs(void) {
 // --------------------------------------------------
 
 void Test_SM_GetCurrStateName_ReturnsCurrentStateName(void) {
-  assert(SM_COMP_NAME(SM_GetCurrStateName(), "testNoNULL"));
+  assert(TEST_COMP_NAME(SM_GetCurrStateName(), "testNoNULL"));
   TEST_PASS("Test_SM_GetCurrStateName_ReturnsCurrentStateName");
 }
 

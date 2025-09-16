@@ -13,7 +13,7 @@
 // --------------------------------------------------
 // Defines - Values
 // --------------------------------------------------
-#define MODULE_NAME "SaveLoadSystem"
+#define MODULE_NAME "SaveLoad"
 
 // --------------------------------------------------
 // Defines - Funcs
@@ -59,7 +59,7 @@ bool SL_Init(const char *file, const char *dir) {
     return false;
   }
 
-  tracker->dirPath = dir ? (char *)dir : SL_Internal_GetDefaultOSDir();
+  tracker->dirPath = dir ? (char *)dir : SL_Internal_GetDefaultSysDir();
   if (!tracker->dirPath) {
     SMILE_ERR(MODULE_NAME, LOG_CAUSE_DIR_NOT_FOUND, LOG_CONSEQ_INIT_ABORTED);
 
@@ -69,7 +69,7 @@ bool SL_Init(const char *file, const char *dir) {
     return false;
   }
 
-  const char *targetFile = file ? file : SL_Internal_GetGameName();
+  const char *targetFile = file ? file : SL_GetGameFile();
   size_t fileLen = strlen(targetFile);
   size_t totalLen = strlen(tracker->dirPath) + fileLen + 1;
 
@@ -129,9 +129,21 @@ bool SL_SetGameDir(char *dir) {
   return true;
 }
 
-char *SL_GetGameDir(void) { return NULL; }
+char *SL_GetGameDir(void) {
+  char *buffer = malloc(3);
+  strcpy(buffer, "./");
+  return buffer;
+}
 
 bool SL_SetGameFile(char *file) { return false; }
+
+char *SL_GetGameFile(void) {
+
+  RETURN_NULL_IF_NOT_INITIALIZED(LOG_CONSEQ_INTERNAL_GET_GAME_NAME_ABORTED);
+
+  // TODO get root dir name
+  return "breakout.txt";
+}
 
 bool SL_DirExists(char *dir) { return false; }
 
@@ -405,7 +417,7 @@ bool SL_Shutdown(void) {
 // Internal
 // --------------------------------------------------
 
-char *SL_Internal_GetDefaultOSDir() {
+char *SL_Internal_GetDefaultSysDir() {
 
   RETURN_NULL_IF_NOT_INITIALIZED(
       LOG_CONSEQ_INTERNAL_GET_DEFAULT_OS_DIR_ABORTED);
@@ -416,23 +428,13 @@ char *SL_Internal_GetDefaultOSDir() {
 #endif
 #ifdef __linux__
 #endif
-
   // TODO improve this, make system dependand like in LOVE2D
-  /*
-TODO check if dirPath ends with a '/', and if not, add one at the end
-This should be responsibility of SL_Internal_GetDirName, I think
-*/
+
+  // TODO check if dirPath ends with a '/', and if not, add one at the end
+  // This should be responsibility of SL_Internal_GetDirName, I think
   char *buffer = malloc(3);
   strcpy(buffer, "./");
   return buffer;
-}
-
-char *SL_Internal_GetGameName(void) {
-
-  RETURN_NULL_IF_NOT_INITIALIZED(LOG_CONSEQ_INTERNAL_GET_GAME_NAME_ABORTED);
-
-  // TODO get root dir name
-  return "breakout.txt";
 }
 
 bool SL_Internal_BeginSession(FileInteractionMode mode, const char *file,

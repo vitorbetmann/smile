@@ -73,35 +73,6 @@ bool SL_DirExists(char *dir);
  */
 bool SL_FileExists(char *file);
 
-// /**
-//  * @brief Saves a block of data to the default save file.
-//  *
-//  * This is a convenience wrapper that:
-//  * 1. Begins a save session using the default file.
-//  * 2. Writes the data as a single line (with a trailing newline).
-//  * 3. Ends the session automatically.
-//  *
-//  * @param data Null-terminated string to save.
-//  * @return true on success, false on failure.
-//  * @author Vitor Betmann
-//  */
-// bool SL_SaveGame(const char *data);
-
-// /**
-//  * @brief Loads the entire contents of the default save file.
-//  *
-//  * This is a convenience wrapper that:
-//  * 1. Begins a load session using the default file.
-//  * 2. Reads the entire file contents into a malloc’d null-terminated string.
-//  * 3. Ends the session automatically.
-//  *
-//  * @return Returns a malloc’d null-terminated string. Returns NULL on
-//  failure.
-//  *         Caller must free.
-//  * @author Vitor Betmann
-//  */
-// char *SL_LoadGame(void);
-
 /**
  * @brief Deletes the current save file.
  *

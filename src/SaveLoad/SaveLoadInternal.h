@@ -6,11 +6,6 @@
 #include <stdio.h>
 
 // --------------------------------------------------
-// Other defines
-// --------------------------------------------------
-#define SAVE_LOAD_SYSTEM_NAME "SaveLoad"
-
-// --------------------------------------------------
 // Data types
 // --------------------------------------------------
 
@@ -29,7 +24,7 @@ typedef struct {
 // --------------------------------------------------
 // Prototypes
 // --------------------------------------------------
-char *SL_Internal_GetDefaultOSDir(void);
+char *SL_Internal_GetDefaultSysDir(void);
 char *SL_Internal_GetGameName(void);
 void SL_Internal_SetFileFormat(const char *file);
 bool SL_Internal_EndsWith(const char *str, const char *suffix);

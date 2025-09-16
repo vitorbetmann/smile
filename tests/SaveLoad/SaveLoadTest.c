@@ -28,99 +28,91 @@
 #include "assert.h"
 
 // --------------------------------------------------
-// Pre-initialization - Internal
+// Pre-Init - Internal
 // --------------------------------------------------
 
-void Test_SL_Internal_GetDefaultOSDir_ReturnsNULLBeforeInitialization(void) {
-  assert(!SL_Internal_GetDefaultOSDir());
-  TEST_PASS("Test_SL_Internal_GetDefaultOSDir_ReturnsNULLBeforeInitialization");
+void Test_SL_Internal_GetDefaultSysDir_ReturnsNULLBeforeInit(void) {
+  assert(!SL_Internal_GetDefaultSysDir());
+  TEST_PASS("Test_SL_Internal_GetDefaultSysDir_ReturnsNULLBeforeInit");
 }
-void Test_SL_Internal_GetGameName_ReturnsNULLBeforeInitialization(void) {
-  assert(!SL_Internal_GetGameName());
-  TEST_PASS("Test_SL_Internal_GetGameName_ReturnsNULLBeforeInitialization");
-}
-void Test_SL_Internal_BeginSession_OnSaveModeReturnsFalseBeforeInitialization(
-    void) {
+void Test_SL_Internal_BeginSession_OnSaveModeReturnsFalseBeforeInit(void) {
   assert(!SL_Internal_BeginSession(SAVE, NULL,
                                    LOG_CONSEQ_INTERNAL_BEGIN_SESSION_ABORTED));
-  TEST_PASS("Test_SL_Internal_BeginSession_"
-            "OnSaveModeReturnsFalseBeforeInitialization");
+  TEST_PASS("Test_SL_Internal_BeginSession_OnSaveModeReturnsFalseBeforeInit");
 }
-void Test_SL_Internal_BeginSession_OnLoadModeReturnsFalseBeforeInitialization(
-    void) {
+void Test_SL_Internal_BeginSession_OnLoadModeReturnsFalseBeforeInit(void) {
   assert(!SL_Internal_BeginSession(LOAD, NULL,
                                    LOG_CONSEQ_INTERNAL_BEGIN_SESSION_ABORTED));
-  TEST_PASS("Test_SL_Internal_BeginSession_"
-            "OnLoadModeReturnsFalseBeforeInitialization");
+  TEST_PASS("Test_SL_Internal_BeginSession_OnLoadModeReturnsFalseBeforeInit");
 }
 
 // --------------------------------------------------
-// Pre-initialization - Public
+// Pre-Init - Public
 // --------------------------------------------------
 
-void Test_SL_IsInitialized_ReturnsFalseBeforeInitialization(void) {
+void Test_SL_IsInitialized_ReturnsFalseBeforeInit(void) {
   assert(!SL_IsInitialized());
-  TEST_PASS("Test_SL_IsInitialized_ReturnsFalseBeforeInitialization");
+  TEST_PASS("Test_SL_IsInitialized_ReturnsFalseBeforeInit");
 }
-void Test_SL_SetGameDir_ReturnsFalseBeforeInitialization(void) {
+void Test_SL_SetGameDir_ReturnsFalseBeforeInit(void) {
   assert(!SL_SetGameDir(NULL));
-  TEST_PASS("Test_SL_SetGameDir_ReturnsFalseBeforeInitialization");
+  TEST_PASS("Test_SL_SetGameDir_ReturnsFalseBeforeInit");
 }
-void Test_SL_SetGameFile_ReturnsFalseBeforeInitialization(void) {
+void Test_SL_SetGameFile_ReturnsFalseBeforeInit(void) {
   assert(!SL_SetGameFile(NULL));
-  TEST_PASS("Test_SL_SetGameFile_ReturnsFalseBeforeInitialization");
+  TEST_PASS("Test_SL_SetGameFile_ReturnsFalseBeforeInit");
 }
-void Test_SL_DirExists_ReturnsFalseBeforeInitialization(void) {
+void Test_SL_DirExists_ReturnsFalseBeforeInit(void) {
   assert(!SL_DirExists(NULL));
-  TEST_PASS("Test_SL_DirExists_ReturnsFalseBeforeInitialization");
+  TEST_PASS("Test_SL_DirExists_ReturnsFalseBeforeInit");
 }
-void Test_SL_FileExists_ReturnsFalseBeforeInitialization(void) {
+void Test_SL_FileExists_ReturnsFalseBeforeInit(void) {
   assert(!SL_FileExists(NULL));
-  TEST_PASS("Test_SL_FileExists_ReturnsFalseBeforeInitialization");
+  TEST_PASS("Test_SL_FileExists_ReturnsFalseBeforeInit");
 }
-void Test_SL_BeginSaveSession_ReturnsFalseBeforeInitialization(void) {
+void Test_SL_BeginSaveSession_ReturnsFalseBeforeInit(void) {
   assert(!SL_BeginSaveSession(NULL));
-  TEST_PASS("Test_SL_BeginSaveSession_ReturnsFalseBeforeInitialization");
+  TEST_PASS("Test_SL_BeginSaveSession_ReturnsFalseBeforeInit");
 }
-void Test_SL_SaveNext_ReturnsFalseBeforeInitialization(void) {
+void Test_SL_SaveNext_ReturnsFalseBeforeInit(void) {
   assert(!SL_SaveNext(NULL));
-  TEST_PASS("Test_SL_SaveNext_ReturnsFalseBeforeInitialization");
+  TEST_PASS("Test_SL_SaveNext_ReturnsFalseBeforeInit");
 }
-void Test_SL_EndSaveSession_ReturnsFalseBeforeInitialization(void) {
+void Test_SL_EndSaveSession_ReturnsFalseBeforeInit(void) {
   assert(!SL_EndSaveSession());
-  TEST_PASS("Test_SL_EndSaveSession_ReturnsFalseBeforeInitialization");
+  TEST_PASS("Test_SL_EndSaveSession_ReturnsFalseBeforeInit");
 }
-void Test_SL_BeginLoadSession_ReturnsFalseBeforeInitialization(void) {
+void Test_SL_BeginLoadSession_ReturnsFalseBeforeInit(void) {
   assert(!SL_BeginLoadSession(NULL));
-  TEST_PASS("Test_SL_BeginLoadSession_ReturnsFalseBeforeInitialization");
+  TEST_PASS("Test_SL_BeginLoadSession_ReturnsFalseBeforeInit");
 }
-void Test_SL_HasNext_ReturnsFalseBeforeInitialization(void) {
+void Test_SL_HasNext_ReturnsFalseBeforeInit(void) {
   assert(!SL_HasNext());
-  TEST_PASS("Test_SL_HasNext_ReturnsFalseBeforeInitialization");
+  TEST_PASS("Test_SL_HasNext_ReturnsFalseBeforeInit");
 }
-void Test_SL_LoadNext_ReturnsNULLBeforeInitialization(void) {
+void Test_SL_LoadNext_ReturnsNULLBeforeInit(void) {
   assert(!SL_LoadNext());
-  TEST_PASS("Test_SL_LoadNext_ReturnsNULLBeforeInitialization");
+  TEST_PASS("Test_SL_LoadNext_ReturnsNULLBeforeInit");
 }
-void Test_SL_LoadNextTo_ReturnsFalseBeforeInitialization(void) {
+void Test_SL_LoadNextTo_ReturnsFalseBeforeInit(void) {
   assert(!SL_LoadNextTo(NULL, 0));
-  TEST_PASS("Test_SL_LoadNextTo_ReturnsFalseBeforeInitialization");
+  TEST_PASS("Test_SL_LoadNextTo_ReturnsFalseBeforeInit");
 }
-void Test_SL_EndLoadSession_ReturnsFalseBeforeInitialization(void) {
+void Test_SL_EndLoadSession_ReturnsFalseBeforeInit(void) {
   assert(!SL_EndLoadSession());
-  TEST_PASS("Test_SL_EndLoadSession_ReturnsFalseBeforeInitialization");
+  TEST_PASS("Test_SL_EndLoadSession_ReturnsFalseBeforeInit");
 }
-void Test_SL_DeleteSave_ReturnsFalseBeforeInitialization(void) {
+void Test_SL_DeleteSave_ReturnsFalseBeforeInit(void) {
   assert(!SL_DeleteSave());
-  TEST_PASS("Test_SL_DeleteSave_ReturnsFalseBeforeInitialization");
+  TEST_PASS("Test_SL_DeleteSave_ReturnsFalseBeforeInit");
 }
-void Test_SL_Shutdown_ReturnsFalseBeforeInitialization(void) {
+void Test_SL_Shutdown_ReturnsFalseBeforeInit(void) {
   assert(!SL_Shutdown());
-  TEST_PASS("Test_SL_Shutdown_ReturnsFalseBeforeInitialization");
+  TEST_PASS("Test_SL_Shutdown_ReturnsFalseBeforeInit");
 }
 
 // --------------------------------------------------
-// Initialization - Fail Mem Alloc
+// Init - Fail Mem Alloc
 // --------------------------------------------------
 
 void Test_SL_Init_ReturnsFalseIfCallocFails(void) {
@@ -137,10 +129,10 @@ void Test_SL_Init_ReturnsFalseIfMallocFails(void) {
 }
 
 // --------------------------------------------------
-// Initialization - NULL Args
+// Init - NULL Args
 // --------------------------------------------------
 
-void Test_SL_Init_ReturnsTrueWithNULLArguments(void) {
+void Test_SL_Init_ReturnsTrueWithAllNULLArgs(void) {
   assert(SL_Init(NULL, NULL));
   TEST_PASS("Test_SL_Init_ReturnsTrueOnFirstCall");
 }
@@ -150,36 +142,79 @@ void Test_SL_Init_ReturnsFalseIfCalledTwice(void) {
 }
 
 // --------------------------------------------------
-// Post-Initialization - Public
+// Post-Init - Public
 // --------------------------------------------------
 
-void Test_SL_IsInitialized_ReturnsTrueAfterInitialization(void) {
+void Test_SL_IsInitialized_ReturnsTrueAfterInit(void) {
   assert(SL_IsInitialized());
-  TEST_PASS("Test_SL_IsInitialized_ReturnsTrueAfterInitialization");
+  TEST_PASS("Test_SL_IsInitialized_ReturnsTrueAfterInit");
 }
-// Get game dir
-// Set game dir
-// Get game dir again
+void Test_SL_GetGameDir_ReturnsDefaultSysDirOnApple(void) {
+  char *buffer = SL_GetGameDir();
+  assert(TEST_COMP_NAME(buffer, "./"));
+  free(buffer);
+  buffer = NULL;
+  TEST_PASS("Test_SL_GetGameDir_ReturnsDefaultSystemDirectoryOnApple");
+}
+void Test_SL_GetGameDir_ReturnsAltSysDirOnApple(void) {
+  // TODO enable alt sys dir
+  char *buffer = SL_GetGameDir();
+  assert(TEST_COMP_NAME(buffer, "./"));
+  free(buffer);
+  buffer = NULL;
+  TEST_PASS("Test_SL_GetGameDir_ReturnsAltSysDirOnApple");
+}
+void Test_SL_GetGameDir_ReturnsDefaultSysDirOnLinux(void) {
+  char *buffer = SL_GetGameDir();
+  assert(TEST_COMP_NAME(buffer, "./"));
+  free(buffer);
+  buffer = NULL;
+  TEST_PASS("Test_SL_GetGameDir_ReturnsDefaultSysDirOnLinux");
+}
+void Test_SL_GetGameDir_ReturnsAltSysDirOnLinux(void) {
+  // TODO enable alt sys dir
+  char *buffer = SL_GetGameDir();
+  assert(TEST_COMP_NAME(buffer, "./"));
+  free(buffer);
+  buffer = NULL;
+  TEST_PASS("Test_SL_GetGameDir_ReturnsAltSysDirOnLinux");
+}
+void Test_SL_GetGameDir_ReturnsDefaultSysDirOnWindows(void) {
+  char *buffer = SL_GetGameDir();
+  assert(TEST_COMP_NAME(buffer, "./"));
+  free(buffer);
+  buffer = NULL;
+  TEST_PASS("Test_SL_GetGameDir_ReturnsDefaultSysDirOnWindows");
+}
+void Test_SL_GetGameDir_ReturnsAltSysDirOnWindows(void) {
+  // TODO enable alt sys dir
+  char *buffer = SL_GetGameDir();
+  assert(TEST_COMP_NAME(buffer, "./"));
+  free(buffer);
+  buffer = NULL;
+  TEST_PASS("Test_SL_GetGameDir_ReturnsAltSysDirOnWindows");
+}
 
-// Get game name
-// Set game name
-// Get game name again
+// bool SL_SetGameDir(char *dir);
+// char *SL_GetGameDir(void) { return NULL; } again
 
-// char *SL_GetGameDir(void) { return NULL; }
-
+// char *SL_GetGameFile(void);
 // bool SL_SetGameFile(char *file) { return false; }
+// char *SL_GetGameFile(void); again
 
 // bool SL_DirExists(char *dir) { return false; }
+// bool SL_DirExists(char *dir) { return false; }
 
+// bool SL_FileExists(char *file) { return false; }
 // bool SL_FileExists(char *file) { return false; }
 
 // --------------------------------------------------
 // Shutdown
 // --------------------------------------------------
 
-void Test_SL_Shutdown_ReturnsTrueAfterInitialization(void) {
+void Test_SL_Shutdown_ReturnsTrueAfterInit(void) {
   assert(SL_Shutdown());
-  TEST_PASS("Test_SL_Shutdown_ReturnsTrueAfterInitialization");
+  TEST_PASS("Test_SL_Shutdown_ReturnsTrueAfterInit");
 }
 
 // --------------------------------------------------
@@ -197,16 +232,24 @@ void Test_SL_IsInitialized_ReturnsFalseAfterShutdown(void) {
 }
 
 // --------------------------------------------------
-// Initialization -  Non-NULL file
+// Init -  No NULL Args
 // --------------------------------------------------
 
-// --------------------------------------------------
-// Initialization -  Non-NULL dir
-// --------------------------------------------------
-
-// --------------------------------------------------
-// Initialization -  Non-NULL Args
-// --------------------------------------------------
+void Test_SL_Init_ReturnsTrueWithNULLFile(void) {
+  assert(SL_Init(NULL, NULL));
+  SL_Shutdown();
+  TEST_PASS("Test_SL_Init_ReturnsTrueWithNULLFile");
+}
+void Test_SL_Init_ReturnsTrueWithNULLDir(void) {
+  assert(SL_Init(NULL, NULL));
+  SL_Shutdown();
+  TEST_PASS("Test_SL_Init_ReturnsTrueWithNULLDir");
+}
+void Test_SL_Init_ReturnsTrueWithNoNULLArgs(void) {
+  assert(SL_Init(NULL, NULL));
+  SL_Shutdown();
+  TEST_PASS("Test_SL_Init_ReturnsTrueWithNoNULLArgs");
+}
 
 // --------------------------------------------------
 // Stress tests
@@ -218,47 +261,58 @@ void Test_SL_IsInitialized_ReturnsFalseAfterShutdown(void) {
 
 int main() {
   puts("");
-  puts("Testing Pre-Initialization - Internal");
-  Test_SL_Internal_GetDefaultOSDir_ReturnsNULLBeforeInitialization();
-  Test_SL_Internal_GetGameName_ReturnsNULLBeforeInitialization();
-  Test_SL_Internal_BeginSession_OnSaveModeReturnsFalseBeforeInitialization();
-  Test_SL_Internal_BeginSession_OnLoadModeReturnsFalseBeforeInitialization();
+  puts("Testing Pre-Init - Internal");
+  Test_SL_Internal_GetDefaultSysDir_ReturnsNULLBeforeInit();
+  Test_SL_Internal_BeginSession_OnSaveModeReturnsFalseBeforeInit();
+  Test_SL_Internal_BeginSession_OnLoadModeReturnsFalseBeforeInit();
   puts("");
 
-  puts("Testing Pre-Initialization - Public");
-  Test_SL_IsInitialized_ReturnsFalseBeforeInitialization();
-  Test_SL_SetGameDir_ReturnsFalseBeforeInitialization();
-  Test_SL_SetGameFile_ReturnsFalseBeforeInitialization();
-  Test_SL_DirExists_ReturnsFalseBeforeInitialization();
-  Test_SL_FileExists_ReturnsFalseBeforeInitialization();
-  Test_SL_BeginSaveSession_ReturnsFalseBeforeInitialization();
-  Test_SL_SaveNext_ReturnsFalseBeforeInitialization();
-  Test_SL_EndSaveSession_ReturnsFalseBeforeInitialization();
-  Test_SL_BeginLoadSession_ReturnsFalseBeforeInitialization();
-  Test_SL_HasNext_ReturnsFalseBeforeInitialization();
-  Test_SL_LoadNext_ReturnsNULLBeforeInitialization();
-  Test_SL_LoadNextTo_ReturnsFalseBeforeInitialization();
-  Test_SL_EndLoadSession_ReturnsFalseBeforeInitialization();
-  Test_SL_DeleteSave_ReturnsFalseBeforeInitialization();
-  Test_SL_Shutdown_ReturnsFalseBeforeInitialization();
+  puts("Testing Pre-Init - Public");
+  Test_SL_IsInitialized_ReturnsFalseBeforeInit();
+  Test_SL_SetGameDir_ReturnsFalseBeforeInit();
+  Test_SL_SetGameFile_ReturnsFalseBeforeInit();
+  Test_SL_DirExists_ReturnsFalseBeforeInit();
+  Test_SL_FileExists_ReturnsFalseBeforeInit();
+  Test_SL_BeginSaveSession_ReturnsFalseBeforeInit();
+  Test_SL_SaveNext_ReturnsFalseBeforeInit();
+  Test_SL_EndSaveSession_ReturnsFalseBeforeInit();
+  Test_SL_BeginLoadSession_ReturnsFalseBeforeInit();
+  Test_SL_HasNext_ReturnsFalseBeforeInit();
+  Test_SL_LoadNext_ReturnsNULLBeforeInit();
+  Test_SL_LoadNextTo_ReturnsFalseBeforeInit();
+  Test_SL_EndLoadSession_ReturnsFalseBeforeInit();
+  Test_SL_DeleteSave_ReturnsFalseBeforeInit();
+  Test_SL_Shutdown_ReturnsFalseBeforeInit();
   puts("");
 
-  puts("Testing Initialization - Fail Mem Alloc");
+  puts("Testing Init - Fail Mem Alloc");
   Test_SL_Init_ReturnsFalseIfCallocFails();
   Test_SL_Init_ReturnsFalseIfMallocFails();
   puts("");
 
-  puts("Testing Initialization - NULL Args");
-  Test_SL_Init_ReturnsTrueWithNULLArguments();
+  puts("Testing Init - NULL Args");
+  Test_SL_Init_ReturnsTrueWithAllNULLArgs();
   Test_SL_Init_ReturnsFalseIfCalledTwice();
   puts("");
 
-  puts("Testing Post-Initialization - Public");
-  Test_SL_IsInitialized_ReturnsTrueAfterInitialization();
+  puts("Testing Post-Init - Public");
+  Test_SL_IsInitialized_ReturnsTrueAfterInit();
+#ifdef __APPLE__
+  Test_SL_GetGameDir_ReturnsDefaultSysDirOnApple();
+  Test_SL_GetGameDir_ReturnsAltSysDirOnApple();
+#endif
+#ifdef _WIN32
+  Test_SL_GetGameDir_ReturnsDefaultSysDirOnLinux();
+  Test_SL_GetGameDir_ReturnsAltSysDirOnLinux();
+#endif
+#ifdef __linux__
+  Test_SL_GetGameDir_ReturnsDefaultSysDirOnWindows();
+  Test_SL_GetGameDir_ReturnsAltSysDirOnWindows();
+#endif
   puts("");
 
   puts("Testing Shutdown");
-  Test_SL_Shutdown_ReturnsTrueAfterInitialization();
+  Test_SL_Shutdown_ReturnsTrueAfterInit();
   puts("");
 
   puts("Testing Post-Shutdown - Public");
@@ -266,7 +320,7 @@ int main() {
   Test_SL_IsInitialized_ReturnsFalseAfterShutdown();
   puts("");
 
-  puts("Testing Initialization - Non-NULL Args");
+  puts("Testing Init - No NULL Args");
   puts("");
 
   puts("All Tests Completed Successfully!");
