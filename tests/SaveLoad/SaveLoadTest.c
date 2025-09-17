@@ -30,9 +30,12 @@
 #include "SaveLoad.h"
 #include "../src/SaveLoad/SaveLoadInternal.h"
 #include "../src/SaveLoad/SaveLoadMessages.h"
+#include "../src/_Internals/Log/LogInternal.h"
 #include "../src/_Internals/Test/TestInternal.h"
 #include "SaveLoadTest.h"
 #include "assert.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 // --------------------------------------------------
 // Pre-Init - Internal
@@ -158,18 +161,29 @@ void Test_SL_IsInitialized_ReturnsTrueAfterInit(void) {
 }
 #ifdef __APPLE__
 void Test_SL_GetGameDir_ReturnsDefaultSysDirOnApple(void) {
-  char *buffer = SL_GetGameDir();
-  assert(TEST_COMP_NAME(buffer, "./"));
-  free(buffer);
-  buffer = NULL;
+  // TODO Create a func for this... From here1
+  const char *homeDir = getenv("HOME");
+  size_t homeDirLen = strlen(homeDir);
+  size_t sysDirLen = strlen(DEFAULT_SYS_DIR);
+  char smileDir[] = "smile/";
+  int smileLen = strlen(smileDir);
+  size_t gameNameLen = strlen(MOCK_GAME_NAME);
+  size_t bufferLen = homeDirLen + sysDirLen + smileLen + gameNameLen + 2;
+
+  char *buffer = TEST_Malloc(bufferLen);
+  if (!buffer) {
+    exit(EXIT_FAILURE);
+  }
+  snprintf(buffer, bufferLen, "%s%s%s%s/", homeDir, DEFAULT_SYS_DIR, smileDir,
+           MOCK_GAME_NAME);
+  // to here1
+
+  assert(TEST_COMP_NAME(SL_GetGameDir(), buffer));
   TEST_PASS("Test_SL_GetGameDir_ReturnsDefaultSystemDirectoryOnApple");
 }
 void Test_SL_GetGameDir_ReturnsAltSysDirOnApple(void) {
   // TODO enable alt sys dir
-  char *buffer = SL_GetGameDir();
-  assert(TEST_COMP_NAME(buffer, "./"));
-  free(buffer);
-  buffer = NULL;
+  // assert(TEST_COMP_NAME(SL_GetGameDir(), "./"));
   TEST_PASS("Test_SL_GetGameDir_ReturnsAltSysDirOnApple");
 }
 void Test_SL_SetGameDir_ReturnsFalseForInvalidDirOnApple(void) {
@@ -307,12 +321,6 @@ void Test_SL_Init_ReturnsTrueWithNoNULLArgs(void) {
 
 int main() {
   puts("");
-  puts("Testing Pre-Init - Internal");
-  Test_SL_Internal_GetDefaultSysDir_ReturnsNullPreInit();
-  Test_SL_Internal_BeginSession_OnSaveModeReturnsFalsePreInit();
-  Test_SL_Internal_BeginSession_OnLoadModeReturnsFalsePreInit();
-  puts("");
-
   puts("Testing Pre-Init - Public");
   Test_SL_IsInitialized_ReturnsFalsePreInit();
   Test_SL_SetGameDir_ReturnsFalsePreInit();

@@ -2,7 +2,18 @@
 #define LOG_INTERNAL_H
 
 // --------------------------------------------------
-// Other defines
+// Other defines - vars
+// --------------------------------------------------
+
+#define SMILE_CYAN "\033[36m"
+#define SMILE_YELLOW "\033[33m"
+#define SMILE_RED "\033[31m"
+#define SMILE_PURPLE "\033[0;35m"
+#define SMILE_GREEN "\033[32m"
+#define SMILE_DEFAULT_COLOR "\033[0m"
+
+// --------------------------------------------------
+// Other defines - funcs
 // --------------------------------------------------
 
 #define SMILE_INFO(module, info) SMILE_Log(SMILE_LOG_INFO, module, "%s", info)

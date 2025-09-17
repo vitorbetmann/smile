@@ -2,11 +2,13 @@
 // Includes
 // --------------------------------------------------
 #include "SaveLoad.h"
+#include "Log.h" // TODO should I use this?
 #include "SaveLoadInternal.h"
 #include "src/SaveLoad/SaveLoadMessages.h"
 #include "src/_Internals/Log/LogInternal.h"
 #include "src/_Internals/Log/LogMessages.h"
 #include "src/_Internals/Test/TestInternal.h"
+#include <errno.h> // TODO should I use this?
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
@@ -14,7 +16,9 @@
 // --------------------------------------------------
 // Defines - Values
 // --------------------------------------------------
+
 #define MODULE_NAME "SaveLoad"
+#define SMILE_DIR "smile/"
 
 // --------------------------------------------------
 // Defines - Funcs
@@ -60,7 +64,6 @@ bool SL_Init(const char *gameName) {
   }
 
   const char *defaultDir = SL_Internal_GetDefaultSysDir();
-  // TODO free if GetDefaultSysDir returns a mallocked str
   if (!defaultDir) {
     SMILE_ERR(MODULE_NAME, LOG_CAUSE_MEM_ALLOC_FAILED, LOG_CONSEQ_INIT_ABORTED);
 
@@ -70,13 +73,15 @@ bool SL_Init(const char *gameName) {
     return false;
   }
 
+  // check if ~/Application Support/smile/gameName/ exists
   size_t gameNameLen = strlen(gameName);
-  size_t dirLen = strlen(defaultDir) + gameNameLen + 2; // '/' + '\0'
+  size_t dirLen =
+      strlen(defaultDir) + strlen(SMILE_DIR) + gameNameLen + 2; // '/' + '\0'
+
   tracker->dirPath = TEST_Malloc(dirLen);
-  if (!tracker->dirPath) { // cleanup
+  if (!tracker->dirPath) {
     SMILE_ERR(MODULE_NAME, LOG_CAUSE_MEM_ALLOC_FAILED, LOG_CONSEQ_INIT_ABORTED);
 
-    // TODO free if GetDefaultSysDir returns a mallocked str
     free((void *)defaultDir);
     defaultDir = NULL;
 
@@ -85,18 +90,23 @@ bool SL_Init(const char *gameName) {
 
     return false;
   }
-  snprintf(tracker->dirPath, dirLen, "%s%s/", defaultDir, gameName);
+  snprintf(tracker->dirPath, dirLen, "%s%s%s/", defaultDir, SMILE_DIR,
+           gameName);
 
-  if (!SL_DirExists(tracker->dirPath)) {
-    SL_Internal_CreateDir(tracker->dirPath);
+  LOG("SL_Init", tracker->dirPath);
+  if (!SL_Internal_DirExists(tracker->dirPath)) {
+    if (!SL_Internal_CreateDir(tracker->dirPath)) {
+      SMILE_FATAL(MODULE_NAME, LOG_CAUSE_FAILED_TO_CREATE_SMILE_DIR,
+                  LOG_CONSEQ_INIT_ABORTED);
+      return false;
+    }
   }
 
   size_t fileLen = dirLen + gameNameLen + 5; // ".txt" + '\0'
   tracker->filePath = TEST_Malloc(fileLen);
-  if (!tracker->filePath) { // cleanup
+  if (!tracker->filePath) {
     SMILE_ERR(MODULE_NAME, LOG_CAUSE_MEM_ALLOC_FAILED, LOG_CONSEQ_INIT_ABORTED);
 
-    // TODO free if GetDefaultSysDir returns a mallocked str
     free((void *)defaultDir);
     defaultDir = NULL;
 
@@ -110,7 +120,6 @@ bool SL_Init(const char *gameName) {
   }
   snprintf(tracker->filePath, fileLen, "%s%s.txt", tracker->dirPath, gameName);
 
-  // TODO free if GetDefaultSysDir returns a mallocked str
   free((void *)defaultDir);
   defaultDir = NULL;
 
@@ -128,9 +137,7 @@ const char *SL_GetGameDir(void) {
 
   RETURN_NULL_IF_NOT_INITIALIZED(LOG_CONSEQ_GET_GAME_DIR_ABORTED);
 
-  // return tracker->dirPath;
-  static char buffer[] = "./";
-  return buffer;
+  return tracker->dirPath;
 }
 
 bool SL_SetGameDir(const char *dir) {
@@ -170,8 +177,7 @@ bool SL_DirExists(const char *dir) {
 // --------------------------------------------------
 
 bool SL_SetGameFile(const char *file) {
-  // TODO this func now creates a dir under the gameName folder if it doesn't
-  // exist
+  // TODO this func now creates a dir under the gameName dir if it doesn't exist
   return false;
 }
 
@@ -183,13 +189,19 @@ const char *SL_GetGameFile(void) {
   return "breakout.txt";
 }
 
-bool SL_FileExists(const char *file) { return false; }
+bool SL_FileExists(const char *file) {
+  SMILE_ERR(MODULE_NAME, LOG_CAUSE_NOT_INITIALIZED,
+            LOG_CONSEQ_FILE_EXISTS_ABORTED);
+
+  return false;
+}
 
 // --------------------------------------------------
 // Save
 // --------------------------------------------------
 
 bool SL_BeginSaveSession(void) {
+  RETURN_FALSE_IF_NOT_INITIALIZED(LOG_CONSEQ_BEGIN_SAVE_SESSION_ABORTED);
 
   const char *conseq = LOG_CONSEQ_BEGIN_SAVE_SESSION_ABORTED;
   if (SL_Internal_BeginSession(SAVE, tracker->filePath, conseq)) {
@@ -272,6 +284,8 @@ bool SL_EndSaveSession() {
 // --------------------------------------------------
 
 bool SL_BeginLoadSession(void) {
+
+  RETURN_FALSE_IF_NOT_INITIALIZED(LOG_CONSEQ_BEGIN_LOAD_SESSION_ABORTED);
 
   const char *conseq = LOG_CONSEQ_BEGIN_LOAD_SESSION_ABORTED;
   if (SL_Internal_BeginSession(LOAD, tracker->filePath, conseq)) {
@@ -469,38 +483,48 @@ bool SL_Shutdown(void) {
 // Internal
 // --------------------------------------------------
 
-char *SL_Internal_GetDefaultSysDir() {
+const char *SL_Internal_GetDefaultSysDir(void) {
   // TODO improve this, make system dependand like in LOVE2D
-
-  RETURN_NULL_IF_NOT_INITIALIZED(
-      LOG_CONSEQ_INTERNAL_GET_DEFAULT_SYS_DIR_ABORTED);
-
-  char *buffer;
-
-#ifdef __APPLE__
-// check if default dir exists
-// if so, malloc memory and return the path
-// if not, return alternative path
-#endif
-#ifdef __linux__
-// check if default dir exists
-// if so, malloc memory and return the path
-// if not, return alternative path
-#endif
-#ifdef _WIN32
-// check if default dir exists
-// if so, malloc memory and return the path
-// if not, return alternative path
-#endif
-
   // TODO check if dirPath ends with a '/', and if not, add one at the end
   // This should be responsibility of SL_Internal_GetDirName, I think
-  buffer = malloc(3);
-  strcpy(buffer, "./");
+
+  const char *homeDir;
+#if defined(__APPLE__) || defined(__linux)
+  homeDir = getenv("HOME");
+  if (!homeDir) {
+    return NULL;
+  }
+#endif
+#ifdef TARGET_OS_WIN32
+#endif
+
+#if defined(__APPLE__) || defined(__linux)
+  size_t homeDirLen = strlen(homeDir);
+  size_t sysDirLen = strlen(DEFAULT_SYS_DIR);
+  size_t bufferLen = homeDirLen + sysDirLen + 1;
+
+  char *buffer = TEST_Malloc(bufferLen);
+  if (!buffer) {
+    return NULL;
+  }
+  snprintf(buffer, bufferLen, "%s%s", homeDir, DEFAULT_SYS_DIR);
+
+  // Check if dir exists
+  if (!SL_Internal_DirExists(buffer)) {
+    free(buffer);
+
+    sysDirLen = strlen(ALT_SYS_DIR);
+    bufferLen = homeDirLen + sysDirLen + 1;
+    buffer = TEST_Malloc(bufferLen);
+    snprintf(buffer, bufferLen, "%s%s", homeDir, ALT_SYS_DIR);
+  }
+
+#endif
+#ifdef _WIN32
+#endif
+
   return buffer;
 }
-
-bool SL_Internal_CreateDir(const char *dir) { return false; }
 
 bool SL_Internal_BeginSession(FileInteractionMode mode, const char *file,
                               const char *conseqAbort) {
@@ -571,4 +595,40 @@ bool SL_Internal_BeginSession(FileInteractionMode mode, const char *file,
   }
 
   return true;
+}
+
+bool SL_Internal_CreateDir(const char *dir) {
+#ifdef __APPLE__
+  // mode_t mode = 0755;
+  // return mkdir(dir, mode) == 0;
+
+  // TODO what the hell is this code? From here1
+  char tmp[512];
+  snprintf(tmp, sizeof(tmp), "%s", dir);
+  size_t len = strlen(tmp);
+  if (tmp[len - 1] == '/')
+    tmp[len - 1] = '\0';
+
+  for (char *p = tmp + 1; *p; p++) {
+    if (*p == '/') {
+      *p = '\0';
+      mkdir(tmp, 0755); // ignore errors if already exists
+      *p = '/';
+    }
+  }
+  return mkdir(tmp, 0755) == 0 || errno == EEXIST;
+  // To here1
+
+#endif
+#ifdef __linux__
+
+#endif
+#ifdef _WIN32
+
+#endif
+}
+
+bool SL_Internal_DirExists(const char *absoluteDir) {
+  struct stat buf;
+  return stat(absoluteDir, &buf) == 0 && S_ISDIR(buf.st_mode);
 }

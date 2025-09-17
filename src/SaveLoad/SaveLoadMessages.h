@@ -34,6 +34,7 @@
 #define LOG_CAUSE_DATA_TRUNCATED_FORMATTING "Data truncated during formatting."
 #define LOG_CAUSE_DATA_TRUNCATED_WRITING "Data truncated during writing."
 #define LOG_CAUSE_INDICATOR_NOT_RESET "Failed to reposition stream indicator."
+#define LOG_CAUSE_FAILED_TO_CREATE_SMILE_DIR "Failed to create SMILE directory."
 
 // --------------------------------------------------
 // CAUSE w/ arguments
@@ -60,6 +61,7 @@
 #define LOG_CONSEQ_DIR_EXISTS_ABORTED "SetGameDir aborted."
 #define LOG_CONSEQ_GET_GAME_DIR_ABORTED "GetGameDir aborted."
 #define LOG_CONSEQ_GET_GAME_FILE_ABORTED "GetGameFile aborted."
+#define LOG_CONSEQ_FILE_EXISTS_ABORTED "FileExists aborted."
 
 // --------------------------------------------------
 // CONSEQes - Internal
