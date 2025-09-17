@@ -50,24 +50,69 @@ bool SL_Init(const char *gameName) {
   if (tracker) {
     SMILE_WARN(MODULE_NAME, LOG_CAUSE_ALREADY_INITIALIZED,
                LOG_CONSEQ_INIT_ABORTED);
-
     return false;
   }
 
   tracker = TEST_Calloc(1, sizeof(SaveLoadTracker));
   if (!tracker) {
     SMILE_ERR(MODULE_NAME, LOG_CAUSE_MEM_ALLOC_FAILED, LOG_CONSEQ_INIT_ABORTED);
+    return false;
+  }
+
+  const char *defaultDir = SL_Internal_GetDefaultSysDir();
+  // TODO free if GetDefaultSysDir returns a mallocked str
+  if (!defaultDir) {
+    SMILE_ERR(MODULE_NAME, LOG_CAUSE_MEM_ALLOC_FAILED, LOG_CONSEQ_INIT_ABORTED);
+
+    free(tracker);
+    tracker = NULL;
 
     return false;
   }
 
-  // Get default os dir
-  const char *defaultDir = SL_Internal_GetDefaultSysDir();
-  // create a smile dir in it if none
+  size_t gameNameLen = strlen(gameName);
+  size_t dirLen = strlen(defaultDir) + gameNameLen + 2; // '/' + '\0'
+  tracker->dirPath = TEST_Malloc(dirLen);
+  if (!tracker->dirPath) { // cleanup
+    SMILE_ERR(MODULE_NAME, LOG_CAUSE_MEM_ALLOC_FAILED, LOG_CONSEQ_INIT_ABORTED);
 
-  // create a gameName dir inside of it if none
-  // set tracker->dirPath to dir/smile/gameName/
-  // set default tracker->filePath to gameName.txt
+    // TODO free if GetDefaultSysDir returns a mallocked str
+    free((void *)defaultDir);
+    defaultDir = NULL;
+
+    free(tracker);
+    tracker = NULL;
+
+    return false;
+  }
+  snprintf(tracker->dirPath, dirLen, "%s%s/", defaultDir, gameName);
+
+  if (!SL_DirExists(tracker->dirPath)) {
+    SL_Internal_CreateDir(tracker->dirPath);
+  }
+
+  size_t fileLen = dirLen + gameNameLen + 5; // ".txt" + '\0'
+  tracker->filePath = TEST_Malloc(fileLen);
+  if (!tracker->filePath) { // cleanup
+    SMILE_ERR(MODULE_NAME, LOG_CAUSE_MEM_ALLOC_FAILED, LOG_CONSEQ_INIT_ABORTED);
+
+    // TODO free if GetDefaultSysDir returns a mallocked str
+    free((void *)defaultDir);
+    defaultDir = NULL;
+
+    free(tracker->dirPath);
+    tracker->dirPath = NULL;
+
+    free(tracker);
+    tracker = NULL;
+
+    return false;
+  }
+  snprintf(tracker->filePath, fileLen, "%s%s.txt", tracker->dirPath, gameName);
+
+  // TODO free if GetDefaultSysDir returns a mallocked str
+  free((void *)defaultDir);
+  defaultDir = NULL;
 
   SMILE_INFO(MODULE_NAME, LOG_INFO_INIT_SUCCESSFUL);
   return true;
@@ -83,10 +128,8 @@ const char *SL_GetGameDir(void) {
 
   RETURN_NULL_IF_NOT_INITIALIZED(LOG_CONSEQ_GET_GAME_DIR_ABORTED);
 
-  return tracker->dirPath;
-
-  char *buffer = malloc(3);
-  strcpy(buffer, "./");
+  // return tracker->dirPath;
+  static char buffer[] = "./";
   return buffer;
 }
 
@@ -376,7 +419,7 @@ bool SL_EndLoadSession(void) {
 // Delete
 // --------------------------------------------------
 
-bool SL_DeleteSave(void) { return false; }
+bool SL_DeleteCurrSave(void) { return false; }
 
 // --------------------------------------------------
 // Shutdown
@@ -456,6 +499,8 @@ char *SL_Internal_GetDefaultSysDir() {
   strcpy(buffer, "./");
   return buffer;
 }
+
+bool SL_Internal_CreateDir(const char *dir) { return false; }
 
 bool SL_Internal_BeginSession(FileInteractionMode mode, const char *file,
                               const char *conseqAbort) {

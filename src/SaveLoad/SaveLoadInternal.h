@@ -25,9 +25,7 @@ typedef struct {
 // Prototypes
 // --------------------------------------------------
 char *SL_Internal_GetDefaultSysDir(void);
-char *SL_Internal_GetGameName(void);
-void SL_Internal_SetFileFormat(const char *file);
-bool SL_Internal_EndsWith(const char *str, const char *suffix);
+bool SL_Internal_CreateDir(const char *dir);
 bool SL_Internal_BeginSession(FileInteractionMode mode, const char *file,
                               const char *conseqAbort);
 

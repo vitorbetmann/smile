@@ -124,12 +124,12 @@ char *SL_LoadFrom(const char *file);
 /**
  * Delete the current save file (as set by SL_SetGameFile).
  */
-bool SL_DeleteCurrentFile(void);
+bool SL_DeleteCurrSave(void);
 
 /**
  * Delete a specific file by name (inside the current directory).
  */
-bool SL_DeleteFileByName(const char *file);
+bool SL_DeleteSave(const char *file);
 
 /**
  * Shut down the SaveLoad system and free all resources.

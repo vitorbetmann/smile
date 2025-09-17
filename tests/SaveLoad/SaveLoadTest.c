@@ -90,7 +90,7 @@ void Test_SL_EndSaveSession_ReturnsFalsePreInit(void) {
   TEST_PASS("Test_SL_EndSaveSession_ReturnsFalsePreInit");
 }
 void Test_SL_BeginLoadSession_ReturnsFalsePreInit(void) {
-  assert(!SL_BeginLoadSession(NULL));
+  assert(!SL_BeginLoadSession());
   TEST_PASS("Test_SL_BeginLoadSession_ReturnsFalsePreInit");
 }
 void Test_SL_HasNext_ReturnsFalsePreInit(void) {
@@ -110,7 +110,7 @@ void Test_SL_EndLoadSession_ReturnsFalsePreInit(void) {
   TEST_PASS("Test_SL_EndLoadSession_ReturnsFalsePreInit");
 }
 void Test_SL_DeleteSave_ReturnsFalsePreInit(void) {
-  assert(!SL_DeleteSave());
+  assert(!SL_DeleteCurrSave());
   TEST_PASS("Test_SL_DeleteSave_ReturnsFalsePreInit");
 }
 void Test_SL_Shutdown_ReturnsFalsePreInit(void) {
@@ -124,13 +124,13 @@ void Test_SL_Shutdown_ReturnsFalsePreInit(void) {
 
 void Test_SL_Init_ReturnsFalseIfCallocFails(void) {
   TEST_SetCanCalloc(false);
-  assert(!SL_Init(NULL, NULL));
+  assert(!SL_Init(MOCK_GAME_NAME));
   TEST_SetCanCalloc(true);
   TEST_PASS("Test_SL_Init_ReturnsFalseIfCallocFails");
 }
 void Test_SL_Init_ReturnsFalseIfMallocFails(void) {
   TEST_SetCanMalloc(false);
-  assert(!SL_Init(NULL, NULL));
+  assert(!SL_Init(MOCK_GAME_NAME));
   TEST_SetCanMalloc(true);
   TEST_PASS("Test_SL_Init_ReturnsFalseIfMallocFails");
 }
@@ -140,11 +140,11 @@ void Test_SL_Init_ReturnsFalseIfMallocFails(void) {
 // --------------------------------------------------
 
 void Test_SL_Init_ReturnsTrueWithAllNullArgs(void) {
-  assert(SL_Init(NULL, NULL));
+  assert(SL_Init(MOCK_GAME_NAME));
   TEST_PASS("Test_SL_Init_ReturnsTrueOnFirstCall");
 }
 void Test_SL_Init_ReturnsFalseIfCalledTwice(void) {
-  assert(!SL_Init(NULL, NULL));
+  assert(!SL_Init(MOCK_GAME_NAME));
   TEST_PASS("Test_SL_Init_ReturnsFalseIfCalledTwice");
 }
 
@@ -282,17 +282,17 @@ void Test_SL_IsInitialized_ReturnsFalseAfterShutdown(void) {
 // --------------------------------------------------
 
 void Test_SL_Init_ReturnsTrueWithNULLFile(void) {
-  assert(SL_Init(NULL, NULL));
+  assert(SL_Init(MOCK_GAME_NAME));
   SL_Shutdown();
   TEST_PASS("Test_SL_Init_ReturnsTrueWithNULLFile");
 }
 void Test_SL_Init_ReturnsTrueWithNULLDir(void) {
-  assert(SL_Init(NULL, NULL));
+  assert(SL_Init(MOCK_GAME_NAME));
   SL_Shutdown();
   TEST_PASS("Test_SL_Init_ReturnsTrueWithNULLDir");
 }
 void Test_SL_Init_ReturnsTrueWithNoNULLArgs(void) {
-  assert(SL_Init(NULL, NULL));
+  assert(SL_Init(MOCK_GAME_NAME));
   SL_Shutdown();
   TEST_PASS("Test_SL_Init_ReturnsTrueWithNoNULLArgs");
 }
