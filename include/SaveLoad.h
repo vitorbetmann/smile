@@ -20,188 +20,119 @@
 // --------------------------------------------------
 
 /**
- * @brief Initializes the save/load system.
- *
- * @param file Optional filename (e.g., "save.txt"). If NULL, defaults to game
- * name.
- * @param dir Optional save directory. If NULL, uses system default (e.g.,
- * "./").
- * @return true if initialized successfully, false otherwise.
- * @author Vitor Betmann
+ * Initialize the SaveLoad system for a specific game.
+ * Creates a sandbox directory under the system's default save location.
+ * Example: <sysDefault>/smile/<gameName>/
  */
-bool SL_Init(const char *file, const char *dir);
+bool SL_Init(const char *gameName);
 
+/**
+ * Check if the SaveLoad system has been successfully initialized.
+ */
 bool SL_IsInitialized(void);
 
 /**
- * @brief Overrides the default game directory for saving and loading.
- *
- * @param dir The new directory path.
- * @return true if the directory is valid and set successfully, false otherwise.
- * @author Vitor Betmann
+ * Set (and if needed, create) a subdirectory inside the game directory.
+ * Example: "DLC1" -> <sysDefault>/smile/<gameName>/DLC1/
+ * NOTE: This always treats 'dir' as relative to the game directory.
  */
-bool SL_SetGameDir(char *dir);
-
-char *SL_GetGameDir(void);
+bool SL_SetGameDir(const char *dir);
 
 /**
- * @brief Sets a custom save file name.
- *
- * @param file The file name (e.g., "save1.txt").
- * @return true if the name was valid and stored, false otherwise.
- * @author Vitor Betmann
+ * Get the current directory being used for saves/loads.
+ * This pointer is owned by Smile; do not modify or free it.
  */
-bool SL_SetGameFile(char *file);
-
-char *SL_GetGameFile(void);
+const char *SL_GetGameDir(void);
 
 /**
- * @brief Checks if the specified directory exists.
- *
- * @param dir Path to the directory.
- * @return true if it exists, false otherwise.
- * @author Vitor Betmann
+ * Set (and if needed, create) the file inside the current game directory.
+ * Example: "save1.txt" -> <currentDir>/save1.txt
+ * NOTE: This always treats 'file' as relative to the current game directory.
  */
-bool SL_DirExists(char *dir);
+bool SL_SetGameFile(const char *file);
 
 /**
- * @brief Checks if a save file exists.
- *
- * @param file File path or name.
- * @return true if it exists, false otherwise.
- * @author Vitor Betmann
+ * Get the current file being used for saves/loads.
+ * This pointer is owned by Smile; do not modify or free it.
  */
-bool SL_FileExists(char *file);
+const char *SL_GetGameFile(void);
 
 /**
- * @brief Deletes the current save file.
- *
- * @return true if deleted successfully, false otherwise.
- * @author Vitor Betmann
+ * Check if a directory exists (absolute path).
  */
-bool SL_DeleteSave(void);
+bool SL_DirExists(const char *dir);
 
 /**
- * @brief Begins a save session, allowing incremental writing.
- *
- * @param file Optional override of the default save file.
- *             If NULL, the system will use the default save file set during
- * initialization or when SL_SetGameFile was called.
- * @return true if session started, false otherwise.
- * @author Vitor Betmann
+ * Check if a file exists (absolute path).
  */
-bool SL_BeginSaveSession(const char *file);
+bool SL_FileExists(const char *file);
 
 /**
- * @brief Saves a single line of data during an active save session.
- *
- * @param data Null-terminated string to save.
- * @return true if written successfully, false otherwise.
- * @author Vitor Betmann
+ * Begin a save session using the current directory and file.
+ * Creates the file if it does not exist.
+ */
+bool SL_BeginSaveSession(void);
+
+/**
+ * Write the next line of data to the current save file.
  */
 bool SL_SaveNext(const char *data);
 
 /**
- * @brief Ends the current save session, flushing and closing the file.
- *
- * @return true if closed successfully, false otherwise.
- * @author Vitor Betmann
+ * End the current save session (closes the file).
  */
 bool SL_EndSaveSession(void);
 
 /**
- * @brief Begins a load session, allowing incremental reading.
- *
- * @param file Optional override of the default save file.
- *             If NULL, the system will use the default save file set during
- * initialization or when SL_SetGameFile was called.
- * @return true if session started, false otherwise.
- * @author Vitor Betmann
- */
-bool SL_BeginLoadSession(const char *file);
-
-/**
- * @brief Checks if another line is available in the current load session.
- *
- * @return true if more data is available, false otherwise.
- * @author Vitor Betmann
- */
-bool SL_HasNext(void);
-
-/**
- * @brief Reads the next line of text from the open save file.
- *
- * @return Returns a malloc’d null-terminated string containing the next line.
- *         Returns NULL if at EOF, if reading fails, or if allocation fails.
- *         Caller must free.
- * @note The returned string excludes the trailing newline character, if
- * present.
- * @author Vitor Betmann
- */
-char *SL_LoadNext(void);
-
-/**
- * @brief Reads the next line of text from the open save file into a
- * user-provided buffer.
- *
- * This is a lower-level alternative to SL_LoadNext(). Instead of allocating
- * a new string, this function fills the provided buffer with the next line of
- * text from the currently open save session.
- *
- * @param dest Pointer to the destination buffer where the line will be copied.
- *             Must not be NULL.
- * @param size The size of the destination buffer, including space for the null
- * terminator.
- * @return true if a line was read successfully, false if an error occurred or
- * EOF was reached. The contents of @p dest are not modified on failure.
- * @note If the line ends with a newline character, it is removed.
- *       To check for EOF manually, use SL_HasNext() before calling this.
- * @author Vitor Betmann
- */
-bool SL_LoadNextTo(char *dest, size_t size);
-
-/**
- * @brief Ends the current load session, closing the file.
- *
- * @return true if closed successfully, false otherwise.
- * @author Vitor Betmann
- */
-bool SL_EndLoadSession(void);
-
-/**
- * @brief Saves data to a specific file inside the configured game directory.
- *
- * @param file File name to save to.
- * @param data Null-terminated string to save.
- * @return true if successful, false otherwise.
- * @author Vitor Betmann
+ * Convenience: write data directly to a given file (one-shot).
  */
 bool SL_SaveTo(const char *file, const char *data);
 
 /**
- * @brief Loads data from a specific file into a newly allocated buffer.
- *
- * @param file File to load from.
- * @return Returns a malloc’d null-terminated string. Returns NULL on failure.
- * Caller must free.
- * @author Vitor Betmann
+ * Begin a load session using the current directory and file.
+ * Fails if the file does not exist.
+ */
+bool SL_BeginLoadSession(void);
+
+/**
+ * Check if more data is available to load.
+ */
+bool SL_HasNext(void);
+
+/**
+ * Load the next line of data from the current file (malloc’d string).
+ * Caller is responsible for freeing it.
+ */
+char *SL_LoadNext(void);
+
+/**
+ * Load the next line of data into a provided buffer.
+ */
+bool SL_LoadNextTo(char *dest, size_t size);
+
+/**
+ * End the current load session (closes the file).
+ */
+bool SL_EndLoadSession(void);
+
+/**
+ * Convenience: load entire file into memory (one-shot).
+ * Caller is responsible for freeing it.
  */
 char *SL_LoadFrom(const char *file);
 
 /**
- * @brief Deletes a specific save file inside the configured game directory.
- *
- * @param file File to delete.
- * @return true if deleted successfully, false otherwise.
- * @author Vitor Betmann
+ * Delete the current save file (as set by SL_SetGameFile).
  */
-bool SL_DeleteSaveEx(const char *file);
+bool SL_DeleteCurrentFile(void);
 
 /**
- * @brief Frees all memory and closes any open sessions.
- *
- * @return true if system shutdown cleanly, false otherwise.
- * @author Vitor Betmann
+ * Delete a specific file by name (inside the current directory).
+ */
+bool SL_DeleteFileByName(const char *file);
+
+/**
+ * Shut down the SaveLoad system and free all resources.
  */
 bool SL_Shutdown(void);
 

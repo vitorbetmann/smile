@@ -8,6 +8,7 @@
 #include "src/_Internals/Log/LogMessages.h"
 #include "src/_Internals/Test/TestInternal.h"
 #include <stddef.h>
+#include <stdio.h>
 #include <string.h>
 
 // --------------------------------------------------
@@ -44,7 +45,8 @@ static SaveLoadTracker *tracker;
 // Functions
 // --------------------------------------------------
 
-bool SL_Init(const char *file, const char *dir) {
+bool SL_Init(const char *gameName) {
+
   if (tracker) {
     SMILE_WARN(MODULE_NAME, LOG_CAUSE_ALREADY_INITIALIZED,
                LOG_CONSEQ_INIT_ABORTED);
@@ -59,50 +61,13 @@ bool SL_Init(const char *file, const char *dir) {
     return false;
   }
 
-  tracker->dirPath = dir ? (char *)dir : SL_Internal_GetDefaultSysDir();
-  if (!tracker->dirPath) {
-    SMILE_ERR(MODULE_NAME, LOG_CAUSE_DIR_NOT_FOUND, LOG_CONSEQ_INIT_ABORTED);
+  // Get default os dir
+  const char *defaultDir = SL_Internal_GetDefaultSysDir();
+  // create a smile dir in it if none
 
-    free(tracker);
-    tracker = NULL;
-
-    return false;
-  }
-
-  const char *targetFile = file ? file : SL_GetGameFile();
-  size_t fileLen = strlen(targetFile);
-  size_t totalLen = strlen(tracker->dirPath) + fileLen + 1;
-
-  tracker->filePath = TEST_Malloc(totalLen);
-  if (!tracker->filePath) {
-    SMILE_ERR(MODULE_NAME, LOG_CAUSE_MEM_ALLOC_FAILED, LOG_CONSEQ_INIT_ABORTED);
-
-    free(tracker->dirPath);
-    tracker->dirPath = NULL;
-
-    free(tracker);
-    tracker = NULL;
-
-    return false;
-  }
-
-  int filePathLen = snprintf(tracker->filePath, totalLen, "%s%s",
-                             tracker->dirPath, targetFile);
-  if (filePathLen < 0 || filePathLen >= totalLen) {
-    SMILE_ERR(MODULE_NAME, LOG_CAUSE_DATA_TRUNCATED_FORMATTING,
-              LOG_CONSEQ_INIT_ABORTED);
-
-    free(tracker->dirPath);
-    tracker->dirPath = NULL;
-
-    free(tracker->filePath);
-    tracker->filePath = NULL;
-
-    free(tracker);
-    tracker = NULL;
-
-    return false;
-  }
+  // create a gameName dir inside of it if none
+  // set tracker->dirPath to dir/smile/gameName/
+  // set default tracker->filePath to gameName.txt
 
   SMILE_INFO(MODULE_NAME, LOG_INFO_INIT_SUCCESSFUL);
   return true;
@@ -110,7 +75,25 @@ bool SL_Init(const char *file, const char *dir) {
 
 bool SL_IsInitialized(void) { return tracker; }
 
-bool SL_SetGameDir(char *dir) {
+// --------------------------------------------------
+// Game Dir
+// --------------------------------------------------
+
+const char *SL_GetGameDir(void) {
+
+  RETURN_NULL_IF_NOT_INITIALIZED(LOG_CONSEQ_GET_GAME_DIR_ABORTED);
+
+  return tracker->dirPath;
+
+  char *buffer = malloc(3);
+  strcpy(buffer, "./");
+  return buffer;
+}
+
+bool SL_SetGameDir(const char *dir) {
+
+  // TODO this func now creates a dir under the gameName folder if it doesn't
+  // exist
 
   if (!dir) {
     SMILE_ERR(MODULE_NAME, LOG_CAUSE_NULL_ARGUMENT,
@@ -124,35 +107,49 @@ bool SL_SetGameDir(char *dir) {
     return false;
   }
 
-  tracker->dirPath = dir;
+  tracker->dirPath = (char *)dir;
   SMILE_INFO(MODULE_NAME, LOG_INFO_SET_GAME_DIR_SUCCESSFUL);
   return true;
 }
 
-char *SL_GetGameDir(void) {
-  char *buffer = malloc(3);
-  strcpy(buffer, "./");
-  return buffer;
+bool SL_DirExists(const char *dir) {
+
+  if (!dir) {
+    return false;
+  }
+
+  // TODO look for dir. if found, return true, else false
+  return false;
 }
 
-bool SL_SetGameFile(char *file) { return false; }
+// --------------------------------------------------
+// Game File
+// --------------------------------------------------
 
-char *SL_GetGameFile(void) {
+bool SL_SetGameFile(const char *file) {
+  // TODO this func now creates a dir under the gameName folder if it doesn't
+  // exist
+  return false;
+}
 
-  RETURN_NULL_IF_NOT_INITIALIZED(LOG_CONSEQ_INTERNAL_GET_GAME_NAME_ABORTED);
+const char *SL_GetGameFile(void) {
+
+  RETURN_NULL_IF_NOT_INITIALIZED(LOG_CONSEQ_GET_GAME_FILE_ABORTED);
 
   // TODO get root dir name
   return "breakout.txt";
 }
 
-bool SL_DirExists(char *dir) { return false; }
+bool SL_FileExists(const char *file) { return false; }
 
-bool SL_FileExists(char *file) { return false; }
+// --------------------------------------------------
+// Save
+// --------------------------------------------------
 
-bool SL_BeginSaveSession(const char *file) {
+bool SL_BeginSaveSession(void) {
 
   const char *conseq = LOG_CONSEQ_BEGIN_SAVE_SESSION_ABORTED;
-  if (SL_Internal_BeginSession(SAVE, file, conseq)) {
+  if (SL_Internal_BeginSession(SAVE, tracker->filePath, conseq)) {
     SMILE_INFO(MODULE_NAME, LOG_INFO_SAVE_SESSION_STARTED);
     return true;
   }
@@ -227,10 +224,14 @@ bool SL_EndSaveSession() {
   return true;
 }
 
-bool SL_BeginLoadSession(const char *file) {
+// --------------------------------------------------
+// Load
+// --------------------------------------------------
+
+bool SL_BeginLoadSession(void) {
 
   const char *conseq = LOG_CONSEQ_BEGIN_LOAD_SESSION_ABORTED;
-  if (SL_Internal_BeginSession(LOAD, file, conseq)) {
+  if (SL_Internal_BeginSession(LOAD, tracker->filePath, conseq)) {
     SMILE_INFO(MODULE_NAME, LOG_INFO_LOAD_SESSION_STARTED);
     return true;
   }
@@ -371,7 +372,15 @@ bool SL_EndLoadSession(void) {
   return true;
 }
 
+// --------------------------------------------------
+// Delete
+// --------------------------------------------------
+
 bool SL_DeleteSave(void) { return false; }
+
+// --------------------------------------------------
+// Shutdown
+// --------------------------------------------------
 
 bool SL_Shutdown(void) {
 
@@ -418,21 +427,32 @@ bool SL_Shutdown(void) {
 // --------------------------------------------------
 
 char *SL_Internal_GetDefaultSysDir() {
+  // TODO improve this, make system dependand like in LOVE2D
 
   RETURN_NULL_IF_NOT_INITIALIZED(
-      LOG_CONSEQ_INTERNAL_GET_DEFAULT_OS_DIR_ABORTED);
+      LOG_CONSEQ_INTERNAL_GET_DEFAULT_SYS_DIR_ABORTED);
+
+  char *buffer;
 
 #ifdef __APPLE__
+// check if default dir exists
+// if so, malloc memory and return the path
+// if not, return alternative path
 #endif
 #ifdef __linux__
+// check if default dir exists
+// if so, malloc memory and return the path
+// if not, return alternative path
 #endif
 #ifdef _WIN32
+// check if default dir exists
+// if so, malloc memory and return the path
+// if not, return alternative path
 #endif
-  // TODO improve this, make system dependand like in LOVE2D
 
   // TODO check if dirPath ends with a '/', and if not, add one at the end
   // This should be responsibility of SL_Internal_GetDirName, I think
-  char *buffer = malloc(3);
+  buffer = malloc(3);
   strcpy(buffer, "./");
   return buffer;
 }

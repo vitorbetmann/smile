@@ -58,16 +58,16 @@
 #define LOG_CONSEQ_SHUTDOWN_ABORTED "Shutdown aborted."
 #define LOG_CONSEQ_LOAD_GAME_ABORTED "LoadGame aborted."
 #define LOG_CONSEQ_DIR_EXISTS_ABORTED "SetGameDir aborted."
+#define LOG_CONSEQ_GET_GAME_DIR_ABORTED "GetGameDir aborted."
+#define LOG_CONSEQ_GET_GAME_FILE_ABORTED "GetGameFile aborted."
 
 // --------------------------------------------------
 // CONSEQes - Internal
 // --------------------------------------------------
 #define LOG_CONSEQ_INTERNAL_BEGIN_SESSION_ABORTED                              \
   "Internal BeginSession aborted."
-#define LOG_CONSEQ_INTERNAL_GET_DEFAULT_OS_DIR_ABORTED                         \
-  "Internal GetDefaultOSDir aborted."
-#define LOG_CONSEQ_INTERNAL_GET_GAME_NAME_ABORTED                              \
-  "Internal GetGameName aborted."
+#define LOG_CONSEQ_INTERNAL_GET_DEFAULT_SYS_DIR_ABORTED                        \
+  "Internal GetDefaultSysDir aborted."
 
 // --------------------------------------------------
 // CONSEQes - Tests

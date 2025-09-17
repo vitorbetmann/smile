@@ -3,6 +3,8 @@
  *
  * Like for example, when using NULL in the name of a func, call it Null for
  * readability
+ * And when writing tests, put one immediately below the other and only skip a
+ * line when testing a different routine
  */
 
 /*
@@ -76,7 +78,7 @@ void Test_SL_FileExists_ReturnsFalsePreInit(void) {
   TEST_PASS("Test_SL_FileExists_ReturnsFalsePreInit");
 }
 void Test_SL_BeginSaveSession_ReturnsFalsePreInit(void) {
-  assert(!SL_BeginSaveSession(NULL));
+  assert(!SL_BeginSaveSession());
   TEST_PASS("Test_SL_BeginSaveSession_ReturnsFalsePreInit");
 }
 void Test_SL_SaveNext_ReturnsFalsePreInit(void) {
