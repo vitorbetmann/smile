@@ -30,6 +30,6 @@ const StateMachineTracker *SM_Test_GetTracker(void);
  * @return const int Number of states currently registered.
  * @author Vitor Betmann
  */
-const int SM_Test_GetStateCount(void);
+int SM_Test_GetStateCount(void);
 
 #endif
