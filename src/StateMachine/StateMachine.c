@@ -95,13 +95,13 @@ bool SM_RegisterState(const char *name, void (*enterFn)(void *),
     }
 
     if (SM_IsStateRegistered((char *) name)) {
-        SMILE_ERR_WITH_NAME(MODULE_NAME, LOG_CAUSE_ALREADY_EXISTS, name,
+        SMILE_ERR_WITH_ARGS(MODULE_NAME, LOG_CAUSE_ALREADY_EXISTS, name,
                             LOG_CONSEQ_REGISTER_STATE_ABORTED);
         return false;
     }
 
     if (!enterFn && !updateFn && !drawFn && !exitFn) {
-        SMILE_ERR_WITH_NAME(MODULE_NAME, LOG_CAUSE_NO_VALID_FUNCTIONS, name,
+        SMILE_ERR_WITH_ARGS(MODULE_NAME, LOG_CAUSE_NO_VALID_FUNCTIONS, name,
                             LOG_CONSEQ_REGISTER_STATE_ABORTED);
         return false;
     }
@@ -173,7 +173,7 @@ bool SM_ChangeStateTo(const char *name, void *args) {
 
     State *nextState = (State *) SM_Internal_GetState(name);
     if (!nextState) {
-        SMILE_WARN_WITH_NAME(MODULE_NAME, LOG_CAUSE_STATE_NOT_FOUND, name,
+        SMILE_WARN_WITH_ARGS(MODULE_NAME, LOG_CAUSE_STATE_NOT_FOUND, name,
                              LOG_CONSEQ_CHANGE_STATE_TO_ABORTED);
         return false;
     }
@@ -207,7 +207,7 @@ bool SM_Update(float dt) {
     }
 
     if (!currState->update) {
-        SMILE_WARN_WITH_NAME(MODULE_NAME, LOG_INFO_UPDATE_FUNCTION_NULL,
+        SMILE_WARN_WITH_ARGS(MODULE_NAME, LOG_INFO_UPDATE_FUNCTION_NULL,
                              currState->name, LOG_CONSEQ_UPDATE_ABORTED);
         return false;
     }
@@ -228,7 +228,7 @@ bool SM_Draw(void) {
     }
 
     if (!currState->draw) {
-        SMILE_WARN_WITH_NAME(MODULE_NAME, LOG_INFO_DRAW_FUNCTION_NULL,
+        SMILE_WARN_WITH_ARGS(MODULE_NAME, LOG_INFO_DRAW_FUNCTION_NULL,
                              currState->name, LOG_CONSEQ_DRAW_ABORTED);
         return false;
     }

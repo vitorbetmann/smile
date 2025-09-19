@@ -17,12 +17,12 @@ set(RAYLIB_INCLUDE "${RAYLIB_DIR}/include")
 
 # Build the SMILE static library
 add_library(smile STATIC
-    src/StateMachine/StateMachine.c
-    src/ParticleSystem/ParticleSystem.c
-    src/SaveLoad/SaveLoad.c
+        src/StateMachine/StateMachine.c
+        src/ParticleSystem/ParticleSystem.c
+        src/SaveLoad/SaveLoad.c
 
-    src/_Internals/Log/Log.c
-    src/_Internals/Test/TestInternal.c
+        src/_Internals/Log/Log.c
+        src/_Internals/Test/TestInternal.c
 )
 
 # Include raylib headers for Smile
@@ -34,8 +34,8 @@ target_link_libraries(smile PRIVATE "${RAYLIB_LIB}")
 
 # Set public and private include paths
 target_include_directories(smile PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
 )
 target_include_directories(smile PRIVATE "${RAYLIB_SRC_DIR}")
 
@@ -52,26 +52,26 @@ option(SMILE_INFO_ENABLED "Enable runtime info messages from SMILE" ON)
 option(SMILE_DEBUG_ENABLED "Enable debug messages from SMILE" OFF)
 
 # Inform user
-if(SMILE_RELEASE)
+if (SMILE_RELEASE)
     message(STATUS "SMILE: Compiling in RELEASE mode")
     add_compile_definitions(SMILE_RELEASE)
-else()
+else ()
     message(STATUS "SMILE: Compiling in DEBUG mode")
-endif()
+endif ()
 
-if(SMILE_WARNINGS_ENABLED AND NOT SMILE_RELEASE)
+if (SMILE_WARNINGS_ENABLED AND NOT SMILE_RELEASE)
     message(STATUS "SMILE: Warnings ENABLED")
     add_compile_definitions(SMILE_WARNINGS_ENABLED)
-else()
+else ()
     message(STATUS "SMILE: Warnings DISABLED")
-endif()
+endif ()
 
-if(SMILE_INFO_ENABLED AND NOT SMILE_RELEASE)
+if (SMILE_INFO_ENABLED AND NOT SMILE_RELEASE)
     message(STATUS "SMILE: Info logs ENABLED")
     add_compile_definitions(SMILE_INFO_ENABLED)
-else()
+else ()
     message(STATUS "SMILE: Info logs DISABLED")
-endif()
+endif ()
 
 # if(SMILE_DEBUG_ENABLED AND NOT SMILE_RELEASE)
 #     message(STATUS "SMILE: Debug logs ENABLED")
@@ -82,31 +82,47 @@ endif()
 
 # Option to enable test builds
 option(SMILE_TESTS "Build test executables" OFF)
-if(SMILE_TESTS)
+if (SMILE_TESTS)
     message(STATUS "SMILE: Compiling TEST files")
 
-    # Add and link StateMachine test
+    # --------------------------------------------------
+    # StateMachine
+    # --------------------------------------------------
     add_executable(StateMachineTest tests/StateMachine/StateMachineTest.c)
     target_link_libraries(StateMachineTest PRIVATE smile)
     target_include_directories(StateMachineTest PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
+            ${CMAKE_CURRENT_SOURCE_DIR}/include
     )
 
-    # Add and link ParticleSystem test
+    # --------------------------------------------------
+    # ParticleSystem
+    # --------------------------------------------------
     add_executable(ParticleSystemTest tests/ParticleSystem/ParticleSystemTest.c)
     target_link_libraries(ParticleSystemTest PRIVATE smile "${RAYLIB_LIB}")
     target_include_directories(ParticleSystemTest PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
-        "${RAYLIB_INCLUDE}"
+            ${CMAKE_CURRENT_SOURCE_DIR}/include
+            "${RAYLIB_INCLUDE}"
     )
 
-    # Add and link SaveLoad test
+
+    # --------------------------------------------------
+    # SaveLoad
+    # --------------------------------------------------
     add_executable(SaveLoadTest tests/SaveLoad/SaveLoadTest.c)
     target_link_libraries(SaveLoadTest PRIVATE smile)
     target_include_directories(SaveLoadTest PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
+            ${CMAKE_CURRENT_SOURCE_DIR}/include
+    )
+
+    add_executable(SaveLoadInternalTest tests/SaveLoad/SaveLoadInternalTest.c)
+    target_link_libraries(SaveLoadInternalTest PRIVATE smile)
+    target_include_directories(SaveLoadInternalTest PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/tests/SaveLoad
     )
 
     # TODO #13 Add and link Log test
+    # --------------------------------------------------
+    # Log
+    # --------------------------------------------------
 
-endif()
+endif ()

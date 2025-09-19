@@ -24,14 +24,14 @@
 
 #define SMILE_WARN(module, cause, conseq)                                      \
   SMILE_Log(SMILE_LOG_WARNING, module, "%s %s", cause, conseq)
-#define SMILE_WARN_WITH_NAME(module, cause, name, conseq)                      \
+#define SMILE_WARN_WITH_ARGS(module, cause, name, conseq)                      \
   SMILE_Log(SMILE_LOG_WARNING, module, "%s '%s'. %s", cause, name, conseq)
 #define SMILE_WARN_FMT(module, fmt, ...)                                       \
   SMILE_Log(SMILE_LOG_WARNING, module, fmt, __VA_ARGS__)
 
 #define SMILE_ERR(module, cause, conseq)                                       \
   SMILE_Log(SMILE_LOG_ERROR, module, "%s %s", cause, conseq)
-#define SMILE_ERR_WITH_NAME(module, cause, name, conseq)                       \
+#define SMILE_ERR_WITH_ARGS(module, cause, name, conseq)                       \
   SMILE_Log(SMILE_LOG_ERROR, module, "%s '%s'. %s", cause, name, conseq)
 #define SMILE_ERR_FMT(module, fmt, ...)                                        \
   SMILE_Log(SMILE_LOG_ERROR, module, fmt, __VA_ARGS__)
@@ -41,7 +41,7 @@
 
 #define SMILE_FATAL(module, cause, conseq)                                     \
   SMILE_Log(SMILE_LOG_FATAL, module, "%s %s", cause, conseq)
-#define SMILE_FATAL_WITH_NAME(module, cause, name, conseq)                     \
+#define SMILE_FATAL_WITH_ARGS(module, cause, name, conseq)                     \
   SMILE_Log(SMILE_LOG_FATAL, module, "%s '%s'. %s", cause, name, conseq)
 #define SMILE_FATAL_FMT(module, fmt, ...)                                      \
   SMILE_Log(SMILE_LOG_FATAL, module, fmt, __VA_ARGS__)

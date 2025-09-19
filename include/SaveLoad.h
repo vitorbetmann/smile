@@ -19,53 +19,110 @@
 // Prototypes
 // --------------------------------------------------
 
-/**
- * Initialize the SaveLoad system for a specific game.
- * Creates a sandbox directory under the system's default save location.
- * Example: <sysDefault>/smile/<gameName>/
- */
-bool SL_Init(const char *gameName);
+// Init ---------------------------------------------
 
 /**
- * Check if the SaveLoad system has been successfully initialized.
+ * @brief Convenience initialization for SaveLoad with directory and file.
+ *
+ * This function calls @ref SL_Init first, then sets the game directory
+ * and file using @ref SL_SetGameDir and @ref SL_SetGameFile.
+ *
+ * @param[in] dir  Relative game directory to initialize (e.g., "Breakout/").
+ *                 Must be valid according to @ref SL_Internal_IsValidDir.
+ * @param[in] file File name to use for saves/loads (e.g., "save1.txt").
+ *                 Must be valid according to @ref SL_Internal_IsValidFile.
+ *
+ * @return `true` if all initialization steps succeeded, `false` otherwise.
+ */
+bool SL_InitWith(const char *dir, const char *file);
+
+/**
+ * @brief Initialize the SaveLoad system.
+ *
+ * Allocates internal memory and sets the default system directory for saves.
+ * The default directory is guaranteed to end with a trailing slash.
+ *
+ * @note This function does NOT set the game directory or file. The user
+ * must call @ref SL_SetGameDir and @ref SL_SetGameFile afterward,
+ * or use @ref SL_InitWith for convenience.
+ *
+ * @return `true` if initialization succeeded, `false` otherwise.
+ */
+bool SL_Init(void);
+
+/**
+ * @brief Check if the SaveLoad system has been initialized.
+ *
+ * @return `true` if the system is initialized, `false` otherwise.
  */
 bool SL_IsInitialized(void);
 
-/**
- * Set (and if needed, create) a subdirectory inside the game directory.
- * Example: "DLC1" -> <sysDefault>/smile/<gameName>/DLC1/
- * NOTE: This always treats 'dir' as relative to the game directory.
- */
-bool SL_SetGameDir(const char *dir);
+// Game Directory -----------------------------------
 
 /**
- * Get the current directory being used for saves/loads.
- * This pointer is owned by Smile; do not modify or free it.
+ * @brief Get the current directory being used for saves/loads.
+ *
+ * @return A pointer to the current game directory string.
+ *
+ * @note The returned pointer is owned by the SaveLoad system. Do not modify
+ *       or free it.
  */
 const char *SL_GetGameDir(void);
 
 /**
- * Set (and if needed, create) the file inside the current game directory.
- * Example: "save1.txt" -> <currentDir>/save1.txt
- * NOTE: This always treats 'file' as relative to the current game directory.
+ * @brief Set the directory used for save/load operations.
+ *
+ * Validates and sanitizes the directory name, ensures it ends with a
+ * trailing slash, and creates the directory if it does not exist.
+ *
+ * @param[in] dir Relative directory path inside the default system directory.
+ *
+ * @return `true` if the directory was successfully set and created,
+ *         `false` otherwise.
+ *
+ * @note The directory path is owned by the SaveLoad system; do not modify
+ *       or free the returned path.
  */
-bool SL_SetGameFile(const char *file);
+bool SL_SetGameDir(const char *dir);
 
 /**
- * Get the current file being used for saves/loads.
- * This pointer is owned by Smile; do not modify or free it.
+ * Check if a fir exists (relative path).
+ */
+bool SL_DirExists(const char *dir);
+
+// Game File ----------------------------------------
+
+/**
+ * @brief Get the current file being used for saves/loads.
+ *
+ * @return A pointer to the current game file string.
+ *
+ * @note The returned pointer is owned by the SaveLoad system. Do not modify
+ *       or free it.
  */
 const char *SL_GetGameFile(void);
 
 /**
- * Check if a directory exists (absolute path).
+ * @brief Set the file used for save/load operations.
+ *
+ * Validates and sanitizes the file name and combines it with the current
+ * game directory to create the full file path.
+ *
+ * @param[in] file Name of the file to use for saves/loads (e.g., "save1.txt").
+ *
+ * @return `true` if the file path was successfully set, `false` otherwise.
+ *
+ * @note The file path is owned by the SaveLoad system; do not modify
+ *       or free the returned path.
  */
-bool SL_DirExists(const char *dir);
+bool SL_SetGameFile(const char *file);
 
 /**
- * Check if a file exists (absolute path).
+ * Check if a file exists (relative path).
  */
 bool SL_FileExists(const char *file);
+
+// Save ---------------------------------------------
 
 /**
  * Begin a save session using the current directory and file.
@@ -83,10 +140,7 @@ bool SL_SaveNext(const char *data);
  */
 bool SL_EndSaveSession(void);
 
-/**
- * Convenience: write data directly to a given file (one-shot).
- */
-bool SL_SaveTo(const char *file, const char *data);
+// Load ---------------------------------------------
 
 /**
  * Begin a load session using the current directory and file.
@@ -115,21 +169,16 @@ bool SL_LoadNextTo(char *dest, size_t size);
  */
 bool SL_EndLoadSession(void);
 
-/**
- * Convenience: load entire file into memory (one-shot).
- * Caller is responsible for freeing it.
- */
-char *SL_LoadFrom(const char *file);
-
-/**
- * Delete the current save file (as set by SL_SetGameFile).
- */
-bool SL_DeleteCurrSave(void);
+// Delete -------------------------------------------
 
 /**
  * Delete a specific file by name (inside the current directory).
  */
-bool SL_DeleteSave(const char *file);
+bool SL_DeleteFile(const char *file);
+
+bool SL_DeleteDir(const char *dir);
+
+// Shutdown -----------------------------------------
 
 /**
  * Shut down the SaveLoad system and free all resources.

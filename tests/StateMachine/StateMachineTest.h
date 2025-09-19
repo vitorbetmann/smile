@@ -1,5 +1,5 @@
-#ifndef STATE_MACHINE_TEST_ACCESS_H
-#define STATE_MACHINE_TEST_ACCESS_H
+#ifndef STATE_MACHINE_TEST_H
+#define STATE_MACHINE_TEST_H
 
 // --------------------------------------------------
 // Includes
