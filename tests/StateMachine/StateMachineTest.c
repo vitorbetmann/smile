@@ -23,7 +23,7 @@
 
 #include "../include/StateMachine.h"
 #include "../src/StateMachine/StateMachineInternal.h"
-#include "../src/_Internals/Test/TestInternal.h"
+#include "../src/_Internal/Test/TestInternal.h"
 #include "StateMachineTest.h"
 #include <assert.h>
 #include <stdio.h>
@@ -65,12 +65,14 @@ void mockEnter(void *args) {
   md.enteredTimes++;
 
   if (args) {
-    MockStateArgs *msa = (MockStateArgs *)args;
+    MockStateArgs *msa = (MockStateArgs *) args;
     md.hasEnteredArgs = msa->flag;
   }
 }
+
 void mockUpdate(float dt) { md.hasUpdated = true; }
 void mockDraw(void) { md.hasDrawn = true; }
+
 void mockExit(void) {
   md.hasExited = true;
   md.exitedTimes++;
@@ -82,19 +84,22 @@ void mockExit(void) {
 
 void Test_SM_Internal_SetCurrState_ReturnsFalsePreInit(void) {
   assert(!SM_Internal_SetCurrState(&mockState));
-  TEST_PASS("Test_SM_Internal_SetCurrState_ReturnsFalsePreInit");
+  TEST_Pass("Test_SM_Internal_SetCurrState_ReturnsFalsePreInit");
 }
+
 void Test_SM_Internal_GetCurrState_ReturnsNullPreInit(void) {
   assert(!SM_Internal_GetCurrState());
-  TEST_PASS("Test_SM_Internal_GetCurrState_ReturnsNullPreInit");
+  TEST_Pass("Test_SM_Internal_GetCurrState_ReturnsNullPreInit");
 }
+
 void Test_SM_Internal_GetState_ReturnsNullPreInit(void) {
   assert(!SM_Internal_GetState("mockState"));
-  TEST_PASS("Test_SM_Internal_GetState_ReturnsNullPreInit");
+  TEST_Pass("Test_SM_Internal_GetState_ReturnsNullPreInit");
 }
+
 void Test_SM_Test_GetTracker_ReturnsNullPreInit(void) {
   assert(!SM_Test_GetTracker());
-  TEST_PASS("Test_SM_Test_GetTracker_ReturnsNullPreInit");
+  TEST_Pass("Test_SM_Test_GetTracker_ReturnsNullPreInit");
 }
 
 // --------------------------------------------------
@@ -103,38 +108,38 @@ void Test_SM_Test_GetTracker_ReturnsNullPreInit(void) {
 
 void Test_SM_IsInitialized_ReturnsFalsePreInit(void) {
   assert(!SM_IsInitialized());
-  TEST_PASS("Test_SM_IsInitialized_ReturnsFalsePreInit");
+  TEST_Pass("Test_SM_IsInitialized_ReturnsFalsePreInit");
 }
 
 void Test_SM_RegisterState_ReturnsFalsePreInit(void) {
   assert(!SM_RegisterState("setToFail", mockEnter, mockUpdate, mockDraw,
-                           mockExit));
-  TEST_PASS("Test_SM_RegisterState_ReturnsFalsePreInit");
+    mockExit));
+  TEST_Pass("Test_SM_RegisterState_ReturnsFalsePreInit");
 }
 
 void Test_SM_ChangeStateTo_ReturnsFalsePreInit(void) {
   assert(!SM_ChangeStateTo("testPreInit", NULL));
-  TEST_PASS("Test_SM_ChangeStateTo_ReturnsFalsePreInit");
+  TEST_Pass("Test_SM_ChangeStateTo_ReturnsFalsePreInit");
 }
 
 void Test_SM_Update_ReturnsFalsePreInit(void) {
   assert(!SM_Update(mockDT));
-  TEST_PASS("Test_SM_Update_ReturnsFalsePreInit");
+  TEST_Pass("Test_SM_Update_ReturnsFalsePreInit");
 }
 
 void Test_SM_Draw_ReturnsFalsePreInit(void) {
   assert(!SM_Draw());
-  TEST_PASS("Test_SM_Draw_ReturnsFalsePreInit");
+  TEST_Pass("Test_SM_Draw_ReturnsFalsePreInit");
 }
 
 void Test_SM_Shutdown_ReturnsFalsePreInit(void) {
   assert(!SM_Shutdown());
-  TEST_PASS("Test_SM_Shutdown_ReturnsFalsePreInit");
+  TEST_Pass("Test_SM_Shutdown_ReturnsFalsePreInit");
 }
 
 void Test_SM_GetCurrStateName_ReturnsNullPreInit(void) {
   assert(!SM_GetCurrStateName());
-  TEST_PASS("Test_SM_GetCurrStateName_ReturnsNullPreInit");
+  TEST_Pass("Test_SM_GetCurrStateName_ReturnsNullPreInit");
 }
 
 // --------------------------------------------------
@@ -145,19 +150,19 @@ void Test_SM_Init_ReturnsFalseIfMallocFails(void) {
   TEST_SetCanMalloc(false);
   SM_Init();
   assert(!SM_Test_GetTracker());
-  TEST_PASS("Test_SM_Init_ReturnsFalseIfMallocFails");
+  TEST_Pass("Test_SM_Init_ReturnsFalseIfMallocFails");
 }
 
 void Test_SM_Init_ReturnsTrueAndInitializesTracker(void) {
   TEST_SetCanMalloc(true);
   SM_Init();
   assert(SM_Test_GetTracker());
-  TEST_PASS("Test_SM_Init_ReturnsTrueAndInitializesTracker");
+  TEST_Pass("Test_SM_Init_ReturnsTrueAndInitializesTracker");
 }
 
 void Test_SM_Init_ReturnsFalseIfCalledTwice(void) {
   assert(!SM_Init());
-  TEST_PASS("Test_SM_Init_ReturnsFalseIfCalledTwice");
+  TEST_Pass("Test_SM_Init_ReturnsFalseIfCalledTwice");
 }
 
 // --------------------------------------------------
@@ -166,7 +171,7 @@ void Test_SM_Init_ReturnsFalseIfCalledTwice(void) {
 
 void Test_SM_Test_GetTracker_ReturnsTrackerAfterInit(void) {
   assert(SM_Test_GetTracker());
-  TEST_PASS("Test_SM_Test_GetTracker_ReturnsTrackerAfterInit");
+  TEST_Pass("Test_SM_Test_GetTracker_ReturnsTrackerAfterInit");
 }
 
 // --------------------------------------------------
@@ -175,19 +180,19 @@ void Test_SM_Test_GetTracker_ReturnsTrackerAfterInit(void) {
 
 void Test_SM_Internal_GetCurrState_ReturnsNullIfNoCurrentState(void) {
   assert(!SM_Internal_GetCurrState());
-  TEST_PASS("Test_SM_Internal_GetCurrState_ReturnsNullIfNoCurrentState");
+  TEST_Pass("Test_SM_Internal_GetCurrState_ReturnsNullIfNoCurrentState");
 }
 
 void Test_SM_Internal_SetCurrState_SetsValidStateCorrectly(void) {
   SM_Internal_SetCurrState(&mockState);
   assert(TEST_COMP_NAME(SM_Internal_GetCurrState()->name, mockState.name));
-  TEST_PASS("Test_SM_Internal_SetCurrState_SetsValidStateCorrectly");
+  TEST_Pass("Test_SM_Internal_SetCurrState_SetsValidStateCorrectly");
 }
 
 void Test_SM_Internal_SetCurrState_SetsNullStateCorrectly(void) {
   SM_Internal_SetCurrState(NULL);
   assert(!SM_Internal_GetCurrState());
-  TEST_PASS("Test_SM_Internal_SetCurrState_SetsNULLStateCorrectly");
+  TEST_Pass("Test_SM_Internal_SetCurrState_SetsNULLStateCorrectly");
 }
 
 // --------------------------------------------------
@@ -196,40 +201,40 @@ void Test_SM_Internal_SetCurrState_SetsNullStateCorrectly(void) {
 
 void Test_SM_RegisterState_ReturnsFalseIfNameIsNULL(void) {
   assert(!SM_RegisterState(NULL, NULL, NULL, NULL, NULL));
-  TEST_PASS("Test_SM_RegisterState_ReturnsFalseIfNameIsNULL");
+  TEST_Pass("Test_SM_RegisterState_ReturnsFalseIfNameIsNULL");
 }
 
 void Test_SM_RegisterState_ReturnsFalseIfNameIsEmpty(void) {
   assert(!SM_RegisterState("", NULL, NULL, NULL, NULL));
-  TEST_PASS("Test_SM_RegisterState_ReturnsFalseIfNameIsEmpty");
+  TEST_Pass("Test_SM_RegisterState_ReturnsFalseIfNameIsEmpty");
 }
 
 void Test_SM_RegisterState_ReturnsTrueIfAllFunctionsPresent(void) {
   assert(SM_RegisterState("testNoNULL", mockEnter, mockUpdate, mockDraw,
-                          mockExit));
-  TEST_PASS("Test_SM_RegisterState_ReturnsTrueIfAllFunctionsPresent");
+    mockExit));
+  TEST_Pass("Test_SM_RegisterState_ReturnsTrueIfAllFunctionsPresent");
 }
 
 void Test_SM_RegisterState_ReturnsFalseIfNameAlreadyExists(void) {
   assert(!SM_RegisterState("testNoNULL", mockEnter, NULL, NULL, NULL));
-  TEST_PASS("Test_SM_RegisterState_ReturnsFalseIfNameAlreadyExists");
+  TEST_Pass("Test_SM_RegisterState_ReturnsFalseIfNameAlreadyExists");
 }
 
 void Test_SM_RegisterState_ReturnsTrueIfEnterAndUpdateNull(void) {
   assert(SM_RegisterState("testNULLEnterAndUpdate", NULL, NULL, mockDraw,
-                          mockExit));
-  TEST_PASS("Test_SM_RegisterState_ReturnsTrueIfEnterAndUpdateNull");
+    mockExit));
+  TEST_Pass("Test_SM_RegisterState_ReturnsTrueIfEnterAndUpdateNull");
 }
 
 void Test_SM_RegisterState_ReturnsTrueIfDrawAndExitNull(void) {
   assert(SM_RegisterState("testNULLDrawAndExit", mockEnter, mockUpdate, NULL,
-                          NULL));
-  TEST_PASS("Test_SM_RegisterState_ReturnsTrueIfDrawAndExitNull");
+    NULL));
+  TEST_Pass("Test_SM_RegisterState_ReturnsTrueIfDrawAndExitNull");
 }
 
 void Test_SM_RegisterState_ReturnsFalseIfAllFunctionsNull(void) {
   assert(!SM_RegisterState("testAllNULL", NULL, NULL, NULL, NULL));
-  TEST_PASS("Test_SM_RegisterState_ReturnsFalseIfAllFunctionsNull");
+  TEST_Pass("Test_SM_RegisterState_ReturnsFalseIfAllFunctionsNull");
 }
 
 // --------------------------------------------------
@@ -239,8 +244,8 @@ void Test_SM_RegisterState_ReturnsFalseIfAllFunctionsNull(void) {
 void Test_SM_Internal_GetState_ReturnsRegisteredStateByName(void) {
   SM_RegisterState("mockState", mockEnter, NULL, NULL, NULL);
   assert(
-      TEST_COMP_NAME(SM_Internal_GetState("mockState")->name, mockState.name));
-  TEST_PASS("Test_SM_Internal_GetState_ReturnsRegisteredStateByName");
+    TEST_COMP_NAME(SM_Internal_GetState("mockState")->name, mockState.name));
+  TEST_Pass("Test_SM_Internal_GetState_ReturnsRegisteredStateByName");
 }
 
 // --------------------------------------------------
@@ -249,17 +254,17 @@ void Test_SM_Internal_GetState_ReturnsRegisteredStateByName(void) {
 
 void Test_SM_GetCurrStateName_ReturnsNullIfCurrentStateIsNull(void) {
   assert(!SM_GetCurrStateName());
-  TEST_PASS("Test_SM_GetCurrStateName_ReturnsNullIfCurrentStateIsNull");
+  TEST_Pass("Test_SM_GetCurrStateName_ReturnsNullIfCurrentStateIsNull");
 }
 
 void Test_SM_Update_ReturnsFalseIfCurrentStateIsNull(void) {
   assert(!SM_Update(mockDT));
-  TEST_PASS("Test_SM_Update_ReturnsFalseIfCurrentStateIsNull");
+  TEST_Pass("Test_SM_Update_ReturnsFalseIfCurrentStateIsNull");
 }
 
 void Test_SM_Draw_ReturnsFalseIfCurrentStateIsNull(void) {
   assert(!SM_Draw());
-  TEST_PASS("Test_SM_Draw_ReturnsFalseIfCurrentStateIsNull");
+  TEST_Pass("Test_SM_Draw_ReturnsFalseIfCurrentStateIsNull");
 }
 
 // --------------------------------------------------
@@ -269,38 +274,38 @@ void Test_SM_Draw_ReturnsFalseIfCurrentStateIsNull(void) {
 void Test_SM_ChangeStateTo_ReturnsTrueChangingFromNullToValidState(void) {
   assert(SM_ChangeStateTo("testNoNULL", NULL));
   puts(
-      "\t[PASS] Test_SM_ChangeStateTo_ReturnsTrueChangingFromNullToValidState");
+    "\t[PASS] Test_SM_ChangeStateTo_ReturnsTrueChangingFromNullToValidState");
 }
 
 void Test_SM_ChangeStateTo_ReturnsFalseIfNameIsNULL(void) {
   assert(!SM_ChangeStateTo(NULL, NULL));
-  TEST_PASS("Test_SM_ChangeStateTo_ReturnsFalseIfNameIsNULL");
+  TEST_Pass("Test_SM_ChangeStateTo_ReturnsFalseIfNameIsNULL");
 }
 
 void Test_SM_ChangeStateTo_ReturnsFalseIfStateIsUnregistered(void) {
   assert(!SM_ChangeStateTo("testUnregistered", NULL));
-  TEST_PASS("Test_SM_ChangeStateTo_ReturnsFalseIfStateIsUnregistered");
+  TEST_Pass("Test_SM_ChangeStateTo_ReturnsFalseIfStateIsUnregistered");
 }
 
 void Test_SM_ChangeStateTo_ReturnsTrueChangingFromOneValidStateToAnother(void) {
   assert(SM_ChangeStateTo("testNULLEnterAndUpdate", NULL));
-  TEST_PASS(
-      ""
-      "Test_SM_ChangeStateTo_ReturnsTrueChangingFromOneValidStateToAnother");
+  TEST_Pass(
+    ""
+    "Test_SM_ChangeStateTo_ReturnsTrueChangingFromOneValidStateToAnother");
 }
 
 void Test_SM_ChangeStateTo_CallsExitFunctionOfCurrentState(void) {
   md.hasExited = false;
   SM_ChangeStateTo("testNULLDrawAndExit", NULL);
   assert(md.hasExited);
-  TEST_PASS("Test_SM_ChangeStateTo_CallsExitFunctionOfCurrentState");
+  TEST_Pass("Test_SM_ChangeStateTo_CallsExitFunctionOfCurrentState");
 }
 
 void Test_SM_ChangeStateTo_CallsEnterFunctionOfNewState(void) {
   md.hasEntered = false;
   SM_ChangeStateTo("testNoNULL", NULL);
   assert(md.hasEntered);
-  TEST_PASS("Test_SM_ChangeStateTo_CallsEnterFunctionOfNewState");
+  TEST_Pass("Test_SM_ChangeStateTo_CallsEnterFunctionOfNewState");
 }
 
 void Test_SM_ChangeStateTo_CallsExitAndEnterIfChangingToSameState(void) {
@@ -308,14 +313,14 @@ void Test_SM_ChangeStateTo_CallsExitAndEnterIfChangingToSameState(void) {
   md.hasExited = false;
   SM_ChangeStateTo("testNoNULL", NULL);
   assert(md.hasEntered && md.hasExited);
-  TEST_PASS("Test_SM_ChangeStateTo_CallsExitAndEnterIfChangingToSameState");
+  TEST_Pass("Test_SM_ChangeStateTo_CallsExitAndEnterIfChangingToSameState");
 }
 
 void Test_SM_ChangeStateTo_CallsEnterFunctionWithArgs(void) {
   MockStateArgs temp = {.flag = true};
   SM_ChangeStateTo("testNoNULL", &temp);
   assert(md.hasEnteredArgs);
-  TEST_PASS("Test_SM_ChangeStateTo_CallsEnterFunctionWithArgs");
+  TEST_Pass("Test_SM_ChangeStateTo_CallsEnterFunctionWithArgs");
 }
 
 // --------------------------------------------------
@@ -324,7 +329,7 @@ void Test_SM_ChangeStateTo_CallsEnterFunctionWithArgs(void) {
 
 void Test_SM_GetCurrStateName_ReturnsCurrentStateName(void) {
   assert(TEST_COMP_NAME(SM_GetCurrStateName(), "testNoNULL"));
-  TEST_PASS("Test_SM_GetCurrStateName_ReturnsCurrentStateName");
+  TEST_Pass("Test_SM_GetCurrStateName_ReturnsCurrentStateName");
 }
 
 // --------------------------------------------------
@@ -333,17 +338,17 @@ void Test_SM_GetCurrStateName_ReturnsCurrentStateName(void) {
 
 void Test_SM_IsInitialized_ReturnsTrueAfterInit(void) {
   assert(SM_IsInitialized());
-  TEST_PASS("Test_SM_IsInitialized_ReturnsTrueAfterInit");
+  TEST_Pass("Test_SM_IsInitialized_ReturnsTrueAfterInit");
 }
 
 void Test_SM_IsStateRegistered_ReturnsTrueForValidStateName(void) {
   assert(SM_IsStateRegistered("testNoNULL"));
-  TEST_PASS("Test_SM_IsStateRegistered_ReturnsTrueForValidStateName");
+  TEST_Pass("Test_SM_IsStateRegistered_ReturnsTrueForValidStateName");
 }
 
 void Test_SM_IsStateRegistered_ReturnsFalseForInvalidStateName(void) {
   assert(!SM_IsStateRegistered("testUnregistered"));
-  TEST_PASS("Test_SM_IsStateRegistered_ReturnsFalseForInvalidStateName");
+  TEST_Pass("Test_SM_IsStateRegistered_ReturnsFalseForInvalidStateName");
 }
 
 // --------------------------------------------------
@@ -353,27 +358,27 @@ void Test_SM_IsStateRegistered_ReturnsFalseForInvalidStateName(void) {
 void Test_SM_Update_CallsValidUpdateFunction(void) {
   SM_Update(mockDT);
   assert(md.hasUpdated);
-  TEST_PASS("Test_SM_Update_CallsValidUpdateFunction");
+  TEST_Pass("Test_SM_Update_CallsValidUpdateFunction");
 }
 
 void Test_SM_Draw_CallsValidDrawFunction(void) {
   SM_Draw();
   assert(md.hasDrawn);
-  TEST_PASS("Test_SM_Draw_CallsValidDrawFunction");
+  TEST_Pass("Test_SM_Draw_CallsValidDrawFunction");
 }
 
 void Test_SM_Update_CallsValidUpdateFunctionEvenIfNullUpdate(void) {
   SM_ChangeStateTo("testNULLEnterAndUpdate", NULL);
   SM_Update(mockDT);
   assert(md.hasUpdated);
-  TEST_PASS("Test_SM_Update_CallsValidUpdateFunctionEvenIfNullUpdate");
+  TEST_Pass("Test_SM_Update_CallsValidUpdateFunctionEvenIfNullUpdate");
 }
 
 void Test_SM_Draw_CallsValidDrawFunctionEvenIfNullDraw(void) {
   SM_ChangeStateTo("testNULLDrawAndExit", NULL);
   SM_Draw();
   assert(md.hasDrawn);
-  TEST_PASS("Test_SM_Draw_CallsValidDrawFunctionEvenIfNullDraw");
+  TEST_Pass("Test_SM_Draw_CallsValidDrawFunctionEvenIfNullDraw");
 }
 
 // --------------------------------------------------
@@ -385,7 +390,7 @@ void Test_SM_Shutdown_CallsExitFunctionOfCurrentState(void) {
   md.hasExited = false;
   SM_Shutdown();
   assert(md.hasExited);
-  TEST_PASS("Test_SM_Shutdown_CallsExitFunctionOfCurrentState");
+  TEST_Pass("Test_SM_Shutdown_CallsExitFunctionOfCurrentState");
 }
 
 void Test_SM_Shutdown_SkipsExitIfNull(void) {
@@ -395,17 +400,17 @@ void Test_SM_Shutdown_SkipsExitIfNull(void) {
   md.hasExited = false;
   SM_Shutdown();
   assert(!md.hasExited);
-  TEST_PASS("Test_SM_Shutdown_SkipsExitIfNull");
+  TEST_Pass("Test_SM_Shutdown_SkipsExitIfNull");
 }
 
 void Test_SM_Shutdown_SetsTrackerToNull(void) {
   assert(!SM_Test_GetTracker());
-  TEST_PASS("Test_SM_Shutdown_SetsTrackerToNull");
+  TEST_Pass("Test_SM_Shutdown_SetsTrackerToNull");
 }
 
 void Test_SM_Shutdown_SetsStateCountToZero(void) {
   assert(SM_Test_GetStateCount() == 0);
-  TEST_PASS("Test_SM_Shutdown_SetsStateCountToZero");
+  TEST_Pass("Test_SM_Shutdown_SetsStateCountToZero");
 }
 
 // --------------------------------------------------
@@ -414,30 +419,30 @@ void Test_SM_Shutdown_SetsStateCountToZero(void) {
 
 void Test_SM_IsInitialized_ReturnsFalseAfterShutdown(void) {
   assert(!SM_IsInitialized());
-  TEST_PASS("Test_SM_IsInitialized_ReturnsFalseAfterShutdown");
+  TEST_Pass("Test_SM_IsInitialized_ReturnsFalseAfterShutdown");
 }
 
 void Test_SM_GetCurrStateName_ReturnsNullAfterShutdown(void) {
   assert(!SM_GetCurrStateName());
-  TEST_PASS("Test_SM_GetCurrStateName_ReturnsNullAfterShutdown");
+  TEST_Pass("Test_SM_GetCurrStateName_ReturnsNullAfterShutdown");
 }
 
 void Test_SM_RegisterState_ReturnsFalseAfterShutdown(void) {
   assert(!SM_RegisterState("setToFail", mockEnter, mockUpdate, mockDraw,
-                           mockExit));
-  TEST_PASS("Test_SM_RegisterState_ReturnsFalseAfterShutdown");
+    mockExit));
+  TEST_Pass("Test_SM_RegisterState_ReturnsFalseAfterShutdown");
 }
 
 void Test_SM_ChangeStateTo_ReturnsFalseAfterShutdown(void) {
   assert(!SM_ChangeStateTo("testPreInit", NULL));
-  TEST_PASS("Test_SM_ChangeStateTo_ReturnsFalseAfterShutdown");
+  TEST_Pass("Test_SM_ChangeStateTo_ReturnsFalseAfterShutdown");
 }
 
 void Test_SM_Shutdown_ReturnsFalseIfCalledMultipleTimesAfterShutdown(void) {
   assert(!SM_Shutdown());
   assert(!SM_Shutdown());
   assert(!SM_Shutdown());
-  TEST_PASS("Test_SM_Shutdown_ReturnsFalseIfCalledMultipleTimesAfterShutdown");
+  TEST_Pass("Test_SM_Shutdown_ReturnsFalseIfCalledMultipleTimesAfterShutdown");
 }
 
 // --------------------------------------------------
@@ -446,27 +451,32 @@ void Test_SM_Shutdown_ReturnsFalseIfCalledMultipleTimesAfterShutdown(void) {
 
 void Test_SM_Internal_SetCurrState_ReturnsFalseAfterShutdown(void) {
   assert(!SM_Internal_SetCurrState(&mockState));
-  TEST_PASS("Test_SM_Internal_SetCurrState_ReturnsFalseAfterShutdown");
+  TEST_Pass("Test_SM_Internal_SetCurrState_ReturnsFalseAfterShutdown");
 }
+
 void Test_SM_Internal_GetCurrState_ReturnsNullAfterShutdown(void) {
   assert(!SM_Internal_GetCurrState());
-  TEST_PASS("Test_SM_Internal_GetCurrState_ReturnsNullAfterShutdown");
+  TEST_Pass("Test_SM_Internal_GetCurrState_ReturnsNullAfterShutdown");
 }
+
 void Test_SM_Internal_GetState_ReturnsNullAfterShutdown(void) {
   assert(!SM_Internal_GetState("testNoNULL"));
-  TEST_PASS("Test_SM_Internal_GetState_ReturnsNullAfterShutdown");
+  TEST_Pass("Test_SM_Internal_GetState_ReturnsNullAfterShutdown");
 }
+
 void Test_SM_Test_GetTracker_ReturnsNullAfterShutdown(void) {
   assert(!SM_Test_GetTracker());
-  TEST_PASS("Test_SM_Test_GetTracker_ReturnsNullAfterShutdown");
+  TEST_Pass("Test_SM_Test_GetTracker_ReturnsNullAfterShutdown");
 }
+
 void Test_SM_Update_ReturnsFalseAfterShutdown(void) {
   assert(!SM_Update(mockDT));
-  TEST_PASS("Test_SM_Update_ReturnsFalseAfterShutdown");
+  TEST_Pass("Test_SM_Update_ReturnsFalseAfterShutdown");
 }
+
 void Test_SM_Draw_ReturnsFalseAfterShutdown(void) {
   assert(!SM_Draw());
-  TEST_PASS("Test_SM_Draw_ReturnsFalseAfterShutdown");
+  TEST_Pass("Test_SM_Draw_ReturnsFalseAfterShutdown");
 }
 
 // --------------------------------------------------
@@ -496,17 +506,17 @@ void Test_SM_ChangingStatesOftenCausesNoSkips(void) {
   }
 
   assert(md.enteredTimes == MULTIPLE_STATES &&
-         md.exitedTimes == MULTIPLE_STATES - 1);
+    md.exitedTimes == MULTIPLE_STATES - 1);
 
   printf(
-      "\t[PASS] Test_SM_ChangingStatesOften_CausesNoSkips: %d state changes\n",
-      MULTIPLE_STATES);
+    "\t[PASS] Test_SM_ChangingStatesOften_CausesNoSkips: %d state changes\n",
+    MULTIPLE_STATES);
 }
 
 void Test_SM_Shutdown_FreeingMultipleStatesCausesNoSkips(void) {
   SM_Shutdown();
   assert(SM_Test_GetStateCount() == 0);
-  printf("\t[PASS] Test_SM_Shutdown_FreeingMultipleStatesCausesNoSkips\n");
+  TEST_Pass("Test_SM_Shutdown_FreeingMultipleStatesCausesNoSkips");
 }
 
 // --------------------------------------------------
@@ -626,6 +636,6 @@ int main() {
   Test_SM_Shutdown_FreeingMultipleStatesCausesNoSkips();
   puts("");
 
-  puts("All Tests Completed Successfully!");
+  puts("\nTIME TO SMILE! :)\n\tAll Tests Passed!");
   return 0;
 }

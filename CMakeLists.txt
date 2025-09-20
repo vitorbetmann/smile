@@ -21,8 +21,8 @@ add_library(smile STATIC
         src/ParticleSystem/ParticleSystem.c
         src/SaveLoad/SaveLoad.c
 
-        src/_Internals/Log/Log.c
-        src/_Internals/Test/TestInternal.c
+        src/_Internal/Log/Log.c
+        src/_Internal/Test/TestInternal.c
 )
 
 # Include raylib headers for Smile
@@ -90,9 +90,7 @@ if (SMILE_TESTS)
     # --------------------------------------------------
     add_executable(StateMachineTest tests/StateMachine/StateMachineTest.c)
     target_link_libraries(StateMachineTest PRIVATE smile)
-    target_include_directories(StateMachineTest PRIVATE
-            ${CMAKE_CURRENT_SOURCE_DIR}/include
-    )
+    target_include_directories(StateMachineTest PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
     # --------------------------------------------------
     # ParticleSystem
@@ -110,15 +108,11 @@ if (SMILE_TESTS)
     # --------------------------------------------------
     add_executable(SaveLoadTest tests/SaveLoad/SaveLoadTest.c)
     target_link_libraries(SaveLoadTest PRIVATE smile)
-    target_include_directories(SaveLoadTest PRIVATE
-            ${CMAKE_CURRENT_SOURCE_DIR}/include
-    )
+    target_include_directories(SaveLoadTest PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
     add_executable(SaveLoadInternalTest tests/SaveLoad/SaveLoadInternalTest.c)
     target_link_libraries(SaveLoadInternalTest PRIVATE smile)
-    target_include_directories(SaveLoadInternalTest PRIVATE
-            ${CMAKE_CURRENT_SOURCE_DIR}/tests/SaveLoad
-    )
+    target_include_directories(SaveLoadInternalTest PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tests/SaveLoad)
 
     # TODO #13 Add and link Log test
     # --------------------------------------------------

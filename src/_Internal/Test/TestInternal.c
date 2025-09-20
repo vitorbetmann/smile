@@ -2,7 +2,8 @@
 // Includes
 // --------------------------------------------------
 
-#include "src/_Internals/Test/TestInternal.h"
+#include "src/_Internal/Test/TestInternal.h"
+#include <stdio.h>
 
 // --------------------------------------------------
 // Defines
@@ -15,10 +16,14 @@
 static bool canMalloc = true;
 static bool canCalloc = true;
 static bool canFatal = false;
+static int mallocNum;
+static int callocNum;
 
 // --------------------------------------------------
 // Functions
 // --------------------------------------------------
+
+void TEST_Pass(const char *funcName) { printf("\t[PASS] %s\n", funcName); }
 
 bool TEST_SetCanMalloc(bool toggle) {
   if (canMalloc == toggle) {
@@ -30,7 +35,6 @@ bool TEST_SetCanMalloc(bool toggle) {
 }
 
 bool TEST_SetCanCalloc(bool toggle) {
-
   if (canCalloc == toggle) {
     return false;
   }
@@ -39,16 +43,26 @@ bool TEST_SetCanCalloc(bool toggle) {
   return true;
 }
 
+void TEST_SetMallocNum(const int num) {
+  mallocNum = num;
+}
+
 void *TEST_Malloc(size_t size) {
-  if (!canMalloc) {
+  mallocNum--;
+  if (mallocNum == 0 && !canMalloc) {
     return NULL;
   }
 
   return malloc(size);
 }
 
-void *TEST_Calloc(size_t num, size_t size) {
-  if (!canCalloc) {
+void TEST_SetCallocNum(const int num) {
+  callocNum = num;
+}
+
+void *TEST_Calloc(const size_t num, const size_t size) {
+  callocNum--;
+  if (callocNum == 0 && !canCalloc) {
     return NULL;
   }
 

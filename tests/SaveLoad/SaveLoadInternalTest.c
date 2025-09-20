@@ -30,7 +30,7 @@
 #include "SaveLoad.h"
 #include "../src/SaveLoad/SaveLoadInternal.h"
 #include "../src/SaveLoad/SaveLoadMessages.h"
-#include "../src/_Internals/Test/TestInternal.h"
+#include "../src/_Internal/Test/TestInternal.h"
 #include "assert.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,17 +42,17 @@
 
 void Test_SL_Internal_GetDefaultSysDir_ReturnsNullPreInit(void) {
     assert(!SL_Internal_GetDefaultSysDir());
-    TEST_PASS("Test_SL_Internal_GetDefaultSysDir_ReturnsNULLPreInit");
+    TEST_Pass("Test_SL_Internal_GetDefaultSysDir_ReturnsNULLPreInit");
 }
 
 void Test_SL_Internal_BeginSession_OnSaveModeReturnsFalsePreInit(void) {
     assert(!SL_Internal_BeginSession(WRITE, NULL,"hi"));
-    TEST_PASS("Test_SL_Internal_BeginSession_OnSaveModeReturnsFalsePreInit");
+    TEST_Pass("Test_SL_Internal_BeginSession_OnSaveModeReturnsFalsePreInit");
 }
 
 void Test_SL_Internal_BeginSession_OnLoadModeReturnsFalsePreInit(void) {
     assert(!SL_Internal_BeginSession(LOAD, NULL,"hi"));
-    TEST_PASS("Test_SL_Internal_BeginSession_OnLoadModeReturnsFalsePreInit");
+    TEST_Pass("Test_SL_Internal_BeginSession_OnLoadModeReturnsFalsePreInit");
 }
 
 // --------------------------------------------------

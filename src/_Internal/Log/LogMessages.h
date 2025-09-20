@@ -4,6 +4,7 @@
 // --------------------------------------------------
 // INFO NO ARGS
 // --------------------------------------------------
+
 #define INFO_INIT_SUCCESSFUL "Init successful."
 #define INFO_SHUTDOWN_SUCCESSFUL "Shutdown successful."
 

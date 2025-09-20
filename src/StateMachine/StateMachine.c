@@ -7,12 +7,12 @@
 // --------------------------------------------------
 
 #include "StateMachine.h"
-#include "../_Internals/Log/LogInternal.h"
-#include "../_Internals/Log/LogMessages.h"
+#include "../_Internal/Log/LogInternal.h"
+#include "../_Internal/Log/LogMessages.h"
 #include "../tests/StateMachine/StateMachineTest.h"
 #include "StateMachineInternal.h"
 #include "StateMachineMessages.h"
-#include "src/_Internals/Test/TestInternal.h"
+#include "src/_Internal/Test/TestInternal.h"
 #include <stdio.h>
 #include <stdlib.h>
 

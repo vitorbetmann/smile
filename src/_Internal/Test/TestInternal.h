@@ -13,11 +13,12 @@
 // --------------------------------------------------
 
 #define TEST_COMP_NAME(name1, name2) strcmp(name1, name2) == 0
-#define TEST_PASS(funcName) printf("\t[PASS] %s\n", funcName)
 
 // --------------------------------------------------
 // Prototypes
 // --------------------------------------------------
+
+void TEST_Pass(const char *funcName);
 
 /**
  * @brief Enables or disables simulated malloc behavior for testing.
@@ -35,7 +36,11 @@ bool TEST_SetCanCalloc(bool toggle);
 
 bool TEST_SetCanFatal(bool toggle);
 
+void TEST_SetMallocNum(int num);
+
 void *TEST_Malloc(size_t size);
+
+void TEST_SetCallocNum(int num);
 
 void *TEST_Calloc(size_t num, size_t size);
 
