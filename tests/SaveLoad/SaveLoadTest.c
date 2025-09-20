@@ -56,6 +56,11 @@ void Test_SL_GetGameDir_ReturnsFalsePreInit(void) {
   TEST_PASS("Test_SL_GetGameDir_ReturnsFalsePreInit");
 }
 
+void Test_SL_GetDefaultDir_ReturnsFalsePreInit(void) {
+  assert(!SL_GetDefaultDir());
+  TEST_PASS("Test_SL_GetDefaultDir_ReturnsFalsePreInit");
+}
+
 void Test_SL_SetGameDir_ReturnsFalsePreInit(void) {
   assert(!SL_SetGameDir(NULL));
   TEST_PASS("Test_SL_SetGameDir_ReturnsFalsePreInit");
@@ -71,6 +76,11 @@ void Test_SL_DirExists_ReturnsFalsePreInit(void) {
 void Test_SL_GetGameFile_ReturnsFalsePreInit(void) {
   assert(!SL_GetGameFile());
   TEST_PASS("Test_SL_GetGameFile_ReturnsFalsePreInit");
+}
+
+void Test_SL_GetGamePath_ReturnsFalsePreInit(void) {
+  assert(!SL_GetGamePath());
+  TEST_PASS("Test_SL_GetGamePath_ReturnsFalsePreInit");
 }
 
 void Test_SL_SetGameFile_ReturnsFalsePreInit(void) {
@@ -129,14 +139,14 @@ void Test_SL_EndLoadSession_ReturnsFalsePreInit(void) {
 
 // Delete -------------------------------------------
 
-void Test_SL_DeleteFile_ReturnsFalsePreInit(void) {
-  assert(!SL_DeleteFile(NULL));
-  TEST_PASS("Test_SL_DeleteFile_ReturnsFalsePreInit");
-}
-
 void Test_SL_DeleteDir_ReturnsFalsePreInit(void) {
   assert(!SL_DeleteDir(NULL));
   TEST_PASS("Test_SL_DeleteDir_ReturnsFalsePreInit");
+}
+
+void Test_SL_DeleteFile_ReturnsFalsePreInit(void) {
+  assert(!SL_DeleteFile(NULL));
+  TEST_PASS("Test_SL_DeleteFile_ReturnsFalsePreInit");
 }
 
 // Shutdown -----------------------------------------
@@ -147,157 +157,74 @@ void Test_SL_Shutdown_ReturnsFalsePreInit(void) {
 }
 
 // --------------------------------------------------
-// Init - Fail Mem Alloc
+// Init
 // --------------------------------------------------
+
+// Mem Alloc Fail -----------------------------------
 
 void Test_SL_Init_ReturnsFalseIfCallocFails(void) {
   TEST_SetCanCalloc(false);
-  assert(!SL_Init(MOCK_GAME_NAME));
+  assert(!SL_Init());
   TEST_SetCanCalloc(true);
   TEST_PASS("Test_SL_Init_ReturnsFalseIfCallocFails");
 }
 
 void Test_SL_Init_ReturnsFalseIfMallocFails(void) {
   TEST_SetCanMalloc(false);
-  assert(!SL_Init(MOCK_GAME_NAME));
+  assert(!SL_Init());
   TEST_SetCanMalloc(true);
   TEST_PASS("Test_SL_Init_ReturnsFalseIfMallocFails");
 }
 
-// --------------------------------------------------
-// Init - NULL Args
-// --------------------------------------------------
+// Success ------------------------------------------
 
-void Test_SL_Init_ReturnsTrueWithAllNullArgs(void) {
-  assert(SL_Init(MOCK_GAME_NAME));
-  TEST_PASS("Test_SL_Init_ReturnsTrueOnFirstCall");
-}
-
-void Test_SL_Init_ReturnsFalseIfCalledTwice(void) {
-  assert(!SL_Init(MOCK_GAME_NAME));
-  TEST_PASS("Test_SL_Init_ReturnsFalseIfCalledTwice");
+void Test_SL_Init_ReturnsTrue(void) {
+  assert(SL_Init());
+  TEST_PASS("Test_SL_Init_ReturnsTrue");
 }
 
 // --------------------------------------------------
-// Post-Init - Public
+// Post-Init
 // --------------------------------------------------
 
-void Test_SL_IsInitialized_ReturnsTrueAfterInit(void) {
+void Test_SL_IsInitialized_ReturnsTruePostInit(void) {
   assert(SL_IsInitialized());
   TEST_PASS("Test_SL_IsInitialized_ReturnsTrueAfterInit");
 }
+
+
+
 #ifdef __APPLE__
-void Test_SL_GetGameDir_ReturnsDefaultSysDirOnApple(void) {
-  // TODO Create a func for this... From here1
-  const char *homeDir = getenv("HOME");
-  size_t homeDirLen = strlen(homeDir);
-  size_t sysDirLen = strlen(DEFAULT_SYS_DIR);
-  char smileDir[] = "smile/";
-  int smileLen = strlen(smileDir);
-  size_t gameNameLen = strlen(MOCK_GAME_NAME);
-  size_t bufferLen = homeDirLen + sysDirLen + smileLen + gameNameLen + 2;
 
-  char *buffer = TEST_Malloc(bufferLen);
-  if (!buffer) {
-    exit(EXIT_FAILURE);
-  }
-  snprintf(buffer, bufferLen, "%s%s%s%s/", homeDir, DEFAULT_SYS_DIR, smileDir,
-           MOCK_GAME_NAME);
-  // to here1
+// GetDefaultDir succeeds
 
-  assert(TEST_COMP_NAME(SL_GetGameDir(), buffer));
-  TEST_PASS("Test_SL_GetGameDir_ReturnsDefaultSystemDirectoryOnApple");
-}
+// GetGameDir fails
+// SetGameDir fails with invalid path
+// // Perhaps test this more than once
+// SetGameDir succeeds
+// GetGameDir succeeds
 
-void Test_SL_GetGameDir_ReturnsAltSysDirOnApple(void) {
-  // TODO enable alt sys dir
-  // assert(TEST_COMP_NAME(SL_GetGameDir(), "./"));
-  TEST_PASS("Test_SL_GetGameDir_ReturnsAltSysDirOnApple");
-}
+// GetGameFile fails
+// SetGameFile fails with invalid path
+// // Perhaps test this more than once
+// SetGameFile succeeds
+// GetGameFile succeeds
 
-void Test_SL_SetGameDir_ReturnsFalseForInvalidDirOnApple(void) {
-  // bool SL_SetGameDir(char *dir);
-  TEST_PASS("Test_SL_SetGameDir_ReturnsFalseForInvalidDirOnApple");
-}
+// must also test DirExists, FileExists
+// change directories and check, change file and check
+// // perhaps do the same again in another order
+// must also create a TEST_Func to create/delete dirs and files
+// // Or call delete dir on all once tests are over
 
-void Test_SL_SetGameDir_ReturnsTrueForValidDirOnApple(void) {
-  // bool SL_SetGameDir(char *dir);
-  TEST_PASS("Test_SL_SetGameDir_ReturnsTrueForValidDirOnApple");
-}
+// Also test alternate dir if default dir fails
 
-void Test_SL_GetGameDir_ReturnsCorrectDirAfterSetGameDirOnApple(void) {
-  // do something
-  TEST_PASS("Test_SL_GetGameDir_ReturnsCorrectDirAfterSetGameDirOnApple");
-}
+
+
 #endif
 #ifdef __linux__
-void Test_SL_GetGameDir_ReturnsDefaultSysDirOnLinux(void) {
-  char *buffer = SL_GetGameDir();
-  assert(TEST_COMP_NAME(buffer, "./"));
-  free(buffer);
-  buffer = NULL;
-  TEST_PASS("Test_SL_GetGameDir_ReturnsDefaultSysDirOnLinux");
-}
-void Test_SL_GetGameDir_ReturnsAltSysDirOnLinux(void) {
-  // TODO enable alt sys dir
-  char *buffer = SL_GetGameDir();
-  assert(TEST_COMP_NAME(buffer, "./"));
-  free(buffer);
-  buffer = NULL;
-  TEST_PASS("Test_SL_GetGameDir_ReturnsAltSysDirOnLinux");
-}
-void Test_SL_SetGameDir_ReturnsFalseForInvalidDirOnLinux(void) {
-  // bool SL_SetGameDir(char *dir);
-  TEST_PASS("Test_SL_SetGameDir_ReturnsFalseForInvalidDirOnLinux");
-}
-void Test_SL_SetGameDir_ReturnsTrueForValidDirOnLinux(void) {
-  // bool SL_SetGameDir(char *dir);
-  TEST_PASS("Test_SL_SetGameDir_ReturnsTrueForValidDirOnLinux");
-}
-void Test_SL_GetGameDir_ReturnsCorrectDirAfterSetGameDirOnLinux(void) {
-  // do something
-  TEST_PASS("Test_SL_GetGameDir_ReturnsCorrectDirAfterSetGameDirOnLinux");
-}
 #endif
 #ifdef _WIN32
-void Test_SL_GetGameDir_ReturnsDefaultSysDirOnWindows(void) {
-  char *buffer = SL_GetGameDir();
-  assert(TEST_COMP_NAME(buffer, "./"));
-  free(buffer);
-  buffer = NULL;
-  TEST_PASS("Test_SL_GetGameDir_ReturnsDefaultSysDirOnWindows");
-}
-void Test_SL_GetGameDir_ReturnsAltSysDirOnWindows(void) {
-  // TODO enable alt sys dir
-  char *buffer = SL_GetGameDir();
-  assert(TEST_COMP_NAME(buffer, "./"));
-  free(buffer);
-  buffer = NULL;
-  TEST_PASS("Test_SL_GetGameDir_ReturnsAltSysDirOnWindows");
-}
-void Test_SL_SetGameDir_ReturnsFalseForInvalidDirOnWindows(void) {
-  // bool SL_SetGameDir(char *dir);
-  TEST_PASS("Test_SL_SetGameDir_ReturnsFalseForInvalidDirOnWindows");
-}
-void Test_SL_SetGameDir_ReturnsTrueForValidDirOnWindows(void) {
-  // bool SL_SetGameDir(char *dir);
-  TEST_PASS("Test_SL_SetGameDir_ReturnsTrueForValidDirOnWindows");
-}
-void Test_SL_GetGameDir_ReturnsCorrectDirAfterSetGameDirOnWindows(void) {
-  // do something
-  TEST_PASS("Test_SL_GetGameDir_ReturnsCorrectDirAfterSetGameDirOnWindows");
-}
 #endif
-
-// char *SL_GetGameFile(void);
-// bool SL_SetGameFile(char *file) { return false; }
-// char *SL_GetGameFile(void); again
-
-// bool SL_DirExists(char *dir) { return false; } valid dir
-// bool SL_DirExists(char *dir) { return false; } invalid dir
-
-// bool SL_FileExists(char *file) { return false; } valid file
-// bool SL_FileExists(char *file) { return false; } invalid file
 
 // --------------------------------------------------
 // Shutdown
@@ -309,7 +236,7 @@ void Test_SL_Shutdown_ReturnsTrueAfterInit(void) {
 }
 
 // --------------------------------------------------
-// Post-Shutdown access - Public
+// Post-Shutdown
 // --------------------------------------------------
 
 void Test_SL_Shutdown_ReturnsFalseIfCalledTwice(void) {
@@ -323,26 +250,22 @@ void Test_SL_IsInitialized_ReturnsFalseAfterShutdown(void) {
 }
 
 // --------------------------------------------------
-// Init -  No NULL Args
+// Init With
 // --------------------------------------------------
 
-void Test_SL_Init_ReturnsTrueWithNULLFile(void) {
-  assert(SL_Init(MOCK_GAME_NAME));
-  SL_Shutdown();
-  TEST_PASS("Test_SL_Init_ReturnsTrueWithNULLFile");
-}
+// Test init with, get dir, get file... all getters, basically
 
-void Test_SL_Init_ReturnsTrueWithNULLDir(void) {
-  assert(SL_Init(MOCK_GAME_NAME));
-  SL_Shutdown();
-  TEST_PASS("Test_SL_Init_ReturnsTrueWithNULLDir");
-}
+// --------------------------------------------------
+// Save
+// --------------------------------------------------
 
-void Test_SL_Init_ReturnsTrueWithNoNULLArgs(void) {
-  assert(SL_Init(MOCK_GAME_NAME));
-  SL_Shutdown();
-  TEST_PASS("Test_SL_Init_ReturnsTrueWithNoNULLArgs");
-}
+// --------------------------------------------------
+// Load
+// --------------------------------------------------
+
+// --------------------------------------------------
+// Delete
+// --------------------------------------------------
 
 // --------------------------------------------------
 // Stress tests
@@ -353,15 +276,17 @@ void Test_SL_Init_ReturnsTrueWithNoNULLArgs(void) {
 // --------------------------------------------------
 
 int main() {
-  puts("\nTESTINT PRE-INIT");
-  puts("• IsInitialized");
+  puts("\nTESTING PRE-INIT");
+  puts("• Init");
   Test_SL_IsInitialized_ReturnsFalsePreInit();
   puts("• Game Dir");
   Test_SL_GetGameDir_ReturnsFalsePreInit();
+  Test_SL_GetDefaultDir_ReturnsFalsePreInit();
   Test_SL_DirExists_ReturnsFalsePreInit();
   Test_SL_SetGameDir_ReturnsFalsePreInit();
   puts("• Game File");
   Test_SL_GetGameFile_ReturnsFalsePreInit();
+  Test_SL_GetGamePath_ReturnsFalsePreInit();
   Test_SL_SetGameFile_ReturnsFalsePreInit();
   Test_SL_FileExists_ReturnsFalsePreInit();
   puts("• Save");
@@ -375,53 +300,35 @@ int main() {
   Test_SL_LoadNextTo_ReturnsFalsePreInit();
   Test_SL_EndLoadSession_ReturnsFalsePreInit();
   puts("• Delete");
-  Test_SL_DeleteFile_ReturnsFalsePreInit();
   Test_SL_DeleteDir_ReturnsFalsePreInit();
+  Test_SL_DeleteFile_ReturnsFalsePreInit();
   puts("• Shutdown");
   Test_SL_Shutdown_ReturnsFalsePreInit();
 
   puts("\nTESTINT INIT");
-  puts("• Fail Mem Alloc");
+  puts("• Mem Alloc Fail");
   Test_SL_Init_ReturnsFalseIfCallocFails();
   Test_SL_Init_ReturnsFalseIfMallocFails();
-  puts("• Null Args");
-  Test_SL_Init_ReturnsTrueWithAllNullArgs();
-  Test_SL_Init_ReturnsFalseIfCalledTwice();
+  puts("• Success");
+  Test_SL_Init_ReturnsTrue();
 
-  puts("• TESTING POST-INIT");
-  Test_SL_IsInitialized_ReturnsTrueAfterInit();
+  puts("\nTESTING POST-INIT");
+  Test_SL_IsInitialized_ReturnsTruePostInit();
 #ifdef __APPLE__
-  Test_SL_GetGameDir_ReturnsDefaultSysDirOnApple();
-  Test_SL_GetGameDir_ReturnsAltSysDirOnApple();
-  Test_SL_SetGameDir_ReturnsFalseForInvalidDirOnApple();
-  Test_SL_SetGameDir_ReturnsTrueForValidDirOnApple();
 #endif
 #ifdef __linux__
-  Test_SL_GetGameDir_ReturnsDefaultSysDirOnLinux();
-  Test_SL_GetGameDir_ReturnsAltSysDirOnLinux();
-  Test_SL_SetGameDir_ReturnsFalseForInvalidDirOnLinux();
-  Test_SL_SetGameDir_ReturnsTrueForValidDirOnLinux();
 #endif
 #ifdef _WIN32
-  Test_SL_GetGameDir_ReturnsDefaultSysDirOnWindows();
-  Test_SL_GetGameDir_ReturnsAltSysDirOnWindows();
-  Test_SL_SetGameDir_ReturnsFalseForInvalidDirOnWindows();
-  Test_SL_SetGameDir_ReturnsTrueForValidDirOnWindows();
 #endif
   puts("");
 
-  puts("Testing Shutdown");
+  puts("\nTESTING SHUTDOWN");
   Test_SL_Shutdown_ReturnsTrueAfterInit();
-  puts("");
 
-  puts("Testing Post-Shutdown");
+  puts("\nTESTING POST-SHUTDOWN");
   Test_SL_Shutdown_ReturnsFalseIfCalledTwice();
   Test_SL_IsInitialized_ReturnsFalseAfterShutdown();
-  puts("");
 
-  puts("Testing Init - No NULL Args");
-  puts("");
-
-  puts("All Tests Completed Successfully!");
+  puts("\nAll Tests Completed Successfully!");
   return 0;
 }

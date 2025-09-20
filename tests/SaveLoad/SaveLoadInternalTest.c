@@ -46,14 +46,12 @@ void Test_SL_Internal_GetDefaultSysDir_ReturnsNullPreInit(void) {
 }
 
 void Test_SL_Internal_BeginSession_OnSaveModeReturnsFalsePreInit(void) {
-    assert(!SL_Internal_BeginSession(WRITE, NULL,
-        LOG_CONSEQ_INTERNAL_BEGIN_SESSION_ABORTED));
+    assert(!SL_Internal_BeginSession(WRITE, NULL,"hi"));
     TEST_PASS("Test_SL_Internal_BeginSession_OnSaveModeReturnsFalsePreInit");
 }
 
 void Test_SL_Internal_BeginSession_OnLoadModeReturnsFalsePreInit(void) {
-    assert(!SL_Internal_BeginSession(LOAD, NULL,
-        LOG_CONSEQ_INTERNAL_BEGIN_SESSION_ABORTED));
+    assert(!SL_Internal_BeginSession(LOAD, NULL,"hi"));
     TEST_PASS("Test_SL_Internal_BeginSession_OnLoadModeReturnsFalsePreInit");
 }
 

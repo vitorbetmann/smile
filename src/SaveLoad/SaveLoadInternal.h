@@ -11,8 +11,8 @@
 // Other defines
 // --------------------------------------------------
 
-#define MODULE_NAME "SaveLoad"
-#define SMILE_DIR "Smile/"
+#define MODULE "SaveLoad"
+#define SMILE_DIR "SmileEngine/"
 
 #ifdef __APPLE__
 #define DEFAULT_SYS_DIR "/Library/Application Support/"
@@ -40,7 +40,7 @@ typedef enum {
 } FileInteractionMode;
 
 typedef struct {
-    const char *defaultDir;
+    char *defaultDir;
     char *gameDir;
     char *gameFile;
     char *gamePath;
@@ -52,23 +52,28 @@ typedef struct {
 // Prototypes
 // --------------------------------------------------
 
+// Game dir -----------------------------------------
+
+char *SL_Internal_GetDefaultSysDir(void);
+
+bool SL_Internal_DirExists(const char *absoluteDir);
+
+bool SL_Internal_CreateDir(const char *dir);
+
 bool SL_Internal_IsValidDir(const char *dir);
 
-char *SL_Internal_SanitizeDir(const char *dir);
-
 bool SL_Internal_IsValidFile(const char *file);
+
+// Game file -----------------------------------------
+
+char *SL_Internal_SanitizeDir(const char *dir);
 
 char *SL_Internal_SanitizeFile(const char *file);
 
 bool SL_Internal_UpdateGamePath(void);
 
-char *SL_Internal_GetDefaultSysDir(void);
-
-bool SL_Internal_CreateDir(const char *dir);
+// Save Load ------------------------------------------
 
 bool SL_Internal_BeginSession(FileInteractionMode mode, const char *file, const char *conseqAbort);
-
-bool SL_Internal_DirExists(const char *absoluteDir);
-
 
 #endif

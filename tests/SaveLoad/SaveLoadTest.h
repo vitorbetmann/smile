@@ -9,7 +9,7 @@
 // Other defines
 // --------------------------------------------------
 
-#define MOCK_GAME_NAME "mockGameName"
+#define MOCK_GAME "mockGame"
 
 // --------------------------------------------------
 // Data types
