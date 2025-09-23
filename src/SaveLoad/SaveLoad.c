@@ -257,6 +257,14 @@ bool SL_FileExists(const char *file) {
     return false;
 }
 
+// Lists --------------------------------------------
+
+// List SL_GetListOf(ListType type) {
+// }
+//
+// bool SL_FreeList(List list) {
+// }
+
 // Save ---------------------------------------------
 
 bool SL_BeginSaveSession(void) {

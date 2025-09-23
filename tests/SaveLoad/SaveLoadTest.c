@@ -35,10 +35,7 @@
 #include "../src/SaveLoad/SaveLoadInternal.h"
 #include "../src/_Internal/Test/TestInternal.h"
 #include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-#include "Log.h"
+#include <string.h>
 
 // --------------------------------------------------
 // Pre-Init
@@ -165,16 +162,14 @@ void Test_SL_Shutdown_ReturnsFalsePreInit(void) {
 // Mem Alloc Fail -----------------------------------
 
 void Test_SL_Init_ReturnsFalseIfCallocFails(void) {
-  TEST_SetCanCalloc(false);
+  TEST_Disable(CALLOC, 1);
   assert(!SL_Init());
-  TEST_SetCanCalloc(true);
   TEST_Pass("Test_SL_Init_ReturnsFalseIfCallocFails");
 }
 
 void Test_SL_Init_ReturnsFalseIfMallocFails(void) {
-  TEST_SetCanMalloc(false);
+  TEST_Disable(MALLOC, 1);
   assert(!SL_Init());
-  TEST_SetCanMalloc(true);
   TEST_Pass("Test_SL_Init_ReturnsFalseIfMallocFails");
 }
 
@@ -204,13 +199,13 @@ void Test_SL_GetDefaultDir_ReturnsPathToSmileDir(void) {
   char *smilePath = malloc(totalLen);
   snprintf(smilePath, totalLen, "%s%s%s", home, DEFAULT_SYS_DIR, SMILE_DIR);
 
-  assert(TEST_COMP_NAME(SL_GetDefaultDir(), smilePath));
+  assert(strcmp(SL_GetDefaultDir(), smilePath) == 0);
   free(smilePath);
   TEST_Pass("Test_SL_GetDefaultDir_ReturnsPathToSmileDir");
 }
 
 void Test_SL_GetGameDir_ReturnsNullPreSetGameDir(void) {
-  // assert(!SL_GetGameDir());
+  assert(!SL_GetGameDir());
   TEST_Pass("Test_SL_GetGameDir_ReturnsNullPreSetGameDir");
 }
 
@@ -252,7 +247,7 @@ void Test_SL_SetGameDir_ReturnsTrueWithNonEmptyUnsanitizedValidPath(void) {
 }
 
 void Test_SL_GetGameDir_ReturnsCorrectPathWithNonEmptyUnsanitizedDefaultDir(void) {
-  // assert(TEST_COMP_NAME(SL_GetGameDir(), "some name"));
+  // assert(strcmp(SL_GetGameDir(), "some name") == 0);
   TEST_Pass("Test_SL_GetGameDir_ReturnsCorrectPathWithNonEmptyDefaultDir");
 }
 
@@ -263,14 +258,13 @@ void Test_SL_DirExists_ReturnsTrueForExistingUnsanitizedPath(void) {
 
 // -- Sanitized Path --------------------------------
 
-
 void Test_SL_SetGameDir_ReturnsTrueWithNonEmptySanitizedValidPath(void) {
   // assert(!SL_SetGameDir("ValidPath"));
   TEST_Pass("Test_SL_SetGameDir_ReturnsTrueWithNonEmptySanitizedValidPath");
 }
 
 void Test_SL_GetGameDir_ReturnsCorrectPathWithNonEmptySanitizedDefaultDir(void) {
-  // assert(TEST_COMP_NAME(SL_GetGameDir(), "some name"));
+  // assert(strcmp(SL_GetGameDir(), "some name") == 0);
   TEST_Pass("Test_SL_GetGameDir_ReturnsCorrectPathWithNonEmptySanitizedDefaultDir");
 }
 
@@ -287,7 +281,7 @@ void Test_SL_SetGameDir_ReturnsTrueWithEmptyPath(void) {
 }
 
 void Test_SL_GetGameDir_ReturnsCorrectPathWithEmptyDefaultDir(void) {
-  // assert(TEST_COMP_NAME(SL_GetGameDir(), "some name"));
+  // assert(strcmp(SL_GetGameDir(), "some name") == 0);
   TEST_Pass("Test_SL_GetGameDir_ReturnsCorrectPathWithEmptyDefaultDir");
 }
 

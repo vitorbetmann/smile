@@ -1,81 +1,81 @@
-// --------------------------------------------------
-// Includes
-// --------------------------------------------------
+/**
+* @file TestInternal.c
+ * @brief Implementation of test utilities for simulating allocation failures.
+ *
+ * Internal use only. Provides definitions for the functions declared in
+ * TestInternal.h.
+ */
 
 #include "src/_Internal/Test/TestInternal.h"
 #include <stdio.h>
 
 // --------------------------------------------------
-// Defines
-// --------------------------------------------------
-
-// --------------------------------------------------
-// Variables
+// Internal state
 // --------------------------------------------------
 
 static bool canMalloc = true;
 static bool canCalloc = true;
+static bool canRealloc = true;
 static bool canFatal = false;
+
 static int mallocNum;
 static int callocNum;
+static int reallocNum;
 
 // --------------------------------------------------
 // Functions
 // --------------------------------------------------
 
-void TEST_Pass(const char *funcName) { printf("\t[PASS] %s\n", funcName); }
+void TEST_Pass(const char *funcName) {
+  printf("\t[PASS] %s\n", funcName);
+}
 
-bool TEST_SetCanMalloc(bool toggle) {
-  if (canMalloc == toggle) {
-    return false;
+bool TEST_Disable(const MemAllocFunc funcName, const int at) {
+  switch (funcName) {
+    case MALLOC:
+      canMalloc = false;
+      mallocNum = at;
+      return true;
+    case CALLOC:
+      canCalloc = false;
+      callocNum = at;
+      return true;
+    case REALLOC:
+      canRealloc = false;
+      reallocNum = at;
+      return true;
+    default:
+      return false;
   }
-
-  canMalloc = toggle;
-  return true;
 }
 
-bool TEST_SetCanCalloc(bool toggle) {
-  if (canCalloc == toggle) {
-    return false;
-  }
-
-  canCalloc = toggle;
-  return true;
-}
-
-void TEST_SetMallocNum(const int num) {
-  mallocNum = num;
-}
-
-void *TEST_Malloc(size_t size) {
+void *TEST_Malloc(const size_t size) {
   mallocNum--;
-  if (mallocNum == 0 && !canMalloc) {
+  if (!canMalloc && mallocNum == 0) {
+    canMalloc = true;
     return NULL;
   }
-
   return malloc(size);
 }
 
-void TEST_SetCallocNum(const int num) {
-  callocNum = num;
-}
-
-void *TEST_Calloc(const size_t num, const size_t size) {
+void *TEST_Calloc(const size_t nitems, const size_t size) {
   callocNum--;
-  if (callocNum == 0 && !canCalloc) {
+  if (!canCalloc && callocNum == 0) {
+    canCalloc = true;
     return NULL;
   }
-
-  return calloc(num, size);
+  return calloc(nitems, size);
 }
 
-bool TEST_SetCanFatal(bool toggle) {
-  if (canFatal == toggle) {
-    return false;
+void *TEST_Realloc(void *ptr, const size_t size) {
+  reallocNum--;
+  if (!canRealloc && reallocNum == 0) {
+    canRealloc = true;
+    return NULL;
   }
-
-  canFatal = toggle;
-  return true;
+  return realloc(ptr, size);
 }
 
-bool TEST_Fatal(void) { return canFatal; }
+bool TEST_Fatal(void) {
+  return canFatal;
+}

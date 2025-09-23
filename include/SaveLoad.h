@@ -8,6 +8,20 @@
 #include <stdlib.h>
 
 // --------------------------------------------------
+// Data types
+// --------------------------------------------------
+
+typedef enum {
+    FILES,
+    DIRS,
+} ListType;
+
+typedef struct {
+    char **list;
+    int amount;
+} List;
+
+// --------------------------------------------------
 // Prototypes
 // --------------------------------------------------
 
@@ -187,6 +201,12 @@ bool SL_SetGameFile(const char *file);
  * Check if a file exists (relative path).
  */
 bool SL_FileExists(const char *file);
+
+// Lists --------------------------------------------
+
+List SL_GetListOf(ListType type);
+
+bool SL_FreeList(List list);
 
 // Save ---------------------------------------------
 

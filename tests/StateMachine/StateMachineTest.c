@@ -51,6 +51,7 @@ typedef struct {
 // --------------------------------------------------
 // variables
 // --------------------------------------------------
+
 static unsigned int MULTIPLE_STATES = 1000;
 static float mockDT = 0.016;
 MockData md;
@@ -147,14 +148,12 @@ void Test_SM_GetCurrStateName_ReturnsNullPreInit(void) {
 // --------------------------------------------------
 
 void Test_SM_Init_ReturnsFalseIfMallocFails(void) {
-  TEST_SetCanMalloc(false);
-  SM_Init();
+  TEST_Disable(MALLOC, 1);
   assert(!SM_Test_GetTracker());
   TEST_Pass("Test_SM_Init_ReturnsFalseIfMallocFails");
 }
 
 void Test_SM_Init_ReturnsTrueAndInitializesTracker(void) {
-  TEST_SetCanMalloc(true);
   SM_Init();
   assert(SM_Test_GetTracker());
   TEST_Pass("Test_SM_Init_ReturnsTrueAndInitializesTracker");
@@ -185,7 +184,7 @@ void Test_SM_Internal_GetCurrState_ReturnsNullIfNoCurrentState(void) {
 
 void Test_SM_Internal_SetCurrState_SetsValidStateCorrectly(void) {
   SM_Internal_SetCurrState(&mockState);
-  assert(TEST_COMP_NAME(SM_Internal_GetCurrState()->name, mockState.name));
+  assert(strcmp(SM_Internal_GetCurrState()->name, mockState.name) == 0);
   TEST_Pass("Test_SM_Internal_SetCurrState_SetsValidStateCorrectly");
 }
 
@@ -243,8 +242,7 @@ void Test_SM_RegisterState_ReturnsFalseIfAllFunctionsNull(void) {
 
 void Test_SM_Internal_GetState_ReturnsRegisteredStateByName(void) {
   SM_RegisterState("mockState", mockEnter, NULL, NULL, NULL);
-  assert(
-    TEST_COMP_NAME(SM_Internal_GetState("mockState")->name, mockState.name));
+  assert(strcmp(SM_Internal_GetState("mockState")->name, mockState.name) == 0);
   TEST_Pass("Test_SM_Internal_GetState_ReturnsRegisteredStateByName");
 }
 
@@ -328,7 +326,7 @@ void Test_SM_ChangeStateTo_CallsEnterFunctionWithArgs(void) {
 // --------------------------------------------------
 
 void Test_SM_GetCurrStateName_ReturnsCurrentStateName(void) {
-  assert(TEST_COMP_NAME(SM_GetCurrStateName(), "testNoNULL"));
+  assert(strcmp(SM_GetCurrStateName(), "testNoNULL") == 0);
   TEST_Pass("Test_SM_GetCurrStateName_ReturnsCurrentStateName");
 }
 
