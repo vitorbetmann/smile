@@ -7,24 +7,25 @@ These functions can be used in production for safe allocations and logging, and 
 
 ## Table of Contents
 
-- [Types](#types)
+- [Data Types](#data-types)
 - [Functions](#functions)
 - [Workflow Examples](#workflow-examples)
 
 ---
 
-## Types
+---
 
-### `MemAllocFunc`
+## Data Types
 
-Identifiers for allocation functions that can be instrumented or simulated. Used with `TEST_Disable` to specify which
-allocation function should fail.
+### `MemAllocFunc` (enum)
 
-| Enum      | Description          |
-|-----------|----------------------|
-| `MALLOC`  | malloc() allocation  |
-| `CALLOC`  | calloc() allocation  |
-| `REALLOC` | realloc() allocation |
+Specifies which memory allocation function should be simulated using `TEST_Disable`.
+
+| Enum      | Simulates |
+|-----------|-----------|
+| `MALLOC`  | malloc()  |
+| `CALLOC`  | calloc()  |
+| `REALLOC` | realloc() |
 
 ---
 
