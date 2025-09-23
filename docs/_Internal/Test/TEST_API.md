@@ -9,12 +9,7 @@ These functions can be used in production for safe allocations and logging, and 
 
 - [Types](#types)
 - [Functions](#functions)
-    - [TEST_Pass](#test_pass)
-    - [TEST_Disable](#test_disable)
-    - [TEST_Malloc](#test_malloc)
-    - [TEST_Calloc](#test_calloc)
-    - [TEST_Realloc](#test_realloc)
-    - [TEST_Fatal](#test_fatal)
+- [Workflow Examples](#workflow-examples)
 
 ---
 
@@ -25,11 +20,11 @@ These functions can be used in production for safe allocations and logging, and 
 Identifiers for allocation functions that can be instrumented or simulated. Used with `TEST_Disable` to specify which
 allocation function should fail.
 
-| Enum      | Description                                        |
-|-----------|----------------------------------------------------|
-| `MALLOC`  | malloc() allocation                                |
-| `CALLOC`  | calloc() allocation                                |
-| `REALLOC` | realloc() allocation (supports failure simulation) |
+| Enum      | Description          |
+|-----------|----------------------|
+| `MALLOC`  | malloc() allocation  |
+| `CALLOC`  | calloc() allocation  |
+| `REALLOC` | realloc() allocation |
 
 ---
 
@@ -42,6 +37,17 @@ Logs a `[PASS]` message for a successful test or operation.
 - **Parameters:**
     - `funcName` — Name of the test function or operation that passed.
 - **Returns:** Nothing.
+
+**Example:**
+
+```c
+void Test_SL_Init_ReturnsTrue(void) {
+  assert(SL_Init());
+  TEST_Pass("Test_SL_Init_ReturnsTrue");
+}
+```
+
+For more, see [Workflow Examples](#workflow-examples).
 
 ---
 
@@ -57,6 +63,18 @@ occurs, normal behavior resumes.
     - `true` if successfully disabled.
     - `false` if an invalid function type is given.
 
+**Example:**
+
+```c
+void Test_SL_Init_ReturnsFalseIfMallocFails(void) {
+  TEST_Disable(MALLOC, 1);
+  assert(!SL_Init());
+  TEST_Pass("Test_SL_Init_ReturnsFalseIfMallocFails");
+}
+```
+
+For more, see [Workflow Examples](#workflow-examples).
+
 ---
 
 ### `void *TEST_Malloc(size_t size)`
@@ -66,6 +84,18 @@ Wrapper around `malloc()` with optional failure simulation.
 - **Parameters:**
     - `size` — Number of bytes to allocate.
 - **Returns:** Pointer to allocated memory, or `NULL` if failure is simulated.
+
+**Example:**
+
+```c
+tracker = TEST_Malloc(sizeof(StateMachineTracker));
+if (!tracker) {
+    SMILE_ERR(MODULE_NAME, CAUSE_MEM_ALLOC_FAILED, CONSEQ_INIT_ABORTED);
+    return false;
+}
+```
+
+For more, see [Workflow Examples](#workflow-examples).
 
 ---
 
@@ -78,6 +108,18 @@ Wrapper around `calloc()` with optional failure simulation.
     - `size` — Size of each element in bytes.
 - **Returns:** Pointer to allocated memory, or `NULL` if failure is simulated.
 
+**Example:**
+
+```c
+tracker = TEST_Calloc(1, sizeof(SaveLoadTracker));
+if (!tracker) {
+    SMILE_ERR(MODULE, CAUSE_MEM_ALLOC_FAILED, CONSEQ_INIT_ABORTED);
+    return false;
+}
+```
+
+For more, see [Workflow Examples](#workflow-examples).
+
 ---
 
 ### `void *TEST_Realloc(void *ptr, size_t size)`
@@ -89,6 +131,14 @@ Wrapper around `realloc()` with optional failure simulation.
     - `size` — Number of bytes to allocate.
 - **Returns:** Pointer to reallocated memory, or `NULL` if failure is simulated.
 
+**Example:**
+
+```c
+// NO EXAMPLES YET
+```
+
+For more, see [Workflow Examples](#workflow-examples).
+
 ---
 
 ### `bool TEST_Fatal(void)`
@@ -99,11 +149,20 @@ Check whether a fatal condition is being simulated.
     - `true` if a fatal condition is active.
     - `false` otherwise.
 
+**Example:**
+
+```c
+// NO EXAMPLES YET
+```
+
+For more, see [Workflow Examples](#workflow-examples).
+
+---
+
+## Workflow Examples
+
 ---
 
 ## Notes
 
-- Internal counters track which allocation call should fail.
-- Functions are safe for **production use** for logging or controlled allocation.
 - Designed for single-threaded environments.
-- Use `TEST_Disable` to test error handling paths reliably.  

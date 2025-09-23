@@ -531,7 +531,7 @@ bool SL_Shutdown(void) {
         tracker->loadStream = nullptr;
     }
 
-    free((void *) tracker->defaultDir);
+    free(tracker->defaultDir);
     tracker->defaultDir = nullptr;
 
     free(tracker->gameDir);
