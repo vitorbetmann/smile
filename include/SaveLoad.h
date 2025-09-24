@@ -151,8 +151,6 @@ bool SL_DirExists(const char *dir);
  *
  * @note The returned string is owned by the SaveLoad system. Do not free or modify it.
  *
- * @sa SL_SetGameFile()
- *
  * @author Vitor Betmann
  */
 const char *SL_GetGameFile(void);

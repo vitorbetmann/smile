@@ -9,13 +9,23 @@
 #ifndef TEST_INTERNAL_H
 #define TEST_INTERNAL_H
 
+// --------------------------------------------------
+// Includes
+// --------------------------------------------------
+
 #include <stdlib.h>
+
+// --------------------------------------------------
+// Data types
+// --------------------------------------------------
 
 /**
  * @brief Identifies allocation functions for failure simulation.
  *
  * Used with TEST_Disable to specify which type of allocation
  * should be forced to fail.
+ *
+ * @author Vitor Betmann
  */
 typedef enum {
     MALLOC,
@@ -23,10 +33,16 @@ typedef enum {
     REALLOC,
 } MemAllocFunc;
 
+// --------------------------------------------------
+// Functions
+// --------------------------------------------------
+
 /**
  * @brief Log a "[PASS]" message for a successful test case.
  *
  * @param funcName Name of the test function that passed
+ *
+ * @author Vitor Betmann
  */
 void TEST_Pass(const char *funcName);
 
@@ -38,7 +54,10 @@ void TEST_Pass(const char *funcName);
  *
  * @param funcName Which allocation function to disable (MALLOC, CALLOC, REALLOC)
  * @param at Call count at which failure should occur
+ *
  * @return true if successfully disabled, false if an invalid function type is given
+ *
+ * @author Vitor Betmann
  */
 bool TEST_Disable(MemAllocFunc funcName, int at);
 
@@ -48,7 +67,10 @@ bool TEST_Disable(MemAllocFunc funcName, int at);
  * Use TEST_Disable(MALLOC, n) to force the nth malloc call to return NULL.
  *
  * @param size Number of bytes to allocate
+ *
  * @return Pointer to allocated memory, or NULL if failure is simulated
+ *
+ * @author Vitor Betmann
  */
 void *TEST_Malloc(size_t size);
 
@@ -59,7 +81,10 @@ void *TEST_Malloc(size_t size);
  *
  * @param nitems Number of elements to allocate
  * @param size Size of each element in bytes
+ *
  * @return Pointer to allocated memory, or NULL if failure is simulated
+ *
+ * @author Vitor Betmann
  */
 void *TEST_Calloc(size_t nitems, size_t size);
 
@@ -68,7 +93,10 @@ void *TEST_Calloc(size_t nitems, size_t size);
  *
  * @param ptr Pointer to a memory block to be reallocated
  * @param size Number of bytes to allocate
+ *
  * @return Pointer to allocated memory, or NULL if failure is simulated
+ *
+ * @author Vitor Betmann
  */
 void *TEST_Realloc(void *ptr, size_t size);
 
@@ -79,6 +107,8 @@ void *TEST_Realloc(void *ptr, size_t size);
  * cases where fatal behavior is expected.
  *
  * @return true if a fatal condition is active, false otherwise
+ *
+ * @author Vitor Betmann
  */
 bool TEST_Fatal(void);
 

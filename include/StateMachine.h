@@ -4,6 +4,7 @@
 // --------------------------------------------------
 // Data types
 // --------------------------------------------------
+
 typedef struct StateMachineTracker StateMachineTracker;
 typedef struct State State;
 
@@ -34,6 +35,8 @@ bool SM_Init(void);
  */
 bool SM_IsInitialized(void);
 
+// State Functions ----------------------------------
+
 /**
  * @brief Registers a new named state with optional lifecycle callbacks.
  *
@@ -50,8 +53,7 @@ bool SM_IsInitialized(void);
  * @return true if registration succeeds, false otherwise.
  * @author Vitor Betmann
  */
-bool SM_RegisterState(const char *name, void (*enterFn)(void *),
-                      void (*updateFn)(float), void (*drawFn)(void),
+bool SM_RegisterState(const char *name, void (*enterFn)(void *), void (*updateFn)(float), void (*drawFn)(void),
                       void (*exitFn)(void));
 
 /**
@@ -79,6 +81,20 @@ bool SM_IsStateRegistered(const char *name);
 bool SM_ChangeStateTo(const char *name, void *args);
 
 /**
+ * @brief Gets the name of the current active state.
+ *
+ * @return The name of the current state, or NULL if no state is active or the
+ * machine is uninitialized.
+ * @author Vitor Betmann
+ */
+const char *SM_GetCurrStateName(void);
+
+// TODO create func to get list of registered states (struct char **array w/ int amount)
+// TODO Create a func to free this struct above
+
+// Lifecycle Functions ------------------------------
+
+/**
  * @brief Calls the update function of the current active state.
  *
  * If no update function is defined or if the machine is not initialized,
@@ -101,6 +117,8 @@ bool SM_Update(float dt);
  */
 bool SM_Draw(void);
 
+// Shutdown -----------------------------------------
+
 /**
  * @brief Shuts down the state machine and frees all internal memory.
  *
@@ -111,14 +129,5 @@ bool SM_Draw(void);
  * @author Vitor Betmann
  */
 bool SM_Shutdown(void);
-
-/**
- * @brief Gets the name of the current active state.
- *
- * @return The name of the current state, or NULL if no state is active or the
- * machine is uninitialized.
- * @author Vitor Betmann
- */
-const char *SM_GetCurrStateName(void);
 
 #endif

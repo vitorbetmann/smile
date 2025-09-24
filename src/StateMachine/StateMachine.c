@@ -55,8 +55,7 @@ static StateMachineTracker *tracker;
 
 bool SM_Init(void) {
     if (tracker) {
-        SMILE_WARN(MODULE_NAME, CAUSE_ALREADY_INITIALIZED,
-                   CONSEQ_INIT_ABORTED);
+        SMILE_WARN(MODULE_NAME, CAUSE_ALREADY_INITIALIZED, CONSEQ_INIT_ABORTED);
         return false;
     }
 
@@ -75,7 +74,9 @@ bool SM_Init(void) {
     return true;
 }
 
-bool SM_IsInitialized(void) { return tracker; }
+bool SM_IsInitialized(void) {
+    return tracker;
+}
 
 bool SM_RegisterState(const char *name, void (*enterFn)(void *),
                       void (*updateFn)(float), void (*drawFn)(void),
@@ -235,7 +236,7 @@ bool SM_Draw(void) {
 bool SM_Shutdown(void) {
     RETURN_FALSE_IF_NOT_INITIALIZED(CONSEQ_SHUTDOWN_ABORTED);
 
-    State *currState = (State *) SM_Internal_GetCurrState();
+    const State *currState = SM_Internal_GetCurrState();
     if (currState && currState->exit) {
         currState->exit();
     }

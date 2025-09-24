@@ -66,47 +66,43 @@ bool SL_Init(void) {
     char *sysDir = SL_Internal_GetDefaultSysDir();
     if (!sysDir) {
         SMILE_ERR(MODULE, CAUSE_MEM_ALLOC_FAILED, CONSEQ_INIT_ABORTED);
-
-        free(tracker);
-        tracker = nullptr;
-
-        return false;
+        goto error;
     }
 
     tracker->defaultDir = TEST_Malloc(strlen(sysDir) + strlen(SMILE_DIR) + 1);
     if (!tracker->defaultDir) {
         SMILE_ERR(MODULE, CAUSE_MEM_ALLOC_FAILED, CONSEQ_INIT_ABORTED);
-
-        free(sysDir);
-
-        free(tracker);
-        tracker = nullptr;
-
-        return false;
+        goto error;
     }
 
     snprintf(tracker->defaultDir, strlen(sysDir) + strlen(SMILE_DIR) + 1, "%s%s", sysDir, SMILE_DIR);
-    free(sysDir);
 
     if (!SL_Internal_DirExists(tracker->defaultDir)) {
         if (!SL_Internal_CreateDir(tracker->defaultDir)) {
             SMILE_FATAL_WITH_ARGS(MODULE, CAUSE_FAILED_TO_CREATE_DIR, SMILE_DIR, CONSEQ_SET_GAME_DIR_ABORTED);
-
-            free(tracker->defaultDir);
-            tracker->defaultDir = nullptr;
-
-            free(tracker);
-            tracker = nullptr;
-
-            return false;
+            goto error;
         }
     }
 
+    free(sysDir);
     SMILE_INFO(MODULE, INFO_INIT_SUCCESSFUL);
     return true;
+
+error:
+    free(sysDir);
+
+    free(tracker->defaultDir);
+    tracker->defaultDir = nullptr;
+
+    free(tracker);
+    tracker = nullptr;
+
+    return false;
 }
 
-bool SL_IsInitialized(void) { return tracker; }
+bool SL_IsInitialized(void) {
+    return tracker;
+}
 
 // Game Dir ------------------------------------------
 
