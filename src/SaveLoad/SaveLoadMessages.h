@@ -2,43 +2,40 @@
 #define SAVE_LOAD_SYSTEM_MESSAGES_H
 
 // --------------------------------------------------
-// Module Name
+// MODULE NAME
 // --------------------------------------------------
 
 #define MODULE "SaveLoad"
 
 // --------------------------------------------------
-// Function Names
+// FUNCTIONS NAMES
 // --------------------------------------------------
-
-// Dir Functions ------------------------------------
 
 #define GET_GAME_DIR "GetGameDir"
 #define GET_DEFAULT_DIR "GetDefaultDir"
 #define SET_GAME_DIR "SetGameDir"
 #define DIR_EXISTS "DirExists"
 
-// File Functions -----------------------------------
-
 #define GET_GAME_FILE "GetGameFile"
 #define GET_GAME_PATH "GetGamePath"
 #define SET_GAME_FILE "SetGameFile"
 #define FILE_EXISTS "FileExists"
 
-// List Functions -----------------------------------
-
 #define GET_LIST_OF "GetListOf"
 #define FreeList "FreeList"
-
-// Save Functions -----------------------------------
 
 #define BEGIN_SAVE_SESSION "BeginSaveSession"
 #define SAVE_NEXT "SaveNext"
 #define END_SAVE_SESSION "EndSaveSession"
 
-// Load Functions -----------------------------------
+#define BEGIN_LOAD_SESSION "BeginLoadSession"
+#define HAS_NEXT "HasNext"
+#define LOAD_NEXT "LoadNext"
+#define LOAD_NEXT_TO "LoadNextTo"
+#define END_LOAD_SESSION "EndLoadSession"
 
-// Delete Functions ---------------------------------
+#define DELETE_DIR "DeleteDir"
+#define DELETE_FILE "DeleteFile"
 
 // --------------------------------------------------
 // INFO NO ARGS
@@ -57,31 +54,20 @@
 // INFO W/ ARGS
 // --------------------------------------------------
 
-#define INFO_WITH_ARGS_SET_GAME_DIR_SUCCESSFUL "SetGameDir successful: "
-#define INFO_WITH_ARGS_SET_GAME_FILE_SUCCESSFUL "SetGameFile successful: "
+#define INFO_WITH_ARGS_GAME_DIR_SET "Game directory set to:"
+#define INFO_WITH_ARGS_GAME_FILE_SET "Game file set to:"
 
 // --------------------------------------------------
 // CAUSE NO ARGS
 // --------------------------------------------------
 
-
-// Game Dir ------------------------------------------
-
-// Game File -----------------------------------------
-
 #define CAUSE_GAME_PATH_NOT_SET "SetGameDir or SetGameFile not called."
-
-// Save ---------------------------------------------
 
 #define CAUSE_SAVE_SESSION_NOT_OPEN "Save Session not open."
 #define CAUSE_SAVE_SESSION_ALREADY_OPEN "Save Session already open."
 
-// Load ---------------------------------------------
-
 #define CAUSE_LOAD_SESSION_NOT_OPEN "Load Session not open."
 #define CAUSE_LOAD_SESSION_ALREADY_OPEN "Load Session already open."
-
-// Delete -------------------------------------------
 
 #define CAUSE_DEST_FILE_NOT_SET "Destination file not set."
 #define CAUSE_NULL_DATA "Data is NULL."
@@ -95,23 +81,11 @@
 // CAUSE W/ ARGS
 // --------------------------------------------------
 
-// Game Dir ------------------------------------------
-
 #define CAUSE_WITH_ARGS_TARGET_DIR_IS_SAME_AS_CURR "Target game dir is same as current: "
 #define CAUSE_WITH_ARGS_DIR_NOT_FOUND "Target directory not found: "
 
-// Game File -----------------------------------------
-
 #define CAUSE_WITH_ARGS_TARGET_FILE_IS_SAME_AS_CURR "Target game file is same as current: "
 #define CAUSE_WITH_ARGS_FILE_NOT_FOUND "Target file not found: "
-
-// List Functions -----------------------------------
-
-// Save Functions -----------------------------------
-
-// Load Functions -----------------------------------
-
-// Delete Functions ---------------------------------
 
 #define CAUSE_WITH_ARGS_INVALID_PATH "Invalid path: "
 #define CAUSE_WITH_ARGS_FAILED_TO_OPEN_FILE "Failed to open file: "

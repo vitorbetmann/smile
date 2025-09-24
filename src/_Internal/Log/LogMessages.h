@@ -2,7 +2,7 @@
 #define LOG_MESSAGES_H
 
 // --------------------------------------------------
-// Function Names
+// FUNCTIONS NAMES
 // --------------------------------------------------
 
 #define INIT "Init"
@@ -11,14 +11,22 @@
 #define SHUTDOWN "Shutdown"
 
 // --------------------------------------------------
-// Status
+// STATUS - Prefix
+// --------------------------------------------------
+
+#define EMPTY "Empty"
+
+// --------------------------------------------------
+// STATUS - Suffix
 // --------------------------------------------------
 
 #define SUCCESSFUL "successful"
 #define ABORTED "aborted"
+#define INITIALIZED "initialized"
+#define FAILED "failed"
 
 // --------------------------------------------------
-// Cause No Args
+// CAUSE NO ARGS
 // --------------------------------------------------
 
 #define CAUSE_ALREADY_INITIALIZED "Already initialized."
@@ -26,7 +34,7 @@
 #define CAUSE_MEM_ALLOC_FAILED "Memory allocation failed."
 
 // --------------------------------------------------
-// Cause W/ Args
+// CAUSE W/ ARGS
 // --------------------------------------------------
 
 #define CAUSE_WITH_ARGS_NULL_ARG "Null Argument:"

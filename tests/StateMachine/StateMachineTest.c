@@ -1,6 +1,3 @@
-// TODO(#1) add tests for failed memory allocation in SM_RegisterState
-// TODO(#10) implement tests for `SM_Internal_EnableWarnings()`
-
 /*
  * Test Naming Convention:
  *
@@ -21,63 +18,11 @@
  * @author Vitor Betmann
  */
 
-#include "../include/StateMachine.h"
-#include "../src/StateMachine/StateMachineInternal.h"
 #include "../src/_Internal/Test/TestInternal.h"
 #include "StateMachineTest.h"
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
-
-// --------------------------------------------------
-// Data types
-// --------------------------------------------------
-
-typedef struct {
-  bool hasEntered, hasEnteredArgs;
-  int enteredTimes;
-
-  bool hasUpdated;
-  bool hasDrawn;
-
-  bool hasExited;
-  int exitedTimes;
-} MockData;
-
-typedef struct {
-  bool flag;
-} MockStateArgs;
-
-// --------------------------------------------------
-// variables
-// --------------------------------------------------
-
-static unsigned int MULTIPLE_STATES = 1000;
-static float mockDT = 0.016;
-MockData md;
-static State mockState = {.name = "mockState"};
-
-// --------------------------------------------------
-// Mock Functions
-// --------------------------------------------------
-
-void mockEnter(void *args) {
-  md.hasEntered = true;
-  md.enteredTimes++;
-
-  if (args) {
-    MockStateArgs *msa = (MockStateArgs *) args;
-    md.hasEnteredArgs = msa->flag;
-  }
-}
-
-void mockUpdate(float dt) { md.hasUpdated = true; }
-void mockDraw(void) { md.hasDrawn = true; }
-
-void mockExit(void) {
-  md.hasExited = true;
-  md.exitedTimes++;
-}
 
 // --------------------------------------------------
 // Pre-Init
@@ -107,9 +52,9 @@ void Test_SM_GetCurrStateName_FailsPreInit(void) {
   TEST_Pass("Test_SM_GetCurrStateName_FailsPreInit");
 }
 
-void Test_SM_ListStates_FailsPreInit(void) {
-  // TODO implement test
-  TEST_Pass("Test_SM_ListStates_FailsPreInit");
+void Test_SM_GetStateCount_FailsPreInit(void) {
+  assert(SM_GetStateCount() == -1);
+  TEST_Pass("Test_SM_GetStateCount_FailsPreInit");
 }
 
 // Lifecycle Functions ------------------------------
@@ -170,9 +115,12 @@ void Test_SM_IsInitialized_SucceedsPostInit(void) {
 
 // State Functions ----------------------------------
 
-// -- ListStates Pre-RegisterState ------------------
+// -- GetStateCount Pre-RegisterState ---------------
 
-// TODO
+void Test_SM_GetStateCount_ReturnsZeroPostInit(void) {
+  assert(SM_GetStateCount() == 0);
+  TEST_Pass("Test_SM_GetStateCount_ReturnsZeroPostInit");
+}
 
 // -- RegisterState ---------------------------------
 
@@ -223,9 +171,12 @@ void Test_SM_IsStateRegistered_RejectsNonRegisteredStateName(void) {
   TEST_Pass("Test_SM_IsStateRegistered_RejectsNonRegisteredStateName");
 }
 
-// -- ListStates Post-RegisterState -----------------
+// -- GetStateCount Post-RegisterState --------------
 
-// TODO
+void Test_SM_GetStateCount_ReturnsCorrectStateCountPostRegisterState(void) {
+  assert(SM_GetStateCount() == 3);
+  TEST_Pass("Test_SM_GetStateCount_ReturnsCorrectStateCountPostRegisterState");
+}
 
 // -- GetCurrStateName Pre-ChangeStateTo ------------
 
@@ -380,7 +331,7 @@ void Test_SM_GetCurrStateName_FailsPostShutdown(void) {
   TEST_Pass("Test_SM_GetCurrStateName_FailsPostShutdown");
 }
 
-void Test_SM_ListStates_FailsPostShutdown(void) {
+void Test_SM_GetStateCount_FailsPostShutdown(void) {
   // TODO
 }
 
@@ -454,7 +405,10 @@ int main() {
   Test_SM_RegisterState_FailsPreInit();
   Test_SM_ChangeStateTo_FailsPreInit();
   Test_SM_GetCurrStateName_FailsPreInit();
-  Test_SM_ListStates_FailsPreInit();
+
+  // TODO Think of how to name this better
+  Test_SM_GetStateCount_FailsPreInit();
+
   puts("• Lifecycle Functions");
   Test_SM_Update_FailsPreInit();
   Test_SM_Draw_FailsPreInit();
@@ -472,8 +426,10 @@ int main() {
   Test_SM_Init_FailsPostInit();
   Test_SM_IsInitialized_SucceedsPostInit();
   puts("• State Functions");
-  puts(" • ListStates Pre-RegisterState");
-  // TODO check for list, check if statecount == 0
+  puts(" • GetStateCount Pre-RegisterState");
+
+  // TODO Think of how to name this better
+  Test_SM_GetStateCount_ReturnsZeroPostInit();
   puts(" • RegisterState");
 
   // TODO review the below
@@ -490,8 +446,8 @@ int main() {
   puts("• IsStateRegistered");
   Test_SM_IsStateRegistered_AcceptsRegisteredStateName();
   Test_SM_IsStateRegistered_RejectsNonRegisteredStateName();
-  puts(" • ListStates Post-RegisterState");
-  // TODO check for list, check if statecount != 0
+  puts(" • GetStateCount Post-RegisterState");
+  Test_SM_GetStateCount_ReturnsCorrectStateCountPostRegisterState();
   puts(" • GetCurrStateName Pre-ChangeStateTo");
   Test_SM_GetCurrStateName_FailsPreRegisterState();
   puts(" • Lifecycle Functions Pre-ChangeStateTo");
@@ -532,7 +488,7 @@ int main() {
   Test_SM_RegisterState_FailsPostShutdown();
   Test_SM_ChangeStateTo_FailsPostShutdown();
   Test_SM_GetCurrStateName_FailsPostShutdown();
-  // Test_SM_ListStates_FailsPostShutdown();
+  Test_SM_GetStateCount_FailsPostShutdown();
   puts("• Lifecycle Functions");
 
   // TODO review the below

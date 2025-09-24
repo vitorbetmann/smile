@@ -9,7 +9,6 @@
 #include "StateMachine.h"
 #include "../_Internal/Log/LogInternal.h"
 #include "../_Internal/Log/LogMessages.h"
-#include "../tests/StateMachine/StateMachineTest.h"
 #include "StateMachineInternal.h"
 #include "StateMachineMessages.h"
 #include "src/_Internal/Test/TestInternal.h"
@@ -32,7 +31,15 @@ do {                                                                         \
   do {                                                                         \
     if (!tracker) {                                                            \
       SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, funcName, ABORTED);               \
-      return NULL;                                                             \
+      return nullptr;                                                             \
+    }                                                                          \
+  } while (0)
+
+#define RETURN_NEGATIVE_ONE_IF_NOT_INITIALIZED(funcName)                                 \
+  do {                                                                         \
+    if (!tracker) {                                                            \
+      SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, funcName, ABORTED);               \
+      return -1;                                                             \
     }                                                                          \
   } while (0)
 
@@ -178,6 +185,12 @@ const char *SM_GetCurrStateName(void) {
     return tracker->currState ? tracker->currState->name : nullptr;
 }
 
+int SM_GetStateCount(void) {
+    RETURN_NEGATIVE_ONE_IF_NOT_INITIALIZED(GET_STATE_COUNT);
+
+    return tracker->stateCount;
+}
+
 // Lifecycle Functions ------------------------------
 
 bool SM_Update(const float dt) {
@@ -230,7 +243,6 @@ bool SM_Shutdown(void) {
         free((char *) el->state->name);
         free(el->state);
         free(el);
-        tracker->stateCount--;
     }
 
     free(tracker);

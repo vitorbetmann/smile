@@ -2,37 +2,38 @@
 #define STATE_MACHINE_MESSAGES_H
 
 // --------------------------------------------------
-// Module Name
+// MODULE NAME
 // --------------------------------------------------
 
 #define MODULE "StateMachine"
 
 // --------------------------------------------------
-// Function Names
+// FUNCTIONS NAMES
 // --------------------------------------------------
 
 #define REGISTER_STATE "RegisterState"
 #define IS_STATE_REGISTERED "IsStateRegistered"
 #define CHANGE_STATE_TO "ChangeStateTo"
 #define GET_CURR_STATE_NAME "GetCurrStateName"
+#define GET_STATE_COUNT "GetStateCount"
 
 #define UPDATE "Update"
 #define DRAW "Draw"
 
 // --------------------------------------------------
-// INFO w/ args
+// INFO W/ ARGS
 // --------------------------------------------------
 
 #define INFO_WITH_ARGS_CHANGED_STATE_TO "Changed state to:"
 
 // --------------------------------------------------
-// CAUSE no args
+// CAUSE NO ARGS
 // --------------------------------------------------
 
 #define CAUSE_NULL_CURRENT_STATE "Current state is Null."
 
 // --------------------------------------------------
-// CAUSE w/ args
+// CAUSE W/ ARGS
 // --------------------------------------------------
 
 #define CAUSE_WITH_ARGS_ALREADY_EXISTS "State already exists:"

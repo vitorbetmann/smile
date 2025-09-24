@@ -84,35 +84,35 @@ endif ()
 option(SMILE_TESTS "Build test executables" OFF)
 if (SMILE_TESTS)
     message(STATUS "SMILE: Compiling TEST files")
+    
+    # --------------------------------------------------
+    # PUBLIC
+    # --------------------------------------------------
 
-    # --------------------------------------------------
-    # StateMachine
-    # --------------------------------------------------
+    # StateMachine -------------------------------------
     add_executable(StateMachineTest tests/StateMachine/StateMachineTest.c)
     target_link_libraries(StateMachineTest PRIVATE smile)
     target_include_directories(StateMachineTest PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-    # --------------------------------------------------
-    # ParticleSystem
-    # --------------------------------------------------
-    add_executable(ParticleSystemTest tests/ParticleSystem/ParticleSystemTest.c)
-    target_link_libraries(ParticleSystemTest PRIVATE smile "${RAYLIB_LIB}")
-    target_include_directories(ParticleSystemTest PRIVATE
-            ${CMAKE_CURRENT_SOURCE_DIR}/include
-            "${RAYLIB_INCLUDE}"
-    )
+    # ParticleSystem -----------------------------------
+    # TODO Add and link Particle System test
 
-
-    # --------------------------------------------------
-    # SaveLoad
-    # --------------------------------------------------
+    # SaveLoad -----------------------------------------
     add_executable(SaveLoadTest tests/SaveLoad/SaveLoadTest.c)
     target_link_libraries(SaveLoadTest PRIVATE smile)
     target_include_directories(SaveLoadTest PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+    # --------------------------------------------------
+    # INTERNAL
+    # --------------------------------------------------
+
+    # _Common ------------------------------------------
+    # TODO #13 Add and link _Common test
+
+    # Log ----------------------------------------------
     # TODO #13 Add and link Log test
-    # --------------------------------------------------
-    # Log
-    # --------------------------------------------------
+
+    # Test ---------------------------------------------
+    # TODO #13 Add and link Test test
 
 endif ()

@@ -83,8 +83,7 @@ void SMILE_Log(LogType type, const char *module, const char *msg, ...) {
 // Functions - Private
 // --------------------------------------------------
 
-static void SMILE_LogV(LogType type, const char *module, const char *msg,
-                       va_list args) {
+static void SMILE_LogV(const LogType type, const char *module, const char *msg, const va_list args) {
   const char *color;
   const char *prefix;
 
@@ -138,7 +137,7 @@ static void SMILE_LogV(LogType type, const char *module, const char *msg,
       break;
   }
 
-  time_t epochTime = time(NULL);
+  const time_t epochTime = time(nullptr);
   struct tm localTime;
   localtime_r(&epochTime, &localTime);
   char timeBuffer[9];
@@ -154,4 +153,6 @@ static void SMILE_LogV(LogType type, const char *module, const char *msg,
   }
 }
 
-static void SMILE_DefaultFatalHandler(void) { exit(EXIT_FAILURE); }
+static void SMILE_DefaultFatalHandler(void) {
+  exit(EXIT_FAILURE);
+}
