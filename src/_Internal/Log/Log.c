@@ -27,8 +27,7 @@
  *
  * @return void
  */
-static void SMILE_LogV(LogType type, const char *module, const char *msg,
-                       va_list args);
+static void SMILE_LogV(LogType type, const char *module, const char *msg, va_list args);
 
 /**
  * @brief Internal default fatal handler.
@@ -91,28 +90,28 @@ static void SMILE_LogV(LogType type, const char *module, const char *msg,
 
   // Determine color based on type
   switch (type) {
-  case SMILE_LOG_INFO:
+    case SMILE_LOG_INFO:
 #ifdef SMILE_INFO_ENABLED
-    color = SMILE_CYAN;
-    prefix = "INFO";
-    break;
+      color = SMILE_CYAN;
+      prefix = "INFO";
+      break;
 #else
-    return;
+      return;
 #endif
 
-  case SMILE_LOG_WARNING:
+    case SMILE_LOG_WARNING:
 #ifdef SMILE_WARNINGS_ENABLED
-    color = SMILE_YELLOW;
-    prefix = "WARNING";
-    break;
+      color = SMILE_YELLOW;
+      prefix = "WARNING";
+      break;
 #else
-    return;
+      return;
 #endif
 
-  case SMILE_LOG_ERROR:
-    color = SMILE_RED;
-    prefix = "ERROR";
-    break;
+    case SMILE_LOG_ERROR:
+      color = SMILE_RED;
+      prefix = "ERROR";
+      break;
 
     // case SMILE_LOG_DEBUG:
     // #ifdef SMILE_DEBUG_ENABLED
@@ -123,20 +122,20 @@ static void SMILE_LogV(LogType type, const char *module, const char *msg,
     //     return;
     // #endif
 
-  case SMILE_LOG_FATAL:
-    color = SMILE_PURPLE;
-    prefix = "FATAL";
-    break;
+    case SMILE_LOG_FATAL:
+      color = SMILE_PURPLE;
+      prefix = "FATAL";
+      break;
 
-  case SMILE_LOG_USER:
-    color = SMILE_GREEN;
-    prefix = "USER";
-    break;
+    case SMILE_LOG_USER:
+      color = SMILE_GREEN;
+      prefix = "USER";
+      break;
 
-  default:
-    color = SMILE_DEFAULT_COLOR;
-    prefix = "LOG";
-    break;
+    default:
+      color = SMILE_DEFAULT_COLOR;
+      prefix = "LOG";
+      break;
   }
 
   time_t epochTime = time(NULL);

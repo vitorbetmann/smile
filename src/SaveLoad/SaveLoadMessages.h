@@ -2,10 +2,48 @@
 #define SAVE_LOAD_SYSTEM_MESSAGES_H
 
 // --------------------------------------------------
+// Module Name
+// --------------------------------------------------
+
+#define MODULE "SaveLoad"
+
+// --------------------------------------------------
+// Function Names
+// --------------------------------------------------
+
+// Dir Functions ------------------------------------
+
+#define GET_GAME_DIR "GetGameDir"
+#define GET_DEFAULT_DIR "GetDefaultDir"
+#define SET_GAME_DIR "SetGameDir"
+#define DIR_EXISTS "DirExists"
+
+// File Functions -----------------------------------
+
+#define GET_GAME_FILE "GetGameFile"
+#define GET_GAME_PATH "GetGamePath"
+#define SET_GAME_FILE "SetGameFile"
+#define FILE_EXISTS "FileExists"
+
+// List Functions -----------------------------------
+
+#define GET_LIST_OF "GetListOf"
+#define FreeList "FreeList"
+
+// Save Functions -----------------------------------
+
+#define BEGIN_SAVE_SESSION "BeginSaveSession"
+#define SAVE_NEXT "SaveNext"
+#define END_SAVE_SESSION "EndSaveSession"
+
+// Load Functions -----------------------------------
+
+// Delete Functions ---------------------------------
+
+// --------------------------------------------------
 // INFO NO ARGS
 // --------------------------------------------------
 
-#define INFO_INIT_SUCCESSFUL "Init successful."
 #define INFO_SAVE_SESSION_STARTED "Save session started."
 #define INFO_SAVE_SESSION_ENDED "Save session ended."
 #define INFO_LOAD_SESSION_STARTED "Load session started."
@@ -67,52 +105,17 @@
 #define CAUSE_WITH_ARGS_TARGET_FILE_IS_SAME_AS_CURR "Target game file is same as current: "
 #define CAUSE_WITH_ARGS_FILE_NOT_FOUND "Target file not found: "
 
-// Save ---------------------------------------------
+// List Functions -----------------------------------
 
-// Load ---------------------------------------------
+// Save Functions -----------------------------------
 
-// Delete -------------------------------------------
+// Load Functions -----------------------------------
+
+// Delete Functions ---------------------------------
 
 #define CAUSE_WITH_ARGS_INVALID_PATH "Invalid path: "
 #define CAUSE_WITH_ARGS_FAILED_TO_OPEN_FILE "Failed to open file: "
 #define CAUSE_WITH_ARGS_FAILED_TO_CLOSE_FILE "Failed to close file: "
 #define CAUSE_WITH_ARGS_ERROR_LOADING_DATA "Error loading data from: "
-
-// --------------------------------------------------
-// CONSEQ
-// --------------------------------------------------
-
-// Game Dir ------------------------------------------
-
-#define CONSEQ_GET_GAME_DIR_ABORTED "GetGameDir aborted."
-#define CONSEQ_GET_DEFAULT_DIR_ABORTED "GetDefaultDir aborted."
-#define CONSEQ_SET_GAME_DIR_ABORTED "SetGameDir aborted."
-#define CONSEQ_DIR_EXISTS_ABORTED "DirExists aborted."
-
-// Game File -----------------------------------------
-
-#define CONSEQ_GET_GAME_FILE_ABORTED "GetGameFile aborted."
-#define CONSEQ_GET_GAME_PATH_ABORTED "GetGamePath aborted."
-#define CONSEQ_SET_GAME_FILE_ABORTED "SetGameFile aborted."
-#define CONSEQ_FILE_EXISTS_ABORTED "FileExists aborted."
-
-// Save ---------------------------------------------
-
-#define CONSEQ_BEGIN_SAVE_SESSION_ABORTED "BeginSaveSession aborted."
-#define CONSEQ_SAVE_NEXT_ABORTED "SaveNext aborted."
-#define CONSEQ_END_SAVE_SESSION_ABORTED "EndSaveSession aborted."
-
-// Load ---------------------------------------------
-
-#define CONSEQ_BEGIN_LOAD_SESSION_ABORTED "BeginLoadSession aborted."
-#define CONSEQ_HAS_NEXT_ABORTED "HasNext aborted."
-#define CONSEQ_LOAD_NEXT_ABORTED "LoadNext aborted."
-#define CONSEQ_LOAD_NEXT_TO_ABORTED "LoadNextTo aborted."
-#define CONSEQ_END_LOAD_SESSION_ABORTED "EndLoadSession aborted."
-
-// Delete -------------------------------------------
-
-#define CONSEQ_DELETE_DIR_ABORTED "DeleteDir aborted."
-#define CONSEQ_DELETE_SAVE_ABORTED "DeleteSave aborted."
 
 #endif

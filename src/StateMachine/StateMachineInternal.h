@@ -4,6 +4,7 @@
 // --------------------------------------------------
 // Includes
 // --------------------------------------------------
+
 #include "../../external/uthash.h"
 #include "StateMachine.h"
 
@@ -49,38 +50,12 @@ typedef struct {
 struct StateMachineTracker {
   StateMap *stateMap;
   const State *currState;
+  int stateCount;
 };
 
 // --------------------------------------------------
 // Prototypes
 // --------------------------------------------------
-
-/**
- * @brief Sets the current active state without calling lifecycle callbacks.
- *
- * For internal use only. This bypasses any exit/enter logic and just updates
- * the internal state pointer.
- *
- * @param state Pointer to the state to set as current.
- *
- * @return true if the tracker was initialized and the state was set, false
- * otherwise.
- *
- * @author Vitor Betmann
- */
-bool SM_Internal_SetCurrState(const State *state);
-
-/**
- * @brief Returns a pointer to the currently active state.
- *
- * For internal use only. Returns NULL if the state machine is not initialized
- * or no state is active.
- *
- * @return const State* Pointer to the current state, or NULL.
- *
- * @author Vitor Betmann
- */
-const State *SM_Internal_GetCurrState(void);
 
 /**
  * @brief Looks up a state by its registered name.

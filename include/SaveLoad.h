@@ -25,7 +25,7 @@ typedef struct {
 // Prototypes
 // --------------------------------------------------
 
-// Init ---------------------------------------------
+// Init Related -------------------------------------
 
 /**
  * @brief Initialize the SaveLoad system with a specific game directory and file.

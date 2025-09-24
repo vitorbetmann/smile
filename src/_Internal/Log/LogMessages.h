@@ -2,27 +2,34 @@
 #define LOG_MESSAGES_H
 
 // --------------------------------------------------
-// INFO NO ARGS
+// Function Names
 // --------------------------------------------------
 
-#define INFO_INIT_SUCCESSFUL "Init successful."
-#define INFO_SHUTDOWN_SUCCESSFUL "Shutdown successful."
+#define INIT "Init"
+#define IS_INITIALIZED "IsInitialized"
+
+#define SHUTDOWN "Shutdown"
 
 // --------------------------------------------------
-// CAUSE NO ARGS
+// Status
+// --------------------------------------------------
+
+#define SUCCESSFUL "successful"
+#define ABORTED "aborted"
+
+// --------------------------------------------------
+// Cause No Args
 // --------------------------------------------------
 
 #define CAUSE_ALREADY_INITIALIZED "Already initialized."
 #define CAUSE_NOT_INITIALIZED "Not initialized."
-#define CAUSE_NULL_ARGUMENT "Argument is NULL."
 #define CAUSE_MEM_ALLOC_FAILED "Memory allocation failed."
-#define CAUSE_UNKNOWN_ERROR "Unknown internal error."
 
 // --------------------------------------------------
-// CONSEQ
+// Cause W/ Args
 // --------------------------------------------------
 
-#define CONSEQ_INIT_ABORTED "Init aborted."
-#define CONSEQ_SHUTDOWN_ABORTED "Shutdown aborted."
+#define CAUSE_WITH_ARGS_NULL_ARG "Null Argument:"
+#define CAUSE_WITH_ARGS_EMPTY_ARG "Empty Argument:"
 
 #endif

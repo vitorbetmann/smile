@@ -11,7 +11,6 @@
 // Other defines
 // --------------------------------------------------
 
-#define MODULE "SaveLoad"
 #define SMILE_DIR "SmileEngine/"
 
 #ifdef __APPLE__

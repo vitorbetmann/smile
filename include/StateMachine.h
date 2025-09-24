@@ -12,6 +12,8 @@ typedef struct State State;
 // Prototypes
 // --------------------------------------------------
 
+// Init Related -------------------------------------
+
 /**
  * @brief Initializes the state machine.
  *
@@ -23,6 +25,7 @@ typedef struct State State;
  *
  * @return true if initialized successfully, false if already initialized or if
  * memory allocation failed.
+ *
  * @author Vitor Betmann
  */
 bool SM_Init(void);
