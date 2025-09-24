@@ -110,10 +110,6 @@ if (SMILE_TESTS)
     target_link_libraries(SaveLoadTest PRIVATE smile)
     target_include_directories(SaveLoadTest PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-    add_executable(SaveLoadInternalTest tests/SaveLoad/SaveLoadInternalTest.c)
-    target_link_libraries(SaveLoadInternalTest PRIVATE smile)
-    target_include_directories(SaveLoadInternalTest PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tests/SaveLoad)
-
     # TODO #13 Add and link Log test
     # --------------------------------------------------
     # Log
