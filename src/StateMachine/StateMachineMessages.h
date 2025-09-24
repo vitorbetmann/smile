@@ -16,6 +16,7 @@
 #define CHANGE_STATE_TO "ChangeStateTo"
 #define GET_CURR_STATE_NAME "GetCurrStateName"
 #define GET_STATE_COUNT "GetStateCount"
+#define UNREGISTER_STATE "UnregisterState"
 
 #define UPDATE "Update"
 #define DRAW "Draw"
@@ -39,6 +40,7 @@
 #define CAUSE_WITH_ARGS_ALREADY_EXISTS "State already exists:"
 #define CAUSE_WITH_ARGS_NO_VALID_FUNCTIONS "State has no valid functions:"
 #define CAUSE_WITH_ARGS_STATE_NOT_FOUND "State not found:"
+#define CAUSE_WITH_ARGS_STATE_IS_ACTIVE "State is active:"
 
 #define CAUSE_WITH_ARGS_NULL_UPDATE_FUNCTION "Null Update function from state:"
 #define CAUSE_WITH_ARGS_NULL_DRAW_FUNCTION "Null Draw function from state:"

@@ -20,6 +20,7 @@
 
 #include "../src/_Internal/Test/TestInternal.h"
 #include "StateMachineTest.h"
+#include "StateMachine.h"
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>

@@ -18,8 +18,8 @@ typedef enum {
 
 typedef struct {
     char **list;
-    int amount;
-} SmileList;
+    int count;
+} List;
 
 // --------------------------------------------------
 // Prototypes
@@ -202,9 +202,9 @@ bool SL_FileExists(const char *file);
 
 // Lists --------------------------------------------
 
-SmileList SL_GetListOf(ListType type);
+List SL_GetListOf(ListType type);
 
-bool SL_FreeList(SmileList list);
+bool SL_FreeList(List list);
 
 // Save ---------------------------------------------
 

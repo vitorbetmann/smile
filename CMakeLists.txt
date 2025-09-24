@@ -9,6 +9,8 @@ project(${PROJECT_NAME} VERSION 1.0 LANGUAGES C)
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_C_EXTENSIONS OFF)   # OFF = strict ISO C, ON = allow GNU extensions
+
 
 # Raylib precompiled static lib and headers in external/
 set(RAYLIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/raylib")
@@ -84,7 +86,7 @@ endif ()
 option(SMILE_TESTS "Build test executables" OFF)
 if (SMILE_TESTS)
     message(STATUS "SMILE: Compiling TEST files")
-    
+
     # --------------------------------------------------
     # PUBLIC
     # --------------------------------------------------

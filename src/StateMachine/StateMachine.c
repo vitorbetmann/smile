@@ -6,40 +6,37 @@
 // Includes
 // --------------------------------------------------
 
-#include "StateMachine.h"
-#include "../_Internal/Log/LogInternal.h"
-#include "../_Internal/Log/LogMessages.h"
 #include "StateMachineInternal.h"
 #include "StateMachineMessages.h"
+#include "src/_Internal/Log/LogInternal.h"
+#include "src/_Internal/Log/LogMessages.h"
 #include "src/_Internal/Test/TestInternal.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 // --------------------------------------------------
 // Defines
 // --------------------------------------------------
 
-#define RETURN_FALSE_IF_NOT_INITIALIZED(funcName)                                \
-do {                                                                         \
+#define RETURN_FALSE_IF_NOT_INITIALIZED(funcName)                              \
+do {                                                                           \
     if (!tracker) {                                                            \
-      SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, funcName, ABORTED);               \
+      SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, funcName, ABORTED);             \
       return false;                                                            \
     }                                                                          \
   } while (0)
 
-#define RETURN_NULL_IF_NOT_INITIALIZED(funcName)                                 \
+#define RETURN_NULL_IF_NOT_INITIALIZED(funcName)                               \
   do {                                                                         \
     if (!tracker) {                                                            \
-      SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, funcName, ABORTED);               \
-      return nullptr;                                                             \
+      SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, funcName, ABORTED);             \
+      return nullptr;                                                          \
     }                                                                          \
   } while (0)
 
-#define RETURN_NEGATIVE_ONE_IF_NOT_INITIALIZED(funcName)                                 \
+#define RETURN_NEGATIVE_ONE_IF_NOT_INITIALIZED(funcName)                       \
   do {                                                                         \
     if (!tracker) {                                                            \
-      SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, funcName, ABORTED);               \
-      return -1;                                                             \
+      SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, funcName, ABORTED);             \
+      return -1;                                                               \
     }                                                                          \
   } while (0)
 
@@ -77,27 +74,35 @@ bool SM_IsInitialized(void) {
 
 // State Functions ----------------------------------
 
-bool SM_RegisterState(const char *name, void (*enterFn)(void *), void (*updateFn)(float), void (*drawFn)(void),
-                      void (*exitFn)(void)) {
+bool SM_RegisterState(const char *name, SM_EnterFn enterFn,
+                      SM_UpdateFn updateFn, SM_DrawFn drawFn,
+                      SM_ExitFn exitFn) {
     RETURN_FALSE_IF_NOT_INITIALIZED(REGISTER_STATE);
 
     if (!name) {
-        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NULL_ARG, "name", REGISTER_STATE, ABORTED);
+        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NULL_ARG, "name",
+                            REGISTER_STATE, ABORTED);
         return false;
     }
+
+    // TODO Sanitize name
 
     if (strlen(name) == 0) {
-        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_EMPTY_ARG, "name", REGISTER_STATE, ABORTED);
+        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_EMPTY_ARG, "name",
+                            REGISTER_STATE, ABORTED);
         return false;
     }
 
-    if (SM_IsStateRegistered((char *) name)) {
-        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_ALREADY_EXISTS, name, REGISTER_STATE, ABORTED);
+    StateMap *entry = SM_Internal_GetEntry(name);
+    if (entry) {
+        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_ALREADY_EXISTS, name,
+                            REGISTER_STATE, ABORTED);
         return false;
     }
 
     if (!enterFn && !updateFn && !drawFn && !exitFn) {
-        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NO_VALID_FUNCTIONS, name, REGISTER_STATE, ABORTED);
+        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NO_VALID_FUNCTIONS, name,
+                            REGISTER_STATE, ABORTED);
         return false;
     }
 
@@ -116,14 +121,14 @@ bool SM_RegisterState(const char *name, void (*enterFn)(void *), void (*updateFn
     strcpy(stateName, name);
 
     newState->name = stateName;
-    newState->enter = enterFn;
-    newState->update = updateFn;
-    newState->draw = drawFn;
-    newState->exit = exitFn;
+    newState->enterFn = enterFn;
+    newState->updateFn = updateFn;
+    newState->drawFn = drawFn;
+    newState->exitFn = exitFn;
 
     StateMap *temp = malloc(sizeof(StateMap));
     if (!temp) {
-        free((char *) newState->name);
+        free(newState->name);
         free(newState);
         SMILE_ERR(MODULE, CAUSE_MEM_ALLOC_FAILED, REGISTER_STATE, ABORTED);
         return false;
@@ -134,45 +139,63 @@ bool SM_RegisterState(const char *name, void (*enterFn)(void *), void (*updateFn
 
     tracker->stateCount++;
 
-    SMILE_INFO_FMT(MODULE, "Created state #%d: '%s'.", tracker->stateCount, name);
+    SMILE_INFO_FMT(MODULE, "Registered state: '%s'. Total count: %d.", name,
+                   tracker->stateCount);
     return true;
 }
 
 bool SM_IsStateRegistered(const char *name) {
     RETURN_FALSE_IF_NOT_INITIALIZED(IS_STATE_REGISTERED);
 
-    StateMap *entry;
-    HASH_FIND_STR(tracker->stateMap, name, entry);
-    return entry;
+    if (!name) {
+        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NULL_ARG, "name",
+                            IS_STATE_REGISTERED, ABORTED);
+        return false;
+    }
+
+    // TODO Sanitize name
+
+    if (strlen(name) == 0) {
+        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_EMPTY_ARG, "name",
+                            IS_STATE_REGISTERED, ABORTED);
+        return false;
+    }
+
+    return SM_Internal_GetEntry(name);
 }
 
 bool SM_ChangeStateTo(const char *name, void *args) {
     RETURN_FALSE_IF_NOT_INITIALIZED(CHANGE_STATE_TO);
 
     if (!name) {
-        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NULL_ARG, "name", CHANGE_STATE_TO, ABORTED);
+        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NULL_ARG, "name",
+                            CHANGE_STATE_TO, ABORTED);
         return false;
     }
 
+    // TODO Sanitize name
+
     if (strlen(name) == 0) {
-        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_EMPTY_ARG, "name", CHANGE_STATE_TO, ABORTED);
+        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_EMPTY_ARG, "name",
+                            CHANGE_STATE_TO, ABORTED);
         return false;
     }
 
     const State *nextState = SM_Internal_GetState(name);
     if (!nextState) {
-        SMILE_WARN_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_STATE_NOT_FOUND, name, CHANGE_STATE_TO, ABORTED);
+        SMILE_WARN_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_STATE_NOT_FOUND, name,
+                             CHANGE_STATE_TO, ABORTED);
         return false;
     }
 
-    if (tracker->currState && tracker->currState->exit) {
-        tracker->currState->exit();
+    if (tracker->currState && tracker->currState->exitFn) {
+        tracker->currState->exitFn();
     }
 
     tracker->currState = nextState;
 
-    if (tracker->currState && tracker->currState->enter) {
-        tracker->currState->enter(args);
+    if (tracker->currState && tracker->currState->enterFn) {
+        tracker->currState->enterFn(args);
     }
 
     SMILE_INFO_WITH_ARGS(MODULE, INFO_WITH_ARGS_CHANGED_STATE_TO, name);
@@ -191,6 +214,48 @@ int SM_GetStateCount(void) {
     return tracker->stateCount;
 }
 
+bool SM_UnregisterState(const char *name) {
+    RETURN_FALSE_IF_NOT_INITIALIZED(UNREGISTER_STATE);
+
+    if (!name) {
+        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NULL_ARG, "name",
+                            UNREGISTER_STATE, ABORTED);
+        return false;
+    }
+
+    // TODO Sanitize name
+
+    if (strlen(name) == 0) {
+        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_EMPTY_ARG, "name",
+                            UNREGISTER_STATE, ABORTED);
+        return false;
+    }
+
+    if (tracker->currState && strcmp(name, tracker->currState->name) == 0) {
+        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_STATE_IS_ACTIVE, name,
+                            UNREGISTER_STATE, ABORTED);
+        return false;
+    }
+
+    StateMap *entry = SM_Internal_GetEntry(name);
+    if (!entry) {
+        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_STATE_NOT_FOUND, name,
+                            UNREGISTER_STATE, ABORTED);
+        return false;
+    }
+
+    HASH_DEL(tracker->stateMap, entry);
+    free(entry->state->name);
+    free(entry->state);
+    free(entry);
+
+    tracker->stateCount--;
+
+    SMILE_INFO_FMT(MODULE, "Unregistered state: '%s'. Total count: %d.", name,
+                   tracker->stateCount);
+    return true;
+}
+
 // Lifecycle Functions ------------------------------
 
 bool SM_Update(const float dt) {
@@ -201,12 +266,13 @@ bool SM_Update(const float dt) {
         return false;
     }
 
-    if (!tracker->currState->update) {
-        SMILE_WARN_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NULL_UPDATE_FUNCTION, tracker->currState->name, UPDATE, ABORTED);
+    if (!tracker->currState->updateFn) {
+        SMILE_WARN_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NULL_UPDATE_FUNCTION,
+                             tracker->currState->name, UPDATE, ABORTED);
         return false;
     }
 
-    tracker->currState->update(dt);
+    tracker->currState->updateFn(dt);
     return true;
 }
 
@@ -218,12 +284,13 @@ bool SM_Draw(void) {
         return false;
     }
 
-    if (!tracker->currState->draw) {
-        SMILE_WARN_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NULL_DRAW_FUNCTION, tracker->currState->name, DRAW, ABORTED);
+    if (!tracker->currState->drawFn) {
+        SMILE_WARN_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NULL_DRAW_FUNCTION,
+                             tracker->currState->name, DRAW, ABORTED);
         return false;
     }
 
-    tracker->currState->draw();
+    tracker->currState->drawFn();
     return true;
 }
 
@@ -232,15 +299,15 @@ bool SM_Draw(void) {
 bool SM_Shutdown(void) {
     RETURN_FALSE_IF_NOT_INITIALIZED(SHUTDOWN);
 
-    if (tracker->currState && tracker->currState->exit) {
-        tracker->currState->exit();
+    if (tracker->currState && tracker->currState->exitFn) {
+        tracker->currState->exitFn();
     }
     tracker->currState = nullptr;
 
     StateMap *el, *tmp;
     HASH_ITER(hh, tracker->stateMap, el, tmp) {
         HASH_DEL(tracker->stateMap, el);
-        free((char *) el->state->name);
+        free(el->state->name);
         free(el->state);
         free(el);
     }
@@ -257,7 +324,12 @@ bool SM_Shutdown(void) {
 // --------------------------------------------------
 
 const State *SM_Internal_GetState(const char *name) {
-    StateMap *sm;
-    HASH_FIND_STR(tracker->stateMap, name, sm);
-    return sm ? sm->state : nullptr;
+    const StateMap *entry = SM_Internal_GetEntry(name);
+    return entry ? entry->state : nullptr;
+}
+
+StateMap *SM_Internal_GetEntry(const char *name) {
+    StateMap *entry;
+    HASH_FIND_STR(tracker->stateMap, name, entry);
+    return entry;
 }

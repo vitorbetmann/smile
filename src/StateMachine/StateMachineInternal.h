@@ -5,26 +5,24 @@
 // Includes
 // --------------------------------------------------
 
-#include "../../external/uthash.h"
+#include "StateMachine.h"
+#include "external/uthash.h"
 
 // --------------------------------------------------
 // Data types
 // --------------------------------------------------
 
+
 typedef struct {
-  const char *name;
-
-  void (*enter)(void *args);
-
-  void (*update)(float dt);
-
-  void (*draw)();
-
-  void (*exit)();
+  char *name;
+  SM_EnterFn enterFn;
+  SM_UpdateFn updateFn;
+  SM_DrawFn drawFn;
+  SM_ExitFn exitFn;
 } State;
 
 typedef struct {
-  const char *name;
+  char *name;
   State *state;
   UT_hash_handle hh;
 } StateMap;
@@ -40,5 +38,7 @@ typedef struct {
 // --------------------------------------------------
 
 const State *SM_Internal_GetState(const char *name);
+
+StateMap *SM_Internal_GetEntry(const char *name);
 
 #endif
