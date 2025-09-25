@@ -5,47 +5,47 @@
 // Data types
 // --------------------------------------------------
 
-typedef void (*SM_EnterFn)(void *args);
+typedef void (*smEnterFn)(void *args);
 
-typedef void (*SM_UpdateFn)(float dt);
+typedef void (*smUpdateFn)(float dt);
 
-typedef void (*SM_DrawFn)(void);
+typedef void (*smDrawFn)(void);
 
-typedef void (*SM_ExitFn)(void);
+typedef void (*smExitFn)(void);
 
 // --------------------------------------------------
 // Prototypes
 // --------------------------------------------------
 
-// Init Related -------------------------------------
+// Start Related ------------------------------------
 
-bool SM_Init(void);
+bool smStart(void);
 
-bool SM_IsInitialized(void);
+bool smHasStarted(void);
 
 // State Functions ----------------------------------
 
-bool SM_RegisterState(const char *name, SM_EnterFn enterFn,
-                      SM_UpdateFn updateFn, SM_DrawFn drawFn, SM_ExitFn exitFn);
+bool smRegisterState(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
+                     smDrawFn drawFn, smExitFn exitFn);
 
-bool SM_IsStateRegistered(const char *name);
+bool smHasState(const char *name);
 
-bool SM_ChangeStateTo(const char *name, void *args);
+bool smSetState(const char *name, void *args);
 
-const char *SM_GetCurrStateName(void);
+const char *smGetCurrentStateName(void);
 
-int SM_GetStateCount(void);
+int smGetStateCount(void);
 
-bool SM_UnregisterState(const char *name);
+bool smUnregisterState(const char *name);
 
 // Lifecycle Functions ------------------------------
 
-bool SM_Update(float dt);
+bool smUpdate(float dt);
 
-bool SM_Draw(void);
+bool smDraw(void);
 
-// Shutdown -----------------------------------------
+// Stop ---------------------------------------------
 
-bool SM_Shutdown(void);
+bool smStop(void);
 
 #endif

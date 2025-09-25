@@ -31,15 +31,15 @@ typedef struct {
  * @brief Initialize the SaveLoad system with a specific game directory and file.
  *
  * This function performs three steps:
- * 1. Calls @ref SL_Init() to initialize internal memory and set the default Smile system directory.
- * 2. Sets the game directory via @ref SL_SetGameDir().
- * 3. Sets the game file via @ref SL_SetGameFile().
+ * 1. Calls @ref slInit() to initialize internal memory and set the default Smile system directory.
+ * 2. Sets the game directory via @ref slSetGameDir().
+ * 3. Sets the game file via @ref slSetGameFile().
  *
  * @note Both the directory and file are relative to the Smile system directory.
  * @note If the Smile directory does not exist, it will be automatically created.
  * @note The game directory is also created immediately if it does not exist.
  * @note The game file is not created at this stage — it will be created on the
- *       first call to @ref SL_BeginSaveSession().
+ *       first call to @ref slBeginSaveSession().
  *
  * @param[in] dir  Relative directory path inside the Smile system directory (e.g., "Breakout/").
  * @param[in] file Name of the file to use for saves/loads (e.g., "save1.txt").
@@ -47,11 +47,11 @@ typedef struct {
  * @return `true` if the system was successfully initialized and both the directory
  *         and file were set, `false` otherwise.
  *
- * @sa SL_Init(), SL_SetGameDir(), SL_SetGameFile()
+ * @sa slInit(), slSetGameDir(), slSetGameFile()
  *
  * @author Vitor Betmann
  */
-bool SL_InitWith(const char *dir, const char *file);
+bool slInitWith(const char *dir, const char *file);
 
 /**
  * @brief Initialize the SaveLoad system.
@@ -62,25 +62,25 @@ bool SL_InitWith(const char *dir, const char *file);
  *
  * @note If the Smile directory does not exist, it will be automatically created.
  * @note This function does NOT set a specific game directory or file. The user must call
- *       @ref SL_SetGameDir() and @ref SL_SetGameFile() afterward, or use @ref SL_InitWith()
+ *       @ref slSetGameDir() and @ref slSetGameFile() afterward, or use @ref slInitWith()
  *       for convenience.
  *
  * @return `true` if initialization succeeded, `false` otherwise.
  *
- * @sa SL_InitWith(), SL_SetGameDir(), SL_SetGameFile()
+ * @sa slInitWith(), slSetGameDir(), slSetGameFile()
  *
  * @author Vitor Betmann
  */
-bool SL_Init(void);
+bool slInit(void);
 
 /**
  * @brief Check if the SaveLoad system has been initialized.
  *
  * @return `true` if the system is initialized, `false` otherwise.
  *
- * @sa SL_Init(), SL_Shutdown()
+ * @sa slInit(), slShutdown()
  */
-bool SL_IsInitialized(void);
+bool slIsInitialized(void);
 
 // Game Dir -----------------------------------------
 
@@ -91,11 +91,11 @@ bool SL_IsInitialized(void);
  *
  * @note The returned string is owned by the SaveLoad system. Do not free or modify it.
  *
- * @sa SL_SetGameDir()
+ * @sa slSetGameDir()
  *
  * @author Vitor Betmann
  */
-const char *SL_GetGameDir(void);
+const char *slGetGameDir(void);
 
 /**
  * @brief Get the absolute path to the Smile system directory.
@@ -108,11 +108,11 @@ const char *SL_GetGameDir(void);
  *
  * @note The returned string is owned by the SaveLoad system. Do not free or modify it.
  *
- * @sa SL_Init(), SL_GetGameDir(), SL_GetGamePath()
+ * @sa slInit(), slGetGameDir(), slGetGamePath()
  *
  * @author Vitor Betmann
  */
-const char *SL_GetDefaultDir(void);
+const char *slGetDefaultDir(void);
 
 /**
  * @brief Set the directory used for save/load operations.
@@ -131,16 +131,16 @@ const char *SL_GetDefaultDir(void);
  * @return `true` if the directory was successfully set (and created if necessary),
  *         `false` if there was an error (invalid path, memory allocation failure, etc.).
  *
- * @sa SL_GetGameDir(), SL_SetGameFile(), SL_InitWith(), SL_Init()
+ * @sa slGetGameDir(), slSetGameFile(), slInitWith(), slInit()
  *
  * @author Vitor Betmann
  */
-bool SL_SetGameDir(const char *dir);
+bool slSetGameDir(const char *dir);
 
 /**
  * Check if a dir exists (relative path).
  */
-bool SL_DirExists(const char *dir);
+bool slDirExists(const char *dir);
 
 // Game File ----------------------------------------
 
@@ -153,7 +153,7 @@ bool SL_DirExists(const char *dir);
  *
  * @author Vitor Betmann
  */
-const char *SL_GetGameFile(void);
+const char *slGetGameFile(void);
 
 /**
  * @brief Get the absolute path to the current game save file.
@@ -168,11 +168,11 @@ const char *SL_GetGameFile(void);
  *
  * @note The returned string is owned by the SaveLoad system. Do not free or modify it.
  *
- * @sa SL_SetGameDir(), SL_SetGameFile(), SL_GetDefaultDir(), SL_GetGameDir(), SL_GetGameFile()
+ * @sa slSetGameDir(), slSetGameFile(), slGetDefaultDir(), slGetGameDir(), slGetGameFile()
  *
  * @author Vitor Betmann
  */
-const char *SL_GetGamePath(void);
+const char *slGetGamePath(void);
 
 /**
  * @brief Set the file used for save/load operations.
@@ -181,7 +181,7 @@ const char *SL_GetGamePath(void);
  * The file name is validated and sanitized. It must not be empty.
  *
  * @note The file is not created at this stage. It will be created when the user
- *       starts a save session via @ref SL_BeginSaveSession().
+ *       starts a save session via @ref slBeginSaveSession().
  * @note If the same file name is passed again, the function does nothing.
  *
  * @param[in] file Name of the file to use for saves/loads (e.g., "save1.txt").
@@ -189,22 +189,22 @@ const char *SL_GetGamePath(void);
  * @return `true` if the file was successfully set, `false` if there was an error
  *         (invalid file name, memory allocation failure, etc.).
  *
- * @sa SL_GetGameFile(), SL_SetGameDir(), SL_InitWith(), SL_Init()
+ * @sa slGetGameFile(), slSetGameDir(), slInitWith(), slInit()
  *
  * @author Vitor Betmann
  */
-bool SL_SetGameFile(const char *file);
+bool slSetGameFile(const char *file);
 
 /**
  * Check if a file exists (relative path).
  */
-bool SL_FileExists(const char *file);
+bool slFileExists(const char *file);
 
 // Lists --------------------------------------------
 
-List SL_GetListOf(ListType type);
+List slGetListOf(ListType type);
 
-bool SL_FreeList(List list);
+bool slFreeList(List list);
 
 // Save ---------------------------------------------
 
@@ -212,17 +212,17 @@ bool SL_FreeList(List list);
  * Begin a save session using the current directory and file.
  * Creates the file if it does not exist.
  */
-bool SL_BeginSaveSession(void);
+bool slBeginSaveSession(void);
 
 /**
  * Write the next line of data to the current save file.
  */
-bool SL_SaveNext(const char *data);
+bool slSaveNext(const char *data);
 
 /**
  * End the current save session (closes the file).
  */
-bool SL_EndSaveSession(void);
+bool slEndSaveSession(void);
 
 // Load ---------------------------------------------
 
@@ -230,43 +230,43 @@ bool SL_EndSaveSession(void);
  * Begin a load session using the current directory and file.
  * Fails if the file does not exist.
  */
-bool SL_BeginLoadSession(void);
+bool slBeginLoadSession(void);
 
 /**
  * Check if more data is available to load.
  */
-bool SL_HasNext(void);
+bool slHasNext(void);
 
 /**
  * Load the next line of data from the current file (malloc’d string).
  * Caller is responsible for freeing it.
  */
-char *SL_LoadNext(void);
+char *slLoadNext(void);
 
 /**
  * Load the next line of data into a provided buffer.
  */
-bool SL_LoadNextTo(char *dest, size_t size);
+bool slLoadNextTo(char *dest, size_t size);
 
 /**
  * End the current load session (closes the file).
  */
-bool SL_EndLoadSession(void);
+bool slEndLoadSession(void);
 
 // Delete -------------------------------------------
 
-bool SL_DeleteDir(const char *dir);
+bool slDeleteDir(const char *dir);
 
 /**
  * Delete a specific file by name (inside the current directory).
  */
-bool SL_DeleteFile(const char *file);
+bool slDeleteFile(const char *file);
 
 // Shutdown -----------------------------------------
 
 /**
  * Shut down the SaveLoad system and free all resources.
  */
-bool SL_Shutdown(void);
+bool slStop(void);
 
 #endif

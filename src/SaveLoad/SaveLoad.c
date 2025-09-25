@@ -28,7 +28,7 @@
 //   do {                                                                         \
 //     if (!tracker) {                                                            \
 //       SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, funcName, ABORTED);                        \
-//       return NULL;                                                          \
+//       return nullptr;                                                          \
 //     }                                                                          \
 //   } while (0)
 //
@@ -44,15 +44,15 @@
 //
 // // Init Related -------------------------------------
 //
-// bool SL_InitWith(const char *dir, const char *file) {
-//     if (!(SL_Init() && SL_SetGameDir(dir) && SL_SetGameFile(file))) {
+// bool slInitWith(const char *dir, const char *file) {
+//     if (!(slInit() && slSetGameDir(dir) && slSetGameFile(file))) {
 //         return false;
 //     }
 //
 //     return true;
 // }
 //
-// bool SL_Init(void) {
+// bool slInit(void) {
 //     if (tracker) {
 //         SMILE_WARN(MODULE, CAUSE_ALREADY_INITIALIZED, INIT, ABORTED);
 //         return false;
@@ -64,7 +64,7 @@
 //         return false;
 //     }
 //
-//     char *sysDir = SL_Internal_GetDefaultSysDir();
+//     char *sysDir = slInternal_GetDefaultSysDir();
 //     if (!sysDir) {
 //         SMILE_ERR(MODULE, CAUSE_MEM_ALLOC_FAILED, INIT, ABORTED);
 //         goto error;
@@ -78,8 +78,8 @@
 //
 //     snprintf(tracker->defaultDir, strlen(sysDir) + strlen(SMILE_DIR) + 1, "%s%s", sysDir, SMILE_DIR);
 //
-//     if (!SL_Internal_DirExists(tracker->defaultDir)) {
-//         if (!SL_Internal_CreateDir(tracker->defaultDir)) {
+//     if (!slInternal_DirExists(tracker->defaultDir)) {
+//         if (!slInternal_CreateDir(tracker->defaultDir)) {
 //             SMILE_FATAL_WITH_ARGS(MODULE, CAUSE_FAILED_TO_CREATE_DIR, SMILE_DIR, INIT, ABORTED);
 //             goto error;
 //         }
@@ -93,33 +93,33 @@
 //     free(sysDir);
 //
 //     free(tracker->defaultDir);
-//     tracker->defaultDir = NULL;
+//     tracker->defaultDir = nullptr;
 //
 //     free(tracker);
-//     tracker = NULL;
+//     tracker = nullptr;
 //
 //     return false;
 // }
 //
-// bool SL_IsInitialized(void) {
+// bool slIsInitialized(void) {
 //     return tracker;
 // }
 //
 // // Dir Functions ------------------------------------
 //
-// const char *SL_GetGameDir(void) {
+// const char *slGetGameDir(void) {
 //     RETURN_NULL_IF_NOT_INITIALIZED(GET_GAME_DIR);
 //
 //     return tracker->gameDir;
 // }
 //
-// const char *SL_GetDefaultDir(void) {
+// const char *slGetDefaultDir(void) {
 //     RETURN_NULL_IF_NOT_INITIALIZED(GET_DEFAULT_DIR);
 //
 //     return tracker->defaultDir;
 // }
 //
-// bool SL_SetGameDir(const char *dir) {
+// bool slSetGameDir(const char *dir) {
 //     RETURN_FALSE_IF_NOT_INITIALIZED(SET_GAME_DIR);
 //
 //     if (!dir) {
@@ -132,12 +132,12 @@
 //         return true;
 //     }
 //
-//     if (!SL_Internal_IsValidDir(dir)) {
+//     if (!slInternal_IsValidDir(dir)) {
 //         SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_INVALID_PATH, dir, SET_GAME_DIR, ABORTED);
 //         return false;
 //     }
 //
-//     char *sanitizedDir = SL_Internal_SanitizeDir(dir);
+//     char *sanitizedDir = slInternal_SanitizeDir(dir);
 //     if (!sanitizedDir) {
 //         SMILE_ERR(MODULE, CAUSE_MEM_ALLOC_FAILED, SET_GAME_DIR, ABORTED);
 //         return false;
@@ -157,15 +157,15 @@
 //     free(sanitizedDir);
 //
 //
-//     if (!SL_Internal_DirExists(tracker->gameDir)) {
-//         if (!SL_Internal_CreateDir(tracker->gameDir)) {
+//     if (!slInternal_DirExists(tracker->gameDir)) {
+//         if (!slInternal_CreateDir(tracker->gameDir)) {
 //             SMILE_FATAL(MODULE, CAUSE_FAILED_TO_CREATE_DIR, SET_GAME_DIR, ABORTED);
 //             return false;
 //         }
 //     }
 //
 //     if (tracker->gameFile) {
-//         if (!SL_Internal_UpdateGamePath()) {
+//         if (!slInternal_UpdateGamePath()) {
 //             SMILE_ERR(MODULE, CAUSE_MEM_ALLOC_FAILED, SET_GAME_DIR, ABORTED);
 //             return false;
 //         }
@@ -175,7 +175,7 @@
 //     return true;
 // }
 //
-// bool SL_DirExists(const char *dir) {
+// bool slDirExists(const char *dir) {
 //     RETURN_FALSE_IF_NOT_INITIALIZED(DIR_EXISTS);
 //
 //     if (!dir) {
@@ -188,19 +188,19 @@
 //
 // // File Functions -----------------------------------
 //
-// const char *SL_GetGameFile(void) {
+// const char *slGetGameFile(void) {
 //     RETURN_NULL_IF_NOT_INITIALIZED(GET_GAME_FILE);
 //
 //     return tracker->gameFile;
 // }
 //
-// const char *SL_GetGamePath(void) {
+// const char *slGetGamePath(void) {
 //     RETURN_NULL_IF_NOT_INITIALIZED(GET_GAME_PATH);
 //
 //     return tracker->gamePath;
 // }
 //
-// bool SL_SetGameFile(const char *file) {
+// bool slSetGameFile(const char *file) {
 //     RETURN_FALSE_IF_NOT_INITIALIZED(SET_GAME_FILE);
 //
 //     if (!file) {
@@ -213,12 +213,12 @@
 //         return true;
 //     }
 //
-//     if (!SL_Internal_IsValidFile(file)) {
+//     if (!slInternal_IsValidFile(file)) {
 //         SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_INVALID_PATH, file, SET_GAME_FILE, ABORTED);
 //         return false;
 //     }
 //
-//     char *sanitizedFile = SL_Internal_SanitizeFile(file);
+//     char *sanitizedFile = slInternal_SanitizeFile(file);
 //     if (!sanitizedFile) {
 //         SMILE_ERR(MODULE, CAUSE_MEM_ALLOC_FAILED, SET_GAME_FILE, ABORTED);
 //         return false;
@@ -239,7 +239,7 @@
 //     free(sanitizedFile);
 //
 //     if (tracker->gameDir) {
-//         if (!SL_Internal_UpdateGamePath()) {
+//         if (!slInternal_UpdateGamePath()) {
 //             SMILE_ERR(MODULE, CAUSE_MEM_ALLOC_FAILED, SET_GAME_FILE, ABORTED);
 //             return false;
 //         }
@@ -248,7 +248,7 @@
 //     return true;
 // }
 //
-// bool SL_FileExists(const char *file) {
+// bool slFileExists(const char *file) {
 //     RETURN_FALSE_IF_NOT_INITIALIZED(FILE_EXISTS);
 //
 //     return false;
@@ -256,15 +256,15 @@
 //
 // // List Functions -----------------------------------
 //
-// // List SL_GetListOf(ListType type) {
+// // List slGetListOf(ListType type) {
 // // }
 // //
-// // bool SL_FreeList(List list) {
+// // bool slFreeList(List list) {
 // // }
 //
 // // Save Functions -----------------------------------
 //
-// bool SL_BeginSaveSession(void) {
+// bool slBeginSaveSession(void) {
 //     RETURN_FALSE_IF_NOT_INITIALIZED(BEGIN_SAVE_SESSION);
 //
 //     if (!tracker->gamePath) {
@@ -273,7 +273,7 @@
 //     }
 //
 //     const char *conseq = ABORTED;
-//     if (SL_Internal_BeginSession(WRITE, tracker->gameFile, conseq)) {
+//     if (slInternal_BeginSession(WRITE, tracker->gameFile, conseq)) {
 //         SMILE_INFO(MODULE, INFO_SAVE_SESSION_STARTED);
 //         return true;
 //     }
@@ -281,7 +281,7 @@
 //     return false;
 // }
 //
-// bool SL_SaveNext(const char *data) {
+// bool slSaveNext(const char *data) {
 //     RETURN_FALSE_IF_NOT_INITIALIZED(CONSEQ_SAVE_NEXT_ABORTED);
 //
 //     if (!tracker->saveStream) {
@@ -326,7 +326,7 @@
 //     return success;
 // }
 //
-// bool SL_EndSaveSession() {
+// bool slEndSaveSession() {
 //     RETURN_FALSE_IF_NOT_INITIALIZED(CONSEQ_END_SAVE_SESSION_ABORTED);
 //
 //     if (!tracker->saveStream) {
@@ -340,14 +340,14 @@
 //         return false;
 //     }
 //
-//     tracker->saveStream = NULL;
+//     tracker->saveStream = nullptr;
 //     SMILE_INFO(MODULE, INFO_SAVE_SESSION_ENDED);
 //     return true;
 // }
 //
 // // Load ---------------------------------------------
 //
-// bool SL_BeginLoadSession(void) {
+// bool slBeginLoadSession(void) {
 //     RETURN_FALSE_IF_NOT_INITIALIZED(CONSEQ_BEGIN_LOAD_SESSION_ABORTED);
 //
 //     if (!tracker->gamePath) {
@@ -356,7 +356,7 @@
 //     }
 //
 //     const char *conseq = CONSEQ_BEGIN_LOAD_SESSION_ABORTED;
-//     if (SL_Internal_BeginSession(LOAD, tracker->gameFile, conseq)) {
+//     if (slInternal_BeginSession(LOAD, tracker->gameFile, conseq)) {
 //         SMILE_INFO(MODULE, INFO_LOAD_SESSION_STARTED);
 //         return true;
 //     }
@@ -364,7 +364,7 @@
 //     return false;
 // }
 //
-// bool SL_HasNext(void) {
+// bool slHasNext(void) {
 //     RETURN_FALSE_IF_NOT_INITIALIZED(CONSEQ_HAS_NEXT_ABORTED);
 //
 //     if (!tracker->loadStream) {
@@ -388,13 +388,13 @@
 //     return true;
 // }
 //
-// char *SL_LoadNext(void) {
+// char *slLoadNext(void) {
 //     RETURN_NULL_IF_NOT_INITIALIZED(CONSEQ_LOAD_NEXT_ABORTED);
 //
 //     if (!tracker->loadStream) {
 //         SMILE_ERR(MODULE, CAUSE_LOAD_SESSION_NOT_OPEN,
 //                   CONSEQ_LOAD_NEXT_ABORTED);
-//         return NULL;
+//         return nullptr;
 //     }
 //
 //     long startPos = ftell(tracker->loadStream);
@@ -409,7 +409,7 @@
 //     if (counter == 0 && cursor == EOF) {
 //         SMILE_WARN(MODULE, CAUSE_NO_MORE_DATA,
 //                    CONSEQ_LOAD_NEXT_ABORTED);
-//         return NULL;
+//         return nullptr;
 //     }
 //
 //     size_t bufferSize = counter + 2; // room for '\n' and '\0'
@@ -417,21 +417,21 @@
 //     if (!buffer) {
 //         SMILE_ERR(MODULE, CAUSE_MEM_ALLOC_FAILED,
 //                   CONSEQ_LOAD_NEXT_ABORTED);
-//         return NULL;
+//         return nullptr;
 //     }
 //
 //     if (fseek(tracker->loadStream, startPos, SEEK_SET) != 0) {
 //         free(buffer);
 //         SMILE_ERR(MODULE, CAUSE_INDICATOR_NOT_RESET,
 //                   CONSEQ_LOAD_NEXT_ABORTED);
-//         return NULL;
+//         return nullptr;
 //     }
 //
 //     if (!fgets(buffer, bufferSize, tracker->loadStream)) {
 //         free(buffer);
 //         SMILE_WARN(MODULE, "hi",
 //                    CONSEQ_LOAD_NEXT_ABORTED);
-//         return NULL;
+//         return nullptr;
 //     }
 //
 //     size_t len = strlen(buffer);
@@ -443,7 +443,7 @@
 //     return buffer;
 // }
 //
-// bool SL_LoadNextTo(char *dest, size_t size) {
+// bool slLoadNextTo(char *dest, size_t size) {
 //     RETURN_FALSE_IF_NOT_INITIALIZED(CONSEQ_LOAD_NEXT_TO_ABORTED);
 //
 //     if (!tracker->loadStream) {
@@ -473,7 +473,7 @@
 //     return true;
 // }
 //
-// bool SL_EndLoadSession(void) {
+// bool slEndLoadSession(void) {
 //     RETURN_FALSE_IF_NOT_INITIALIZED(CONSEQ_END_LOAD_SESSION_ABORTED);
 //
 //     if (!tracker->loadStream) {
@@ -488,20 +488,20 @@
 //         return false;
 //     }
 //
-//     tracker->loadStream = NULL;
+//     tracker->loadStream = nullptr;
 //     SMILE_INFO(MODULE, INFO_LOAD_SESSION_ENDED);
 //     return true;
 // }
 //
 // // Delete -------------------------------------------
 //
-// bool SL_DeleteDir(const char *dir) {
+// bool slDeleteDir(const char *dir) {
 //     RETURN_FALSE_IF_NOT_INITIALIZED(CONSEQ_DELETE_DIR_ABORTED);
 //
 //     return false;
 // }
 //
-// bool SL_DeleteFile(const char *file) {
+// bool slDeleteFile(const char *file) {
 //     RETURN_FALSE_IF_NOT_INITIALIZED(CONSEQ_DELETE_SAVE_ABORTED);
 //
 //     return false;
@@ -509,7 +509,7 @@
 //
 // // Shutdown -----------------------------------------
 //
-// bool SL_Shutdown(void) {
+// bool slStop(void) {
 //     RETURN_FALSE_IF_NOT_INITIALIZED(CONSEQ_SHUTDOWN_ABORTED);
 //
 //     bool isFatal = TEST_Fatal();
@@ -518,27 +518,27 @@
 //         if (fclose(tracker->saveStream) == EOF) {
 //             isFatal = true;
 //         }
-//         tracker->saveStream = NULL;
+//         tracker->saveStream = nullptr;
 //     }
 //
 //     if (tracker->loadStream) {
 //         if (fclose(tracker->loadStream) == EOF) {
 //             isFatal = true;
 //         }
-//         tracker->loadStream = NULL;
+//         tracker->loadStream = nullptr;
 //     }
 //
 //     free(tracker->defaultDir);
-//     tracker->defaultDir = NULL;
+//     tracker->defaultDir = nullptr;
 //
 //     free(tracker->gameDir);
-//     tracker->gameDir = NULL;
+//     tracker->gameDir = nullptr;
 //
 //     free(tracker->gameFile);
-//     tracker->gameFile = NULL;
+//     tracker->gameFile = nullptr;
 //
 //     free(tracker);
-//     tracker = NULL;
+//     tracker = nullptr;
 //
 //     if (isFatal) {
 //         // TODO get files names
@@ -554,12 +554,12 @@
 // // Internal
 // // --------------------------------------------------
 //
-// char *SL_Internal_GetDefaultSysDir(void) {
+// char *slInternal_GetDefaultSysDir(void) {
 //     const char *homeDir;
 // #if defined(__APPLE__) || defined(__linux)
 //     homeDir = getenv("HOME");
 //     if (!homeDir) {
-//         return NULL;
+//         return nullptr;
 //     }
 // #endif
 // #ifdef TARGET_OS_WIN32
@@ -572,11 +572,11 @@
 //
 //     char *buffer = TEST_Malloc(bufferLen);
 //     if (!buffer) {
-//         return NULL;
+//         return nullptr;
 //     }
 //     snprintf(buffer, bufferLen, "%s%s", homeDir, DEFAULT_SYS_DIR);
 //
-//     if (!SL_Internal_DirExists(buffer)) {
+//     if (!slInternal_DirExists(buffer)) {
 //         free(buffer);
 //
 //         sysDirLen = strlen(ALT_SYS_DIR);
@@ -592,12 +592,12 @@
 //     return buffer;
 // }
 //
-// bool SL_Internal_DirExists(const char *absoluteDir) {
+// bool slInternal_DirExists(const char *absoluteDir) {
 //     struct stat buf;
 //     return stat(absoluteDir, &buf) == 0 && S_ISDIR(buf.st_mode);
 // }
 //
-// bool SL_Internal_CreateDir(const char *dir) {
+// bool slInternal_CreateDir(const char *dir) {
 // #ifdef __APPLE__
 //     constexpr mode_t mode = 0755;
 //     return mkdir(dir, mode) == 0;
@@ -613,24 +613,24 @@
 // #endif
 // }
 //
-// bool SL_Internal_IsValidDir(const char *dir) {
+// bool slInternalIsValidDir(const char *dir) {
 //     return true;
 // }
 //
-// char *SL_Internal_SanitizeDir(const char *dir) {
+// char *slInternalSanitizeDir(const char *dir) {
 //     // TODO sanitize and add '/' at the end
-//     return NULL;
+//     return nullptr;
 // }
 //
-// bool SL_Internal_IsValidFile(const char *file) {
+// bool slInternalIsValidFile(const char *file) {
 //     return true;
 // }
 //
-// char *SL_Internal_SanitizeFile(const char *file) {
-//     return NULL;
+// char *slInternalSanitizeFile(const char *file) {
+//     return nullptr;
 // }
 //
-// bool SL_Internal_UpdateGamePath(void) {
+// bool slInternalUpdateGamePath(void) {
 //     free(tracker->gamePath);
 //     size_t len = strlen(tracker->defaultDir) + strlen(tracker->gameDir) + strlen(tracker->gameFile) + 1;
 //     tracker->gamePath = TEST_Malloc(len);
@@ -641,11 +641,11 @@
 //     return true;
 // }
 //
-// bool SL_Internal_BeginSession(const FileInteractionMode mode, const char *file, const char *conseqAbort) {
+// bool slInternalBeginSession(const FileInteractionMode mode, const char *file, const char *conseqAbort) {
 //     RETURN_FALSE_IF_NOT_INITIALIZED(conseqAbort);
 //
-//     FILE **currStream = NULL;
-//     const char *openAs = NULL;
+//     FILE **currStream = nullptr;
+//     const char *openAs = nullptr;
 //
 //     switch (mode) {
 //         case WRITE:

@@ -12,13 +12,12 @@
 // Data types
 // --------------------------------------------------
 
-
 typedef struct {
   char *name;
-  SM_EnterFn enterFn;
-  SM_UpdateFn updateFn;
-  SM_DrawFn drawFn;
-  SM_ExitFn exitFn;
+  smEnterFn enterFn;
+  smUpdateFn updateFn;
+  smDrawFn drawFn;
+  smExitFn exitFn;
 } State;
 
 typedef struct {
@@ -37,8 +36,8 @@ typedef struct {
 // Prototypes
 // --------------------------------------------------
 
-const State *SM_Internal_GetState(const char *name);
+const State *smInternalGetState(const char *name);
 
-StateMap *SM_Internal_GetEntry(const char *name);
+StateMap *smInternalGetEntry(const char *name);
 
 #endif

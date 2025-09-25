@@ -6,39 +6,13 @@
 // Includes
 // --------------------------------------------------
 
+#include <string.h>
+
 #include "StateMachineInternal.h"
 #include "StateMachineMessages.h"
 #include "src/_Internal/Log/LogInternal.h"
 #include "src/_Internal/Log/LogMessages.h"
 #include "src/_Internal/Test/TestInternal.h"
-
-// --------------------------------------------------
-// Defines
-// --------------------------------------------------
-
-#define RETURN_FALSE_IF_NOT_INITIALIZED(funcName)                              \
-do {                                                                           \
-    if (!tracker) {                                                            \
-      SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, funcName, ABORTED);             \
-      return false;                                                            \
-    }                                                                          \
-  } while (0)
-
-#define RETURN_NULL_IF_NOT_INITIALIZED(funcName)                               \
-  do {                                                                         \
-    if (!tracker) {                                                            \
-      SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, funcName, ABORTED);             \
-      return nullptr;                                                          \
-    }                                                                          \
-  } while (0)
-
-#define RETURN_NEGATIVE_ONE_IF_NOT_INITIALIZED(funcName)                       \
-  do {                                                                         \
-    if (!tracker) {                                                            \
-      SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, funcName, ABORTED);             \
-      return -1;                                                               \
-    }                                                                          \
-  } while (0)
 
 // --------------------------------------------------
 // Variables
@@ -52,14 +26,14 @@ static StateMachineTracker *tracker;
 
 // Init Related -------------------------------------
 
-bool SM_Init(void) {
+bool smStart(void) {
     if (tracker) {
         SMILE_WARN(MODULE, CAUSE_ALREADY_INITIALIZED, INIT, ABORTED);
         return false;
     }
 
     tracker = TEST_Calloc(1, sizeof(StateMachineTracker));
-    if (!tracker) {
+    if (!smHasStarted()) {
         SMILE_ERR(MODULE, CAUSE_MEM_ALLOC_FAILED, INIT, ABORTED);
         return false;
     }
@@ -68,16 +42,18 @@ bool SM_Init(void) {
     return true;
 }
 
-bool SM_IsInitialized(void) {
+bool smHasStarted(void) {
     return tracker;
 }
 
 // State Functions ----------------------------------
 
-bool SM_RegisterState(const char *name, SM_EnterFn enterFn,
-                      SM_UpdateFn updateFn, SM_DrawFn drawFn,
-                      SM_ExitFn exitFn) {
-    RETURN_FALSE_IF_NOT_INITIALIZED(REGISTER_STATE);
+bool smRegisterState(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
+                     smDrawFn drawFn, smExitFn exitFn) {
+    if (!smHasStarted()) {
+        SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, REGISTER_STATE, ABORTED);
+        return false;
+    }
 
     if (!name) {
         SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NULL_ARG, "name",
@@ -93,7 +69,7 @@ bool SM_RegisterState(const char *name, SM_EnterFn enterFn,
         return false;
     }
 
-    StateMap *entry = SM_Internal_GetEntry(name);
+    StateMap *entry = smInternalGetEntry(name);
     if (entry) {
         SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_ALREADY_EXISTS, name,
                             REGISTER_STATE, ABORTED);
@@ -144,8 +120,11 @@ bool SM_RegisterState(const char *name, SM_EnterFn enterFn,
     return true;
 }
 
-bool SM_IsStateRegistered(const char *name) {
-    RETURN_FALSE_IF_NOT_INITIALIZED(IS_STATE_REGISTERED);
+bool smHasState(const char *name) {
+    if (!smHasStarted()) {
+        SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, IS_STATE_REGISTERED, ABORTED);
+        return false;
+    }
 
     if (!name) {
         SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NULL_ARG, "name",
@@ -161,11 +140,14 @@ bool SM_IsStateRegistered(const char *name) {
         return false;
     }
 
-    return SM_Internal_GetEntry(name);
+    return smInternalGetEntry(name);
 }
 
-bool SM_ChangeStateTo(const char *name, void *args) {
-    RETURN_FALSE_IF_NOT_INITIALIZED(CHANGE_STATE_TO);
+bool smSetState(const char *name, void *args) {
+    if (!smHasStarted()) {
+        SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, CHANGE_STATE_TO, ABORTED);
+        return false;
+    }
 
     if (!name) {
         SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NULL_ARG, "name",
@@ -181,7 +163,7 @@ bool SM_ChangeStateTo(const char *name, void *args) {
         return false;
     }
 
-    const State *nextState = SM_Internal_GetState(name);
+    const State *nextState = smInternalGetState(name);
     if (!nextState) {
         SMILE_WARN_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_STATE_NOT_FOUND, name,
                              CHANGE_STATE_TO, ABORTED);
@@ -202,20 +184,29 @@ bool SM_ChangeStateTo(const char *name, void *args) {
     return true;
 }
 
-const char *SM_GetCurrStateName(void) {
-    RETURN_NULL_IF_NOT_INITIALIZED(GET_CURR_STATE_NAME);
+const char *smGetCurrentStateName(void) {
+    if (!smHasStarted()) {
+        SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, GET_CURR_STATE_NAME, ABORTED);
+        return nullptr;
+    }
 
     return tracker->currState ? tracker->currState->name : nullptr;
 }
 
-int SM_GetStateCount(void) {
-    RETURN_NEGATIVE_ONE_IF_NOT_INITIALIZED(GET_STATE_COUNT);
+int smGetStateCount(void) {
+    if (!smHasStarted()) {
+        SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, GET_STATE_COUNT, ABORTED);
+        return -1;
+    }
 
     return tracker->stateCount;
 }
 
-bool SM_UnregisterState(const char *name) {
-    RETURN_FALSE_IF_NOT_INITIALIZED(UNREGISTER_STATE);
+bool smUnregisterState(const char *name) {
+    if (!smHasStarted()) {
+        SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, UNREGISTER_STATE, ABORTED);
+        return false;
+    }
 
     if (!name) {
         SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NULL_ARG, "name",
@@ -237,7 +228,7 @@ bool SM_UnregisterState(const char *name) {
         return false;
     }
 
-    StateMap *entry = SM_Internal_GetEntry(name);
+    StateMap *entry = smInternalGetEntry(name);
     if (!entry) {
         SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_STATE_NOT_FOUND, name,
                             UNREGISTER_STATE, ABORTED);
@@ -258,9 +249,11 @@ bool SM_UnregisterState(const char *name) {
 
 // Lifecycle Functions ------------------------------
 
-bool SM_Update(const float dt) {
-    RETURN_FALSE_IF_NOT_INITIALIZED(UPDATE);
-
+bool smUpdate(float dt) {
+    if (!smHasStarted()) {
+        SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, UPDATE, ABORTED);
+        return false;
+    }
     if (!tracker->currState) {
         SMILE_ERR(MODULE, CAUSE_NULL_CURRENT_STATE, UPDATE, ABORTED);
         return false;
@@ -276,8 +269,11 @@ bool SM_Update(const float dt) {
     return true;
 }
 
-bool SM_Draw(void) {
-    RETURN_FALSE_IF_NOT_INITIALIZED(DRAW);
+bool smDraw(void) {
+    if (!smHasStarted()) {
+        SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, DRAW, ABORTED);
+        return false;
+    }
 
     if (!tracker->currState) {
         SMILE_ERR(MODULE, CAUSE_NULL_CURRENT_STATE, DRAW, ABORTED);
@@ -296,8 +292,11 @@ bool SM_Draw(void) {
 
 // Shutdown -----------------------------------------
 
-bool SM_Shutdown(void) {
-    RETURN_FALSE_IF_NOT_INITIALIZED(SHUTDOWN);
+bool smStop(void) {
+    if (!smHasStarted()) {
+        SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, SHUTDOWN, ABORTED);
+        return false;
+    }
 
     if (tracker->currState && tracker->currState->exitFn) {
         tracker->currState->exitFn();
@@ -323,12 +322,12 @@ bool SM_Shutdown(void) {
 // Functions - Internal
 // --------------------------------------------------
 
-const State *SM_Internal_GetState(const char *name) {
-    const StateMap *entry = SM_Internal_GetEntry(name);
+const State *smInternalGetState(const char *name) {
+    StateMap *entry = smInternalGetEntry(name);
     return entry ? entry->state : nullptr;
 }
 
-StateMap *SM_Internal_GetEntry(const char *name) {
+StateMap *smInternalGetEntry(const char *name) {
     StateMap *entry;
     HASH_FIND_STR(tracker->stateMap, name, entry);
     return entry;
