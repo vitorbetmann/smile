@@ -25,10 +25,10 @@ bool smHasStarted(void);
 
 // State Functions ----------------------------------
 
-bool smRegisterState(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
+bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
                      smDrawFn drawFn, smExitFn exitFn);
 
-bool smHasState(const char *name);
+bool smStateExists(const char *name);
 
 bool smSetState(const char *name, void *args);
 
@@ -36,7 +36,7 @@ const char *smGetCurrentStateName(void);
 
 int smGetStateCount(void);
 
-bool smUnregisterState(const char *name);
+bool smDestroyState(const char *name);
 
 // Lifecycle Functions ------------------------------
 

@@ -40,5 +40,4 @@
 #define CAUSE_WITH_ARGS_NULL_ARG "Null Argument:"
 #define CAUSE_WITH_ARGS_EMPTY_ARG "Empty Argument:"
 
-
 #endif

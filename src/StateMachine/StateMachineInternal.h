@@ -6,7 +6,7 @@
 // --------------------------------------------------
 
 #include "StateMachine.h"
-#include "external/uthash.h"
+#include "../external/uthash.h"
 
 // --------------------------------------------------
 // Data types

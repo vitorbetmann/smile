@@ -23,7 +23,7 @@ add_library(smile STATIC
         src/ParticleSystem/ParticleSystem.c
         src/SaveLoad/SaveLoad.c
 
-        src/_Internal/Log/Log.c
+        src/Log/Log.c
         src/_Internal/Test/TestInternal.c
 )
 
@@ -38,6 +38,9 @@ target_link_libraries(smile PRIVATE "${RAYLIB_LIB}")
 target_include_directories(smile PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/Log
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/_Internal/_Common
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/_Internal/Test
 )
 target_include_directories(smile PRIVATE "${RAYLIB_SRC_DIR}")
 

@@ -8,10 +8,11 @@
 
 #include <string.h>
 
+#include "CommonMessages.h"
 #include "StateMachineInternal.h"
 #include "StateMachineMessages.h"
-#include "src/_Internal/Log/LogInternal.h"
-#include "src/_Internal/Log/LogMessages.h"
+#include "LogInternal.h"
+#include "LogMessages.h"
 #include "src/_Internal/Test/TestInternal.h"
 
 // --------------------------------------------------
@@ -28,17 +29,19 @@ static StateMachineTracker *tracker;
 
 bool smStart(void) {
     if (tracker) {
-        SMILE_WARN(MODULE, CAUSE_ALREADY_INITIALIZED, INIT, ABORTED);
+        lgInternalEvent(LOG_WARNING,MODULE, CAUSE_ALREADY_INITIALIZED, INIT,
+                        ABORTED);
         return false;
     }
 
     tracker = TEST_Calloc(1, sizeof(StateMachineTracker));
     if (!smHasStarted()) {
-        SMILE_ERR(MODULE, CAUSE_MEM_ALLOC_FAILED, INIT, ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, INIT,
+                        ABORTED);
         return false;
     }
 
-    SMILE_INFO(MODULE, INIT, SUCCESSFUL);
+    lgInternalEvent(LOG_INFO, MODULE, "",INIT, SUCCESSFUL);
     return true;
 }
 
@@ -48,49 +51,53 @@ bool smHasStarted(void) {
 
 // State Functions ----------------------------------
 
-bool smRegisterState(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
-                     smDrawFn drawFn, smExitFn exitFn) {
+bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
+                   smDrawFn drawFn, smExitFn exitFn) {
     if (!smHasStarted()) {
-        SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, REGISTER_STATE, ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_NOT_INITIALIZED,
+                        REGISTER_STATE, ABORTED);
         return false;
     }
 
     if (!name) {
-        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NULL_ARG, "name",
-                            REGISTER_STATE, ABORTED);
+        lgInternalEventWithArg(LOG_ERROR, MODULE, CAUSE_WITH_ARGS_NULL_ARG,
+                               "name",REGISTER_STATE, ABORTED);
         return false;
     }
 
     // TODO Sanitize name
 
     if (strlen(name) == 0) {
-        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_EMPTY_ARG, "name",
-                            REGISTER_STATE, ABORTED);
+        lgInternalEventWithArg(LOG_ERROR, MODULE, CAUSE_WITH_ARGS_EMPTY_ARG,
+                               "name",REGISTER_STATE, ABORTED);
         return false;
     }
 
     StateMap *entry = smInternalGetEntry(name);
     if (entry) {
-        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_ALREADY_EXISTS, name,
-                            REGISTER_STATE, ABORTED);
+        lgInternalEventWithArg(LOG_ERROR, MODULE,CAUSE_WITH_ARGS_ALREADY_EXISTS,
+                               name,REGISTER_STATE, ABORTED);
         return false;
     }
 
     if (!enterFn && !updateFn && !drawFn && !exitFn) {
-        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NO_VALID_FUNCTIONS, name,
-                            REGISTER_STATE, ABORTED);
+        lgInternalEventWithArg(LOG_ERROR, MODULE,
+                               CAUSE_WITH_ARGS_NO_VALID_FUNCTIONS, name,
+                               REGISTER_STATE, ABORTED);
         return false;
     }
 
     State *newState = malloc(sizeof(State));
     if (!newState) {
-        SMILE_ERR(MODULE, CAUSE_MEM_ALLOC_FAILED, REGISTER_STATE, ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,
+                        REGISTER_STATE, ABORTED);
         return false;
     }
 
     char *stateName = malloc(strlen(name) + 1);
     if (!stateName) {
-        SMILE_ERR(MODULE, CAUSE_MEM_ALLOC_FAILED, REGISTER_STATE, ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,
+                        REGISTER_STATE, ABORTED);
         free(newState);
         return false;
     }
@@ -106,7 +113,8 @@ bool smRegisterState(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
     if (!temp) {
         free(newState->name);
         free(newState);
-        SMILE_ERR(MODULE, CAUSE_MEM_ALLOC_FAILED, REGISTER_STATE, ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,
+                        REGISTER_STATE, ABORTED);
         return false;
     }
     temp->state = newState;
@@ -115,28 +123,30 @@ bool smRegisterState(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
 
     tracker->stateCount++;
 
-    SMILE_INFO_FMT(MODULE, "Registered state: '%s'. Total count: %d.", name,
-                   tracker->stateCount);
+    lgInternalEventFmt(LOG_INFO, MODULE,
+                       "Created state: '%s'. State count: %d.", name,
+                       tracker->stateCount);
     return true;
 }
 
-bool smHasState(const char *name) {
+bool smStateExists(const char *name) {
     if (!smHasStarted()) {
-        SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, IS_STATE_REGISTERED, ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_NOT_INITIALIZED,
+                        IS_STATE_REGISTERED, ABORTED);
         return false;
     }
 
     if (!name) {
-        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NULL_ARG, "name",
-                            IS_STATE_REGISTERED, ABORTED);
+        lgInternalEventWithArg(LOG_ERROR, MODULE, CAUSE_WITH_ARGS_NULL_ARG,
+                               "name",IS_STATE_REGISTERED, ABORTED);
         return false;
     }
 
     // TODO Sanitize name
 
     if (strlen(name) == 0) {
-        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_EMPTY_ARG, "name",
-                            IS_STATE_REGISTERED, ABORTED);
+        lgInternalEventWithArg(LOG_ERROR, MODULE, CAUSE_WITH_ARGS_EMPTY_ARG,
+                               "name",IS_STATE_REGISTERED, ABORTED);
         return false;
     }
 
@@ -145,28 +155,30 @@ bool smHasState(const char *name) {
 
 bool smSetState(const char *name, void *args) {
     if (!smHasStarted()) {
-        SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, CHANGE_STATE_TO, ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_NOT_INITIALIZED,
+                        CHANGE_STATE_TO, ABORTED);
         return false;
     }
 
     if (!name) {
-        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NULL_ARG, "name",
-                            CHANGE_STATE_TO, ABORTED);
+        lgInternalEventWithArg(LOG_ERROR, MODULE, CAUSE_WITH_ARGS_NULL_ARG,
+                               "name",CHANGE_STATE_TO, ABORTED);
         return false;
     }
 
     // TODO Sanitize name
 
     if (strlen(name) == 0) {
-        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_EMPTY_ARG, "name",
-                            CHANGE_STATE_TO, ABORTED);
+        lgInternalEventWithArg(LOG_ERROR, MODULE, CAUSE_WITH_ARGS_EMPTY_ARG,
+                               "name",CHANGE_STATE_TO, ABORTED);
         return false;
     }
 
     const State *nextState = smInternalGetState(name);
     if (!nextState) {
-        SMILE_WARN_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_STATE_NOT_FOUND, name,
-                             CHANGE_STATE_TO, ABORTED);
+        lgInternalEventWithArg(LOG_WARNING, MODULE,
+                               CAUSE_WITH_ARGS_STATE_NOT_FOUND, name,
+                               CHANGE_STATE_TO, ABORTED);
         return false;
     }
 
@@ -180,13 +192,14 @@ bool smSetState(const char *name, void *args) {
         tracker->currState->enterFn(args);
     }
 
-    SMILE_INFO_WITH_ARGS(MODULE, INFO_WITH_ARGS_CHANGED_STATE_TO, name);
+    // SMILE_INFO_WITH_ARGS(MODULE, INFO_WITH_ARGS_CHANGED_STATE_TO, name);
     return true;
 }
 
 const char *smGetCurrentStateName(void) {
     if (!smHasStarted()) {
-        SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, GET_CURR_STATE_NAME, ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_NOT_INITIALIZED,
+                        GET_CURR_STATE_NAME, ABORTED);
         return nullptr;
     }
 
@@ -195,43 +208,47 @@ const char *smGetCurrentStateName(void) {
 
 int smGetStateCount(void) {
     if (!smHasStarted()) {
-        SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, GET_STATE_COUNT, ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_NOT_INITIALIZED,
+                        GET_STATE_COUNT, ABORTED);
         return -1;
     }
 
     return tracker->stateCount;
 }
 
-bool smUnregisterState(const char *name) {
+bool smDestroyState(const char *name) {
     if (!smHasStarted()) {
-        SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, UNREGISTER_STATE, ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_NOT_INITIALIZED,
+                        UNREGISTER_STATE, ABORTED);
         return false;
     }
 
     if (!name) {
-        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NULL_ARG, "name",
-                            UNREGISTER_STATE, ABORTED);
+        lgInternalEventWithArg(LOG_ERROR, MODULE, CAUSE_WITH_ARGS_NULL_ARG,
+                               "name",UNREGISTER_STATE, ABORTED);
         return false;
     }
 
     // TODO Sanitize name
 
     if (strlen(name) == 0) {
-        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_EMPTY_ARG, "name",
-                            UNREGISTER_STATE, ABORTED);
+        lgInternalEventWithArg(LOG_ERROR, MODULE, CAUSE_WITH_ARGS_EMPTY_ARG,
+                               "name",UNREGISTER_STATE, ABORTED);
         return false;
     }
 
     if (tracker->currState && strcmp(name, tracker->currState->name) == 0) {
-        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_STATE_IS_ACTIVE, name,
-                            UNREGISTER_STATE, ABORTED);
+        lgInternalEventWithArg(LOG_ERROR, MODULE,
+                               CAUSE_WITH_ARGS_STATE_IS_ACTIVE, name,
+                               UNREGISTER_STATE, ABORTED);
         return false;
     }
 
     StateMap *entry = smInternalGetEntry(name);
     if (!entry) {
-        SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_STATE_NOT_FOUND, name,
-                            UNREGISTER_STATE, ABORTED);
+        lgInternalEventWithArg(LOG_ERROR, MODULE,
+                               CAUSE_WITH_ARGS_STATE_NOT_FOUND, name,
+                               UNREGISTER_STATE, ABORTED);
         return false;
     }
 
@@ -242,8 +259,9 @@ bool smUnregisterState(const char *name) {
 
     tracker->stateCount--;
 
-    SMILE_INFO_FMT(MODULE, "Unregistered state: '%s'. Total count: %d.", name,
-                   tracker->stateCount);
+    lgInternalEventFmt(LOG_INFO, MODULE,
+                       "Destroyed state: '%s'. Total count: %d.", name,
+                       tracker->stateCount);
     return true;
 }
 
@@ -251,17 +269,20 @@ bool smUnregisterState(const char *name) {
 
 bool smUpdate(float dt) {
     if (!smHasStarted()) {
-        SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, UPDATE, ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_NOT_INITIALIZED, UPDATE,
+                        ABORTED);
         return false;
     }
     if (!tracker->currState) {
-        SMILE_ERR(MODULE, CAUSE_NULL_CURRENT_STATE, UPDATE, ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_NULL_CURRENT_STATE, UPDATE,
+                        ABORTED);
         return false;
     }
 
     if (!tracker->currState->updateFn) {
-        SMILE_WARN_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NULL_UPDATE_FUNCTION,
-                             tracker->currState->name, UPDATE, ABORTED);
+        lgInternalEventWithArg(LOG_WARNING, MODULE,
+                               CAUSE_WITH_ARGS_NULL_UPDATE_FUNCTION,
+                               tracker->currState->name, UPDATE, ABORTED);
         return false;
     }
 
@@ -271,18 +292,21 @@ bool smUpdate(float dt) {
 
 bool smDraw(void) {
     if (!smHasStarted()) {
-        SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, DRAW, ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_NOT_INITIALIZED, DRAW,
+                        ABORTED);
         return false;
     }
 
     if (!tracker->currState) {
-        SMILE_ERR(MODULE, CAUSE_NULL_CURRENT_STATE, DRAW, ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_NULL_CURRENT_STATE, DRAW,
+                        ABORTED);
         return false;
     }
 
     if (!tracker->currState->drawFn) {
-        SMILE_WARN_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NULL_DRAW_FUNCTION,
-                             tracker->currState->name, DRAW, ABORTED);
+        lgInternalEventWithArg(LOG_WARNING, MODULE,
+                               CAUSE_WITH_ARGS_NULL_DRAW_FUNCTION,
+                               tracker->currState->name, DRAW, ABORTED);
         return false;
     }
 
@@ -294,7 +318,8 @@ bool smDraw(void) {
 
 bool smStop(void) {
     if (!smHasStarted()) {
-        SMILE_ERR(MODULE, CAUSE_NOT_INITIALIZED, SHUTDOWN, ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_NOT_INITIALIZED, SHUTDOWN,
+                        ABORTED);
         return false;
     }
 
@@ -314,7 +339,7 @@ bool smStop(void) {
     free(tracker);
     tracker = nullptr;
 
-    SMILE_INFO(MODULE, SHUTDOWN, SUCCESSFUL);
+    //  SMILE_INFO(MODULE, SHUTDOWN, SUCCESSFUL);
     return true;
 }
 

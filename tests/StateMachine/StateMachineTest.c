@@ -6,351 +6,357 @@
  *   Test_<FunctionName>_<ExpectedBehavior>
  *
  * where:
- *   - Test_SM_: prefix indicating this is a StateMachine test.
+ *   - Test_sm: prefix indicating this is a StateMachine test.
  *   - <FunctionName>: the name of the StateMachine function or feature under
  * test.
  *   - <ExpectedBehavior>: a short description of what the test checks,
  *                        often stating the expected outcome or condition.
  *
  * Example:
- *   Test_SM_Init_FailsIfMallocFails
+ *   Test_smStart_FailsIfMallocFails
  *
  * @author Vitor Betmann
  */
 
-#include "../src/_Internal/Test/TestInternal.h"
 #include "StateMachineTest.h"
-#include "StateMachine.h"
+
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
 
+#include "StateMachine.h"
+#include "TestInternal.h"
+
 // --------------------------------------------------
-// Pre-Init
+// Pre-Start
 // --------------------------------------------------
 
-// Init Related -------------------------------------
+// Start Related -------------------------------------
 
-void Test_SM_IsInitialized_FailsPreInit(void) {
-  assert(!SM_IsInitialized());
-  TEST_Pass("Test_SM_IsInitialized_FailsPreInit");
+void Test_smHasStarted_FailsPreStart(void) {
+  assert(!smHasStarted());
+  TEST_Pass("Test_smHasStarted_FailsPreStart");
 }
 
 // State Functions ----------------------------------
 
-void Test_SM_RegisterState_FailsPreInit(void) {
-  assert(!SM_RegisterState("setToFail", mockEnter, mockUpdate, mockDraw, mockExit));
-  TEST_Pass("Test_SM_RegisterState_FailsPreInit");
+void Test_smRegisterState_FailsPreStart(void) {
+  assert(
+    !smCreateState("setToFail", mockEnter, mockUpdate, mockDraw, mockExit));
+  TEST_Pass("Test_smRegisterState_FailsPreStart");
 }
 
-void Test_SM_ChangeStateTo_FailsPreInit(void) {
-  assert(!SM_ChangeStateTo("testPreInit", NULL));
-  TEST_Pass("Test_SM_ChangeStateTo_FailsPreInit");
+void Test_smSetState_FailsPreStart(void) {
+  assert(!smSetState("testPreStart", NULL));
+  TEST_Pass("Test_smSetState_FailsPreStart");
 }
 
-void Test_SM_GetCurrStateName_FailsPreInit(void) {
-  assert(!SM_GetCurrStateName());
-  TEST_Pass("Test_SM_GetCurrStateName_FailsPreInit");
+void Test_smGetCurrentStateName_FailsPreStart(void) {
+  assert(!smGetCurrentStateName());
+  TEST_Pass("Test_smGetCurrentStateName_FailsPreStart");
 }
 
-void Test_SM_GetStateCount_FailsPreInit(void) {
-  assert(SM_GetStateCount() == -1);
-  TEST_Pass("Test_SM_GetStateCount_FailsPreInit");
+void Test_smGetStateCount_FailsPreStart(void) {
+  assert(smGetStateCount() == -1);
+  TEST_Pass("Test_smGetStateCount_FailsPreStart");
 }
 
 // Lifecycle Functions ------------------------------
 
-void Test_SM_Update_FailsPreInit(void) {
-  assert(!SM_Update(mockDT));
-  TEST_Pass("Test_SM_Update_FailsPreInit");
+void Test_smUpdate_FailsPreStart(void) {
+  assert(!smUpdate(mockDT));
+  TEST_Pass("Test_smUpdate_FailsPreStart");
 }
 
-void Test_SM_Draw_FailsPreInit(void) {
-  assert(!SM_Draw());
-  TEST_Pass("Test_SM_Draw_FailsPreInit");
+void Test_smDraw_FailsPreStart(void) {
+  assert(!smDraw());
+  TEST_Pass("Test_smDraw_FailsPreStart");
 }
 
-// Shutdown -----------------------------------------
+// Stop -----------------------------------------
 
-void Test_SM_Shutdown_FailsPreInit(void) {
-  assert(!SM_Shutdown());
-  TEST_Pass("Test_SM_Shutdown_FailsPreInit");
+void Test_smStop_FailsPreStart(void) {
+  assert(!smStop());
+  TEST_Pass("Test_smStop_FailsPreStart");
 }
 
 // --------------------------------------------------
-// Init
+// Start
 // --------------------------------------------------
 
 // Mem Alloc Fail -----------------------------------
 
-void Test_SM_Init_FailsIfCallocFails(void) {
+void Test_smStart_FailsIfCallocFails(void) {
   TEST_Disable(CALLOC, 1);
-  assert(!SM_Init());
-  TEST_Pass("Test_SM_Init_FailsIfCallocFails");
+  assert(!smStart());
+  TEST_Pass("Test_smStart_FailsIfCallocFails");
 }
 
 // Success ------------------------------------------
 
-void Test_SM_Init_Succeeds(void) {
-  assert(SM_Init());
-  TEST_Pass("Test_SM_Init_Succeeds");
+void Test_smStart_Succeeds(void) {
+  assert(smStart());
+  TEST_Pass("Test_smStart_Succeeds");
 }
 
 // --------------------------------------------------
-// Post-Init
+// Post-Start
 // --------------------------------------------------
 
-// Init ---------------------------------------------
+// Start ---------------------------------------------
 
-void Test_SM_Init_FailsPostInit(void) {
-  assert(!SM_Init());
-  TEST_Pass("Test_SM_Init_FailsPostInit");
+void Test_smStart_FailsPostStart(void) {
+  assert(!smStart());
+  TEST_Pass("Test_smStart_FailsPostStart");
 }
 
-// IsInitialized ------------------------------------
+// HasStarted ------------------------------------
 
-void Test_SM_IsInitialized_SucceedsPostInit(void) {
-  assert(SM_IsInitialized());
-  TEST_Pass("Test_SM_IsInitialized_SucceedsPostInit");
+void Test_smHasStarted_SucceedsPostStart(void) {
+  assert(smHasStarted());
+  TEST_Pass("Test_smHasStarted_SucceedsPostStart");
 }
 
 // State Functions ----------------------------------
 
 // -- GetStateCount Pre-RegisterState ---------------
 
-void Test_SM_GetStateCount_ReturnsZeroPostInit(void) {
-  assert(SM_GetStateCount() == 0);
-  TEST_Pass("Test_SM_GetStateCount_ReturnsZeroPostInit");
+void Test_smGetStateCount_ReturnsZeroPostStart(void) {
+  assert(smGetStateCount() == 0);
+  TEST_Pass("Test_smGetStateCount_ReturnsZeroPostStart");
 }
 
 // -- RegisterState ---------------------------------
 
-void Test_SM_RegisterState_RejectsNullStateName(void) {
-  assert(!SM_RegisterState(NULL, NULL, NULL, NULL, NULL));
-  TEST_Pass("Test_SM_RegisterState_RejectsNullStateName");
+void Test_smRegisterState_RejectsNullStateName(void) {
+  assert(!smCreateState(NULL, NULL, NULL, NULL, NULL));
+  TEST_Pass("Test_smRegisterState_RejectsNullStateName");
 }
 
-void Test_SM_RegisterState_RejectsEmptyStateName(void) {
-  assert(!SM_RegisterState("", NULL, NULL, NULL, NULL));
-  TEST_Pass("Test_SM_RegisterState_RejectsEmptyStateName");
+void Test_smRegisterState_RejectsEmptyStateName(void) {
+  assert(!smCreateState("", NULL, NULL, NULL, NULL));
+  TEST_Pass("Test_smRegisterState_RejectsEmptyStateName");
 }
 
-void Test_SM_RegisterState_AcceptsAllNonNullArgs(void) {
-  assert(SM_RegisterState("testNoNULL", mockEnter, mockUpdate, mockDraw,mockExit));
-  TEST_Pass("Test_SM_RegisterState_AcceptsAllNonNullArgs");
+void Test_smRegisterState_AcceptsAllNonNullArgs(void) {
+  assert(
+    smCreateState("testNoNULL", mockEnter, mockUpdate, mockDraw,mockExit));
+  TEST_Pass("Test_smRegisterState_AcceptsAllNonNullArgs");
 }
 
-void Test_SM_RegisterState_RejectsExistingStateName(void) {
-  assert(!SM_RegisterState("testNoNULL", mockEnter, NULL, NULL, NULL));
-  TEST_Pass("Test_SM_RegisterState_RejectsExistingStateName");
+void Test_smRegisterState_RejectsExistingStateName(void) {
+  assert(!smCreateState("testNoNULL", mockEnter, NULL, NULL, NULL));
+  TEST_Pass("Test_smRegisterState_RejectsExistingStateName");
 }
 
-void Test_SM_RegisterState_AcceptsNullEnterAndUpdate(void) {
-  assert(SM_RegisterState("testNULLEnterAndUpdate", NULL, NULL, mockDraw,mockExit));
-  TEST_Pass("Test_SM_RegisterState_AcceptsNullEnterAndUpdate");
+void Test_smRegisterState_AcceptsNullEnterAndUpdate(void) {
+  assert(
+    smCreateState("testNULLEnterAndUpdate", NULL, NULL, mockDraw,mockExit));
+  TEST_Pass("Test_smRegisterState_AcceptsNullEnterAndUpdate");
 }
 
-void Test_SM_RegisterState_AcceptsNullDrawAndExit(void) {
-  assert(SM_RegisterState("testNULLDrawAndExit", mockEnter, mockUpdate, NULL,NULL));
-  TEST_Pass("Test_SM_RegisterState_AcceptsNullDrawAndExit");
+void Test_smRegisterState_AcceptsNullDrawAndExit(void) {
+  assert(
+    smCreateState("testNULLDrawAndExit", mockEnter, mockUpdate, NULL,NULL));
+  TEST_Pass("Test_smRegisterState_AcceptsNullDrawAndExit");
 }
 
-void Test_SM_RegisterState_RejectsAllNullArgs(void) {
-  assert(!SM_RegisterState("testAllNULL", NULL, NULL, NULL, NULL));
-  TEST_Pass("Test_SM_RegisterState_RejectsAllNullArgs");
+void Test_smRegisterState_RejectsAllNullArgs(void) {
+  assert(!smCreateState("testAllNULL", NULL, NULL, NULL, NULL));
+  TEST_Pass("Test_smRegisterState_RejectsAllNullArgs");
 }
 
-// IsStateRegistered --------------------------------
+// StateExists --------------------------------
 
-void Test_SM_IsStateRegistered_AcceptsRegisteredStateName(void) {
-  assert(SM_IsStateRegistered("testNoNULL"));
-  TEST_Pass("Test_SM_IsStateRegistered_AcceptsRegisteredStateName");
+void Test_smStateExists_AcceptsRegisteredStateName(void) {
+  assert(smStateExists("testNoNULL"));
+  TEST_Pass("Test_smStateExists_AcceptsRegisteredStateName");
 }
 
-void Test_SM_IsStateRegistered_RejectsNonRegisteredStateName(void) {
-  assert(!SM_IsStateRegistered("testUnregistered"));
-  TEST_Pass("Test_SM_IsStateRegistered_RejectsNonRegisteredStateName");
+void Test_smStateExists_RejectsNonRegisteredStateName(void) {
+  assert(!smStateExists("testUnregistered"));
+  TEST_Pass("Test_smStateExists_RejectsNonRegisteredStateName");
 }
 
 // -- GetStateCount Post-RegisterState --------------
 
-void Test_SM_GetStateCount_ReturnsCorrectStateCountPostRegisterState(void) {
-  assert(SM_GetStateCount() == 3);
-  TEST_Pass("Test_SM_GetStateCount_ReturnsCorrectStateCountPostRegisterState");
+void Test_smGetStateCount_ReturnsCorrectStateCountPostRegisterState(void) {
+  assert(smGetStateCount() == 3);
+  TEST_Pass("Test_smGetStateCount_ReturnsCorrectStateCountPostRegisterState");
 }
 
-// -- GetCurrStateName Pre-ChangeStateTo ------------
+// -- GetCurrentStateName Pre-SetState ------------
 
-void Test_SM_GetCurrStateName_FailsPreRegisterState(void) {
-  assert(!SM_GetCurrStateName());
-  TEST_Pass("Test_SM_GetCurrStateName_FailsPreRegisterState");
+void Test_smGetCurrentStateName_FailsPreRegisterState(void) {
+  assert(!smGetCurrentStateName());
+  TEST_Pass("Test_smGetCurrentStateName_FailsPreRegisterState");
 }
 
-// -- Lifecycle Functions Pre-ChangeStateTo ---------
+// -- Lifecycle Functions Pre-SetState ---------
 
-void Test_SM_Update_FailsIfNullCurrentState(void) {
-  assert(!SM_Update(mockDT));
-  TEST_Pass("Test_SM_Update_FailsIfNullCurrentState");
+void Test_smUpdate_FailsIfNullCurrentState(void) {
+  assert(!smUpdate(mockDT));
+  TEST_Pass("Test_smUpdate_FailsIfNullCurrentState");
 }
 
-void Test_SM_Draw_FailsIfNullCurrentState(void) {
-  assert(!SM_Draw());
-  TEST_Pass("Test_SM_Draw_FailsIfNullCurrentState");
+void Test_smDraw_FailsIfNullCurrentState(void) {
+  assert(!smDraw());
+  TEST_Pass("Test_smDraw_FailsIfNullCurrentState");
 }
 
-// ChangeStateTo ------------------------------------
+// SetState ------------------------------------
 
-void Test_SM_ChangeStateTo_AcceptsValidStateFromNull(void) {
-  assert(SM_ChangeStateTo("testNoNULL", NULL));
+void Test_smSetState_AcceptsValidStateFromNull(void) {
+  assert(smSetState("testNoNULL", NULL));
   puts(
-    "\t[PASS] Test_SM_ChangeStateTo_SucceedsChangingFromNullToValidState");
+    "\t[PASS] Test_smSetState_SucceedsChangingFromNullToValidState");
 }
 
-void Test_SM_ChangeStateTo_RejectsNullStateName(void) {
-  assert(!SM_ChangeStateTo(NULL, NULL));
-  TEST_Pass("Test_SM_ChangeStateTo_FailsIfNullName");
+void Test_smSetState_RejectsNullStateName(void) {
+  assert(!smSetState(NULL, NULL));
+  TEST_Pass("Test_smSetState_FailsIfNullName");
 }
 
-void Test_SM_ChangeStateTo_RejectsUnregisteredStateName(void) {
-  assert(!SM_ChangeStateTo("testUnregistered", NULL));
-  TEST_Pass("Test_SM_ChangeStateTo_FailsForUnregisteredState");
+void Test_smSetState_RejectsUnregisteredStateName(void) {
+  assert(!smSetState("testUnregistered", NULL));
+  TEST_Pass("Test_smSetState_FailsForUnregisteredState");
 }
 
-void Test_SM_ChangeStateTo_SucceedsChangingFromOneValidStateToAnother(void) {
-  assert(SM_ChangeStateTo("testNULLEnterAndUpdate", NULL));
-  TEST_Pass("Test_SM_ChangeStateTo_SucceedsChangingFromOneValidStateToAnother");
+void Test_smSetState_SucceedsChangingFromOneValidStateToAnother(void) {
+  assert(smSetState("testNULLEnterAndUpdate", NULL));
+  TEST_Pass("Test_smSetState_SucceedsChangingFromOneValidStateToAnother");
 }
 
-void Test_SM_ChangeStateTo_CallsExitFunctionOfCurrentState(void) {
+void Test_smSetState_CallsExitFunctionOfCurrentState(void) {
   md.hasExited = false;
-  SM_ChangeStateTo("testNULLDrawAndExit", NULL);
+  smSetState("testNULLDrawAndExit", NULL);
   assert(md.hasExited);
-  TEST_Pass("Test_SM_ChangeStateTo_CallsExitFunctionOfCurrentState");
+  TEST_Pass("Test_smSetState_CallsExitFunctionOfCurrentState");
 }
 
-void Test_SM_ChangeStateTo_CallsEnterFunctionOfNewState(void) {
+void Test_smSetState_CallsEnterFunctionOfNewState(void) {
   md.hasEntered = false;
-  SM_ChangeStateTo("testNoNULL", NULL);
+  smSetState("testNoNULL", NULL);
   assert(md.hasEntered);
-  TEST_Pass("Test_SM_ChangeStateTo_CallsEnterFunctionOfNewState");
+  TEST_Pass("Test_smSetState_CallsEnterFunctionOfNewState");
 }
 
-void Test_SM_ChangeStateTo_CallsExitAndEnterIfChangingToSameState(void) {
+void Test_smSetState_CallsExitAndEnterIfChangingToSameState(void) {
   md.hasEntered = false;
   md.hasExited = false;
-  SM_ChangeStateTo("testNoNULL", NULL);
+  smSetState("testNoNULL", NULL);
   assert(md.hasEntered && md.hasExited);
-  TEST_Pass("Test_SM_ChangeStateTo_CallsExitAndEnterIfChangingToSameState");
+  TEST_Pass("Test_smSetState_CallsExitAndEnterIfChangingToSameState");
 }
 
-void Test_SM_ChangeStateTo_CallsEnterFunctionWithArgs(void) {
+void Test_smSetState_CallsEnterFunctionWithArgs(void) {
   MockStateArgs temp = {.flag = true};
-  SM_ChangeStateTo("testNoNULL", &temp);
+  smSetState("testNoNULL", &temp);
   assert(md.hasEnteredArgs);
-  TEST_Pass("Test_SM_ChangeStateTo_CallsEnterFunctionWithArgs");
+  TEST_Pass("Test_smSetState_CallsEnterFunctionWithArgs");
 }
 
-// -- GetCurrStateName Post-ChangeStateTo -----------
+// -- GetCurrentStateName Post-SetState -----------
 
-void Test_SM_GetCurrStateName_ReturnsCurrentStateName(void) {
-  assert(strcmp(SM_GetCurrStateName(), "testNoNULL") == 0);
-  TEST_Pass("Test_SM_GetCurrStateName_ReturnsCurrentStateName");
+void Test_smGetCurrentStateName_ReturnsCurrentStateName(void) {
+  assert(strcmp(smGetCurrentStateName(), "testNoNULL") == 0);
+  TEST_Pass("Test_smGetCurrentStateName_ReturnsCurrentStateName");
 }
 
 // --------------------------------------------------
 // Lifecycle Functions
 // --------------------------------------------------
 
-void Test_SM_Update_CallsValidUpdateFunction(void) {
-  SM_Update(mockDT);
+void Test_smUpdate_CallsValidUpdateFunction(void) {
+  smUpdate(mockDT);
   assert(md.hasUpdated);
-  TEST_Pass("Test_SM_Update_CallsValidUpdateFunction");
+  TEST_Pass("Test_smUpdate_CallsValidUpdateFunction");
 }
 
-void Test_SM_Draw_CallsValidDrawFunction(void) {
-  SM_Draw();
+void Test_smDraw_CallsValidDrawFunction(void) {
+  smDraw();
   assert(md.hasDrawn);
-  TEST_Pass("Test_SM_Draw_CallsValidDrawFunction");
+  TEST_Pass("Test_smDraw_CallsValidDrawFunction");
 }
 
-void Test_SM_Update_CallsValidUpdateFunctionEvenIfNullUpdate(void) {
-  SM_ChangeStateTo("testNULLEnterAndUpdate", NULL);
-  SM_Update(mockDT);
+void Test_smUpdate_CallsValidUpdateFunctionEvenIfNullUpdate(void) {
+  smSetState("testNULLEnterAndUpdate", NULL);
+  smUpdate(mockDT);
   assert(md.hasUpdated);
-  TEST_Pass("Test_SM_Update_CallsValidUpdateFunctionEvenIfNullUpdate");
+  TEST_Pass("Test_smUpdate_CallsValidUpdateFunctionEvenIfNullUpdate");
 }
 
-void Test_SM_Draw_CallsValidDrawFunctionEvenIfNullDraw(void) {
-  SM_ChangeStateTo("testNULLDrawAndExit", NULL);
-  SM_Draw();
+void Test_smDraw_CallsValidDrawFunctionEvenIfNullDraw(void) {
+  smSetState("testNULLDrawAndExit", NULL);
+  smDraw();
   assert(md.hasDrawn);
-  TEST_Pass("Test_SM_Draw_CallsValidDrawFunctionEvenIfNullDraw");
+  TEST_Pass("Test_smDraw_CallsValidDrawFunctionEvenIfNullDraw");
 }
 
 // --------------------------------------------------
-// Shutdown
+// Stop
 // --------------------------------------------------
 
-void Test_SM_Shutdown_SucceedsPostInit(void) {
-  assert(SM_Shutdown());
-  TEST_Pass("Test_SM_Shutdown_SucceedsIfFirstCallPostInit");
+void Test_smStop_SucceedsPostStart(void) {
+  assert(smStop());
+  TEST_Pass("Test_smStop_SucceedsIfFirstCallPostStart");
 }
 
 // --------------------------------------------------
-// Post-Shutdown
+// Post-Stop
 // --------------------------------------------------
 
-// Shutdown -----------------------------------------
+// Stop -----------------------------------------
 
-void Test_SM_Shutdown_FailsPostShutdown(void) {
-  assert(!SM_Shutdown());
-  TEST_Pass("Test_SM_Shutdown_FailsIfCalledTwicePostShutdown");
+void Test_smStop_FailsPostStop(void) {
+  assert(!smStop());
+  TEST_Pass("Test_smStop_FailsIfCalledTwicePostStop");
 }
 
-// IsInitialized ------------------------------------
+// HasStarted ------------------------------------
 
-void Test_SM_IsInitialized_FailsPostShutdown(void) {
-  assert(!SM_IsInitialized());
-  TEST_Pass("Test_SM_IsInitialized_FailsPostShutdown");
+void Test_smHasStarted_FailsPostStop(void) {
+  assert(!smHasStarted());
+  TEST_Pass("Test_smHasStarted_FailsPostStop");
 }
 
 // State Functions ----------------------------------
 
-void Test_SM_RegisterState_FailsPostShutdown(void) {
-  assert(!SM_RegisterState("setToFail", mockEnter, mockUpdate, mockDraw,
+void Test_smRegisterState_FailsPostStop(void) {
+  assert(!smCreateState("setToFail", mockEnter, mockUpdate, mockDraw,
     mockExit));
-  TEST_Pass("Test_SM_RegisterState_FailsPostShutdown");
+  TEST_Pass("Test_smRegisterState_FailsPostStop");
 }
 
-void Test_SM_ChangeStateTo_FailsPostShutdown(void) {
-  assert(!SM_ChangeStateTo("testPreInit", NULL));
-  TEST_Pass("Test_SM_ChangeStateTo_FailsPostShutdown");
+void Test_smSetState_FailsPostStop(void) {
+  assert(!smSetState("testPreStart", NULL));
+  TEST_Pass("Test_smSetState_FailsPostStop");
 }
 
-void Test_SM_GetCurrStateName_FailsPostShutdown(void) {
-  assert(!SM_GetCurrStateName());
-  TEST_Pass("Test_SM_GetCurrStateName_FailsPostShutdown");
+void Test_smGetCurrentStateName_FailsPostStop(void) {
+  assert(!smGetCurrentStateName());
+  TEST_Pass("Test_smGetCurrentStateName_FailsPostStop");
 }
 
-void Test_SM_GetStateCount_FailsPostShutdown(void) {
+void Test_smGetStateCount_FailsPostStop(void) {
   // TODO
 }
 
 // Lifecycle Functions ------------------------------
 
-void Test_SM_Update_FailsPostShutdown(void) {
+void Test_smUpdate_FailsPostStop(void) {
   // TODO
 }
 
-void Test_SM_Draw_FailsPostShutdown(void) {
+void Test_smDraw_FailsPostStop(void) {
   // TODO
 }
 
-void Test_SM_Shutdown_CallsExitFunctionOfCurrentState(void) {
+void Test_smStop_CallsExitFunctionOfCurrentState(void) {
   // TODO
 }
 
-void Test_SM_Shutdown_SkipsExitIfNull(void) {
+void Test_smStop_SkipsExitIfNull(void) {
   // TODO
 }
 
@@ -358,40 +364,40 @@ void Test_SM_Shutdown_SkipsExitIfNull(void) {
 // Stress tests
 // --------------------------------------------------
 
-void Test_SM_RegisteringMultipleStatesCausesNoSkips(void) {
-  // SM_Init();
+void Test_smRegisteringMultipleStatesCausesNoSkips(void) {
+  // smStart();
   // for (int i = 0; i < MULTIPLE_STATES; i++) {
   //   char buffer[16];
   //   snprintf(buffer, sizeof(buffer), "%d", i);
-  //   SM_RegisterState(buffer, mockEnter, mockUpdate, mockDraw, mockExit);
+  //   smCreateState(buffer, mockEnter, mockUpdate, mockDraw, mockExit);
   // }
-  // assert(SM_Test_GetStateCount() == MULTIPLE_STATES);
-  // printf("\t[PASS] Test_SM_RegisteringMultipleStatesCausesNoSkips: %d states "
+  // assert(smTest_GetStateCount() == MULTIPLE_STATES);
+  // printf("\t[PASS] Test_smRegisteringMultipleStatesCausesNoSkips: %d states "
   //        "registered\n",
   //        MULTIPLE_STATES);
 }
 
-void Test_SM_ChangingStatesOftenCausesNoSkips(void) {
+void Test_smChangingStatesOftenCausesNoSkips(void) {
   // md.enteredTimes = 0;
   // md.exitedTimes = 0;
   // for (int i = 0; i < MULTIPLE_STATES; i++) {
   //   char buffer[16];
   //   snprintf(buffer, sizeof(buffer), "%d", i);
-  //   SM_ChangeStateTo(buffer, NULL);
+  //   smSetState(buffer, NULL);
   // }
   //
   // assert(md.enteredTimes == MULTIPLE_STATES &&
   //   md.exitedTimes == MULTIPLE_STATES - 1);
   //
   // printf(
-  //   "\t[PASS] Test_SM_ChangingStatesOften_CausesNoSkips: %d state changes\n",
+  //   "\t[PASS] Test_smChangingStatesOften_CausesNoSkips: %d state changes\n",
   //   MULTIPLE_STATES);
 }
 
-void Test_SM_Shutdown_FreeingMultipleStatesCausesNoSkips(void) {
-  // SM_Shutdown();
-  // assert(SM_Test_GetStateCount() == 0);
-  // TEST_Pass("Test_SM_Shutdown_FreeingMultipleStatesCausesNoSkips");
+void Test_smStop_FreeingMultipleStatesCausesNoSkips(void) {
+  // smStop();
+  // assert(smTest_GetStateCount() == 0);
+  // TEST_Pass("Test_smStop_FreeingMultipleStatesCausesNoSkips");
 }
 
 // --------------------------------------------------
@@ -399,112 +405,112 @@ void Test_SM_Shutdown_FreeingMultipleStatesCausesNoSkips(void) {
 // --------------------------------------------------
 
 int main() {
-  puts("\nTESTING PRE-INIT");
-  puts("• Init Related");
-  Test_SM_IsInitialized_FailsPreInit();
+  puts("\nTESTING PRE-Start");
+  puts("• Start Related");
+  Test_smHasStarted_FailsPreStart();
   puts("• State Functions");
-  Test_SM_RegisterState_FailsPreInit();
-  Test_SM_ChangeStateTo_FailsPreInit();
-  Test_SM_GetCurrStateName_FailsPreInit();
+  Test_smRegisterState_FailsPreStart();
+  Test_smSetState_FailsPreStart();
+  Test_smGetCurrentStateName_FailsPreStart();
 
   // TODO Think of how to name this better
-  Test_SM_GetStateCount_FailsPreInit();
+  Test_smGetStateCount_FailsPreStart();
 
   puts("• Lifecycle Functions");
-  Test_SM_Update_FailsPreInit();
-  Test_SM_Draw_FailsPreInit();
-  puts("• Shutdown");
-  Test_SM_Shutdown_FailsPreInit();
+  Test_smUpdate_FailsPreStart();
+  Test_smDraw_FailsPreStart();
+  puts("• Stop");
+  Test_smStop_FailsPreStart();
 
-  puts("\nTESTING INIT");
+  puts("\nTESTING Start");
   puts("• Mem Alloc Fail");
-  Test_SM_Init_FailsIfCallocFails();
+  Test_smStart_FailsIfCallocFails();
   puts("• Success");
-  Test_SM_Init_Succeeds();
+  Test_smStart_Succeeds();
 
-  puts("\nTESTING POST-INIT");
-  puts("• Init Related");
-  Test_SM_Init_FailsPostInit();
-  Test_SM_IsInitialized_SucceedsPostInit();
+  puts("\nTESTING POST-Start");
+  puts("• Start Related");
+  Test_smStart_FailsPostStart();
+  Test_smHasStarted_SucceedsPostStart();
   puts("• State Functions");
   puts(" • GetStateCount Pre-RegisterState");
 
   // TODO Think of how to name this better
-  Test_SM_GetStateCount_ReturnsZeroPostInit();
+  Test_smGetStateCount_ReturnsZeroPostStart();
   puts(" • RegisterState");
 
   // TODO review the below
-  Test_SM_RegisterState_RejectsNullStateName();
-  Test_SM_RegisterState_RejectsEmptyStateName();
-  Test_SM_RegisterState_AcceptsAllNonNullArgs();
-  Test_SM_RegisterState_RejectsExistingStateName();
+  Test_smRegisterState_RejectsNullStateName();
+  Test_smRegisterState_RejectsEmptyStateName();
+  Test_smRegisterState_AcceptsAllNonNullArgs();
+  Test_smRegisterState_RejectsExistingStateName();
 
   // TODO review the below
-  Test_SM_RegisterState_AcceptsNullEnterAndUpdate(); // TODO Test more
-  Test_SM_RegisterState_AcceptsNullDrawAndExit(); // TODO Test more
+  Test_smRegisterState_AcceptsNullEnterAndUpdate(); // TODO Test more
+  Test_smRegisterState_AcceptsNullDrawAndExit(); // TODO Test more
 
-  Test_SM_RegisterState_RejectsAllNullArgs();
-  puts("• IsStateRegistered");
-  Test_SM_IsStateRegistered_AcceptsRegisteredStateName();
-  Test_SM_IsStateRegistered_RejectsNonRegisteredStateName();
+  Test_smRegisterState_RejectsAllNullArgs();
+  puts("• StateExists");
+  Test_smStateExists_AcceptsRegisteredStateName();
+  Test_smStateExists_RejectsNonRegisteredStateName();
   puts(" • GetStateCount Post-RegisterState");
-  Test_SM_GetStateCount_ReturnsCorrectStateCountPostRegisterState();
-  puts(" • GetCurrStateName Pre-ChangeStateTo");
-  Test_SM_GetCurrStateName_FailsPreRegisterState();
-  puts(" • Lifecycle Functions Pre-ChangeStateTo");
-  Test_SM_Update_FailsIfNullCurrentState();
-  Test_SM_Draw_FailsIfNullCurrentState();
-  puts(" • ChangeStateTo");
-  Test_SM_ChangeStateTo_AcceptsValidStateFromNull();
-  Test_SM_ChangeStateTo_RejectsNullStateName();
-  Test_SM_ChangeStateTo_RejectsUnregisteredStateName();
+  Test_smGetStateCount_ReturnsCorrectStateCountPostRegisterState();
+  puts(" • GetCurrentStateName Pre-SetState");
+  Test_smGetCurrentStateName_FailsPreRegisterState();
+  puts(" • Lifecycle Functions Pre-SetState");
+  Test_smUpdate_FailsIfNullCurrentState();
+  Test_smDraw_FailsIfNullCurrentState();
+  puts(" • SetState");
+  Test_smSetState_AcceptsValidStateFromNull();
+  Test_smSetState_RejectsNullStateName();
+  Test_smSetState_RejectsUnregisteredStateName();
 
   // TODO Think of how to name this better
-  Test_SM_ChangeStateTo_SucceedsChangingFromOneValidStateToAnother();
+  Test_smSetState_SucceedsChangingFromOneValidStateToAnother();
 
   // TODO review the below
-  Test_SM_ChangeStateTo_CallsExitFunctionOfCurrentState();
-  Test_SM_ChangeStateTo_CallsEnterFunctionOfNewState();
-  Test_SM_ChangeStateTo_CallsExitAndEnterIfChangingToSameState();
-  Test_SM_ChangeStateTo_CallsEnterFunctionWithArgs();
+  Test_smSetState_CallsExitFunctionOfCurrentState();
+  Test_smSetState_CallsEnterFunctionOfNewState();
+  Test_smSetState_CallsExitAndEnterIfChangingToSameState();
+  Test_smSetState_CallsEnterFunctionWithArgs();
 
-  puts(" • GetCurrStateName Post-ChangeStateTo");
-  Test_SM_GetCurrStateName_ReturnsCurrentStateName();
+  puts(" • GetCurrentStateName Post-SetState");
+  Test_smGetCurrentStateName_ReturnsCurrentStateName();
 
   puts("TESTING LIFICYCLE FUNCTIONS");
-  Test_SM_Update_CallsValidUpdateFunction();
-  Test_SM_Draw_CallsValidDrawFunction();
-  Test_SM_Update_CallsValidUpdateFunctionEvenIfNullUpdate();
-  Test_SM_Draw_CallsValidDrawFunctionEvenIfNullDraw();
+  Test_smUpdate_CallsValidUpdateFunction();
+  Test_smDraw_CallsValidDrawFunction();
+  Test_smUpdate_CallsValidUpdateFunctionEvenIfNullUpdate();
+  Test_smDraw_CallsValidDrawFunctionEvenIfNullDraw();
 
-  puts("\nTESTING SHUTDOWN");
-  Test_SM_Shutdown_SucceedsPostInit();
+  puts("\nTESTING Stop");
+  Test_smStop_SucceedsPostStart();
 
-  puts("\nTESTING POST-SHUTDOWN");
-  puts("• Shutdown");
-  Test_SM_Shutdown_FailsPostShutdown();
-  puts("• Init Related");
-  Test_SM_IsInitialized_FailsPostShutdown();
+  puts("\nTESTING POST-Stop");
+  puts("• Stop");
+  Test_smStop_FailsPostStop();
+  puts("• Start Related");
+  Test_smHasStarted_FailsPostStop();
   puts("• State Functions");
-  Test_SM_RegisterState_FailsPostShutdown();
-  Test_SM_ChangeStateTo_FailsPostShutdown();
-  Test_SM_GetCurrStateName_FailsPostShutdown();
-  Test_SM_GetStateCount_FailsPostShutdown();
+  Test_smRegisterState_FailsPostStop();
+  Test_smSetState_FailsPostStop();
+  Test_smGetCurrentStateName_FailsPostStop();
+  Test_smGetStateCount_FailsPostStop();
   puts("• Lifecycle Functions");
 
   // TODO review the below
-  Test_SM_Update_FailsPostShutdown();
-  Test_SM_Draw_FailsPostShutdown();
+  Test_smUpdate_FailsPostStop();
+  Test_smDraw_FailsPostStop();
 
   // TODO review the below
   puts("\nTESTING OTHER TESTS");
-  Test_SM_Shutdown_CallsExitFunctionOfCurrentState();
-  Test_SM_Shutdown_SkipsExitIfNull();
+  Test_smStop_CallsExitFunctionOfCurrentState();
+  Test_smStop_SkipsExitIfNull();
 
   puts("\nSTRESS TESTS");
-  Test_SM_RegisteringMultipleStatesCausesNoSkips();
-  Test_SM_ChangingStatesOftenCausesNoSkips();
-  Test_SM_Shutdown_FreeingMultipleStatesCausesNoSkips();
+  Test_smRegisteringMultipleStatesCausesNoSkips();
+  Test_smChangingStatesOftenCausesNoSkips();
+  Test_smStop_FreeingMultipleStatesCausesNoSkips();
 
   puts("\nTIME TO SMILE! :)\n\tAll Tests Passed!");
   return 0;

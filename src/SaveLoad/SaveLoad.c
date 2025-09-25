@@ -76,11 +76,13 @@
 //         goto error;
 //     }
 //
-//     snprintf(tracker->defaultDir, strlen(sysDir) + strlen(SMILE_DIR) + 1, "%s%s", sysDir, SMILE_DIR);
+//     snprintf(tracker->defaultDir, strlen(sysDir) + strlen(SMILE_DIR) + 1,
+//              "%s%s", sysDir, SMILE_DIR);
 //
 //     if (!slInternal_DirExists(tracker->defaultDir)) {
 //         if (!slInternal_CreateDir(tracker->defaultDir)) {
-//             SMILE_FATAL_WITH_ARGS(MODULE, CAUSE_FAILED_TO_CREATE_DIR, SMILE_DIR, INIT, ABORTED);
+//             SMILE_FATAL_WITH_ARGS(MODULE, CAUSE_FAILED_TO_CREATE_DIR, SMILE_DIR,
+//                                   INIT, ABORTED);
 //             goto error;
 //         }
 //     }
@@ -128,12 +130,14 @@
 //     }
 //
 //     if (tracker->gameDir && strcmp(dir, tracker->gameDir) == 0) {
-//         SMILE_WARN_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_TARGET_DIR_IS_SAME_AS_CURR, dir, SET_GAME_DIR, ABORTED);
+//         SMILE_WARN_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_TARGET_DIR_IS_SAME_AS_CURR,
+//                              dir, SET_GAME_DIR, ABORTED);
 //         return true;
 //     }
 //
 //     if (!slInternal_IsValidDir(dir)) {
-//         SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_INVALID_PATH, dir, SET_GAME_DIR, ABORTED);
+//         SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_INVALID_PATH, dir,
+//                             SET_GAME_DIR, ABORTED);
 //         return false;
 //     }
 //
@@ -143,7 +147,8 @@
 //         return false;
 //     }
 //
-//     const size_t gameDirLen = strlen(tracker->defaultDir) + strlen(sanitizedDir) + 1; // '\0'
+//     const size_t gameDirLen = strlen(tracker->defaultDir) + strlen(sanitizedDir)
+//                               + 1; // '\0'
 //
 //     free(tracker->gameDir);
 //     tracker->gameDir = TEST_Malloc(gameDirLen);
@@ -153,13 +158,15 @@
 //         return false;
 //     }
 //
-//     snprintf(tracker->gameDir, gameDirLen, "%s%s", tracker->defaultDir, sanitizedDir);
+//     snprintf(tracker->gameDir, gameDirLen, "%s%s", tracker->defaultDir,
+//              sanitizedDir);
 //     free(sanitizedDir);
 //
 //
 //     if (!slInternal_DirExists(tracker->gameDir)) {
 //         if (!slInternal_CreateDir(tracker->gameDir)) {
-//             SMILE_FATAL(MODULE, CAUSE_FAILED_TO_CREATE_DIR, SET_GAME_DIR, ABORTED);
+//             SMILE_FATAL(MODULE, CAUSE_FAILED_TO_CREATE_DIR, SET_GAME_DIR,
+//                         ABORTED);
 //             return false;
 //         }
 //     }
@@ -171,7 +178,8 @@
 //         }
 //     }
 //
-//     SMILE_INFO_WITH_NAME(MODULE, INFO_WITH_ARGS_SET_GAME_DIR_SUCCESSFUL, tracker->gameDir);
+//     SMILE_INFO_WITH_NAME(MODULE, INFO_WITH_ARGS_SET_GAME_DIR_SUCCESSFUL,
+//                          tracker->gameDir);
 //     return true;
 // }
 //
@@ -179,7 +187,8 @@
 //     RETURN_FALSE_IF_NOT_INITIALIZED(DIR_EXISTS);
 //
 //     if (!dir) {
-//         SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NULL_ARG, "dir", DIR_EXISTS, ABORTED);
+//         SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NULL_ARG, "dir", DIR_EXISTS,
+//                             ABORTED);
 //         return false;
 //     }
 //
@@ -204,17 +213,21 @@
 //     RETURN_FALSE_IF_NOT_INITIALIZED(SET_GAME_FILE);
 //
 //     if (!file) {
-//         SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NULL_ARG, "file", SET_GAME_FILE, ABORTED);
+//         SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_NULL_ARG, "file",
+//                             SET_GAME_FILE, ABORTED);
 //         return false;
 //     }
 //
 //     if (tracker->gameFile && strcmp(file, tracker->gameFile) == 0) {
-//         SMILE_WARN_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_TARGET_FILE_IS_SAME_AS_CURR, file, SET_GAME_FILE, ABORTED);
+//         SMILE_WARN_WITH_ARGS(
+//             MODULE, CAUSE_WITH_ARGS_TARGET_FILE_IS_SAME_AS_CURR, file,
+//             SET_GAME_FILE, ABORTED);
 //         return true;
 //     }
 //
 //     if (!slInternal_IsValidFile(file)) {
-//         SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_INVALID_PATH, file, SET_GAME_FILE, ABORTED);
+//         SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_INVALID_PATH, file,
+//                             SET_GAME_FILE, ABORTED);
 //         return false;
 //     }
 //
@@ -244,7 +257,8 @@
 //             return false;
 //         }
 //     }
-//     SMILE_INFO_WITH_NAME(MODULE, INFO_WITH_ARGS_SET_GAME_FILE_SUCCESSFUL, tracker->gameFile);
+//     SMILE_INFO_WITH_NAME(MODULE, INFO_WITH_ARGS_SET_GAME_FILE_SUCCESSFUL,
+//                          tracker->gameFile);
 //     return true;
 // }
 //
@@ -268,7 +282,8 @@
 //     RETURN_FALSE_IF_NOT_INITIALIZED(BEGIN_SAVE_SESSION);
 //
 //     if (!tracker->gamePath) {
-//         SMILE_ERR(MODULE, CAUSE_GAME_PATH_NOT_SET, CONSEQ_BEGIN_SAVE_SESSION_ABORTED);
+//         SMILE_ERR(MODULE, CAUSE_GAME_PATH_NOT_SET,
+//                   CONSEQ_BEGIN_SAVE_SESSION_ABORTED);
 //         return false;
 //     }
 //
@@ -330,12 +345,14 @@
 //     RETURN_FALSE_IF_NOT_INITIALIZED(CONSEQ_END_SAVE_SESSION_ABORTED);
 //
 //     if (!tracker->saveStream) {
-//         SMILE_ERR(MODULE, CAUSE_SAVE_SESSION_NOT_OPEN, CONSEQ_END_SAVE_SESSION_ABORTED);
+//         SMILE_ERR(MODULE, CAUSE_SAVE_SESSION_NOT_OPEN,
+//                   CONSEQ_END_SAVE_SESSION_ABORTED);
 //         return false;
 //     }
 //
 //     if (fclose(tracker->saveStream) == EOF) {
-//         SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_FAILED_TO_CLOSE_FILE, tracker->saveStream,
+//         SMILE_ERR_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_FAILED_TO_CLOSE_FILE,
+//                             tracker->saveStream,
 //                             CONSEQ_END_SAVE_SESSION_ABORTED);
 //         return false;
 //     }
@@ -351,7 +368,8 @@
 //     RETURN_FALSE_IF_NOT_INITIALIZED(CONSEQ_BEGIN_LOAD_SESSION_ABORTED);
 //
 //     if (!tracker->gamePath) {
-//         SMILE_ERR(MODULE, CAUSE_GAME_PATH_NOT_SET, CONSEQ_BEGIN_SAVE_SESSION_ABORTED);
+//         SMILE_ERR(MODULE, CAUSE_GAME_PATH_NOT_SET,
+//                   CONSEQ_BEGIN_SAVE_SESSION_ABORTED);
 //         return false;
 //     }
 //
@@ -542,7 +560,8 @@
 //
 //     if (isFatal) {
 //         // TODO get files names
-//         SMILE_FATAL_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_FAILED_TO_CLOSE_FILE, "name", CONSEQ_SHUTDOWN_ABORTED);
+//         SMILE_FATAL_WITH_ARGS(MODULE, CAUSE_WITH_ARGS_FAILED_TO_CLOSE_FILE,
+//                               "name", CONSEQ_SHUTDOWN_ABORTED);
 //         return false;
 //     }
 //
@@ -632,16 +651,19 @@
 //
 // bool slInternalUpdateGamePath(void) {
 //     free(tracker->gamePath);
-//     size_t len = strlen(tracker->defaultDir) + strlen(tracker->gameDir) + strlen(tracker->gameFile) + 1;
+//     size_t len = strlen(tracker->defaultDir) + strlen(tracker->gameDir) +
+//                  strlen(tracker->gameFile) + 1;
 //     tracker->gamePath = TEST_Malloc(len);
 //     if (!tracker->gamePath) {
 //         return false;
 //     }
-//     snprintf(tracker->gamePath, len, "%s%s%s", tracker->defaultDir, tracker->gameDir, tracker->gameFile);
+//     snprintf(tracker->gamePath, len, "%s%s%s", tracker->defaultDir,
+//              tracker->gameDir, tracker->gameFile);
 //     return true;
 // }
 //
-// bool slInternalBeginSession(const FileInteractionMode mode, const char *file, const char *conseqAbort) {
+// bool slInternalBeginSession(const FileInteractionMode mode, const char *file,
+//                             const char *conseqAbort) {
 //     RETURN_FALSE_IF_NOT_INITIALIZED(conseqAbort);
 //
 //     FILE **currStream = nullptr;
