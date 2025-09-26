@@ -2,13 +2,15 @@
 // Includes
 // --------------------------------------------------
 
-#include "Log.h"
-#include "LogInternal.h"
-#include <__stdarg_va_list.h>
+#include "include/Log.h"
+
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+
+#include "LogInternal.h"
+
 
 // --------------------------------------------------
 // Defines
@@ -25,7 +27,7 @@
 // Prototypes
 // --------------------------------------------------
 
-static void lgEvent(LogLevel level, const char *module, const char *fmt, ...);
+static void lgEvent(LogLevel level, const char *module, const char *msg, ...);
 
 static void lgEventV(LogLevel level, const char *module, const char *fmt,
                      va_list args);
@@ -62,22 +64,22 @@ void lgSetFatalHandler(lgFatalHandler handler) {
 // Functions - Internal
 // --------------------------------------------------
 
-void lgInternalEvent(LogLevel level, const char *module, const char *cause,
-                     const char *funcName, const char *conseq) {
-  lgEvent(level, module, "%s. '%s' %s.", cause, funcName, conseq);
+void lgInternalLog(LogLevel level, const char *module, const char *cause,
+                   const char *fnName, const char *conseq) {
+  lgEvent(level, module, "%s. '%s' %s.", cause, fnName, conseq);
 }
 
-void lgInternalEventWithArg(LogLevel level, const char *module,
-                            const char *cause, const char *arg,
-                            const char *funcName, const char *conseq) {
-  lgEvent(level, module, "%s: %s. '%s' %s.", cause, arg, funcName, conseq);
+void lgInternalLogWithArg(LogLevel level, const char *module,
+                          const char *cause, const char *arg,
+                          const char *fnName, const char *conseq) {
+  lgEvent(level, module, "%s: %s. '%s' %s.", cause, arg, fnName, conseq);
 }
 
-void lgInternalEventFmt(LogLevel level, const char *module, const char *fmt,
+void lgInternalEventFmt(LogLevel level, const char *module, const char *msg,
                         ...) {
   va_list args;
   va_start(args, msg);
-  lgEventV(level, module, fmt, args);
+  lgEventV(level, module, msg, args);
   va_end(args);
 }
 
@@ -85,10 +87,10 @@ void lgInternalEventFmt(LogLevel level, const char *module, const char *fmt,
 // Functions - Private
 // --------------------------------------------------
 
-void lgEvent(LogLevel level, const char *module, const char *fmt, ...) {
+void lgEvent(LogLevel level, const char *module, const char *msg, ...) {
   va_list args;
   va_start(args, msg);
-  lgEventV(level, module, fmt, args);
+  lgEventV(level, module, msg, args);
   va_end(args);
 }
 

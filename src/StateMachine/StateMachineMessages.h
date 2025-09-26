@@ -36,7 +36,7 @@
 #define CAUSE_STATE_HAS_NULL_UPDATE "State Has Null Update"
 #define CAUSE_STATE_HAS_NULL_DRAW "State Has Null Draw"
 // Errors
-#define CAUSE_CURRENT_STATE_IS_NULL "Current State Is Null"
+#define CAUSE_NULL_CURRENT_STATE "Current State Is Null"
 #define CAUSE_NO_VALID_FUNCTIONS "State Has No Valid Functions"
 #define CAUSE_CANNOT_DELETE_CURRENT_STATE "Cannot Delete Current State"
 

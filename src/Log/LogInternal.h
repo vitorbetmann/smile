@@ -17,14 +17,11 @@ typedef enum {
 // Prototypes
 // --------------------------------------------------
 
-void lgInternalEvent(LogLevel level, const char *module, const char *cause,
-                     const char *funcName, const char *conseq);
+void lgInternalLog(LogLevel level, const char *module, const char *cause,
+                   const char *fnName, const char *conseq);
 
-void lgInternalEventWithArg(LogLevel level, const char *module,
-                            const char *cause, const char *arg,
-                            const char *funcName, const char *conseq);
-
-void lgInternalEventFmt(LogLevel level, const char *module, const char *fmt,
-                        ...);
+void lgInternalLogWithArg(LogLevel level, const char *module,
+                          const char *cause, const char *arg,
+                          const char *fnName, const char *conseq);
 
 #endif

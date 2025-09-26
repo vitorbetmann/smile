@@ -5,8 +5,7 @@
 // #include "SaveLoad.h"
 // #include "SaveLoadInternal.h"
 // #include "src/SaveLoad/SaveLoadMessages.h"
-// #include "src/_Internal/Log/LogInternal.h"
-// #include "src/_Internal/Log/LogMessages.h"
+// #include "LogInternal.h"
 // #include "src/_Internal/Test/TestInternal.h"
 // #include <stdio.h>
 // #include <string.h>
