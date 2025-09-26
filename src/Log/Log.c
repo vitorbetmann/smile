@@ -16,29 +16,38 @@
 // Defines
 // --------------------------------------------------
 
-#define SMILE_CYAN "\033[36m"
-#define SMILE_YELLOW "\033[33m"
-#define SMILE_RED "\033[31m"
-#define SMILE_PURPLE "\033[0;35m"
-#define SMILE_GREEN "\033[32m"
-#define SMILE_DEFAULT_COLOR "\033[0m"
+#define LOG_CYAN "\033[36m"
+#define LOG_YELLOW "\033[33m"
+#define LOG_RED "\033[31m"
+#define LOG_PURPLE "\033[0;35m"
+#define LOG_GREEN "\033[32m"
+#define LOG_WHITE "\033[0m"
+
+#define LOG_TIME_FMT "%H:%M:%S"
+#define LOG_TIME_BUFFER_LEN 32
 
 // --------------------------------------------------
 // Prototypes
 // --------------------------------------------------
 
-static void lgEvent(LogLevel level, const char *module, const char *msg, ...);
+static void lgHelperLog(LogLevel level, const char *origin, const char *msg,
+                        ...);
 
-static void lgEventV(LogLevel level, const char *module, const char *fmt,
-                     va_list args);
+static void lgHelperLogV(LogLevel level, const char *origin, const char *msg,
+                         va_list args);
 
-static void lgInternalFatalHandler(void);
+static bool lgHelperIsLogEnabled(LogLevel level);
+
+static void lgHelperGetColorAndPrefix(LogLevel level, const char **color,
+                                      const char **prefix);
+
+static void lgHelperFatalHandler(void);
 
 // --------------------------------------------------
 // Variables
 // --------------------------------------------------
 
-lgFatalHandler fatalHandler = lgInternalFatalHandler;
+lgFatalHandler fatalHandler = lgHelperFatalHandler;
 
 // --------------------------------------------------
 // Functions - Public
@@ -47,13 +56,13 @@ lgFatalHandler fatalHandler = lgInternalFatalHandler;
 void lgLog(const char *msg, ...) {
   va_list args;
   va_start(args, msg);
-  lgEventV(LOG_USER, "User", msg, args);
+  lgHelperLogV(LOG_USER, "User", msg, args);
   va_end(args);
 }
 
-void lgSetFatalHandler(lgFatalHandler handler) {
+void lgSetFatal(lgFatalHandler handler) {
   if (!handler) {
-    fatalHandler = lgInternalFatalHandler;
+    fatalHandler = lgHelperFatalHandler;
     return;
   }
 
@@ -66,96 +75,100 @@ void lgSetFatalHandler(lgFatalHandler handler) {
 
 void lgInternalLog(LogLevel level, const char *module, const char *cause,
                    const char *fnName, const char *conseq) {
-  lgEvent(level, module, "%s. '%s' %s.", cause, fnName, conseq);
+  lgHelperLog(level, module, "%s. '%s' %s.", cause, fnName, conseq);
 }
 
 void lgInternalLogWithArg(LogLevel level, const char *module,
                           const char *cause, const char *arg,
                           const char *fnName, const char *conseq) {
-  lgEvent(level, module, "%s: %s. '%s' %s.", cause, arg, fnName, conseq);
+  lgHelperLog(level, module, "%s: %s. '%s' %s.", cause, arg, fnName, conseq);
 }
 
-void lgInternalEventFmt(LogLevel level, const char *module, const char *msg,
+// --------------------------------------------------
+// Functions - Helper
+// --------------------------------------------------
+
+static void lgHelperLog(LogLevel level, const char *origin, const char *msg,
                         ...) {
   va_list args;
   va_start(args, msg);
-  lgEventV(level, module, msg, args);
+  lgHelperLogV(level, origin, msg, args);
   va_end(args);
 }
 
-// --------------------------------------------------
-// Functions - Private
-// --------------------------------------------------
-
-void lgEvent(LogLevel level, const char *module, const char *msg, ...) {
-  va_list args;
-  va_start(args, msg);
-  lgEventV(level, module, msg, args);
-  va_end(args);
-}
-
-static void lgEventV(const LogLevel level, const char *module, const char *fmt,
-                     const va_list args) {
-  const char *color;
-  const char *prefix;
-
-  // Determine color based on type
-  switch (level) {
-    case LOG_INFO:
-#ifdef SMILE_INFO_ENABLED
-      color = SMILE_CYAN;
-      prefix = "INFO";
-      break;
-#else
-      return;
-#endif
-
-    case LOG_WARNING:
-#ifdef SMILE_WARNINGS_ENABLED
-      color = SMILE_YELLOW;
-      prefix = "WARNING";
-      break;
-#else
-      return;
-#endif
-
-    case LOG_ERROR:
-      color = SMILE_RED;
-      prefix = "ERROR";
-      break;
-
-    case LOG_FATAL:
-      color = SMILE_PURPLE;
-      prefix = "FATAL";
-      break;
-
-    case LOG_USER:
-      color = SMILE_GREEN;
-      prefix = "Log";
-      break;
-
-    default:
-      color = SMILE_DEFAULT_COLOR;
-      prefix = "Log";
-      break;
+void lgHelperLogV(LogLevel level, const char *origin, const char *msg,
+                  va_list args) {
+  if (!lgHelperIsLogEnabled(level)) {
+    return;
   }
+
+  const char *color = nullptr;
+  const char *prefix = nullptr;
+  lgHelperGetColorAndPrefix(level, &color, &prefix);
 
   const time_t epochTime = time(nullptr);
   struct tm localTime;
   localtime_r(&epochTime, &localTime);
-  char timeBuf[9];
-  strftime(timeBuf, sizeof(timeBuf), "%H:%M:%S", &localTime);
+  char timeBuf[LOG_TIME_BUFFER_LEN];
+  strftime(timeBuf, sizeof(timeBuf), LOG_TIME_FMT, &localTime);
 
-  fprintf(stderr, "%s[%s Smile %s from %s] - ", color, timeBuf, prefix,
-          module);
-  vfprintf(stderr, fmt, args);
-  fprintf(stderr, "%s\n", SMILE_DEFAULT_COLOR); // Reset color
+  fprintf(stderr, "%s%s [Smile %s From %s] - ", color, timeBuf, prefix, origin);
+  vfprintf(stderr, msg, args);
+  fprintf(stderr, "%s\n", LOG_WHITE); // Reset color
 
   if (level == LOG_FATAL) {
     fatalHandler();
   }
 }
 
-static void lgInternalFatalHandler(void) {
+static bool lgHelperIsLogEnabled(LogLevel level) {
+  switch (level) {
+    case LOG_INFO:
+#ifdef SMILE_INFO
+      return true;
+#else
+      return false;
+#endif
+    case LOG_WARNING:
+#ifdef SMILE_WARNINGS
+      return true;
+#else
+      return false;
+#endif
+    default:
+      return true;
+  }
+}
+
+static void lgHelperGetColorAndPrefix(LogLevel level, const char **color,
+                                      const char **prefix) {
+  switch (level) {
+    case LOG_USER:
+      *color = LOG_GREEN;
+      *prefix = "LOG";
+      return;
+    case LOG_INFO:
+      *color = LOG_CYAN;
+      *prefix = "INFO";
+      return;
+    case LOG_WARNING:
+      *color = LOG_YELLOW;
+      *prefix = "WARNING";
+      return;
+    case LOG_ERROR:
+      *color = LOG_RED;
+      *prefix = "ERROR";
+      return;
+    case LOG_FATAL:
+      *color = LOG_PURPLE;
+      *prefix = "FATAL";
+      return;
+    default:
+      *color = LOG_WHITE;
+      *prefix = "\"You Shouldn't Be Seeing This!\"";
+  }
+}
+
+static void lgHelperFatalHandler(void) {
   exit(EXIT_FAILURE);
 }

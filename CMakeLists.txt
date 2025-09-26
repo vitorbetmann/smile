@@ -45,16 +45,13 @@ target_include_directories(smile PUBLIC
 target_include_directories(smile PRIVATE "${RAYLIB_SRC_DIR}")
 
 # Option to enable/disable release mode
-option(SMILE_RELEASE "Compile SMILE in release mode" OFF)
+option(SMILE_RELEASE "Compile SMILE in release mode" ON)
 
 # Option to enable/disable warnings
-option(SMILE_WARNINGS_ENABLED "Enable runtime warning messages from SMILE" ON)
+option(SMILE_WARNINGS "Enable runtime warning messages from SMILE" ON)
 
 # Option to enable/disable info logs
-option(SMILE_INFO_ENABLED "Enable runtime info messages from SMILE" ON)
-
-# Option to enable/disable debug logs
-option(SMILE_DEBUG_ENABLED "Enable debug messages from SMILE" OFF)
+option(SMILE_INFO "Enable runtime info messages from SMILE" ON)
 
 # Inform user
 if (SMILE_RELEASE)
@@ -64,26 +61,19 @@ else ()
     message(STATUS "SMILE: Compiling in DEBUG mode")
 endif ()
 
-if (SMILE_WARNINGS_ENABLED AND NOT SMILE_RELEASE)
+if (SMILE_WARNINGS AND NOT SMILE_RELEASE)
     message(STATUS "SMILE: Warnings ENABLED")
-    add_compile_definitions(SMILE_WARNINGS_ENABLED)
+    add_compile_definitions(SMILE_WARNINGS)
 else ()
     message(STATUS "SMILE: Warnings DISABLED")
 endif ()
 
-if (SMILE_INFO_ENABLED AND NOT SMILE_RELEASE)
+if (SMILE_INFO AND NOT SMILE_RELEASE)
     message(STATUS "SMILE: Info logs ENABLED")
-    add_compile_definitions(SMILE_INFO_ENABLED)
+    add_compile_definitions(SMILE_INFO)
 else ()
     message(STATUS "SMILE: Info logs DISABLED")
 endif ()
-
-# if(SMILE_DEBUG_ENABLED AND NOT SMILE_RELEASE)
-#     message(STATUS "SMILE: Debug logs ENABLED")
-#     add_compile_definitions(SMILE_DEBUG_ENABLED)
-# else()
-#     message(STATUS "SMILE: Debug logs DISABLED")
-# endif()
 
 # Option to enable test builds
 option(SMILE_TESTS "Build test executables" OFF)

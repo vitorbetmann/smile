@@ -6,10 +6,10 @@
 // --------------------------------------------------
 
 typedef enum {
+    LOG_USER,
     LOG_INFO,
     LOG_WARNING,
     LOG_ERROR,
-    LOG_USER,
     LOG_FATAL,
 } LogLevel;
 

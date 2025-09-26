@@ -13,6 +13,6 @@ typedef void (*lgFatalHandler)(void);
 
 void lgLog(const char *msg, ...);
 
-void lgSetFatalHandler(lgFatalHandler handler);
+void lgSetFatal(lgFatalHandler handler);
 
 #endif

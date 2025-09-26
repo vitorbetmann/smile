@@ -5,8 +5,8 @@
 // Includes
 // --------------------------------------------------
 
-#include "include/StateMachine.h"
-#include "external/uthash.h"
+#include "../../include/StateMachine.h"
+#include <../../external/uthash.h>
 
 // --------------------------------------------------
 // Data types

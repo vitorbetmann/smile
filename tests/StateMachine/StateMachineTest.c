@@ -24,8 +24,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "StateMachine.h"
-#include "TestInternal.h"
+#include "../../include/StateMachine.h"
+#include "../../src/_Internal/Test/TestInternal.h"
 
 // --------------------------------------------------
 // Pre-Start
