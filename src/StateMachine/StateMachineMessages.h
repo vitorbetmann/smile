@@ -1,48 +1,76 @@
 #ifndef STATE_MACHINE_MESSAGES_H
 #define STATE_MACHINE_MESSAGES_H
 
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
 // MODULE NAME
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
 
 #define MODULE "StateMachine"
 
-// --------------------------------------------------
-// FUNCTIONS NAMES
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
+// Enums
+// -----------------------------------------------------------------------------
 
-#define REGISTER_STATE "RegisterState"
-#define IS_STATE_REGISTERED "IsStateRegistered"
-#define CHANGE_STATE_TO "ChangeStateTo"
-#define GET_CURR_STATE_NAME "GetCurrStateName"
-#define GET_STATE_COUNT "GetStateCount"
-#define UNREGISTER_STATE "UnregisterState"
+typedef enum {
+    // State Functions
+    CREATE_STATE,
+    STATE_EXISTS,
+    SET_STATE,
+    GET_CURRENT_STATE_NAME,
+    GET_STATE_COUNT,
+    DELETE_STATE,
+    // Lifecycle Functions
+    UPDATE,
+    DRAW,
+} StateMachineFunctions;
 
-#define UPDATE "Update"
-#define DRAW "Draw"
+typedef enum {
+    // Infos
+    STATE_CREATED,
+    STATE_SET_TO,
+    STATE_DELETED,
+    // Warnings
+    STATE_ALREADY_EXISTS,
+    STATE_NOT_FOUND,
+    UPDATE_FUNCTION_IS_NULL,
+    DRAW_FUNCTION_IS_NULL,
+    // Errors
+    NO_VALID_FUNCTIONS,
+    CANNOT_DELETE_CURRENT_STATE,
+    CURRENT_STATE_IS_NULL,
+} StateMachineCauses;
 
-// --------------------------------------------------
-// INFO W/ ARGS
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
+// String Arrays
+// -----------------------------------------------------------------------------
 
-#define INFO_WITH_ARGS_CHANGED_STATE_TO "Changed state to:"
+static char *smFuncs[] = {
+    // State Functions
+    [CREATE_STATE] = "CreateState",
+    [STATE_EXISTS] = "StateExists",
+    [SET_STATE] = "SetState",
+    [GET_CURRENT_STATE_NAME] = "GetCurrentStateName",
+    [GET_STATE_COUNT] = "GetStateCount",
+    [DELETE_STATE ] = "DeleteState",
+    // Lifecycle Functions
+    [UPDATE] = "Update",
+    [DRAW] = "Draw",
+};
 
-// --------------------------------------------------
-// CAUSE NO ARGS
-// --------------------------------------------------
-
-#define CAUSE_NULL_CURRENT_STATE "Current state is Null."
-
-// --------------------------------------------------
-// CAUSE W/ ARGS
-// --------------------------------------------------
-
-#define CAUSE_WITH_ARGS_ALREADY_EXISTS "State already exists:"
-#define CAUSE_WITH_ARGS_NO_VALID_FUNCTIONS "State has no valid functions:"
-#define CAUSE_WITH_ARGS_STATE_NOT_FOUND "State not found:"
-#define CAUSE_WITH_ARGS_STATE_IS_ACTIVE "State is active:"
-
-#define CAUSE_WITH_ARGS_NULL_UPDATE_FUNCTION "Null Update function from state:"
-#define CAUSE_WITH_ARGS_NULL_DRAW_FUNCTION "Null Draw function from state:"
+static char *smCauses[] = {
+    // Infos
+    [STATE_CREATED] = "State Created",
+    [STATE_SET_TO] = "State Set To",
+    [STATE_DELETED] = "State Deleted",
+    // Warnings
+    [STATE_ALREADY_EXISTS] = "State already exists",
+    [STATE_NOT_FOUND] = "State not found",
+    // Errors
+    [CURRENT_STATE_IS_NULL] = "Current state is Null",
+    [NO_VALID_FUNCTIONS] = "State has no valid functions",
+    [CANNOT_DELETE_CURRENT_STATE] = "Cannot Delete Current State",
+    [UPDATE_FUNCTION_IS_NULL] = "Null Update function from state",
+    [DRAW_FUNCTION_IS_NULL] = "Null Draw function from state",
+};
 
 #endif

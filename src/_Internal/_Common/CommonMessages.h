@@ -1,43 +1,66 @@
 #ifndef COMMON_MESSAGES_H
 #define COMMON_MESSAGES_H
 
-// --------------------------------------------------
-// FUNCTIONS NAMES
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
+// Enums
+// -----------------------------------------------------------------------------
 
-#define INIT "Init"
-#define IS_INITIALIZED "IsInitialized"
+typedef enum {
+    // Start Functions
+    START,
+    HAS_STARTED,
+    // Stop Functions
+    STOP
+} CommonFunctions;
 
-#define SHUTDOWN "Shutdown"
+typedef enum {
+    // Infos
+    MODULE_STARTED,
+    MODULE_STOPPED,
+    // Warnings
+    ALREADY_STARTED,
+    // Errors
+    MEM_ALLOC_FAILED,
+    NOT_STARTED,
+    NULL_ARG,
+    EMPTY_ARG,
+} CommonCauses;
 
-// --------------------------------------------------
-// STATUS - Prefix
-// --------------------------------------------------
+typedef enum {
+    // Success
+    SUCCESSFUL,
+    // Failure
+    ABORTED,
+} CommonConsequences;
 
-#define EMPTY "Empty"
+// -----------------------------------------------------------------------------
+// String Arrays
+// -----------------------------------------------------------------------------
 
-// --------------------------------------------------
-// STATUS - Suffix
-// --------------------------------------------------
+static char *cmFuncs[] = {
+    [START] = "Start",
+    [HAS_STARTED] = "HasStarted",
+    [STOP] = "Stop",
+};
 
-#define SUCCESSFUL "successful"
-#define ABORTED "aborted"
-#define INITIALIZED "initialized"
-#define FAILED "failed"
+static char *cmCauses[] = {
+    // Infos
+    [MODULE_STARTED] = "Module Started",
+    [MODULE_STOPPED] = "Module Stopped",
+    // Warnings
+    [ALREADY_STARTED] = "Module Already Started",
+    // Errors
+    [MEM_ALLOC_FAILED] = "Memory Allocation Failed",
+    [NOT_STARTED] = "Module Not Started",
+    [NULL_ARG] = "Null Argument",
+    [EMPTY_ARG] = "Empty Argument",
+};
 
-// --------------------------------------------------
-// CAUSE NO ARGS
-// --------------------------------------------------
-
-#define CAUSE_ALREADY_INITIALIZED "Already initialized."
-#define CAUSE_NOT_INITIALIZED "Not initialized."
-#define CAUSE_MEM_ALLOC_FAILED "Memory allocation failed."
-
-// --------------------------------------------------
-// CAUSE W/ ARGS
-// --------------------------------------------------
-
-#define CAUSE_WITH_ARGS_NULL_ARG "Null Argument:"
-#define CAUSE_WITH_ARGS_EMPTY_ARG "Empty Argument:"
+static char *cmConseqs[] = {
+    // Success
+    [SUCCESSFUL] = "Successful",
+    // Failure
+    [ABORTED] = "Aborted",
+};
 
 #endif

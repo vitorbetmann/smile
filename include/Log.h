@@ -11,7 +11,7 @@ typedef void (*lgFatalHandler)(void);
 // Prototypes
 // --------------------------------------------------
 
-void lgLog(const char *origin, const char *msg, ...);
+void lgLog(const char *msg, ...);
 
 void lgSetFatalHandler(lgFatalHandler handler);
 

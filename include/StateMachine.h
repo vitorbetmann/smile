@@ -36,7 +36,7 @@ const char *smGetCurrentStateName(void);
 
 int smGetStateCount(void);
 
-bool smDestroyState(const char *name);
+bool smDeleteState(const char *name);
 
 // Lifecycle Functions ------------------------------
 

@@ -2,9 +2,9 @@
 // TODO(#8) trim state name when changing states and reject whitespace only
 // TODO(#9) create internal function to trim leading and trailing whitespace
 
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
 // Includes
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
 
 #include <string.h>
 
@@ -15,33 +15,35 @@
 #include "LogMessages.h"
 #include "src/_Internal/Test/TestInternal.h"
 
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
 // Variables
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
 
 static StateMachineTracker *tracker;
 
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
 // Functions - Public
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
 
-// Init Related -------------------------------------
+
+// Start Related -------------------------------------
 
 bool smStart(void) {
     if (tracker) {
-        lgInternalEvent(LOG_WARNING,MODULE, CAUSE_ALREADY_INITIALIZED, INIT,
-                        ABORTED);
+        lgInternalEvent(LOG_WARNING,MODULE, cmCauses[ALREADY_STARTED],
+                        cmFuncs[START], cmConseqs[ABORTED]);
         return false;
     }
 
     tracker = TEST_Calloc(1, sizeof(StateMachineTracker));
     if (!smHasStarted()) {
-        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, INIT,
-                        ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, cmCauses[MEM_ALLOC_FAILED],
+                        cmFuncs[START], cmConseqs[ABORTED]);
         return false;
     }
 
-    lgInternalEvent(LOG_INFO, MODULE, "",INIT, SUCCESSFUL);
+    lgInternalEvent(LOG_INFO, MODULE, cmCauses[MODULE_STARTED], cmFuncs[START],
+                    cmConseqs[SUCCESSFUL]);
     return true;
 }
 
@@ -54,50 +56,54 @@ bool smHasStarted(void) {
 bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
                    smDrawFn drawFn, smExitFn exitFn) {
     if (!smHasStarted()) {
-        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_NOT_INITIALIZED,
-                        REGISTER_STATE, ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, cmCauses[NOT_STARTED],
+                        smFuncs[CREATE_STATE], cmConseqs[ABORTED]);
         return false;
     }
 
     if (!name) {
-        lgInternalEventWithArg(LOG_ERROR, MODULE, CAUSE_WITH_ARGS_NULL_ARG,
-                               "name",REGISTER_STATE, ABORTED);
+        lgInternalEventWithArg(LOG_ERROR, MODULE, cmCauses[NULL_ARG],
+                               "name", smFuncs[CREATE_STATE],
+                               cmConseqs[ABORTED]);
         return false;
     }
 
     // TODO Sanitize name
 
     if (strlen(name) == 0) {
-        lgInternalEventWithArg(LOG_ERROR, MODULE, CAUSE_WITH_ARGS_EMPTY_ARG,
-                               "name",REGISTER_STATE, ABORTED);
+        lgInternalEventWithArg(LOG_ERROR, MODULE, cmCauses[EMPTY_ARG],
+                               "name", smFuncs[CREATE_STATE],
+                               cmConseqs[ABORTED]);
         return false;
     }
 
     StateMap *entry = smInternalGetEntry(name);
     if (entry) {
-        lgInternalEventWithArg(LOG_ERROR, MODULE,CAUSE_WITH_ARGS_ALREADY_EXISTS,
-                               name,REGISTER_STATE, ABORTED);
+        lgInternalEventWithArg(LOG_WARNING, MODULE,
+                               smCauses[STATE_ALREADY_EXISTS],
+                               name, smFuncs[CREATE_STATE],
+                               cmConseqs[ABORTED]);
         return false;
     }
 
     if (!enterFn && !updateFn && !drawFn && !exitFn) {
         lgInternalEventWithArg(LOG_ERROR, MODULE,
-                               CAUSE_WITH_ARGS_NO_VALID_FUNCTIONS, name,
-                               REGISTER_STATE, ABORTED);
+                               smFuncs[NO_VALID_FUNCTIONS], name,
+                               smFuncs[CREATE_STATE], cmConseqs[ABORTED]);
         return false;
     }
 
     State *newState = malloc(sizeof(State));
     if (!newState) {
-        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,
-                        REGISTER_STATE, ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, cmCauses[MEM_ALLOC_FAILED],
+                        smFuncs[CREATE_STATE], cmConseqs[ABORTED]);
         return false;
     }
 
     char *stateName = malloc(strlen(name) + 1);
     if (!stateName) {
-        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,
-                        REGISTER_STATE, ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, cmCauses[MEM_ALLOC_FAILED],
+                        smFuncs[CREATE_STATE], cmConseqs[ABORTED]);
         free(newState);
         return false;
     }
@@ -113,8 +119,8 @@ bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
     if (!temp) {
         free(newState->name);
         free(newState);
-        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,
-                        REGISTER_STATE, ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, cmCauses[MEM_ALLOC_FAILED],
+                        smFuncs[CREATE_STATE], cmConseqs[ABORTED]);
         return false;
     }
     temp->state = newState;
@@ -123,30 +129,31 @@ bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
 
     tracker->stateCount++;
 
-    lgInternalEventFmt(LOG_INFO, MODULE,
-                       "Created state: '%s'. State count: %d.", name,
-                       tracker->stateCount);
+    lgInternalEventWithArg(LOG_INFO, MODULE, smCauses[STATE_CREATED], name,
+                           smFuncs[CREATE_STATE], cmConseqs[SUCCESSFUL]);
     return true;
 }
 
 bool smStateExists(const char *name) {
     if (!smHasStarted()) {
-        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_NOT_INITIALIZED,
-                        IS_STATE_REGISTERED, ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, cmCauses[NOT_STARTED],
+                        smFuncs[STATE_EXISTS], cmConseqs[ABORTED]);
         return false;
     }
 
     if (!name) {
-        lgInternalEventWithArg(LOG_ERROR, MODULE, CAUSE_WITH_ARGS_NULL_ARG,
-                               "name",IS_STATE_REGISTERED, ABORTED);
+        lgInternalEventWithArg(LOG_ERROR, MODULE, cmCauses[NULL_ARG],
+                               "name", smFuncs[STATE_EXISTS],
+                               cmConseqs[ABORTED]);
         return false;
     }
 
     // TODO Sanitize name
 
     if (strlen(name) == 0) {
-        lgInternalEventWithArg(LOG_ERROR, MODULE, CAUSE_WITH_ARGS_EMPTY_ARG,
-                               "name",IS_STATE_REGISTERED, ABORTED);
+        lgInternalEventWithArg(LOG_ERROR, MODULE, cmCauses[EMPTY_ARG],
+                               "name", smFuncs[STATE_EXISTS],
+                               cmConseqs[ABORTED]);
         return false;
     }
 
@@ -155,30 +162,29 @@ bool smStateExists(const char *name) {
 
 bool smSetState(const char *name, void *args) {
     if (!smHasStarted()) {
-        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_NOT_INITIALIZED,
-                        CHANGE_STATE_TO, ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, cmCauses[NOT_STARTED],
+                        smFuncs[SET_STATE], cmConseqs[ABORTED]);
         return false;
     }
 
     if (!name) {
-        lgInternalEventWithArg(LOG_ERROR, MODULE, CAUSE_WITH_ARGS_NULL_ARG,
-                               "name",CHANGE_STATE_TO, ABORTED);
+        lgInternalEventWithArg(LOG_ERROR, MODULE, cmCauses[NULL_ARG],
+                               "name", smFuncs[SET_STATE], cmConseqs[ABORTED]);
         return false;
     }
 
     // TODO Sanitize name
 
     if (strlen(name) == 0) {
-        lgInternalEventWithArg(LOG_ERROR, MODULE, CAUSE_WITH_ARGS_EMPTY_ARG,
-                               "name",CHANGE_STATE_TO, ABORTED);
+        lgInternalEventWithArg(LOG_ERROR, MODULE, cmCauses[EMPTY_ARG],
+                               "name", smFuncs[SET_STATE], cmConseqs[ABORTED]);
         return false;
     }
 
     const State *nextState = smInternalGetState(name);
     if (!nextState) {
-        lgInternalEventWithArg(LOG_WARNING, MODULE,
-                               CAUSE_WITH_ARGS_STATE_NOT_FOUND, name,
-                               CHANGE_STATE_TO, ABORTED);
+        lgInternalEventWithArg(LOG_WARNING, MODULE, smCauses[STATE_NOT_FOUND],
+                               name, smFuncs[SET_STATE], cmConseqs[ABORTED]);
         return false;
     }
 
@@ -192,14 +198,15 @@ bool smSetState(const char *name, void *args) {
         tracker->currState->enterFn(args);
     }
 
-    // SMILE_INFO_WITH_ARGS(MODULE, INFO_WITH_ARGS_CHANGED_STATE_TO, name);
+    lgInternalEventWithArg(LOG_INFO, MODULE, smCauses[STATE_SET_TO], name,
+                           smFuncs[SET_STATE], cmConseqs[SUCCESSFUL]);
     return true;
 }
 
 const char *smGetCurrentStateName(void) {
     if (!smHasStarted()) {
-        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_NOT_INITIALIZED,
-                        GET_CURR_STATE_NAME, ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, cmCauses[NOT_STARTED],
+                        smFuncs[GET_CURRENT_STATE_NAME], cmConseqs[ABORTED]);
         return nullptr;
     }
 
@@ -208,47 +215,49 @@ const char *smGetCurrentStateName(void) {
 
 int smGetStateCount(void) {
     if (!smHasStarted()) {
-        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_NOT_INITIALIZED,
-                        GET_STATE_COUNT, ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, cmCauses[NOT_STARTED],
+                        smFuncs[GET_STATE_COUNT], cmConseqs[ABORTED]);
         return -1;
     }
 
     return tracker->stateCount;
 }
 
-bool smDestroyState(const char *name) {
+bool smDeleteState(const char *name) {
     if (!smHasStarted()) {
-        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_NOT_INITIALIZED,
-                        UNREGISTER_STATE, ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, cmCauses[NOT_STARTED],
+                        smFuncs[DELETE_STATE], cmConseqs[ABORTED]);
         return false;
     }
 
     if (!name) {
-        lgInternalEventWithArg(LOG_ERROR, MODULE, CAUSE_WITH_ARGS_NULL_ARG,
-                               "name",UNREGISTER_STATE, ABORTED);
+        lgInternalEventWithArg(LOG_ERROR, MODULE, cmCauses[NULL_ARG],
+                               "name", smFuncs[DELETE_STATE],
+                               cmConseqs[ABORTED]);
         return false;
     }
 
     // TODO Sanitize name
 
     if (strlen(name) == 0) {
-        lgInternalEventWithArg(LOG_ERROR, MODULE, CAUSE_WITH_ARGS_EMPTY_ARG,
-                               "name",UNREGISTER_STATE, ABORTED);
+        lgInternalEventWithArg(LOG_ERROR, MODULE, cmCauses[EMPTY_ARG],
+                               "name", smFuncs[DELETE_STATE],
+                               cmConseqs[ABORTED]);
         return false;
     }
 
     if (tracker->currState && strcmp(name, tracker->currState->name) == 0) {
         lgInternalEventWithArg(LOG_ERROR, MODULE,
-                               CAUSE_WITH_ARGS_STATE_IS_ACTIVE, name,
-                               UNREGISTER_STATE, ABORTED);
+                               smCauses[CANNOT_DELETE_CURRENT_STATE], name,
+                               smFuncs[DELETE_STATE], cmConseqs[ABORTED]);
         return false;
     }
 
     StateMap *entry = smInternalGetEntry(name);
     if (!entry) {
-        lgInternalEventWithArg(LOG_ERROR, MODULE,
-                               CAUSE_WITH_ARGS_STATE_NOT_FOUND, name,
-                               UNREGISTER_STATE, ABORTED);
+        lgInternalEventWithArg(LOG_WARNING, MODULE,
+                               smCauses[STATE_NOT_FOUND], name,
+                               smFuncs[DELETE_STATE], cmConseqs[ABORTED]);
         return false;
     }
 
@@ -259,9 +268,8 @@ bool smDestroyState(const char *name) {
 
     tracker->stateCount--;
 
-    lgInternalEventFmt(LOG_INFO, MODULE,
-                       "Destroyed state: '%s'. Total count: %d.", name,
-                       tracker->stateCount);
+    lgInternalEventWithArg(LOG_INFO, MODULE, smCauses[STATE_DELETED], name,
+                           smFuncs[DELETE_STATE], cmConseqs[SUCCESSFUL]);
     return true;
 }
 
@@ -269,20 +277,21 @@ bool smDestroyState(const char *name) {
 
 bool smUpdate(float dt) {
     if (!smHasStarted()) {
-        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_NOT_INITIALIZED, UPDATE,
-                        ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, cmCauses[NOT_STARTED],
+                        smFuncs[UPDATE], cmConseqs[ABORTED]);
         return false;
     }
     if (!tracker->currState) {
-        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_NULL_CURRENT_STATE, UPDATE,
-                        ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, smCauses[STATE_NOT_FOUND],
+                        smFuncs[UPDATE], cmConseqs[ABORTED]);
         return false;
     }
 
     if (!tracker->currState->updateFn) {
         lgInternalEventWithArg(LOG_WARNING, MODULE,
-                               CAUSE_WITH_ARGS_NULL_UPDATE_FUNCTION,
-                               tracker->currState->name, UPDATE, ABORTED);
+                               smCauses[UPDATE_FUNCTION_IS_NULL],
+                               tracker->currState->name, smFuncs[UPDATE],
+                               cmConseqs[ABORTED]);
         return false;
     }
 
@@ -292,21 +301,22 @@ bool smUpdate(float dt) {
 
 bool smDraw(void) {
     if (!smHasStarted()) {
-        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_NOT_INITIALIZED, DRAW,
-                        ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, cmCauses[NOT_STARTED], smFuncs[DRAW],
+                        cmConseqs[ABORTED]);
         return false;
     }
 
     if (!tracker->currState) {
-        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_NULL_CURRENT_STATE, DRAW,
-                        ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, smCauses[CURRENT_STATE_IS_NULL],
+                        smFuncs[DRAW], cmConseqs[ABORTED]);
         return false;
     }
 
     if (!tracker->currState->drawFn) {
         lgInternalEventWithArg(LOG_WARNING, MODULE,
-                               CAUSE_WITH_ARGS_NULL_DRAW_FUNCTION,
-                               tracker->currState->name, DRAW, ABORTED);
+                               smCauses[DRAW_FUNCTION_IS_NULL],
+                               tracker->currState->name, smFuncs[DRAW],
+                               cmConseqs[ABORTED]);
         return false;
     }
 
@@ -314,12 +324,12 @@ bool smDraw(void) {
     return true;
 }
 
-// Shutdown -----------------------------------------
+// cmFunctions[STOP] -----------------------------------------
 
 bool smStop(void) {
     if (!smHasStarted()) {
-        lgInternalEvent(LOG_ERROR, MODULE, CAUSE_NOT_INITIALIZED, SHUTDOWN,
-                        ABORTED);
+        lgInternalEvent(LOG_ERROR, MODULE, cmCauses[NOT_STARTED],
+                        cmFuncs[STOP], cmConseqs[ABORTED]);
         return false;
     }
 
@@ -339,13 +349,14 @@ bool smStop(void) {
     free(tracker);
     tracker = nullptr;
 
-    //  SMILE_INFO(MODULE, SHUTDOWN, SUCCESSFUL);
+    lgInternalEvent(LOG_INFO, MODULE, cmCauses[MODULE_STOPPED], cmFuncs[STOP],
+                    cmConseqs[SUCCESSFUL]);
     return true;
 }
 
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
 // Functions - Internal
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
 
 const State *smInternalGetState(const char *name) {
     StateMap *entry = smInternalGetEntry(name);

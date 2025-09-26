@@ -11,6 +11,17 @@
 #include <time.h>
 
 // --------------------------------------------------
+// Defines
+// --------------------------------------------------
+
+#define SMILE_CYAN "\033[36m"
+#define SMILE_YELLOW "\033[33m"
+#define SMILE_RED "\033[31m"
+#define SMILE_PURPLE "\033[0;35m"
+#define SMILE_GREEN "\033[32m"
+#define SMILE_DEFAULT_COLOR "\033[0m"
+
+// --------------------------------------------------
 // Prototypes
 // --------------------------------------------------
 
@@ -31,10 +42,10 @@ lgFatalHandler fatalHandler = lgInternalFatalHandler;
 // Functions - Public
 // --------------------------------------------------
 
-void lgLog(const char *origin, const char *msg, ...) {
+void lgLog(const char *msg, ...) {
   va_list args;
   va_start(args, msg);
-  lgEventV(LOG_USER, origin, msg, args);
+  lgEventV(LOG_USER, "User", msg, args);
   va_end(args);
 }
 
@@ -59,7 +70,7 @@ void lgInternalEvent(LogLevel level, const char *module, const char *cause,
 void lgInternalEventWithArg(LogLevel level, const char *module,
                             const char *cause, const char *arg,
                             const char *funcName, const char *conseq) {
-  lgEvent(level, module, "%s: '%s'. %s %s.", cause, arg, funcName, conseq);
+  lgEvent(level, module, "%s: %s. '%s' %s.", cause, arg, funcName, conseq);
 }
 
 void lgInternalEventFmt(LogLevel level, const char *module, const char *fmt,
@@ -118,12 +129,12 @@ static void lgEventV(const LogLevel level, const char *module, const char *fmt,
 
     case LOG_USER:
       color = SMILE_GREEN;
-      prefix = "USER";
+      prefix = "Log";
       break;
 
     default:
       color = SMILE_DEFAULT_COLOR;
-      prefix = "LOG";
+      prefix = "Log";
       break;
   }
 
@@ -133,7 +144,7 @@ static void lgEventV(const LogLevel level, const char *module, const char *fmt,
   char timeBuf[9];
   strftime(timeBuf, sizeof(timeBuf), "%H:%M:%S", &localTime);
 
-  fprintf(stderr, "%s[%s] [Smile %s from %s]: ", color, timeBuf, prefix,
+  fprintf(stderr, "%s[%s Smile %s from %s] - ", color, timeBuf, prefix,
           module);
   vfprintf(stderr, fmt, args);
   fprintf(stderr, "%s\n", SMILE_DEFAULT_COLOR); // Reset color
