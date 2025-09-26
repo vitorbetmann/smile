@@ -2,65 +2,35 @@
 #define COMMON_MESSAGES_H
 
 // -----------------------------------------------------------------------------
-// Enums
+// Functions Names
 // -----------------------------------------------------------------------------
 
-typedef enum {
-    // Start Functions
-    START,
-    HAS_STARTED,
-    // Stop Functions
-    STOP
-} CommonFunctions;
-
-typedef enum {
-    // Infos
-    MODULE_STARTED,
-    MODULE_STOPPED,
-    // Warnings
-    ALREADY_STARTED,
-    // Errors
-    MEM_ALLOC_FAILED,
-    NOT_STARTED,
-    NULL_ARG,
-    EMPTY_ARG,
-} CommonCauses;
-
-typedef enum {
-    // Success
-    SUCCESSFUL,
-    // Failure
-    ABORTED,
-} CommonConsequences;
+#define FN_START  "Start"
+#define FN_HAS_STARTED  "HasStarted"
+#define FN_STOP  "Stop"
 
 // -----------------------------------------------------------------------------
-// String Arrays
+// Causes
 // -----------------------------------------------------------------------------
 
-static char *cmFuncs[] = {
-    [START] = "Start",
-    [HAS_STARTED] = "HasStarted",
-    [STOP] = "Stop",
-};
+// Infos
+#define CAUSE_MODULE_STARTED  "Module Started"
+#define CAUSE_MODULE_STOPPED  "Module Stopped"
+// Warnings
+#define CAUSE_ALREADY_STARTED  "Module Already Started"
+// Errors
+#define CAUSE_MEM_ALLOC_FAILED  "Memory Allocation Failed"
+#define CAUSE_NOT_STARTED  "Module Not Started"
+#define CAUSE_NULL_ARG  "Null Argument"
+#define CAUSE_EMPTY_ARG  "Empty Argument"
 
-static char *cmCauses[] = {
-    // Infos
-    [MODULE_STARTED] = "Module Started",
-    [MODULE_STOPPED] = "Module Stopped",
-    // Warnings
-    [ALREADY_STARTED] = "Module Already Started",
-    // Errors
-    [MEM_ALLOC_FAILED] = "Memory Allocation Failed",
-    [NOT_STARTED] = "Module Not Started",
-    [NULL_ARG] = "Null Argument",
-    [EMPTY_ARG] = "Empty Argument",
-};
+// -----------------------------------------------------------------------------
+// Consequences
+// -----------------------------------------------------------------------------
 
-static char *cmConseqs[] = {
-    // Success
-    [SUCCESSFUL] = "Successful",
-    // Failure
-    [ABORTED] = "Aborted",
-};
+// Success
+#define CONSEQ_SUCCESSFUL  "Successful"
+// Failure
+#define CONSEQ_ABORTED  "Aborted"
 
 #endif
