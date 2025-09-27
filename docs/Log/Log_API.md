@@ -1,20 +1,25 @@
 # Log API
 
-The `Log` module provides a lightweight API for writing timestamped,
-printf-style
-log messages and configuring fatal error handling.
+`Log` provides an API for writing
+printf-style messages to the terminal and configuring fatal error handling.
 
 ---
 
 ## Table of Contents
 
 - [Data Types](#data-types)
+    - [Function Pointers](#function-pointers)
+        - [void (*lgFatalHandler)(void)](#void-lgfatalhandlervoid)
 - [Functions](#functions)
+    - [void lgLog(const char *msg, ...)](#void-lglogconst-char-msg-)
+    - [void lgSetFatal(lgFatalHandler handler)](#void-lgsetfatallgfatalhandler-handler)
 - [Workflow Examples](#workflow-examples)
 
 ---
 
 ## Data Types
+
+### Function Pointers
 
 ### `void (*lgFatalHandler)(void)`
 

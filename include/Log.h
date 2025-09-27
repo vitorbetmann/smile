@@ -1,5 +1,5 @@
 /**
- * @file Log.h
+ * @file LogInternal.h
  * @brief Public logging interface for SMILE.
  *
  * Provides the public-facing API for logging and configuring

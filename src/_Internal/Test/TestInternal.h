@@ -38,7 +38,7 @@ typedef enum {
 // --------------------------------------------------
 
 /**
- * @brief Log a "[PASS]" message for a successful test case.
+ * @brief LogInternal a "[PASS]" message for a successful test case.
  *
  * @param funcName Name of the test function that passed
  *

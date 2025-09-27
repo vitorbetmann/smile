@@ -1,16 +1,22 @@
 # SMILE State Machine: Getting Started 🤖
 
-The StateMachine module lets you easily transition between different states—like menus, gameplay, or game over screens—using a clean and well-defined lifecycle.
+The StateMachine module lets you easily transition between different states—like
+menus, gameplay, or game over screens—using a clean and well-defined lifecycle.
 
 ---
 
 ## State Lifecycle Overview
 
-The typical lifecycle of a state in the StateMachine module follows these steps: enter → update → draw → exit.
+The typical lifecycle of a state in the StateMachine module follows these steps:
+enter → update → draw → exit.
 
-Users register states by calling `SM_RegisterState` and passing a unique name along with the necessary callback functions. To switch between states, call `SM_ChangeStateTo` with the unique name of the target state and optional arguments.
+Users register states by calling `SM_RegisterState` and passing a unique name
+along with the necessary callback functions. To switch between states, call
+`SM_ChangeStateTo` with the unique name of the target state and optional
+arguments.
 
-During the game loop, the update and draw functions of the active state are called on each frame.
+During the game loop, the update and draw functions of the active state are
+called on each frame.
 
 ## 🧪 Example Usage
 
@@ -46,7 +52,12 @@ int main(void) {
 
 ---
 
-You can pass custom data between states using the `args` parameter of `SM_ChangeStateTo`. Typically, you define a custom struct to hold any data you want to share, and then pass a pointer to this struct as `args`. `SM_ChangeStateTo` will first call the exit function of the current state, followed by the enter function of the next state. See the [State Machine API](./SM_API.md) for more information.
+You can pass custom data between states using the `args` parameter of
+`SM_ChangeStateTo`. Typically, you define a custom struct to hold any data you
+want to share, and then pass a pointer to this struct as `args`.
+`SM_ChangeStateTo` will first call the exit function of the current state,
+followed by the enter function of the next state. See
+the [State Machine API](StateMachine_API.md) for more information.
 
 ---
 
@@ -84,7 +95,8 @@ void StateTwoDraw(void);              // Called each frame to draw StateTwo
 
 ---
 
-You can then access the StateTwoArgs struct to pass in the necessary args into SM_ChangeStateTo. In StateOne.c:
+You can then access the StateTwoArgs struct to pass in the necessary args into
+SM_ChangeStateTo. In StateOne.c:
 
 ---
 
@@ -119,7 +131,10 @@ void StateOneExit(void) {
 
 ---
 
-In the next state's `enter` function, you cast the `void*` argument back to your custom struct type to access the data. This enables flexible communication and state initialization based on dynamic data, avoiding reliance on global variables.
+In the next state's `enter` function, you cast the `void*` argument back to your
+custom struct type to access the data. This enables flexible communication and
+state initialization based on dynamic data, avoiding reliance on global
+variables.
 
 ---
 
@@ -158,30 +173,38 @@ void StateTwoDraw(void) {
 ## State Lifecycle and Function Summary
 
 - **State Machine Control:**  
-  Use `SM_Init()` to initialize and `SM_Shutdown()` to clean up the state machine.
+  Use `SM_Init()` to initialize and `SM_Shutdown()` to clean up the state
+  machine.
 
 - **State Registration:**  
-  Use `SM_RegisterState(const char *name, EnterFunc enter, UpdateFunc update, DrawFunc draw, ExitFunc exit)` to register a new state with its lifecycle callbacks. The state name must be unique, and at least one callback must be non-NULL.
+  Use
+  `SM_RegisterState(const char *name, EnterFunc enter, UpdateFunc update, DrawFunc draw, ExitFunc exit)`
+  to register a new state with its lifecycle callbacks. The state name must be
+  unique, and at least one callback must be non-NULL.
 
 - **State Lifecycle:**  
   States have four main functions:
 
-  - `enter(void *args)`: called when entering a state, receives optional arguments.
-  - `update(float dt)`: called every frame to update the state logic.
-  - `draw(void)`: called every frame to render the state.
-  - `exit(void)`: called when leaving a state.
+    - `enter(void *args)`: called when entering a state, receives optional
+      arguments.
+    - `update(float dt)`: called every frame to update the state logic.
+    - `draw(void)`: called every frame to render the state.
+    - `exit(void)`: called when leaving a state.
 
 - **State Transitions:**  
-  Use `SM_ChangeStateTo(const char *name, void *args)` to switch states. It calls the current state's exit function, then the next state's enter function with the provided arguments.
+  Use `SM_ChangeStateTo(const char *name, void *args)` to switch states. It
+  calls the current state's exit function, then the next state's enter function
+  with the provided arguments.
 
-For detailed function documentation, see the [State Machine API Reference](./SM_API.md).
+For detailed function documentation, see
+the [State Machine API Reference](StateMachine_API.md).
 
 ---
 
 ### 🔍 Quick Reference Table
 
 | Function                                                                                                                                | Description                                                                        |
-| --------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+|-----------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
 | `bool SM_Init(void)`                                                                                                                    | Initializes the state machine. Returns `true` if successful.                       |
 | `bool SM_RegisterState(const char *name, void (*enterFn)(void *), void (*updateFn)(float), void (*drawFn)(void), void (*exitFn)(void))` | Registers a new named state with lifecycle callbacks.                              |
 | `bool SM_ChangeStateTo(const char *name, void *args)`                                                                                   | Switches to a different state by name, optionally passing arguments.               |

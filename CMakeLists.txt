@@ -85,7 +85,7 @@ if (SMILE_TESTS)
     # --------------------------------------------------
 
     # StateMachine -------------------------------------
-    add_executable(StateMachineTest tests/StateMachine/StateMachineTest.c)
+    add_executable(StateMachineTest tests/StateMachineTest/StateMachineTest.c)
     target_link_libraries(StateMachineTest PRIVATE smile)
     target_include_directories(StateMachineTest PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -93,7 +93,7 @@ if (SMILE_TESTS)
     # TODO Add and link Particle System test
 
     # SaveLoad -----------------------------------------
-    add_executable(SaveLoadTest tests/SaveLoad/SaveLoadTest.c)
+    add_executable(SaveLoadTest tests/SaveLoadTest/SaveLoadTest.c)
     target_link_libraries(SaveLoadTest PRIVATE smile)
     target_include_directories(SaveLoadTest PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -104,10 +104,10 @@ if (SMILE_TESTS)
     # _Common ------------------------------------------
     # TODO #13 Add and link _Common test
 
-    # Log ----------------------------------------------
-    # TODO #13 Add and link Log test
+    # LogInternal ----------------------------------------------
+    # TODO #13 Add and link LogInternal test
 
-    # Test ---------------------------------------------
-    # TODO #13 Add and link Test test
+    # Internal ---------------------------------------------
+    # TODO #13 Add and link Internal test
 
 endif ()

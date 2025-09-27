@@ -10,14 +10,19 @@ in unit tests to simulate failures.
 ## Table of Contents
 
 - [Data Types](#data-types)
+    - [enums](#enums)
+        - [MemAllocFn](#memallocfn)
 - [Functions](#functions)
+    - [a](#void-test_passconst-char-funcname)
 - [Workflow Examples](#workflow-examples)
 
 ---
 
 ## Data Types
 
-### `enum MemAllocFunc`
+### Enums
+
+### `MemAllocFn`
 
 Specifies which memory allocation function should be simulated using
 `TEST_Disable`.
@@ -32,7 +37,7 @@ Specifies which memory allocation function should be simulated using
 
 ## Functions
 
-### `void TEST_Pass(const char *funcName)`
+### `void ttPass(const char *fnName)`
 
 Logs a `[PASS]` message for a successful test or operation.
 
@@ -53,7 +58,7 @@ For more, see [Workflow Examples](#workflow-examples).
 
 ---
 
-### `bool TEST_Disable(MemAllocFunc funcName, int at)`
+### `bool tiDisable(MemAllocFunc funcName, int at)`
 
 Temporarily disables a memory allocation function, causing it to fail at the
 specified call count. After the failure

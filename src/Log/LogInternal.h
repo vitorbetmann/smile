@@ -16,7 +16,7 @@
 // -----------------------------------------------------------------------------
 
 /**
- * @brief Log severity levels used by SMILE.
+ * @brief LogInternal severity levels used by SMILE.
  *
  * Represents the importance of a log message, ranging from user-defined
  * messages to fatal errors.
