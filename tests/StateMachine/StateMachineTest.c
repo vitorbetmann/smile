@@ -18,12 +18,11 @@
  * @author Vitor Betmann
  */
 
-#include "StateMachineTest.h"
-
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
 
+#include "StateMachineTest.h"
 #include "../../include/StateMachine.h"
 #include "../../src/_Internal/Test/TestInternal.h"
 

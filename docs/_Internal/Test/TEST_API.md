@@ -1,7 +1,9 @@
 # TestInternal API
 
-`TestInternal` provides instrumented memory allocation wrappers and fatal hooks for SMILE.  
-These functions can be used in production for safe allocations and logging, and in unit tests to simulate failures.
+`TestInternal` provides instrumented memory allocation wrappers and fatal hooks
+for SMILE.  
+These functions can be used in production for safe allocations and logging, and
+in unit tests to simulate failures.
 
 ---
 
@@ -13,13 +15,12 @@ These functions can be used in production for safe allocations and logging, and 
 
 ---
 
----
-
 ## Data Types
 
-### `MemAllocFunc` (enum)
+### `enum MemAllocFunc`
 
-Specifies which memory allocation function should be simulated using `TEST_Disable`.
+Specifies which memory allocation function should be simulated using
+`TEST_Disable`.
 
 | Enum      | Simulates |
 |-----------|-----------|
@@ -54,11 +55,13 @@ For more, see [Workflow Examples](#workflow-examples).
 
 ### `bool TEST_Disable(MemAllocFunc funcName, int at)`
 
-Temporarily disables a memory allocation function, causing it to fail at the specified call count. After the failure
+Temporarily disables a memory allocation function, causing it to fail at the
+specified call count. After the failure
 occurs, normal behavior resumes.
 
 - **Parameters:**
-    - `funcName` — Allocation function to disable (`MALLOC`, `CALLOC`, `REALLOC`).
+    - `funcName` — Allocation function to disable (`MALLOC`, `CALLOC`,
+      `REALLOC`).
     - `at` — Call count at which failure occurs.
 - **Returns:**
     - `true` if successfully disabled.

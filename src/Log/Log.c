@@ -1,14 +1,20 @@
+/**
+ * @file Log.c
+ * @brief Implementation of the SMILE logging system.
+ *
+ * @author Vitor Betmann
+ */
+
 // -----------------------------------------------------------------------------
 // Includes
 // -----------------------------------------------------------------------------
-
-#include "include/Log.h"
 
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
+#include "include/Log.h"
 #include "LogInternal.h"
 
 // -----------------------------------------------------------------------------
@@ -29,17 +35,67 @@
 // Prototypes
 // -----------------------------------------------------------------------------
 
+/**
+ * @brief Outputs messages with a specific log level and origin.
+ *
+ * Wraps variable argument handling for internal logging functions.
+ *
+ * @param level Severity level of the log message.
+ * @param origin Origin or module name for the log message.
+ * @param msg Format string for the message to log.
+ * @param ... Additional arguments for the format string.
+ *
+ * @author Vitor Betmann
+ */
 static void lgHelperLog(LogLevel level, const char *origin, const char *msg,
                         ...);
 
+/**
+ * @brief Outputs formatted messages.
+ *
+ * Handles timestamp formatting, color coding, log prefixes, and log level
+ * filtering.
+ *
+ * @param level Severity level of the log message.
+ * @param origin Origin or module name for the log message.
+ * @param msg Format string for the message to log.
+ * @param args Variable argument list corresponding to the format string.
+ *
+ * @author Vitor Betmann
+ */
 static void lgHelperLogV(LogLevel level, const char *origin, const char *msg,
                          va_list args);
 
-static bool lgHelperIsLogEnabled(LogLevel level);
+/**
+ * @brief Determines if logging is enabled for a given level.
+ *
+ * @param level Severity level to check.
+ * @return true if logging is enabled for the level, false otherwise.
+ *
+ * @author Vitor Betmann
+ */
+static bool lgHelperIsLevelEnabled(LogLevel level);
 
+/**
+ * @brief Determines the color and prefix for a given log level.
+ *
+ * @param level Severity level of the log message.
+ * @param color Output pointer to the ANSI color string for the level.
+ * @param prefix Output pointer to the prefix string for the level.
+ *
+ * @author Vitor Betmann
+ */
 static void lgHelperGetColorAndPrefix(LogLevel level, const char **color,
                                       const char **prefix);
 
+/**
+ * @brief Default handler for fatal log events.
+ *
+ * Called when a log with LOG_FATAL level is issued and no custom fatal handler
+ * is set. Terminates the program with failure status.
+ *
+ * @author Vitor Betmann
+ */
 static void lgHelperFatalHandler(void);
 
 // -----------------------------------------------------------------------------
@@ -97,7 +153,7 @@ static void lgHelperLog(LogLevel level, const char *origin, const char *msg,
 
 void lgHelperLogV(LogLevel level, const char *origin, const char *msg,
                   va_list args) {
-  if (!lgHelperIsLogEnabled(level)) {
+  if (!lgHelperIsLevelEnabled(level)) {
     return;
   }
 
@@ -120,7 +176,7 @@ void lgHelperLogV(LogLevel level, const char *origin, const char *msg,
   }
 }
 
-static bool lgHelperIsLogEnabled(LogLevel level) {
+static bool lgHelperIsLevelEnabled(LogLevel level) {
   switch (level) {
     case LOG_INFO:
 #ifdef SMILE_INFO

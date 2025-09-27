@@ -5,8 +5,10 @@
 // Functions Names
 // -----------------------------------------------------------------------------
 
+// Start Functions
 #define FN_START  "Start"
 #define FN_HAS_STARTED  "HasStarted"
+// Stop Functions
 #define FN_STOP  "Stop"
 
 // -----------------------------------------------------------------------------
