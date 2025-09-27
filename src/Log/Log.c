@@ -125,7 +125,7 @@ void lgSetFatal(lgFatalHandler handler) {
 }
 
 // -----------------------------------------------------------------------------
-// Functions - Internal
+// Functions - TestInternal
 // -----------------------------------------------------------------------------
 
 void lgInternalLog(LogLevel level, const char *module, const char *cause,

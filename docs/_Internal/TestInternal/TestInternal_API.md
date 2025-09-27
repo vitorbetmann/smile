@@ -5,6 +5,11 @@ for SMILE.
 These functions can be used in production for safe allocations and logging, and
 in unit tests to simulate failures.
 
+For testing guidelines, see
+the [Testing Contributing Doc](../_Contributing/3_Testing.md).
+
+### 🚨 Warning! This module is not thread-safe
+
 ---
 
 ## Table of Contents
@@ -20,7 +25,6 @@ in unit tests to simulate failures.
         - [tsInternalCalloc](#void-tsinternalcallocsize_t-nitems-size_t-size)
         - [tsInternalRealloc](#void-tsinternalreallocvoid-ptr-size_t-size)
 - [Workflow Examples](#-workflow-examples)
-- [Notes](#-notes)
 
 ---
 
@@ -131,11 +135,7 @@ Wrapper around `calloc()` with optional failure simulation.
 **Example:**
 
 ```c
-tracker = TEST_Calloc(1, sizeof(SaveLoadTracker));
-if (!tracker) {
-    SMILE_ERR(MODULE, CAUSE_MEM_ALLOC_FAILED, CONSEQ_INIT_ABORTED);
-    return false;
-}
+NO EXAMPLE YET
 ```
 
 For more, see [Workflow Examples](#-workflow-examples).
@@ -184,9 +184,3 @@ For more, see [Workflow Examples](#-workflow-examples).
 ```c
 // NO EXAMPLES YET
 ```
-
----
-
-## 📝 Notes
-
-- Designed for single-threaded environments.

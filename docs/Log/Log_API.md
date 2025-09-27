@@ -3,6 +3,8 @@
 `Log` provides an API for writing
 printf-style messages to the terminal and configuring fatal error handling.
 
+### 🚨 Warning! This module is not thread-safe
+
 ---
 
 ## Table of Contents
@@ -13,7 +15,6 @@ printf-style messages to the terminal and configuring fatal error handling.
     - [lgLog](#void-lglogconst-char-msg-)
     - [lgSetFatal](#void-lgsetfatallgfatalhandler-handler)
 - [Workflow Examples](#-workflow-examples)
-- [Notes](#-notes)
 
 ---
 
@@ -126,9 +127,3 @@ int main() {
     ... // More code
 }
 ```
-
----
-
-## 📝 Notes
-
-- Designed for single-threaded environments.

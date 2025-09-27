@@ -107,7 +107,7 @@ if (SMILE_TESTS)
     # LogInternal ----------------------------------------------
     # TODO #13 Add and link LogInternal test
 
-    # Internal ---------------------------------------------
-    # TODO #13 Add and link Internal test
+    # TestInternal ---------------------------------------------
+    # TODO #13 Add and link TestInternal test
 
 endif ()

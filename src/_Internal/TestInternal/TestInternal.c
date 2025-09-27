@@ -11,7 +11,7 @@
 #include "src/_Internal/TestInternal/TestInternal.h"
 
 // --------------------------------------------------
-// Internal state
+// TestInternal state
 // --------------------------------------------------
 
 static bool canMalloc = true;
@@ -28,53 +28,53 @@ static unsigned int reallocNum;
 // --------------------------------------------------
 
 void tsInternalPass(const char *fnName) {
-  printf("\t[PASS] %s\n", fnName);
+    printf("\t[PASS] %s\n", fnName);
 }
 
 bool tsInternalDisable(MemAllocFn fnName, unsigned int at) {
-  switch (fnName) {
-    case MALLOC:
-      canMalloc = false;
-      mallocNum = at;
-      return true;
-    case CALLOC:
-      canCalloc = false;
-      callocNum = at;
-      return true;
-    case REALLOC:
-      canRealloc = false;
-      reallocNum = at;
-      return true;
-    default:
-      return false;
-  }
+    switch (fnName) {
+        case MALLOC:
+            canMalloc = false;
+            mallocNum = at;
+            return true;
+        case CALLOC:
+            canCalloc = false;
+            callocNum = at;
+            return true;
+        case REALLOC:
+            canRealloc = false;
+            reallocNum = at;
+            return true;
+        default:
+            return false;
+    }
 }
 
 void *tsInternalMalloc(const size_t size) {
-  mallocNum--;
-  if (!canMalloc && mallocNum == 0) {
-    canMalloc = true;
-    return NULL;
-  }
-  return malloc(size);
+    mallocNum--;
+    if (!canMalloc && mallocNum == 0) {
+        canMalloc = true;
+        return NULL;
+    }
+    return malloc(size);
 }
 
 void *tsInternalCalloc(const size_t nitems, const size_t size) {
-  callocNum--;
-  if (!canCalloc && callocNum == 0) {
-    canCalloc = true;
-    return NULL;
-  }
-  return calloc(nitems, size);
+    callocNum--;
+    if (!canCalloc && callocNum == 0) {
+        canCalloc = true;
+        return NULL;
+    }
+    return calloc(nitems, size);
 }
 
 void *tsInternalRealloc(void *ptr, const size_t size) {
-  reallocNum--;
-  if (!canRealloc && reallocNum == 0) {
-    canRealloc = true;
-    return NULL;
-  }
-  return realloc(ptr, size);
+    reallocNum--;
+    if (!canRealloc && reallocNum == 0) {
+        canRealloc = true;
+        return NULL;
+    }
+    return realloc(ptr, size);
 }
 
 // bool tsInternalFatal(void) {
