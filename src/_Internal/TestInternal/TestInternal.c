@@ -2,12 +2,13 @@
 * @file TestInternal.c
  * @brief Implementation of test utilities for simulating allocation failures.
  *
- * Internal use only. Provides definitions for the functions declared in
- * TestInternal.h.
+ * Provides definitions for the functions declared in TestInternal.h.
  */
 
-#include "src/_Internal/Test/TestInternal.h"
 #include <stdio.h>
+#include <stdlib.h>
+
+#include "src/_Internal/TestInternal/TestInternal.h"
 
 // --------------------------------------------------
 // Internal state
@@ -16,22 +17,22 @@
 static bool canMalloc = true;
 static bool canCalloc = true;
 static bool canRealloc = true;
-static bool canFatal = false;
+// static bool canFatal = false;
 
-static int mallocNum;
-static int callocNum;
-static int reallocNum;
+static unsigned int mallocNum;
+static unsigned int callocNum;
+static unsigned int reallocNum;
 
 // --------------------------------------------------
 // Functions
 // --------------------------------------------------
 
-void TEST_Pass(const char *funcName) {
-  printf("\t[PASS] %s\n", funcName);
+void tsInternalPass(const char *fnName) {
+  printf("\t[PASS] %s\n", fnName);
 }
 
-bool TEST_Disable(const MemAllocFunc funcName, const int at) {
-  switch (funcName) {
+bool tsInternalDisable(MemAllocFn fnName, unsigned int at) {
+  switch (fnName) {
     case MALLOC:
       canMalloc = false;
       mallocNum = at;
@@ -49,7 +50,7 @@ bool TEST_Disable(const MemAllocFunc funcName, const int at) {
   }
 }
 
-void *TEST_Malloc(const size_t size) {
+void *tsInternalMalloc(const size_t size) {
   mallocNum--;
   if (!canMalloc && mallocNum == 0) {
     canMalloc = true;
@@ -58,7 +59,7 @@ void *TEST_Malloc(const size_t size) {
   return malloc(size);
 }
 
-void *TEST_Calloc(const size_t nitems, const size_t size) {
+void *tsInternalCalloc(const size_t nitems, const size_t size) {
   callocNum--;
   if (!canCalloc && callocNum == 0) {
     canCalloc = true;
@@ -67,7 +68,7 @@ void *TEST_Calloc(const size_t nitems, const size_t size) {
   return calloc(nitems, size);
 }
 
-void *TEST_Realloc(void *ptr, const size_t size) {
+void *tsInternalRealloc(void *ptr, const size_t size) {
   reallocNum--;
   if (!canRealloc && reallocNum == 0) {
     canRealloc = true;
@@ -76,6 +77,6 @@ void *TEST_Realloc(void *ptr, const size_t size) {
   return realloc(ptr, size);
 }
 
-bool TEST_Fatal(void) {
-  return canFatal;
-}
+// bool tsInternalFatal(void) {
+//   return canFatal;
+// }

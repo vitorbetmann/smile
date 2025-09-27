@@ -1,4 +1,4 @@
-# Log API
+# Log API 📝
 
 `Log` provides an API for writing
 printf-style messages to the terminal and configuring fatal error handling.
@@ -7,19 +7,23 @@ printf-style messages to the terminal and configuring fatal error handling.
 
 ## Table of Contents
 
-- [Data Types](#data-types)
-    - [Function Pointers](#function-pointers)
-        - [void (*lgFatalHandler)(void)](#void-lgfatalhandlervoid)
-- [Functions](#functions)
-    - [void lgLog(const char *msg, ...)](#void-lglogconst-char-msg-)
-    - [void lgSetFatal(lgFatalHandler handler)](#void-lgsetfatallgfatalhandler-handler)
-- [Workflow Examples](#workflow-examples)
+- [Data Types](#-data-types)
+    - [lgFatalHandler](#void-lgfatalhandlervoid)
+- [Functions](#-functions)
+    - [lgLog](#void-lglogconst-char-msg-)
+    - [lgSetFatal](#void-lgsetfatallgfatalhandler-handler)
+- [Workflow Examples](#-workflow-examples)
+- [Notes](#-notes)
 
 ---
 
-## Data Types
+## 📦 Data Types
 
-### Function Pointers
+---
+
+### _Function Pointers_
+
+---
 
 ### `void (*lgFatalHandler)(void)`
 
@@ -27,7 +31,13 @@ Function pointer type for custom fatal error handlers.
 
 ---
 
-## Functions
+## 🔧 Functions
+
+---
+
+### _Log Related_
+
+---
 
 ### `void lgLog(const char *msg, ...)`
 
@@ -47,7 +57,11 @@ lgLog("SMILE version %.1f is out!", 1.0f);
 // Outputs: 01:23:45 [Smile LOG From User] - SMILE version 1.0 is out!
 ```
 
-For more, see [Workflow Examples](#workflow-examples).
+For more, see [Workflow Examples](#-workflow-examples).
+
+---
+
+### _Fatal Handling Related_
 
 ---
 
@@ -76,11 +90,11 @@ int main() {
 }
 ```
 
-For more, see [Workflow Examples](#workflow-examples).
+For more, see [Workflow Examples](#-workflow-examples).
 
 ---
 
-## Workflow Examples
+## 📖 Workflow Examples
 
 ```c
 #include "Log.h"
@@ -115,6 +129,6 @@ int main() {
 
 ---
 
-## Notes
+## 📝 Notes
 
 - Designed for single-threaded environments.

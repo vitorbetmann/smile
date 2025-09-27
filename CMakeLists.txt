@@ -24,7 +24,7 @@ add_library(smile STATIC
         src/SaveLoad/SaveLoad.c
 
         src/Log/Log.c
-        src/_Internal/Test/TestInternal.c
+        src/_Internal/TestInternal/TestInternal.c
 )
 
 # Include raylib headers for Smile
@@ -39,8 +39,8 @@ target_include_directories(smile PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
         ${CMAKE_CURRENT_SOURCE_DIR}/src/Log
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/_Internal/_Common
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/_Internal/Test
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/_Internal/_CommonInternal
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/_Internal/TestInternal
 )
 target_include_directories(smile PRIVATE "${RAYLIB_SRC_DIR}")
 
@@ -101,8 +101,8 @@ if (SMILE_TESTS)
     # INTERNAL
     # --------------------------------------------------
 
-    # _Common ------------------------------------------
-    # TODO #13 Add and link _Common test
+    # _CommonInternal ------------------------------------------
+    # TODO #13 Add and link _CommonInternal test
 
     # LogInternal ----------------------------------------------
     # TODO #13 Add and link LogInternal test

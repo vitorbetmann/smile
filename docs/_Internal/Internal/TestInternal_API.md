@@ -1,4 +1,4 @@
-# TestInternal API
+# TestInternal API 🧪
 
 `TestInternal` provides instrumented memory allocation wrappers and fatal hooks
 for SMILE.  
@@ -9,23 +9,36 @@ in unit tests to simulate failures.
 
 ## Table of Contents
 
-- [Data Types](#data-types)
-    - [enums](#enums)
-        - [MemAllocFn](#memallocfn)
-- [Functions](#functions)
-    - [a](#void-test_passconst-char-funcname)
-- [Workflow Examples](#workflow-examples)
+- [Data Types](#-data-types)
+    - [MemAllocFn](#memallocfn)
+- [Functions](#-functions)
+    - [Test Suites Related:](#_test-suites-related_)
+        - [tsInternalPass](#void-tsinternalpassconst-char-fnname)
+        - [tsInternalDisable](#bool-tsinternaldisablememallocfn-fnname-unsigned-int-at)
+    - [Memory Allocation Related:](#_memory-allocation-related_)
+        - [tsInternalMalloc](#void-tsinternalmallocsize_t-size)
+        - [tsInternalCalloc](#void-tsinternalcallocsize_t-nitems-size_t-size)
+        - [tsInternalRealloc](#void-tsinternalreallocvoid-ptr-size_t-size)
+- [Workflow Examples](#-workflow-examples)
+- [Notes](#-notes)
 
 ---
 
-## Data Types
+## 📦 Data Types
 
-### Enums
+---
+
+### _Enums_
+
+---
 
 ### `MemAllocFn`
 
-Specifies which memory allocation function should be simulated using
-`TEST_Disable`.
+Identifies allocation functions for failure simulation.
+
+Used
+with [tsInternalDisable](#bool-tsinternaldisablememallocfn-fnname-unsigned-int-at)
+to specify which type of allocation should be forced to fail.
 
 | Enum      | Simulates |
 |-----------|-----------|
@@ -35,38 +48,40 @@ Specifies which memory allocation function should be simulated using
 
 ---
 
-## Functions
+## 🔧 Functions
 
-### `void ttPass(const char *fnName)`
+---
+
+### _Test Suites Related_
+
+---
+
+### `void tsInternalPass(const char *fnName)`
 
 Logs a `[PASS]` message for a successful test or operation.
 
 - **Parameters:**
-    - `funcName` — Name of the test function or operation that passed.
+    - `fnName` — Name of the test function or operation that passed.
 - **Returns:** Nothing.
 
 **Example:**
 
 ```c
-void Test_SL_Init_ReturnsTrue(void) {
-  assert(SL_Init());
-  TEST_Pass("Test_SL_Init_ReturnsTrue");
-}
+NO EXAMPLE YET
 ```
 
-For more, see [Workflow Examples](#workflow-examples).
+For more, see [Workflow Examples](#-workflow-examples).
 
 ---
 
-### `bool tiDisable(MemAllocFunc funcName, int at)`
+### `bool tsInternalDisable(MemAllocFn fnName, unsigned int at)`
 
 Temporarily disables a memory allocation function, causing it to fail at the
 specified call count. After the failure
 occurs, normal behavior resumes.
 
 - **Parameters:**
-    - `funcName` — Allocation function to disable (`MALLOC`, `CALLOC`,
-      `REALLOC`).
+    - `fnName` — Allocation function to disable (`MALLOC`, `CALLOC`, `REALLOC`).
     - `at` — Call count at which failure occurs.
 - **Returns:**
     - `true` if successfully disabled.
@@ -75,18 +90,18 @@ occurs, normal behavior resumes.
 **Example:**
 
 ```c
-void Test_SL_Init_ReturnsFalseIfMallocFails(void) {
-  TEST_Disable(MALLOC, 1);
-  assert(!SL_Init());
-  TEST_Pass("Test_SL_Init_ReturnsFalseIfMallocFails");
-}
+NO EXAMPLE YET
 ```
 
-For more, see [Workflow Examples](#workflow-examples).
+For more, see [Workflow Examples](#-workflow-examples).
 
 ---
 
-### `void *TEST_Malloc(size_t size)`
+### _Memory Allocation Related:_
+
+---
+
+### `void *tsInternalMalloc(size_t size)`
 
 Wrapper around `malloc()` with optional failure simulation.
 
@@ -97,18 +112,14 @@ Wrapper around `malloc()` with optional failure simulation.
 **Example:**
 
 ```c
-tracker = TEST_Malloc(sizeof(StateMachineTracker));
-if (!tracker) {
-    SMILE_ERR(MODULE_NAME, CAUSE_MEM_ALLOC_FAILED, CONSEQ_INIT_ABORTED);
-    return false;
-}
+NO EXAMPLE YET
 ```
 
-For more, see [Workflow Examples](#workflow-examples).
+For more, see [Workflow Examples](#-workflow-examples).
 
 ---
 
-### `void *TEST_Calloc(size_t nitems, size_t size)`
+### `void *tsInternalCalloc(size_t nitems, size_t size)`
 
 Wrapper around `calloc()` with optional failure simulation.
 
@@ -127,11 +138,11 @@ if (!tracker) {
 }
 ```
 
-For more, see [Workflow Examples](#workflow-examples).
+For more, see [Workflow Examples](#-workflow-examples).
 
 ---
 
-### `void *TEST_Realloc(void *ptr, size_t size)`
+### `void *tsInternalRealloc(void *ptr, size_t size)`
 
 Wrapper around `realloc()` with optional failure simulation.
 
@@ -146,7 +157,7 @@ Wrapper around `realloc()` with optional failure simulation.
 // NO EXAMPLES YET
 ```
 
-For more, see [Workflow Examples](#workflow-examples).
+For more, see [Workflow Examples](#-workflow-examples).
 
 ---
 
@@ -164,11 +175,11 @@ Check whether a fatal condition is being simulated.
 // NO EXAMPLES YET
 ```
 
-For more, see [Workflow Examples](#workflow-examples).
+For more, see [Workflow Examples](#-workflow-examples).
 
 ---
 
-## Workflow Examples
+## 📖 Workflow Examples
 
 ```c
 // NO EXAMPLES YET
@@ -176,6 +187,6 @@ For more, see [Workflow Examples](#workflow-examples).
 
 ---
 
-## Notes
+## 📝 Notes
 
 - Designed for single-threaded environments.

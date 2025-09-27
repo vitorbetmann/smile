@@ -14,8 +14,8 @@
 #include "StateMachineInternal.h"
 #include "StateMachineMessages.h"
 #include "src/Log/LogInternal.h"
-#include "src/_Internal/Test/TestInternal.h"
-#include "src/_Internal/_Common/CommonMessages.h"
+#include "src/_Internal/TestInternal/TestInternal.h"
+#include "src/_Internal/_CommonInternal/CommonInternalMessages.h"
 
 // -----------------------------------------------------------------------------
 // Variables
@@ -45,7 +45,7 @@ bool smStart(void) {
         return false;
     }
 
-    tracker = TEST_Calloc(1, sizeof(StateMachineTracker));
+    tracker = tsInternalCalloc(1, sizeof(StateMachineTracker));
     if (!tracker) {
         lgInternalLog(LOG_ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,FN_START,
                       CONSEQ_ABORTED);
