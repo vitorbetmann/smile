@@ -15,7 +15,7 @@
 #include "StateMachineMessages.h"
 #include "src/Log/LogInternal.h"
 #include "src/_Internal/TestInternal/TestInternal.h"
-#include "src/_Internal/_CommonInternal/CommonInternalMessages.h"
+#include "src/_Internal/CommonInternal/CommonInternalMessages.h"
 
 // -----------------------------------------------------------------------------
 // Variables

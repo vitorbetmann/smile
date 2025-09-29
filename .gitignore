@@ -16,8 +16,8 @@ Makefile
 
 # Compiled test binaries
 /tests/*.out
-/tests/*_tests
-/tests/*Test*
+/test/*_tests
+/test/*Test*
 
 # macOS system files
 .DS_Store

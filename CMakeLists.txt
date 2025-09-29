@@ -39,7 +39,7 @@ target_include_directories(smile PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
         ${CMAKE_CURRENT_SOURCE_DIR}/src/Log
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/_Internal/_CommonInternal
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/_Internal/CommonInternal
         ${CMAKE_CURRENT_SOURCE_DIR}/src/_Internal/TestInternal
 )
 target_include_directories(smile PRIVATE "${RAYLIB_SRC_DIR}")
@@ -80,34 +80,37 @@ option(SMILE_TESTS "Build test executables" OFF)
 if (SMILE_TESTS)
     message(STATUS "SMILE: Compiling TEST files")
 
-    # --------------------------------------------------
+    # --------------------------------------------------------------------------
     # PUBLIC
-    # --------------------------------------------------
+    # --------------------------------------------------------------------------
 
-    # StateMachine -------------------------------------
-    add_executable(StateMachineTest tests/StateMachineTest/StateMachineTest.c)
-    target_link_libraries(StateMachineTest PRIVATE smile)
-    target_include_directories(StateMachineTest PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    # Log
+    # TODO Add and link Log test
 
-    # ParticleSystem -----------------------------------
+    # ParticleSystem
     # TODO Add and link Particle System test
-
-    # SaveLoad -----------------------------------------
-    add_executable(SaveLoadTest tests/SaveLoadTest/SaveLoadTest.c)
+    
+    # SaveLoad
+    add_executable(SaveLoadTest test/SaveLoad/SaveLoadTest.c)
     target_link_libraries(SaveLoadTest PRIVATE smile)
     target_include_directories(SaveLoadTest PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-    # --------------------------------------------------
+    # StateMachine
+    add_executable(StateMachineTest test/StateMachine/StateMachineTest.c)
+    target_link_libraries(StateMachineTest PRIVATE smile)
+    target_include_directories(StateMachineTest PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+    # --------------------------------------------------------------------------
     # INTERNAL
-    # --------------------------------------------------
+    # --------------------------------------------------------------------------
 
-    # _CommonInternal ------------------------------------------
-    # TODO #13 Add and link _CommonInternal test
+    # CommonInternal
+    # TODO #13 Add and link CommonInternal test
 
-    # LogInternal ----------------------------------------------
+    # LogInternal
     # TODO #13 Add and link LogInternal test
 
-    # TestInternal ---------------------------------------------
+    # TestInternal
     # TODO #13 Add and link TestInternal test
 
 endif ()
