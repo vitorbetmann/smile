@@ -65,7 +65,14 @@ Provides module name, cause, function name, and consequences for context.
 **Example:**
 
 ```c
-NO EXAMPLE YET
+bool smPrivateHasStarted(const char *fnName) {
+    if (!smHasStarted()) {
+        lgInternalLog(LOG_ERROR, MODULE, CAUSE_NOT_STARTED, fnName, CONSEQ_ABORTED);
+        return false;
+    }
+
+    return true;
+}
 ```
 
 For more, see [Workflow Examples](#-workflow-examples).
@@ -95,7 +102,13 @@ context.
 **Example:**
 
 ```c
-NO EXAMPLE YET
+bool smPrivateIsNameValid(const char *stateName, const char *fnName) {
+    if (!stateName) {
+        lgInternalLogWithArg(LOG_ERROR, MODULE, CAUSE_NULL_ARG, "name", fnName, CONSEQ_ABORTED);
+        return false;
+    }
+    
+    ... // More code
 ```
 
 For more, see [Workflow Examples](#-workflow-examples).

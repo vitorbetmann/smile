@@ -8,6 +8,13 @@
 #include "../../src/StateMachine/StateMachineInternal.h"
 
 // --------------------------------------------------
+// Other Defines
+// --------------------------------------------------
+
+#define STRESS_ITERATIONS 1000
+#define IDEMPOTENT_ITERATIONS 3
+
+// --------------------------------------------------
 // Data types
 // --------------------------------------------------
 

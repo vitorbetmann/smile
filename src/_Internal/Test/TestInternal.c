@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "src/_Internal/TestInternal/TestInternal.h"
+#include "src/_Internal/Test/TestInternal.h"
 
 // --------------------------------------------------
 // TestInternal state
@@ -76,7 +76,3 @@ void *tsInternalRealloc(void *ptr, const size_t size) {
     }
     return realloc(ptr, size);
 }
-
-// bool tsInternalFatal(void) {
-//   return canFatal;
-// }

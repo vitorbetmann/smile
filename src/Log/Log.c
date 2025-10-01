@@ -1,5 +1,5 @@
 /**
- * @file LogInternal.c
+ * @file Log.c
  * @brief Implementation of the SMILE logging system.
  *
  * @author Vitor Betmann
@@ -47,7 +47,7 @@
  *
  * @author Vitor Betmann
  */
-static void lgHelperLog(LogLevel level, const char *origin, const char *msg,
+static void lgPrivateLog(LogLevel level, const char *origin, const char *msg,
                         ...);
 
 /**
@@ -63,7 +63,7 @@ static void lgHelperLog(LogLevel level, const char *origin, const char *msg,
  *
  * @author Vitor Betmann
  */
-static void lgHelperLogV(LogLevel level, const char *origin, const char *msg,
+static void lgPrivateLogV(LogLevel level, const char *origin, const char *msg,
                          va_list args);
 
 /**
@@ -74,7 +74,7 @@ static void lgHelperLogV(LogLevel level, const char *origin, const char *msg,
  *
  * @author Vitor Betmann
  */
-static bool lgHelperIsLevelEnabled(LogLevel level);
+static bool lgPrivateIsLevelEnabled(LogLevel level);
 
 /**
  * @brief Determines the color and prefix for a given log level.
@@ -85,7 +85,7 @@ static bool lgHelperIsLevelEnabled(LogLevel level);
  *
  * @author Vitor Betmann
  */
-static void lgHelperGetColorAndPrefix(LogLevel level, const char **color,
+static void lgPrivateGetColorAndPrefix(LogLevel level, const char **color,
                                       const char **prefix);
 
 /**
@@ -96,13 +96,13 @@ static void lgHelperGetColorAndPrefix(LogLevel level, const char **color,
  *
  * @author Vitor Betmann
  */
-static void lgHelperFatalHandler(void);
+static void lgPrivateFatalHandler(void);
 
 // -----------------------------------------------------------------------------
 // Variables
 // -----------------------------------------------------------------------------
 
-lgFatalHandler fatalHandler = lgHelperFatalHandler;
+lgFatalHandler fatalHandler = lgPrivateFatalHandler;
 
 // -----------------------------------------------------------------------------
 // Functions - Public
@@ -111,13 +111,13 @@ lgFatalHandler fatalHandler = lgHelperFatalHandler;
 void lgLog(const char *msg, ...) {
     va_list args;
     va_start(args, msg);
-    lgHelperLogV(LOG_USER, "User", msg, args);
+    lgPrivateLogV(LOG_USER, "User", msg, args);
     va_end(args);
 }
 
 void lgSetFatal(lgFatalHandler handler) {
     if (!handler) {
-        fatalHandler = lgHelperFatalHandler;
+        fatalHandler = lgPrivateFatalHandler;
         return;
     }
 
@@ -130,36 +130,36 @@ void lgSetFatal(lgFatalHandler handler) {
 
 void lgInternalLog(LogLevel level, const char *module, const char *cause,
                    const char *fnName, const char *conseq) {
-    lgHelperLog(level, module, "%s. '%s' %s.", cause, fnName, conseq);
+    lgPrivateLog(level, module, "%s. '%s' %s.", cause, fnName, conseq);
 }
 
 void lgInternalLogWithArg(LogLevel level, const char *module,
                           const char *cause, const char *arg,
                           const char *fnName, const char *conseq) {
-    lgHelperLog(level, module, "%s: %s. '%s' %s.", cause, arg, fnName, conseq);
+    lgPrivateLog(level, module, "%s: %s. '%s' %s.", cause, arg, fnName, conseq);
 }
 
 // -----------------------------------------------------------------------------
 // Functions - Helper
 // -----------------------------------------------------------------------------
 
-static void lgHelperLog(LogLevel level, const char *origin, const char *msg,
+static void lgPrivateLog(LogLevel level, const char *origin, const char *msg,
                         ...) {
     va_list args;
     va_start(args, msg);
-    lgHelperLogV(level, origin, msg, args);
+    lgPrivateLogV(level, origin, msg, args);
     va_end(args);
 }
 
-void lgHelperLogV(LogLevel level, const char *origin, const char *msg,
+void lgPrivateLogV(LogLevel level, const char *origin, const char *msg,
                   va_list args) {
-    if (!lgHelperIsLevelEnabled(level)) {
+    if (!lgPrivateIsLevelEnabled(level)) {
         return;
     }
 
     const char *color = nullptr;
     const char *prefix = nullptr;
-    lgHelperGetColorAndPrefix(level, &color, &prefix);
+    lgPrivateGetColorAndPrefix(level, &color, &prefix);
 
     const time_t epochTime = time(nullptr);
     struct tm localTime;
@@ -177,7 +177,7 @@ void lgHelperLogV(LogLevel level, const char *origin, const char *msg,
     }
 }
 
-static bool lgHelperIsLevelEnabled(LogLevel level) {
+static bool lgPrivateIsLevelEnabled(LogLevel level) {
     switch (level) {
         case LOG_INFO:
 #ifdef SMILE_INFO
@@ -196,7 +196,7 @@ static bool lgHelperIsLevelEnabled(LogLevel level) {
     }
 }
 
-static void lgHelperGetColorAndPrefix(LogLevel level, const char **color,
+static void lgPrivateGetColorAndPrefix(LogLevel level, const char **color,
                                       const char **prefix) {
     switch (level) {
         case LOG_USER:
@@ -225,6 +225,6 @@ static void lgHelperGetColorAndPrefix(LogLevel level, const char **color,
     }
 }
 
-static void lgHelperFatalHandler(void) {
+static void lgPrivateFatalHandler(void) {
     exit(EXIT_FAILURE);
 }

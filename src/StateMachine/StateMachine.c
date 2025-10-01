@@ -6,16 +6,15 @@
 // Includes
 // -----------------------------------------------------------------------------
 
-#include "include/StateMachine.h"
-
 #include <string.h>
 #include <external/uthash.h>
 
+#include "include/StateMachine.h"
 #include "StateMachineInternal.h"
 #include "StateMachineMessages.h"
 #include "src/Log/LogInternal.h"
-#include "src/_Internal/TestInternal/TestInternal.h"
-#include "src/_Internal/CommonInternal/CommonInternalMessages.h"
+#include "src/_Internal/Test/TestInternal.h"
+#include "src/_Internal/Common/CommonInternalMessages.h"
 
 // -----------------------------------------------------------------------------
 // Variables
@@ -27,14 +26,13 @@ static StateMachineTracker *tracker;
 // Prototypes
 // -----------------------------------------------------------------------------
 
-static bool smHelperHasStarted(const char *fnName);
+static bool smPrivateHasStarted(const char *fnName);
 
-static bool smHelperIsNameValid(const char *stateName, const char *fnName);
+static bool smPrivateIsNameValid(const char *stateName, const char *fnName);
 
 // -----------------------------------------------------------------------------
 // Functions - Public
 // -----------------------------------------------------------------------------
-
 
 // Start Related
 
@@ -63,78 +61,79 @@ bool smHasStarted(void) {
 
 // State Functions
 
-bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
-                   smDrawFn drawFn, smExitFn exitFn) {
-    if (!smHelperHasStarted(FN_CREATE_STATE)) {
+bool smCreateState(const char *stateName, smEnterFn enterFn,
+                   smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn) {
+    if (!smPrivateHasStarted(FN_CREATE_STATE)) {
         return false;
     }
 
-    if (!smHelperIsNameValid(name, FN_CREATE_STATE)) {
+    if (!smPrivateIsNameValid(stateName, FN_CREATE_STATE)) {
         return false;
     }
 
-    StateMap *entry = smInternalGetEntry(name);
+    StateMap *entry = smInternalGetEntry(stateName);
     if (entry) {
-        lgInternalLogWithArg(LOG_WARNING, MODULE,
-                             CAUSE_STATE_ALREADY_EXISTS,
-                             name, FN_CREATE_STATE, CONSEQ_ABORTED);
+        lgInternalLogWithArg(LOG_WARNING, MODULE, CAUSE_STATE_ALREADY_EXISTS,
+                             stateName,FN_CREATE_STATE, CONSEQ_ABORTED);
         return false;
     }
 
     if (!enterFn && !updateFn && !drawFn && !exitFn) {
         lgInternalLogWithArg(LOG_ERROR, MODULE, CAUSE_NO_VALID_FUNCTIONS,
-                             name,
-                             FN_CREATE_STATE, CONSEQ_ABORTED);
+                             stateName,FN_CREATE_STATE, CONSEQ_ABORTED);
         return false;
     }
 
-    State *newState = malloc(sizeof(State));
-    if (!newState) {
+    State *state = tsInternalMalloc(sizeof(State));
+    if (!state) {
         lgInternalLog(LOG_ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,
                       FN_CREATE_STATE, CONSEQ_ABORTED);
         return false;
     }
 
-    char *stateName = malloc(strlen(name) + 1);
-    if (!stateName) {
+    char *nameCopy = tsInternalMalloc(strlen(stateName) + 1);
+    if (!nameCopy) {
         lgInternalLog(LOG_ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,
                       FN_CREATE_STATE, CONSEQ_ABORTED);
-        free(newState);
-        return false;
+        goto nameCopyError;
     }
-    strcpy(stateName, name);
+    strcpy(nameCopy, stateName);
 
-    newState->name = stateName;
-    newState->enterFn = enterFn;
-    newState->updateFn = updateFn;
-    newState->drawFn = drawFn;
-    newState->exitFn = exitFn;
+    state->name = nameCopy;
+    state->enterFn = enterFn;
+    state->updateFn = updateFn;
+    state->drawFn = drawFn;
+    state->exitFn = exitFn;
 
-    StateMap *temp = malloc(sizeof(StateMap));
-    if (!temp) {
-        free(newState->name);
-        free(newState);
+    StateMap *mapEntry = tsInternalMalloc(sizeof(StateMap));
+    if (!mapEntry) {
         lgInternalLog(LOG_ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,
                       FN_CREATE_STATE, CONSEQ_ABORTED);
-        return false;
+        goto mapEntryError;
     }
-    temp->state = newState;
-    temp->name = newState->name;
-    HASH_ADD_STR(tracker->stateMap, name, temp);
+    mapEntry->state = state;
+    mapEntry->name = state->name;
+    HASH_ADD_STR(tracker->stateMap, name, mapEntry);
 
     tracker->stateCount++;
 
-    lgInternalLogWithArg(LOG_INFO, MODULE, CAUSE_STATE_CREATED, name,
+    lgInternalLogWithArg(LOG_INFO, MODULE, CAUSE_STATE_CREATED, stateName,
                          FN_CREATE_STATE, CONSEQ_SUCCESSFUL);
     return true;
+
+mapEntryError:
+    free(nameCopy);
+nameCopyError:
+    free(state);
+    return false;
 }
 
 bool smStateExists(const char *name) {
-    if (!smHelperHasStarted(FN_STATE_EXISTS)) {
+    if (!smPrivateHasStarted(FN_STATE_EXISTS)) {
         return false;
     }
 
-    if (!smHelperIsNameValid(name, FN_STATE_EXISTS)) {
+    if (!smPrivateIsNameValid(name, FN_STATE_EXISTS)) {
         return false;
     }
 
@@ -142,19 +141,18 @@ bool smStateExists(const char *name) {
 }
 
 bool smSetState(const char *name, void *args) {
-    if (!smHelperHasStarted(FN_SET_STATE)) {
+    if (!smPrivateHasStarted(FN_SET_STATE)) {
         return false;
     }
 
-    if (!smHelperIsNameValid(name, FN_SET_STATE)) {
+    if (!smPrivateIsNameValid(name, FN_SET_STATE)) {
         return false;
     }
 
     const State *nextState = smInternalGetState(name);
     if (!nextState) {
         lgInternalLogWithArg(LOG_WARNING, MODULE, CAUSE_STATE_NOT_FOUND,
-                             name,
-                             FN_SET_STATE, CONSEQ_ABORTED);
+                             name,FN_SET_STATE, CONSEQ_ABORTED);
         return false;
     }
 
@@ -174,7 +172,7 @@ bool smSetState(const char *name, void *args) {
 }
 
 const char *smGetCurrentStateName(void) {
-    if (!smHelperHasStarted(FN_GET_CURRENT_STATE_NAME)) {
+    if (!smPrivateHasStarted(FN_GET_CURRENT_STATE_NAME)) {
         return nullptr;
     }
 
@@ -182,7 +180,7 @@ const char *smGetCurrentStateName(void) {
 }
 
 int smGetStateCount(void) {
-    if (!smHelperHasStarted(FN_GET_STATE_COUNT)) {
+    if (!smPrivateHasStarted(FN_GET_STATE_COUNT)) {
         return -1;
     }
 
@@ -190,17 +188,17 @@ int smGetStateCount(void) {
 }
 
 bool smDeleteState(const char *name) {
-    if (!smHelperHasStarted(FN_DELETE_STATE)) {
+    if (!smPrivateHasStarted(FN_DELETE_STATE)) {
         return false;
     }
 
-    if (!smHelperIsNameValid(name, FN_DELETE_STATE)) {
+    if (!smPrivateIsNameValid(name, FN_DELETE_STATE)) {
         return false;
     }
 
     if (tracker->currState && strcmp(name, tracker->currState->name) == 0) {
         lgInternalLogWithArg(LOG_ERROR, MODULE,
-                             CAUSE_CANNOT_DELETE_CURRENT_STATE,
+                             CAUSE_CANNOT_DELETE_CURR_STATE,
                              name, FN_DELETE_STATE, CONSEQ_ABORTED);
         return false;
     }
@@ -208,8 +206,7 @@ bool smDeleteState(const char *name) {
     StateMap *entry = smInternalGetEntry(name);
     if (!entry) {
         lgInternalLogWithArg(LOG_WARNING, MODULE, CAUSE_STATE_NOT_FOUND,
-                             name,
-                             FN_DELETE_STATE, CONSEQ_ABORTED);
+                             name,FN_DELETE_STATE, CONSEQ_ABORTED);
         return false;
     }
 
@@ -228,19 +225,19 @@ bool smDeleteState(const char *name) {
 // Lifecycle Functions
 
 bool smUpdate(float dt) {
-    if (!smHelperHasStarted(FN_UPDATE)) {
+    if (!smPrivateHasStarted(FN_UPDATE)) {
         return false;
     }
 
     if (!tracker->currState) {
-        lgInternalLog(LOG_ERROR, MODULE, CAUSE_NULL_CURRENT_STATE, FN_UPDATE,
+        lgInternalLog(LOG_ERROR, MODULE, CAUSE_NULL_CURR_STATE, FN_UPDATE,
                       CONSEQ_ABORTED);
         return false;
     }
 
     if (!tracker->currState->updateFn) {
         lgInternalLogWithArg(LOG_WARNING, MODULE,
-                             CAUSE_STATE_HAS_NULL_UPDATE,
+                             CAUSE_NULL_STATE_UPDATE_FN,
                              tracker->currState->name, FN_UPDATE,
                              CONSEQ_ABORTED);
         return false;
@@ -251,19 +248,19 @@ bool smUpdate(float dt) {
 }
 
 bool smDraw(void) {
-    if (!smHelperHasStarted(FN_DRAW)) {
+    if (!smPrivateHasStarted(FN_DRAW)) {
         return false;
     }
 
     if (!tracker->currState) {
-        lgInternalLog(LOG_ERROR, MODULE, CAUSE_NULL_CURRENT_STATE,
+        lgInternalLog(LOG_ERROR, MODULE, CAUSE_NULL_CURR_STATE,
                       FN_DRAW, CONSEQ_ABORTED);
         return false;
     }
 
     if (!tracker->currState->drawFn) {
         lgInternalLogWithArg(LOG_WARNING, MODULE,
-                             CAUSE_STATE_HAS_NULL_DRAW,
+                             CAUSE_NULL_STATE_DRAW_FN,
                              tracker->currState->name, FN_DRAW,
                              CONSEQ_ABORTED);
         return false;
@@ -276,7 +273,7 @@ bool smDraw(void) {
 // Stop Related
 
 bool smStop(void) {
-    if (!smHelperHasStarted(FN_STOP)) {
+    if (!smPrivateHasStarted(FN_STOP)) {
         return false;
     }
 
@@ -320,7 +317,7 @@ StateMap *smInternalGetEntry(const char *name) {
 // Functions - Helper
 // -----------------------------------------------------------------------------
 
-bool smHelperHasStarted(const char *fnName) {
+bool smPrivateHasStarted(const char *fnName) {
     if (!smHasStarted()) {
         lgInternalLog(LOG_ERROR, MODULE, CAUSE_NOT_STARTED, fnName,
                       CONSEQ_ABORTED);
@@ -330,7 +327,7 @@ bool smHelperHasStarted(const char *fnName) {
     return true;
 }
 
-bool smHelperIsNameValid(const char *stateName, const char *fnName) {
+bool smPrivateIsNameValid(const char *stateName, const char *fnName) {
     if (!stateName) {
         lgInternalLogWithArg(LOG_ERROR, MODULE, CAUSE_NULL_ARG, "name",
                              fnName, CONSEQ_ABORTED);

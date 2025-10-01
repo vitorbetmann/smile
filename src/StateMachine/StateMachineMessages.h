@@ -33,11 +33,11 @@
 // Warnings
 #define CAUSE_STATE_ALREADY_EXISTS "State already exists"
 #define CAUSE_STATE_NOT_FOUND "State not found"
-#define CAUSE_STATE_HAS_NULL_UPDATE "State Has Null Update"
-#define CAUSE_STATE_HAS_NULL_DRAW "State Has Null Draw"
+#define CAUSE_NULL_STATE_UPDATE_FN "State Has Null Update"
+#define CAUSE_NULL_STATE_DRAW_FN "State Has Null Draw"
 // Errors
-#define CAUSE_NULL_CURRENT_STATE "Current State Is Null"
+#define CAUSE_NULL_CURR_STATE "Current State Is Null"
 #define CAUSE_NO_VALID_FUNCTIONS "State Has No Valid Functions"
-#define CAUSE_CANNOT_DELETE_CURRENT_STATE "Cannot Delete Current State"
+#define CAUSE_CANNOT_DELETE_CURR_STATE "Cannot Delete Current State"
 
 #endif

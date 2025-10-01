@@ -97,16 +97,4 @@ void *tsInternalCalloc(size_t nitems, size_t size);
  */
 void *tsInternalRealloc(void *ptr, size_t size);
 
-// /**
-//  * @brief Check whether a fatal condition is being simulated.
-//  *
-//  * Can be used in both tests and production code to handle special
-//  * cases where fatal behavior is expected.
-//  *
-//  * @return true if a fatal condition is active, false otherwise.
-//  *
-//  * @author Vitor Betmann
-//  */
-// bool tsInternalFatal(void);
-
-#endif // TEST_INTERNAL_H
+#endif

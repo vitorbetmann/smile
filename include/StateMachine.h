@@ -1,9 +1,9 @@
 #ifndef STATE_MACHINE_H
 #define STATE_MACHINE_H
 
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
 // Data types
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
 
 typedef void (*smEnterFn)(void *args);
 
@@ -13,20 +13,20 @@ typedef void (*smDrawFn)(void);
 
 typedef void (*smExitFn)(void);
 
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
 // Prototypes
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
 
-// Start Related ------------------------------------
+// Start Related
 
 bool smStart(void);
 
 bool smHasStarted(void);
 
-// State Functions ----------------------------------
+// State Functions
 
-bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
-                     smDrawFn drawFn, smExitFn exitFn);
+bool smCreateState(const char *stateName, smEnterFn enterFn,
+                   smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn);
 
 bool smStateExists(const char *name);
 
@@ -38,13 +38,13 @@ int smGetStateCount(void);
 
 bool smDeleteState(const char *name);
 
-// Lifecycle Functions ------------------------------
+// Lifecycle Functions
 
 bool smUpdate(float dt);
 
 bool smDraw(void);
 
-// Stop ---------------------------------------------
+// Stop Related
 
 bool smStop(void);
 
