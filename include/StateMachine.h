@@ -34,9 +34,9 @@ bool smSetState(const char *name, void *args);
 
 const char *smGetCurrentStateName(void);
 
-int smGetStateCount(void);
-
 bool smDeleteState(const char *name);
+
+int smGetStateCount(void);
 
 // Lifecycle Functions
 

@@ -38,7 +38,7 @@ typedef struct {
 // --------------------------------------------------
 
 static unsigned int MULTIPLE_STATES = 1000;
-static float mockDT = 0.016;
+static float mockDt = 0.016;
 MockData md;
 static State mockState = {.name = "mockState"};
 
@@ -51,7 +51,7 @@ void mockEnter(void *args) {
     md.enteredTimes++;
 
     if (args) {
-        MockStateArgs *msa = (MockStateArgs *) args;
+        MockStateArgs *msa = args;
         md.hasEnteredArgs = msa->flag;
     }
 }
