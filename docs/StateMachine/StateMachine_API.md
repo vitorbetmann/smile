@@ -23,8 +23,6 @@ behavior using enter, update, draw, and exit callback functions.
 
 ---
 
-<br>
-
 ## 📦 Data Types
 
 ### _Function Pointers_ ➡
@@ -87,10 +85,9 @@ NO EXAMPLE YET
 
 <br>
 
-| Signature                | Description                                     | Parameters | Returns  |
-|--------------------------|-------------------------------------------------|------------|----------|
-| `void (*smDrawFn)(void)` | Function pointer type for state draw callbacks. | None.      | Nothing. |
-| `void (*smExitFn)(void)` | Function pointer type for state exit callbacks. | None.      | Nothing. |
+For more, see [Workflow Examples](#-workflow-examples).
+
+<br>
 
 ---
 
