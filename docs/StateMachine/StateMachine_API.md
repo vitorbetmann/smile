@@ -23,9 +23,9 @@ behavior using enter, update, draw, and exit callback functions.
 
 ---
 
-## 📦 Data Types
+# 📦 Data Types
 
-### _Function Pointers_ ➡
+## _Function Pointers_ ➡
 
 | `void (*smEnterFn)(void *args)` |
 |---------------------------------|
@@ -87,15 +87,13 @@ NO EXAMPLE YET
 
 For more, see [Workflow Examples](#-workflow-examples).
 
-<br>
-
 ---
 
 <br>
 
-## 🔧 Functions
+# 🔧 Functions
 
-### _Start Related_
+## _Start Related_
 
 | `bool smStart(void)` |
 |----------------------|
@@ -132,11 +130,9 @@ NO EXAMPLE YET
 
 For more, see [Workflow Examples](#-workflow-examples).
 
-<br>
-
 ---
 
-### _State Funcitons_
+## _State Funcitons_
 
 | `bool smCreateState(const char *stateName, smEnterFn enterFn, smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn)` |
 |-----------------------------------------------------------------------------------------------------------------------|
@@ -262,11 +258,9 @@ NO EXAMPLE YET
 
 For more, see [Workflow Examples](#-workflow-examples).
 
-<br>
-
 ---
 
-### _Lifecycle Functions_
+## _Lifecycle Functions_
 
 | `bool smUpdate(float dt)` |
 |---------------------------|
@@ -309,11 +303,7 @@ NO EXAMPLE YET
 
 For more, see [Workflow Examples](#-workflow-examples).
 
-<br>
-
----
-
-### _Stop Related_
+## _Stop Related_
 
 | `bool smStop(void)` |
 |---------------------|
@@ -337,13 +327,11 @@ NO EXAMPLE YET
 
 For more, see [Workflow Examples](#-workflow-examples).
 
-<br>
-
 ---
 
 <br>
 
-## 📖 Workflow Examples
+# 📖 Workflow Examples
 
 ```c
 NO EXAMPLE YET
