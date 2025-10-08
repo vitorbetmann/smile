@@ -1,6 +1,9 @@
-// TODO(#7) trim state name when registering state and reject whitespace only
-// TODO(#8) trim state name when changing states and reject whitespace only
-// TODO(#9) create internal function to trim leading and trailing whitespace
+// TODO create internal function to trim leading and trailing whitespace
+/* TODO trim state name and reject whitespace only when:
+ * -- registering state
+ * -- changing states
+ * -- checking if state exists
+ */
 
 // -----------------------------------------------------------------------------
 // Includes
@@ -333,8 +336,6 @@ bool smPrivateIsNameValid(const char *stateName, const char *fnName) {
                              fnName, CONSEQ_ABORTED);
         return false;
     }
-
-    // TODO Sanitize name
 
     if (strlen(stateName) == 0) {
         lgInternalLogWithArg(LOG_ERROR, MODULE, CAUSE_EMPTY_ARG, "name",

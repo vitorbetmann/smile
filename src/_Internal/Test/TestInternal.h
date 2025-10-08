@@ -38,8 +38,6 @@ typedef enum {
  *
  * @param fnName Name of the test function that passed.
  *
- * @return Nothing.
- *
  * @author Vitor Betmann
  */
 void tsInternalPass(const char *fnName);

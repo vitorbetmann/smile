@@ -517,7 +517,7 @@ int main() {
 
     // TODO create more tests for the different types of whitespaces
     // Test_smCreateState_RejectsWhitespaceOnlyStateName();
-
+    //
     // Test_smCreateState_AcceptsLeadingWhitespaceOnStateName();
     // Test_smCreateState_AcceptsTrailingWhitespaceOnStateName();
     // Test_smCreateState_AcceptsLeadingAndTrailingWhitespaceOnStateName();

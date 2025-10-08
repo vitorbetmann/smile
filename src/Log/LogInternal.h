@@ -46,8 +46,6 @@ typedef enum {
  * @param fnName Name of the function where the log is generated.
  * @param conseq Consequences or additional information about the event.
  *
- * @return Nothing.
- *
  * @author Vitor Betmann
  */
 void lgInternalLog(LogLevel level, const char *module, const char *cause,
@@ -66,8 +64,6 @@ void lgInternalLog(LogLevel level, const char *module, const char *cause,
  * @param arg Additional context argument relevant to the log event.
  * @param fnName Name of the function where the log is generated.
  * @param conseq Consequences or additional information about the event.
- *
- * @return Nothing.
  *
  * @author Vitor Betmann
  */

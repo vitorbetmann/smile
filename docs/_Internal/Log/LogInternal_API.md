@@ -60,7 +60,6 @@ Provides module name, cause, function name, and consequences for context.
     - `cause` — Description of the cause of the log event.
     - `fnName` — Name of the function where the log is generated.
     - `conseq` — Consequences or additional information about the event.
-- **Returns:** Nothing.
 
 **Example:**
 
@@ -97,7 +96,6 @@ context.
     - `arg` — Additional context argument relevant to the log event.
     - `fnName` — Name of the function where the log is generated.
     - `conseq` — Consequences or additional information about the event.
-- **Returns:** Nothing.
 
 **Example:**
 

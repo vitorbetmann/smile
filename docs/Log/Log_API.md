@@ -48,7 +48,6 @@ formatting.
 - **Parameters:**
     - `msg` — Format string for the message to log.
     - `...` — Additional arguments related to the format specifiers in msg.
-- **Returns:** Nothing.
 - **Note:** Output is written to stderr.
 
 **Example:**
@@ -74,7 +73,7 @@ Sets a custom handler to be called when a fatal event occurs.
     - `handler` — Function pointer to the custom fatal handler. If NULL, the
       default handler is set, which terminates the program with failure status
       after logging the event to the terminal.
-- **Returns:** Nothing
+
 - **Note:** It's recommended your custom handler terminates the program.
 
 **Example:**

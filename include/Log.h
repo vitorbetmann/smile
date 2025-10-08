@@ -1,9 +1,9 @@
 /**
  * @file LogInternal.h
- * @brief Public logging interface for SMILE.
+ * @brief Public API logging interface for SMILE.
  *
- * Provides the public-facing API for logging and configuring
- * fatal error handling behavior.
+ * Provides the public-facing API for logging and configuring fatal error
+ * handling behavior.
  *
  * @author Vitor Betmann
  */

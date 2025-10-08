@@ -66,7 +66,6 @@ Logs a `[PASS]` message for a successful test or operation.
 
 - **Parameters:**
     - `fnName` — Name of the test function or operation that passed.
-- **Returns:** Nothing.
 
 **Example:**
 

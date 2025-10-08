@@ -1,164 +1,353 @@
-# SMILE State Machine: API 🤖
+# State Machine API 🤖
 
-The SMILE engine provides a modular, lightweight, and flexible state machine system for managing game states. Each state represents a phase of the game (e.g., menus, levels, splash screens), and supports optional `enter`, `update`, `draw`, and `exit` functions.
+Lightweight framework for managing states, transitions, and lifecycle callbacks.
 
----
+The State Machine module provides a simple, flexible system for defining and
+controlling game flow through independent states. Each state can specify its own
+behavior using enter, update, draw, and exit callback functions.
 
-## 🌀 Lifecycle Overview
-
-1. **Initialization**
-
-   - Call `SM_Init()` once at the start of your program.
-
-2. **State Registration**
-
-   - Use `SM_RegisterState()` to define and register your states.
-
-3. **State Switching**
-
-   - Use `SM_ChangeStateTo()` to transition to a different state by name.
-
-4. **Main Loop**
-
-   - Call `SM_Update(dt)` and `SM_Draw()` each frame.
-
-5. **Shutdown**
-   - Call `SM_Shutdown()` before exiting your program.
+### 🚨 Warning! This module is not thread-safe
 
 ---
 
-## 🧪 Example Usage
+## Table of Contents
+
+- [Data Types](#-data-types)
+    - [Function Pointers](#_function-pointers_-)
+- [Functions](#-functions)
+    - [Start Related](#_start-related_)
+    - [State Functions](#_state-funcitons_)
+    - [Lifecycle Functions](#_lifecycle-functions_)
+    - [Stop Related](#_stop-related_)
+- [Workflow Examples](#-workflow-examples)
+
+---
+
+<br>
+
+## 📦 Data Types
+
+### _Function Pointers_ ➡
+
+| `void (*smEnterFn)(void *args)` |
+|---------------------------------|
+
+Function pointer type for state entry callbacks.
+
+- **Parameters:**
+    - `args` — Optional arguments passed when entering the state.
+
+- **Example:**
 
 ```c
-// main.c
-#include "StateMachine.h"
-#include "StateOne.h"
-#include "StateTwo.h"
-
-int main(void) {
-
-   // Other SM_ functions will not work if SM_Init not called
-    SM_Init();
-
-   // Register your states. Callback functions declared in respective header files.
-   SM_RegisterState("one", NULL, StateOneUpdate, StateOneDraw, StateOneExit);
-   SM_RegisterState("two", StateTwoEnter, StateTwoUpdate, StateTwoDraw, NULL);
-
-   // Start in the first state
-   SM_ChangeStateTo("one", NULL);    // This example state requires no arguments, so we pass in NULL
-
-   float dt = 0.016f;                // Mock delta time, about 60 FPS
-   bool isRunning = true;
-   while (isRunning) {
-      SM_Update(dt);
-      SM_Draw();
-   }
-
-   // Don't end you program without calling SM_Shutdown. Risk of memory leak.
-   SM_Shutdown();
-}
+NO EXAMPLE YET
 ```
 
----
+<br>
 
-## 📚 Function Reference
+| `void (*smUpdateFn)(float dt)` |
+|--------------------------------|
 
-### `bool SM_Init(void);`
+Function pointer type for state update callbacks.
 
-**Initializes the state machine.**  
-Allocates internal structures and prepares the system to register and run states.
+- **Parameters:**
+    - `dt` — Delta time in seconds since the last update.
 
-> **Note:** This function is safe to call multiple times. If the machine is already initialized, it returns `false` without error.
+- **Example:**
 
-**Returns:**  
-`true` if initialized successfully, `false` if already initialized or if memory allocation failed.
+```c
+NO EXAMPLE YET
+```
 
----
+<br>
 
-### `bool SM_IsInitialized(void);`
+| `void (*smDrawFn)(void)` |
+|--------------------------|
 
-**Checks whether the state machine has been initialized.**
+Function pointer type for state draw callbacks.
 
-**Returns:**  
-`true` if initialized, `false` otherwise.
+- **Example:**
 
----
+```c
+NO EXAMPLE YET
+```
 
-### `bool SM_RegisterState(const char *name, void (*enterFn)(void *), void (*updateFn)(float), void (*drawFn)(void), void (*exitFn)(void));`
+<br>
 
-**Registers a new named state with optional lifecycle callbacks.**  
-Each state must have a unique name. At least one lifecycle function must be non-`NULL`.
+| `void (*smExitFn)(void)` |
+|--------------------------|
 
-- `name`: The name of the state (must be non-`NULL` and non-empty).
-- `enterFn`: Called when entering this state (can be `NULL`).
-- `updateFn`: Called every update tick while this state is active (can be `NULL`).
-- `drawFn`: Called every frame while this state is active (can be `NULL`).
-- `exitFn`: Called when exiting this state (can be `NULL`).
+Function pointer type for state exit callbacks.
 
-**Returns:**  
-`true` if registration succeeds, `false` otherwise.
+- **Example:**
 
----
+```c
+NO EXAMPLE YET
+```
 
-### `bool SM_IsStateRegistered(char *name);`
+<br>
 
-**Checks whether a state with the given name is registered.**
-
-- `name`: The name of the state to check.
-
-**Returns:**  
-`true` if a state with the given name exists, `false` otherwise.
-
----
-
-### `bool SM_ChangeStateTo(const char *name, void *args);`
-
-**Switches to a different state by name, optionally passing arguments.**  
-Calls the current state's exit function (if any) and the new state's enter one. Will exit and re-enter the same state if the requested name matches the current state's
-
-- `name`: The name of the state to switch to.
-- `args`: Optional arguments to pass to the new state's `enter` function.
-
-**Returns:**  
-`true` if the state change succeeded, `false` otherwise.
+| Signature                | Description                                     | Parameters | Returns  |
+|--------------------------|-------------------------------------------------|------------|----------|
+| `void (*smDrawFn)(void)` | Function pointer type for state draw callbacks. | None.      | Nothing. |
+| `void (*smExitFn)(void)` | Function pointer type for state exit callbacks. | None.      | Nothing. |
 
 ---
 
-### `bool SM_Update(float dt);`
+<br>
 
-**Calls the update function of the current active state.**  
-Does nothing if the state machine is not initialized or if no update function is defined.
+## 🔧 Functions
 
-- `dt`: Delta time since last update.
+### _Start Related_
 
-**Returns:**  
-`true` if update was successful, `false` otherwise.
+| `bool smStart(void)` |
+|----------------------|
+
+Initializes the state machine and prepares it for use.
+
+- **Returns:** True if the state machine started successfully, false otherwise.
+
+- **Note:** Calling this function when the state machine is already started will
+  log a warning and return false.
+
+- **Example:**
+
+```c
+NO EXAMPLE YET
+```
+
+<br>
+
+| `bool smHasStarted(void)` |
+|---------------------------|
+
+Checks whether the state machine has been initialized.
+
+- **Returns:** True if the state machine has been started, false otherwise.
+
+- **Example:**
+
+```c
+NO EXAMPLE YET
+```
+
+<br>
+
+For more, see [Workflow Examples](#-workflow-examples).
+
+<br>
 
 ---
 
-### `bool SM_Draw(void);`
+### _State Funcitons_
 
-**Calls the draw function of the current active state.**  
-Does nothing if the state machine is not initialized or if no draw function is defined.
+| `bool smCreateState(const char *stateName, smEnterFn enterFn, smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn)` |
+|-----------------------------------------------------------------------------------------------------------------------|
 
-**Returns:**  
-`true` if draw was successful, `false` otherwise.
+Creates a new state with the specified name and callback functions.
+
+- **Parameters:**
+    - `stateName` — Unique name identifying the state.
+    - `enterFn` — Callback executed when entering the state.
+    - `updateFn` — Callback executed each frame during update.
+    - `drawFn` — Callback executed each frame during rendering.
+    - `exitFn` — Callback executed when exiting the state.
+
+- **Returns:** True if the state was created successfully, false otherwise.
+
+- **Notes:**
+    - All function pointers are optional, but at least one must be provided.
+    - Attempting to create a state that already exists will fail.
+
+- **Example:**
+
+```c
+NO EXAMPLE YET
+```
+
+<br>
+
+| `bool smStateExists(const char *name)` |
+|----------------------------------------|
+
+Checks whether a state with the given name exists.
+
+- **Parameters:**
+    - `name` — Name of the state to check.
+
+- **Returns:** True if the state exists, false otherwise.
+
+- **Example:**
+
+```c
+NO EXAMPLE YET
+```
+
+<br>
+
+| `smSetState(const char *name, void *args) |
+|-------------------------------------------|
+
+Sets the current active state by name and triggers its enter function.
+
+- **Parameters:**
+    - `name` — Name of the state to switch to.
+    - `args` — Optional arguments passed to the state's enter function.
+
+- **Returns:** True if the state was successfully changed, false otherwise.
+
+- **Note:** If a state is active, its exit function is called before switching.
+
+- **Example:**
+
+```c
+NO EXAMPLE YET
+```
+
+| `const char *smGetCurrentStateName(void)` |
+|-------------------------------------------|
+
+Retrieves the name of the currently active state.
+
+- **Returns:** A pointer to the name of the current state, or NULL if none is
+  active.
+
+- **Notes:**
+    - The returned string is owned by the state machine. The user must not
+      attempt to modify or free it and should make a copy of the string if they
+      wish to do so.
+    - The pointer remains valid until the state is deleted or the state machine
+      is stopped.
+
+- **Example:**
+
+```c
+NO EXAMPLE YET
+```
+
+<br>
+
+| `bool smDeleteState(const char *name)` |
+|----------------------------------------|
+
+Deletes a state by name from the state machine.
+
+- **Parameters:**
+    - `name` — Name of the state to delete.
+
+- **Returns:** True if the state was successfully deleted, false otherwise.
+
+- **Note:** Attempting to delete the currently active state will fail.
+
+- **Example:**
+
+```c
+NO EXAMPLE YET
+```
+
+<br>
+
+| `int smGetStateCount(void)` |
+|-----------------------------|
+
+Retrieves the total number of registered states.
+
+- **Returns:** The number of registered states, or -1 if the state machine is
+  not started.
+
+- **Example:**
+
+```c
+NO EXAMPLE YET
+```
+
+<br>
+
+For more, see [Workflow Examples](#-workflow-examples).
+
+<br>
 
 ---
 
-### `bool SM_Shutdown(void);`
+### _Lifecycle Functions_
 
-**Shuts down the state machine and frees all internal memory.**  
-Calls the `exit` function of the current state (if defined) before cleanup. After shutdown, all registered states are discarded and the tracker is reset.
+| `bool smUpdate(float dt)` |
+|---------------------------|
 
-**Returns:**  
-`true` if shutdown succeeded, `false` if the machine was not initialized.
+Updates the currently active state.
+
+- **Parameters:**
+    - `dt` — Delta time in seconds since the last update.
+
+- **Returns:** True if the update function was called successfully, false
+  otherwise.
+
+- **Note:** If the current state has no update function, a warning is logged.
+
+- **Example:**
+
+```c
+NO EXAMPLE YET
+```
+
+<br>
+
+| `bool smDraw(void)` |
+|---------------------|
+
+Executes the draw function of the currently active state.
+
+- **Returns:** True if the draw function was called successfully, false
+  otherwise.
+
+- **Note:** If the current state has no draw function, a warning is logged.
+
+- **Example:**
+
+```c
+NO EXAMPLE YET
+```
+
+<br>
+
+For more, see [Workflow Examples](#-workflow-examples).
+
+<br>
 
 ---
 
-### `const char *SM_GetCurrStateName(void);`
+### _Stop Related_
 
-**Gets the name of the current active state.**
+| `bool smStop(void)` |
+|---------------------|
 
-**Returns:**  
-The name of the current state, or `NULL` if no state is active or the machine is uninitialized.
+Stops the state machine and frees all allocated states.
+
+- **Returns:** True if the state machine was successfully stopped, false
+  otherwise.
+
+- **Notes:**
+    - The exit function of the current state is called before cleanup.
+    - After stopping, the state machine must be restarted with smStart().
+
+- **Example:**
+
+```c
+NO EXAMPLE YET
+```
+
+<br>
+
+For more, see [Workflow Examples](#-workflow-examples).
+
+<br>
+
+---
+
+<br>
+
+## 📖 Workflow Examples
+
+```c
+NO EXAMPLE YET
+```
