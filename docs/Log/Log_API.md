@@ -53,8 +53,8 @@ formatting.
 **Example:**
 
 ```c
-lgLog("SMILE version %.1f is out!", 1.0f);
-// Outputs: 01:23:45 [Smile LOG From User] - SMILE version 1.0 is out!
+lgLog("Smile version %.1f is out!", 1.0f);
+// Outputs: 01:23:45 [Smile Log From User] - Smile version 1.0 is out!
 ```
 
 For more, see [Workflow Examples](#-workflow-examples).
@@ -104,13 +104,13 @@ void MyFatalHandler(void) {
 }
 
 int main() {
-    lgLog("SMILE version %.1f is out!", 1.0f);
-    // Outputs: 01:23:45 [Smile LOG From User] - SMILE version 1.0 is out!
+    lgLog("Smile version %.1f is out!", 1.0f);
+    // Outputs: 01:23:45 [Smile Log From User] - Smile version 1.0 is out!
 
     lgSetFatal(MyFatalHandler); // Set a custom fatal handler
     
     /**
-     * If a SMILE module triggers a fatal error, it will log it and the 
+     * If a Smile module triggers a fatal error, it will log it and the 
      * resolution will be handled by MyFatalHandler.
      */
     
@@ -119,7 +119,7 @@ int main() {
     lgSetFatal(nullptr); // Reset to default handler
     
     /**
-     * Now, if a SMILE fatal error is triggered, it will be logged and the
+     * Now, if a Smile fatal error is triggered, it will be logged and the
      * program will terminate with failure status.
      */
     

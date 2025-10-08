@@ -1,6 +1,6 @@
 /**
  * @file TestInternal.h
- * @brief Instrumented memory allocation and fatal hooks for SMILE.
+ * @brief Instrumented memory allocation and fatal hooks for Smile.
  *
  * Provides wrappers around malloc, calloc, realloc, and fatal conditions to
  * support controlled allocation behavior, error handling, and logging.

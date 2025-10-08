@@ -1,8 +1,8 @@
-# SMILE 😊: A modular 2D game engine in C
+# Smile 😊: A modular 2D game engine in C
 
-## What is SMILE?
+## What is Smile?
 
-SMILE stands for **Simple Modularity Is Lowkey Elegant**.
+Smile stands for **Simple Modularity Is Lowkey Elegant**.
 
 It’s a modular collection of tools designed to simplify 2D game development in
 C, aimed at providing a lightweight and extensible foundation for developers at
@@ -15,17 +15,17 @@ that provide full control without bloat.
 
 ### Mission
 
-> _"I built SMILE to be the open source project I wish I had in my early
+> _"I built Smile to be the open source project I wish I had in my early
 programming days:_
 >
 > _1. Low barrier of entry_  
 > _2. Well documented_  
 > _3. Pressure-free and learning-focused environment"_
 >
-> — Betmann, creator of SMILE
+> — Betmann, creator of Smile
 
 Whether you're a first-year university student, a self-taught coder, or a
-professional branching into new areas, SMILE welcomes contributors who are
+professional branching into new areas, Smile welcomes contributors who are
 curious, motivated, and eager to learn.
 
 The engine is meant to grow slowly and thoughtfully, with help from a community
@@ -36,7 +36,7 @@ shipping features.
 
 ## ✨ Features
 
-SMILE is modular, so you can include only what you need.
+Smile is modular, so you can include only what you need.
 
 Current modules:
 
@@ -56,7 +56,7 @@ Current modules:
 
 ### Prerequisites
 
-Before building SMILE, ensure the following are installed:
+Before building Smile, ensure the following are installed:
 
 - CMake version 3.25 or higher
 - A build tool such as Make or Ninja
@@ -65,7 +65,7 @@ Before building SMILE, ensure the following are installed:
 ### Clone and Build
 
 ```zsh
-git clone https://github.com/vitorbetmann/smile_engine.git
+git clone https://github.com/vitorbetmann/smile.git
 cd smile_engine
 cmake -S . -B build
 cmake --build build
@@ -79,14 +79,14 @@ Your Source Directory should now look something like this:
 ```plaintext
 /my_game_project/
 ├── main.c                # Your game's entry point
-└── smile_engine/         # SMILE cloned or copied here
+└── smile_engine/         # Smile cloned or copied here
 ```
 
 ---
 
-## 🎮 Building Your Game with SMILE
+## 🎮 Building Your Game with Smile
 
-There are two common ways to compile your game using SMILE:
+There are two common ways to compile your game using Smile:
 
 **With Clang (from your source directory):**
 
@@ -105,21 +105,21 @@ Your Source Directory should look similar to this:
 /my_game_project/
 ├── CMakeLists.txt        # Your game's CMake file
 ├── main.c                # Your game's entry point
-└── smile_engine/         # SMILE cloned or copied here
+└── smile_engine/         # Smile cloned or copied here
 ```
 
 In your `CMakeLists.txt`, add:
 
 ```cmake
-# Add SMILE engine as a subdirectory
+# Add Smile engine as a subdirectory
 add_subdirectory(smile_engine)
 
-# Include SMILE headers
+# Include Smile headers
 target_include_directories(my_game PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/smile_engine/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/smile_engine/include
 )
 
-# Link against the SMILE library target
+# Link against the Smile library target
 target_link_libraries(my_game PRIVATE smile)
 ```
 
@@ -130,10 +130,10 @@ applicable.
 
 ## Contributions Welcome
 
-SMILE is a place to learn, experiment, and grow — especially if you're still
+Smile is a place to learn, experiment, and grow — especially if you're still
 early in your programming journey.
 
-### SMILE is the right place for you! No matter if you're:
+### Smile is the right place for you! No matter if you're:
 
 - A first-year computer science student curious about how game engines work.
 - An experienced web developer looking to explore graphics.
@@ -145,7 +145,7 @@ early in your programming journey.
 
 Just a willingness to learn. That’s it.
 
-SMILE is designed to be approachable, collaborative, and beginner-friendly —
+Smile is designed to be approachable, collaborative, and beginner-friendly —
 while still aiming to grow into something powerful and extensible over time.
 
 There are many ways to contribute:
@@ -167,7 +167,7 @@ out [how to contribute](docs/_Internal/_Contributing/Contributing.md).
 
 ## License
 
-SMILE is released under the MIT License. See the [LICENSE](./LICENSE) file for
+Smile is released under the MIT License. See the [LICENSE](./LICENSE) file for
 details.
 
 ---

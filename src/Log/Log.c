@@ -1,6 +1,6 @@
 /**
  * @file Log.c
- * @brief Implementation of the SMILE logging system.
+ * @brief Implementation of the Smile logging system.
  *
  * @author Vitor Betmann
  */
@@ -201,23 +201,23 @@ static void lgPrivateGetColorAndPrefix(LogLevel level, const char **color,
     switch (level) {
         case LOG_USER:
             *color = LOG_GREEN;
-            *prefix = "LOG";
+            *prefix = "Log";
             return;
         case LOG_INFO:
             *color = LOG_CYAN;
-            *prefix = "INFO";
+            *prefix = "Info";
             return;
         case LOG_WARNING:
             *color = LOG_YELLOW;
-            *prefix = "WARNING";
+            *prefix = "Warning";
             return;
         case LOG_ERROR:
             *color = LOG_RED;
-            *prefix = "ERROR";
+            *prefix = "Error";
             return;
         case LOG_FATAL:
             *color = LOG_PURPLE;
-            *prefix = "FATAL";
+            *prefix = "Fatal";
             return;
         default:
             *color = LOG_WHITE;

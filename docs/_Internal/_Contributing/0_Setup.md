@@ -1,4 +1,4 @@
-# Contributing to SMILE Engine 😊
+# Contributing to Smile 😊
 
 Thank you for your interest in contributing to SMILE!  
 This project is designed to be beginner-friendly and modular—feel free to
@@ -8,7 +8,7 @@ explore, fix bugs, add features, or simply learn.
 
 ## 📦 About the Project
 
-SMILE stands for **Simple Modularity Is Lowkey Elegant**.
+Smile stands for **Simple Modularity Is Lowkey Elegant**.
 
 It’s a modular collection of tools designed to simplify 2D game development in
 C, aimed at providing a lightweight and extensible foundation for developers at

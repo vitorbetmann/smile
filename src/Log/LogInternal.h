@@ -1,9 +1,9 @@
 /**
  * @file LogInternal.h
- * @brief TestInternal logging interface for SMILE modules.
+ * @brief TestInternal logging interface for Smile modules.
  *
  * Declares internal logging functionality and severity levels
- * for warnings, errors, and fatal events inside SMILE core modules.
+ * for warnings, errors, and fatal events inside Smile core modules.
  *
  * @author Vitor Betmann
  */
@@ -16,7 +16,7 @@
 // -----------------------------------------------------------------------------
 
 /**
- * @brief LogInternal severity levels used by SMILE.
+ * @brief LogInternal severity levels used by Smile.
  *
  * Represents the importance of a log message, ranging from user-defined
  * messages to fatal errors.
@@ -36,7 +36,7 @@ typedef enum {
 // -----------------------------------------------------------------------------
 
 /**
- * @brief Used by SMILE modules to log info, warnings, errors, or fatal events.
+ * @brief Used by Smile modules to log info, warnings, errors, or fatal events.
  *
  * Provides module name, cause, function name, and consequences for context.
  *
@@ -52,7 +52,7 @@ void lgInternalLog(LogLevel level, const char *module, const char *cause,
                    const char *fnName, const char *conseq);
 
 /**
- * @brief Used by SMILE modules to log info, warnings, errors, or fatal events
+ * @brief Used by Smile modules to log info, warnings, errors, or fatal events
  * with additional context.
  *
  * Similar to lgInternalLog, but includes an extra argument string for

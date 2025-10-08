@@ -15,12 +15,12 @@ behavior using enter, update, draw, and exit callback functions.
 ## Table of Contents
 
 - [Data Types](#-data-types)
-    - [Function Pointers](#_function-pointers_-)
+    - [Function Pointers](#-_function-pointers_)
 - [Functions](#-functions)
-    - [Start Related](#_start-related_)
-    - [State Functions](#_state-funcitons_)
-    - [Lifecycle Functions](#_lifecycle-functions_)
-    - [Stop Related](#_stop-related_)
+    - [Start Related](#-_start-related_)
+    - [State Functions](#-_state-funcitons_)
+    - [Lifecycle Functions](#-_lifecycle-functions_)
+    - [Stop Related](#-_stop-related_)
 - [Workflow Examples](#-workflow-examples)
 
 ---
@@ -29,7 +29,7 @@ behavior using enter, update, draw, and exit callback functions.
 
 ## 📦 Data Types
 
-### _Function Pointers_ ➡
+### — _Function Pointers_
 
 | `void (*smEnterFn)(void *args)` |
 |---------------------------------|
@@ -106,13 +106,16 @@ Initializes the state machine and prepares it for use.
 
 - **Returns:** True if the state machine started successfully, false otherwise.
 
-- **Note:** Calling this function when the state machine is already started will
-  log a warning and return false.
+- **Notes:**
+    - Calling this function when the state machine is already started will log a
+      warning and return false.
 
 - **Example:**
 
 ```c
-NO EXAMPLE YET
+#include "StateMachine.h"
+
+smStart();
 ```
 
 <br>
@@ -127,7 +130,9 @@ Checks whether the state machine has been initialized.
 - **Example:**
 
 ```c
-NO EXAMPLE YET
+if (smHasStarted()) {
+    ...
+}
 ```
 
 <br>
@@ -177,7 +182,9 @@ Checks whether a state with the given name exists.
 - **Example:**
 
 ```c
-NO EXAMPLE YET
+if (!smStateExists("level 1") {
+    ...
+}
 ```
 
 <br>
@@ -193,12 +200,13 @@ Sets the current active state by name and triggers its enter function.
 
 - **Returns:** True if the state was successfully changed, false otherwise.
 
-- **Note:** If a state is active, its exit function is called before switching.
+- **Notes:**
+    - If a state is active, its exit function is called before switching.
 
 - **Example:**
 
 ```c
-NO EXAMPLE YET
+smSetState("level 1");
 ```
 
 | `const char *smGetCurrentStateName(void)` |
@@ -219,7 +227,7 @@ Retrieves the name of the currently active state.
 - **Example:**
 
 ```c
-NO EXAMPLE YET
+const char *currState = smGetCurrentStateName();
 ```
 
 <br>
@@ -234,12 +242,13 @@ Deletes a state by name from the state machine.
 
 - **Returns:** True if the state was successfully deleted, false otherwise.
 
-- **Note:** Attempting to delete the currently active state will fail.
+- **Notes:**
+    - Attempting to delete the currently active state will fail.
 
 - **Example:**
 
 ```c
-NO EXAMPLE YET
+smDeleteState("level 1");
 ```
 
 <br>
@@ -255,7 +264,7 @@ Retrieves the total number of registered states.
 - **Example:**
 
 ```c
-NO EXAMPLE YET
+int myStateCount = smGetStateCound();
 ```
 
 <br>
@@ -277,12 +286,26 @@ Updates the currently active state.
 - **Returns:** True if the update function was called successfully, false
   otherwise.
 
-- **Note:** If the current state has no update function, a warning is logged.
+- **Notes:**
+    - If the current state has no update function, a warning is logged.
 
 - **Example:**
 
 ```c
-NO EXAMPLE YET
+#include <time.h>
+
+...
+
+clock_t lastTime = clock();
+
+while (true) {    
+    clock_t currentTime = clock();
+    float dt = (float)(currentTime - lastTime) / CLOCKS_PER_SEC;
+    lastTime = currentTime;
+
+    smUpdate(dt);
+    ...
+}
 ```
 
 <br>
@@ -295,12 +318,16 @@ Executes the draw function of the currently active state.
 - **Returns:** True if the draw function was called successfully, false
   otherwise.
 
-- **Note:** If the current state has no draw function, a warning is logged.
+- **Notes:**
+    - If the current state has no draw function, a warning is logged.
 
 - **Example:**
 
 ```c
-NO EXAMPLE YET
+while (true) {
+    ...
+    smDraw();
+}
 ```
 
 <br>
@@ -326,7 +353,7 @@ Stops the state machine and frees all allocated states.
 - **Example:**
 
 ```c
-NO EXAMPLE YET
+smStop();
 ```
 
 <br>
