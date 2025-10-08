@@ -182,8 +182,8 @@ NO EXAMPLE YET
 
 <br>
 
-| `smSetState(const char *name, void *args) |
-|-------------------------------------------|
+| `smSetState(const char *name, void *args)` |
+|--------------------------------------------|
 
 Sets the current active state by name and triggers its enter function.
 
@@ -306,6 +306,8 @@ NO EXAMPLE YET
 <br>
 
 For more, see [Workflow Examples](#-workflow-examples).
+
+---
 
 ### — _Stop Related_
 
