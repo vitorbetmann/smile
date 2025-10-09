@@ -1,8 +1,8 @@
 # TestInternal API 🧪
 
 `TestInternal` provides instrumented memory allocation wrappers and fatal hooks
-for SMILE.  
-These functions can be used in production for safe allocations and logging, and
+for SMILE. These functions can be used in production for safe allocations and
+logging, and
 in unit tests to simulate failures.
 
 For testing guidelines, see
@@ -12,55 +12,62 @@ the [Testing Contributing Doc](../_Contributing/3_Testing.md).
 
 ---
 
+<br>
+
 ## Table of Contents
 
 - [Data Types](#-data-types)
-    - [MemAllocFn](#memallocfn)
+    - [Enums](#-_enums_)
 - [Functions](#-functions)
-    - [Test Suites Related:](#_test-suites-related_)
-        - [tsInternalPass](#void-tsinternalpassconst-char-fnname)
-        - [tsInternalDisable](#bool-tsinternaldisablememallocfn-fnname-unsigned-int-at)
-    - [Memory Allocation Related:](#_memory-allocation-related_)
-        - [tsInternalMalloc](#void-tsinternalmallocsize_t-size)
-        - [tsInternalCalloc](#void-tsinternalcallocsize_t-nitems-size_t-size)
-        - [tsInternalRealloc](#void-tsinternalreallocvoid-ptr-size_t-size)
-- [Workflow Examples](#-workflow-examples)
+    - [Test Suites Related:](#-_test-suites-related_)
+    - [Memory Allocation Related:](#-_memory-allocation-related_)
 
 ---
+
+<br>
 
 ## 📦 Data Types
 
----
+### — _Enums_
 
-### _Enums_
+| MemAllocFn |
+|------------|
 
----
+Identifies allocation functions for failure simulation. Used
+with `tsInternalDisable` to specify which type of allocation should be forced to
+fail.
 
-### `MemAllocFn`
-
-Identifies allocation functions for failure simulation.
-
-Used
-with [tsInternalDisable](#bool-tsinternaldisablememallocfn-fnname-unsigned-int-at)
-to specify which type of allocation should be forced to fail.
-
-| Enum      | Simulates |
+| Item      | Simulates |
 |-----------|-----------|
 | `MALLOC`  | malloc()  |
 | `CALLOC`  | calloc()  |
 | `REALLOC` | realloc() |
 
+- **Example:**
+
+```c
+void Test_smStart_FailsIfCallocFails(void) {
+    tsInternalDisable(CALLOC, 1);
+    assert(!smStart());
+    tsInternalPass("Test_smStart_FailsIfCallocFails");
+}
+```
+
+<br>
+
+For testing guidelines, see
+the [Testing Contributing Doc](../_Contributing/3_Testing.md).
+
 ---
+
+<br>
 
 ## 🔧 Functions
 
----
+### — _Test Suites Related_
 
-### _Test Suites Related_
-
----
-
-### `void tsInternalPass(const char *fnName)`
+| `void tsInternalPass(const char *fnName)` |
+|-------------------------------------------|
 
 Logs a `[PASS]` message for a successful test or operation.
 
@@ -70,14 +77,16 @@ Logs a `[PASS]` message for a successful test or operation.
 **Example:**
 
 ```c
-NO EXAMPLE YET
+void Test_smHasStarted_FailsPreStart(void) {
+    assert(!smHasStarted());
+    tsInternalPass("Test_smHasStarted_FailsPreStart");
+}
 ```
 
-For more, see [Workflow Examples](#-workflow-examples).
+<br>
 
----
-
-### `bool tsInternalDisable(MemAllocFn fnName, unsigned int at)`
+| `bool tsInternalDisable(MemAllocFn fnName, unsigned int at)` |
+|--------------------------------------------------------------|
 
 Temporarily disables a memory allocation function, causing it to fail at the
 specified call count. After the failure
@@ -86,25 +95,26 @@ occurs, normal behavior resumes.
 - **Parameters:**
     - `fnName` — Allocation function to disable (`MALLOC`, `CALLOC`, `REALLOC`).
     - `at` — Call count at which failure occurs.
-- **Returns:**
-    - `true` if successfully disabled.
-    - `false` if an invalid function type is given.
+
+- **Returns:** `true` if successfully disabled, `false` if an invalid function
+  type is given.
 
 **Example:**
 
 ```c
-NO EXAMPLE YET
+void Test_smStart_FailsIfCallocFails(void) {
+    tsInternalDisable(CALLOC, 1);
+    assert(!smStart());
+    tsInternalPass("Test_smStart_FailsIfCallocFails");
+}
 ```
 
-For more, see [Workflow Examples](#-workflow-examples).
-
 ---
 
-### _Memory Allocation Related:_
+### — _Memory Allocation Related_
 
----
-
-### `void *tsInternalMalloc(size_t size)`
+| `void *tsInternalMalloc(size_t size)` |
+|---------------------------------------|
 
 Wrapper around `malloc()` with optional failure simulation.
 
@@ -119,11 +129,10 @@ Wrapper around `malloc()` with optional failure simulation.
 NO EXAMPLE YET
 ```
 
-For more, see [Workflow Examples](#-workflow-examples).
+<br>
 
----
-
-### `void *tsInternalCalloc(size_t nitems, size_t size)`
+| `void *tsInternalCalloc(size_t nitems, size_t size)` |
+|------------------------------------------------------|
 
 Wrapper around `calloc()` with optional failure simulation.
 
@@ -136,14 +145,18 @@ Wrapper around `calloc()` with optional failure simulation.
 **Example:**
 
 ```c
-NO EXAMPLE YET
+tracker = tsInternalCalloc(1, sizeof(StateMachineTracker));
+if (!tracker) {
+    lgInternalLog(LOG_ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, FN_START,
+                  CONSEQ_ABORTED);
+    return false;
+}
 ```
 
-For more, see [Workflow Examples](#-workflow-examples).
+<br>
 
----
-
-### `void *tsInternalRealloc(void *ptr, size_t size)`
+| `void *tsInternalRealloc(void *ptr, size_t size)` |
+|---------------------------------------------------|
 
 Wrapper around `realloc()` with optional failure simulation.
 
@@ -156,33 +169,16 @@ Wrapper around `realloc()` with optional failure simulation.
 **Example:**
 
 ```c
-// NO EXAMPLES YET
+// NO EXAMPLE YET
 ```
 
-For more, see [Workflow Examples](#-workflow-examples).
+<br>
+
+For coding guidelines, see
+the [Coding Contributing Doc](../_Contributing/1_Coding.md).
 
 ---
 
-### `bool TEST_Fatal(void)`
+<br>
 
-Check whether a fatal condition is being simulated.
-
-- **Returns:**
-    - `true` if a fatal condition is active.
-    - `false` otherwise.
-
-**Example:**
-
-```c
-// NO EXAMPLES YET
-```
-
-For more, see [Workflow Examples](#-workflow-examples).
-
----
-
-## 📖 Workflow Examples
-
-```c
-// NO EXAMPLES YET
-```
+Authored by: Vitor Betmann
