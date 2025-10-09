@@ -110,7 +110,8 @@ Wrapper around `malloc()` with optional failure simulation.
 
 - **Parameters:**
     - `size` — Number of bytes to allocate.
-- **Returns:** Pointer to allocated memory, or `NULL` if failure is simulated.
+- **Returns:** Pointer to allocated memory, or `nullptr` if failure is
+  simulated.
 
 **Example:**
 
@@ -129,7 +130,8 @@ Wrapper around `calloc()` with optional failure simulation.
 - **Parameters:**
     - `nitems` — Number of elements to allocate.
     - `size` — Size of each element in bytes.
-- **Returns:** Pointer to allocated memory, or `NULL` if failure is simulated.
+- **Returns:** Pointer to allocated memory, or `nullptr` if failure is
+  simulated.
 
 **Example:**
 
@@ -148,7 +150,8 @@ Wrapper around `realloc()` with optional failure simulation.
 - **Parameters:**
     - `ptr` — Pointer to an existing memory block.
     - `size` — Number of bytes to allocate.
-- **Returns:** Pointer to reallocated memory, or `NULL` if failure is simulated.
+- **Returns:** Pointer to reallocated memory, or `nullptr` if failure is
+  simulated.
 
 **Example:**
 

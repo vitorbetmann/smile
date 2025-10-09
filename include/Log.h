@@ -1,9 +1,7 @@
 /**
- * @file LogInternal.h
- * @brief Public API logging interface for SMILE.
- *
- * Provides the public-facing API for logging and configuring fatal error
- * handling behavior.
+ * @file Log.h
+ * @brief `Log` provides functions for writing printf-style messages to the
+ * terminal and configuring fatal error handling.
  *
  * @author Vitor Betmann
  */
@@ -43,8 +41,8 @@ void lgLog(const char *msg, ...);
  * @brief Sets a custom handler to be called when a fatal event occurs.
  *
  * @param handler Function pointer to the custom fatal handler.
- * If NULL, the default handler is set, which terminates the program with
- * failure status after logging the event to the terminal.
+ * If NULL or nullptr, the default handler is set, which terminates the program
+ * with failure status after logging the event to the terminal.
  *
  * @note It's recommended your custom handler terminates the program.
  *

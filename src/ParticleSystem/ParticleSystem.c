@@ -44,7 +44,9 @@ struct ParticleSystem {
 // Prototypes
 // --------------------------------------------------
 void ParticleUpdate(Particle *p, float dt);
+
 void PS_Draw(ParticleSystem *ps);
+
 void ParticleDraw(Particle *p);
 
 // --------------------------------------------------
@@ -52,10 +54,9 @@ void ParticleDraw(Particle *p);
 // --------------------------------------------------
 ParticleSystem *newParticleSystem(Texture2D *texture, int particleCount,
                                   Vector2 pos) {
-
   ParticleSystem *ps = calloc(1, sizeof(ParticleSystem));
   if (!ps) {
-    return NULL;
+    return nullptr;
   }
 
   ps->texture = texture;
@@ -63,7 +64,7 @@ ParticleSystem *newParticleSystem(Texture2D *texture, int particleCount,
   ps->particleCount = particleCount;
   ps->particles = calloc(ps->particleCount, sizeof(Particle));
   if (!ps->particles) {
-    return NULL;
+    return nullptr;
   }
 
   ps->pos = pos;
@@ -79,14 +80,12 @@ ParticleSystem *newParticleSystem(Texture2D *texture, int particleCount,
 }
 
 void PS_SetParticleLifetime(ParticleSystem *ps, int min, int max) {
-
   ps->minLifetime = min;
   ps->maxLifetime = max;
 }
 
 void PS_SetLinearAcceleration(ParticleSystem *ps, float xMin, float yMin,
                               float xMax, float yMax) {
-
   ps->minLinearAccelerationX = xMin;
   ps->minLinearAccelerationY = yMin;
   ps->maxLinearAccelerationX = xMax;
@@ -95,7 +94,6 @@ void PS_SetLinearAcceleration(ParticleSystem *ps, float xMin, float yMin,
 
 void PS_SetEmissionArea(ParticleSystem *ps, Distribution dist, float dx,
                         float dy) {
-
   ps->distribution = dist;
   ps->maxSpawnDistanceX = dx;
   ps->maxSpawnDistanceY = dy;
@@ -109,14 +107,15 @@ void PS_SetUniformDist(ParticleSystem *ps, Vector2 particleSize,
 }
 
 void PS_SetColors(ParticleSystem *ps, Color color1, Color color2) {
-
   ps->initialColor = color1;
   ps->finalColor = color2;
 
-  ps->colorDelta = (Color){ps->finalColor.r - ps->initialColor.r,
-                           ps->finalColor.g - ps->initialColor.g,
-                           ps->finalColor.b - ps->initialColor.b,
-                           ps->finalColor.a - ps->initialColor.a};
+  ps->colorDelta = (Color){
+    ps->finalColor.r - ps->initialColor.r,
+    ps->finalColor.g - ps->initialColor.g,
+    ps->finalColor.b - ps->initialColor.b,
+    ps->finalColor.a - ps->initialColor.a
+  };
 }
 
 void PS_Emit(ParticleSystem *ps) {
@@ -136,25 +135,25 @@ void PS_Emit(ParticleSystem *ps) {
     temp->initialLifeTime = temp->lifeTime;
 
     switch (ps->distribution) {
-    case UNIFORM:
-      temp->pos.x = ps->pos.x + (uniformCols * temp->size.x);
-      uniformCols++;
-      if (uniformCols == ps->uniformCols) {
-        uniformCols = 0;
-        uniformRows++;
-      }
-      temp->pos.y = ps->pos.y + (uniformRows * temp->size.y);
-      break;
-    case NORMAL:
-      // Position
-      temp->pos.x = GetRandomValue(0, ps->maxSpawnDistanceX);
-      temp->pos.x *= GetRandomValue(0, 1) == 0 ? 1 : -1;
-      temp->pos.x += ps->pos.x;
+      case UNIFORM:
+        temp->pos.x = ps->pos.x + (uniformCols * temp->size.x);
+        uniformCols++;
+        if (uniformCols == ps->uniformCols) {
+          uniformCols = 0;
+          uniformRows++;
+        }
+        temp->pos.y = ps->pos.y + (uniformRows * temp->size.y);
+        break;
+      case NORMAL:
+        // Position
+        temp->pos.x = GetRandomValue(0, ps->maxSpawnDistanceX);
+        temp->pos.x *= GetRandomValue(0, 1) == 0 ? 1 : -1;
+        temp->pos.x += ps->pos.x;
 
-      temp->pos.y = GetRandomValue(0, ps->maxSpawnDistanceY);
-      temp->pos.y *= GetRandomValue(0, 1) == 0 ? 1 : -1;
-      temp->pos.y += ps->pos.y;
-      break;
+        temp->pos.y = GetRandomValue(0, ps->maxSpawnDistanceY);
+        temp->pos.y *= GetRandomValue(0, 1) == 0 ? 1 : -1;
+        temp->pos.y += ps->pos.y;
+        break;
     }
 
     // Velocity
@@ -177,7 +176,6 @@ void PS_Emit(ParticleSystem *ps) {
 }
 
 void PS_Update(ParticleSystem *ps, float dt) {
-
   if (!ps || !ps->canEmit) {
     return;
   }
@@ -195,7 +193,6 @@ void PS_Update(ParticleSystem *ps, float dt) {
 }
 
 void ParticleUpdate(Particle *p, float dt) {
-
   // Update speed and pos
   p->dx = p->linearAccelerationX;
   p->dy = p->linearAccelerationY;
@@ -218,7 +215,6 @@ void ParticleUpdate(Particle *p, float dt) {
 }
 
 void PS_Draw(ParticleSystem *ps) {
-
   if (!ps->canEmit) {
     return;
   }
@@ -229,7 +225,6 @@ void PS_Draw(ParticleSystem *ps) {
 }
 
 void ParticleDraw(Particle *p) {
-
   DrawTexture(*p->texture, p->pos.x, p->pos.y, p->currColor);
 }
 

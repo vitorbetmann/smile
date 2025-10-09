@@ -1,46 +1,54 @@
-# Log API 📝
+# Log — API 📝
 
-`Log` provides an API for writing
-printf-style messages to the terminal and configuring fatal error handling.
+`Log` provides functions for writing printf-style messages to the terminal and
+configuring fatal error handling.
 
 ### 🚨 Warning! This module is not thread-safe
 
 ---
 
+<br>
+
 ## Table of Contents
 
 - [Data Types](#-data-types)
-    - [lgFatalHandler](#void-lgfatalhandlervoid)
+    - [Function Pointers](#-_function-pointers_)
 - [Functions](#-functions)
-    - [lgLog](#void-lglogconst-char-msg-)
-    - [lgSetFatal](#void-lgsetfatallgfatalhandler-handler)
-- [Workflow Examples](#-workflow-examples)
+    - [Log Related](#-_log-related_)
+    - [Fatal Handling Related](#-_log-related_)
 
 ---
+
+<br>
 
 ## 📦 Data Types
 
----
+### — _Function Pointers_
 
-### _Function Pointers_
-
----
-
-### `void (*lgFatalHandler)(void)`
+| `void (*lgFatalHandler)(void)` |
+|--------------------------------|
 
 Function pointer type for custom fatal error handlers.
 
+- **Example:**
+
+```c
+void myFatalHandler(void) {
+    // Log error reason to file
+    exit(EXIT_FAILURE);
+}
+```
+
 ---
+
+<br>
 
 ## 🔧 Functions
 
----
+### — _Log Related_
 
-### _Log Related_
-
----
-
-### `void lgLog(const char *msg, ...)`
+| `void lgLog(const char *msg, ...)` |
+|------------------------------------|
 
 Logs a message to the terminal ending in a new line. Supports printf-style
 formatting.
@@ -48,7 +56,9 @@ formatting.
 - **Parameters:**
     - `msg` — Format string for the message to log.
     - `...` — Additional arguments related to the format specifiers in msg.
-- **Note:** Output is written to stderr.
+
+- **Note:**
+    - Output is written to stderr.
 
 **Example:**
 
@@ -57,22 +67,23 @@ lgLog("Smile version %.1f is out!", 1.0f);
 // Outputs: 01:23:45 [Smile Log From User] - Smile version 1.0 is out!
 ```
 
-For more, see [Workflow Examples](#-workflow-examples).
+<br>
+
+For more, see [Workflow Example](README.md#-workflow-example) in
+the [Log Getting Started](README.md) doc.
 
 ---
 
-### _Fatal Handling Related_
-
----
+### — _Fatal Handling Related_
 
 ### `void lgSetFatal(lgFatalHandler handler)`
 
 Sets a custom handler to be called when a fatal event occurs.
 
 - **Parameters:**
-    - `handler` — Function pointer to the custom fatal handler. If NULL, the
-      default handler is set, which terminates the program with failure status
-      after logging the event to the terminal.
+    - `handler` — Function pointer to the custom fatal handler. If `NULL` or
+      `nullptr`, the default handler is set, which terminates the program with
+      failure status after logging the event to the terminal.
 
 - **Note:** It's recommended your custom handler terminates the program.
 
@@ -90,39 +101,13 @@ int main() {
 }
 ```
 
-For more, see [Workflow Examples](#-workflow-examples).
+<br>
+
+For more, see [Workflow Example](README.md#-workflow-example) in
+the [Log Getting Started](README.md) doc.
 
 ---
 
-## 📖 Workflow Examples
+<br>
 
-```c
-#include "Log.h"
-
-void MyFatalHandler(void) {
-    // Custom handler code here
-}
-
-int main() {
-    lgLog("Smile version %.1f is out!", 1.0f);
-    // Outputs: 01:23:45 [Smile Log From User] - Smile version 1.0 is out!
-
-    lgSetFatal(MyFatalHandler); // Set a custom fatal handler
-    
-    /**
-     * If a Smile module triggers a fatal error, it will log it and the 
-     * resolution will be handled by MyFatalHandler.
-     */
-    
-    ... // More code
-    
-    lgSetFatal(nullptr); // Reset to default handler
-    
-    /**
-     * Now, if a Smile fatal error is triggered, it will be logged and the
-     * program will terminate with failure status.
-     */
-    
-    ... // More code
-}
-```
+Authored by: Vitor Betmann

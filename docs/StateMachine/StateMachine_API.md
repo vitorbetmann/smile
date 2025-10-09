@@ -1,10 +1,8 @@
 # State Machine — API 🤖
 
-Lightweight framework for managing states, transitions, and lifecycle callbacks.
-
-The State Machine module provides a simple, flexible system for defining and
-controlling game flow through independent states. Each state can specify its own
-behavior using enter, update, draw, and exit callback functions.
+`StateMachine` provides a simple, flexible system for defining and controlling
+game flow through independent states. Each state can specify its own behavior
+using enter, update, draw, and exit callback functions.
 
 ### 🚨 Warning! This module is not thread-safe
 
@@ -277,13 +275,13 @@ Sets the current active state by name and triggers its enter function.
 - **Notes:**
     - If a state is already active, its exit function is called before
       switching.
-    - The `args` pointer may be `NULL` if no data is required.
+    - The `args` pointer may be `NULL` or `nullptr` if no data is required.
 
 - **Example:**
 
 ```c
 // Switch to "level 1" with no arguments.
-smSetState("level 1", NULL);
+smSetState("level 1", nullptr);
 
 ...
 
@@ -304,7 +302,7 @@ smSetState("level 2", &score);
 
 Retrieves the name of the currently active state.
 
-- **Returns:** A pointer to the name of the current state, or NULL if none is
+- **Returns:** A pointer to the name of the current state, or nullptr if none is
   active.
 
 - **Notes:**
@@ -428,8 +426,6 @@ the [State Machine Getting Started](README.md) doc.
 
 ---
 
-<br>
-
 ### — _Stop Related_
 
 | `bool smStop(void)` |
@@ -470,3 +466,5 @@ the [State Machine Getting Started](README.md) doc.
 ---
 
 <br>
+
+Authored by: Vitor Betmann

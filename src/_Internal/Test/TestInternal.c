@@ -54,7 +54,7 @@ void *tsInternalMalloc(const size_t size) {
     mallocNum--;
     if (!canMalloc && mallocNum == 0) {
         canMalloc = true;
-        return NULL;
+        return nullptr;
     }
     return malloc(size);
 }
@@ -63,7 +63,7 @@ void *tsInternalCalloc(const size_t nitems, const size_t size) {
     callocNum--;
     if (!canCalloc && callocNum == 0) {
         canCalloc = true;
-        return NULL;
+        return nullptr;
     }
     return calloc(nitems, size);
 }
@@ -72,7 +72,7 @@ void *tsInternalRealloc(void *ptr, const size_t size) {
     reallocNum--;
     if (!canRealloc && reallocNum == 0) {
         canRealloc = true;
-        return NULL;
+        return nullptr;
     }
     return realloc(ptr, size);
 }

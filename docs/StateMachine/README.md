@@ -37,14 +37,8 @@ until this step is complete.
 
 2️⃣ Define each state in their own header/source files to represent a
 self-contained scene (for example, a main menu, level, or pause screen). They
-must contain at least one and up to four lifecycle callbacks.
-
-- `enter` — runs once when entering the state. Often for
-  loading assets or initialize data.
-- `update` — runs every frame to update game logic.
-- `draw` — runs every frame to render visuals.
-- `exit` — runs once when leaving the state. Often used for freeing memory
-  and unloading resources.
+must contain at least one and up to four lifecycle callbacks (enter, update,
+draw, and/or exit).
 
 3️⃣ `smCreateState` is used to register uniquely named states with its callbacks
 into memory. You can create as many states as you like.
@@ -63,19 +57,32 @@ dangling pointers.
 
 <br>
 
-### 🔍 Quick Reference Table
+## 🔍 Quick Reference Table
 
 For detailed documentation, see
 the [State Machine API Reference](StateMachine_API.md).
 
-| Function                                                                                                              | Description                                                                                                                                      |
+### Data Types
+
+— _Function Pointers_
+
+| Signature                             | Description                                                                                                      |
+|---------------------------------------|------------------------------------------------------------------------------------------------------------------|
+| `void (*smEnterFn)(const void *args)` | Runs once when entering the state, often for loading assets or initialize data. Can take in optional parameters. |     
+| `void (*smUpdateFn)(float dt)`        | Runs every frame to update game logic. `dt` is the delta time since the last frame.                              |
+| `void (*smDrawFn)(void)`              | Runs every frame to visuals.                                                                                     |
+| `void (*smExitFn)(void)`              | Runs once when leaving the state. Often used for freeing memory and unloading resources.                         |
+
+### Functions
+
+| Signature                                                                                                             | Description                                                                                                                                      |
 |-----------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
 | `bool smStart(void)`                                                                                                  | Initializes the state machine and prepares it for use. Returns `true` if successful.                                                             |
 | `bool smHasStarted(void)`                                                                                             | Checks whether the state machine has been initialized.                                                                                           |
 | `bool smCreateState(const char *stateName, smEnterFn enterFn, smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn)` | Registers a new named state with its lifecycle callbacks. Returns `true` if created successfully.                                                |
 | `bool smStateExists(const char *name)`                                                                                | Checks if a state with the given name exists.                                                                                                    |
 | `bool smSetState(const char *name, void *args)`                                                                       | Sets the active state by name and calls its `enter` function. Calls the previous state’s `exit` function before switching.                       |
-| `const char *smGetCurrentStateName(void)`                                                                             | Returns the name of the current active state, or `NULL` if none is active.                                                                       |
+| `const char *smGetCurrentStateName(void)`                                                                             | Returns the name of the current active state, or `nullptr` if none is active.                                                                    |
 | `bool smDeleteState(const char *name)`                                                                                | Deletes a state by name. Fails if it’s currently active.                                                                                         |
 | `int smGetStateCount(void)`                                                                                           | Returns the total number of registered states, or `-1` if the state machine is not started.                                                      |
 | `bool smUpdate(float dt)`                                                                                             | Calls the update function of the active state. Returns `true` if successful.                                                                     |
@@ -243,3 +250,5 @@ void levelTwoDraw(void) {
 ---
 
 <br>
+
+Authored by: Vitor Betmann

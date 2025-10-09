@@ -59,11 +59,11 @@ bool tsInternalDisable(MemAllocFn fnName, unsigned int at);
 /**
  * @brief Wrapper around malloc() with optional failure simulation.
  *
- * Use tsInternalDisable(MALLOC, n) to force the nth malloc call to return NULL.
+ * Use tsInternalDisable(MALLOC, n) to force the nth malloc call to return nullptr.
  *
  * @param size Number of bytes to allocate.
  *
- * @return Pointer to allocated memory, or NULL if failure is simulated.
+ * @return Pointer to allocated memory, or nullptr if failure is simulated.
  *
  * @author Vitor Betmann
  */
@@ -72,12 +72,12 @@ void *tsInternalMalloc(size_t size);
 /**
  * @brief Wrapper around calloc() with optional failure simulation.
  *
- * Use tsInternalDisable(CALLOC, n) to force the nth calloc call to return NULL.
+ * Use tsInternalDisable(CALLOC, n) to force the nth calloc call to return nullptr.
  *
  * @param nitems Number of elements to allocate.
  * @param size Size of each element in bytes.
  *
- * @return Pointer to allocated memory, or NULL if failure is simulated.
+ * @return Pointer to allocated memory, or nullptr if failure is simulated.
  *
  * @author Vitor Betmann
  */
@@ -89,7 +89,7 @@ void *tsInternalCalloc(size_t nitems, size_t size);
  * @param ptr Pointer to a memory block to be reallocated.
  * @param size Number of bytes to allocate.
  *
- * @return Pointer to allocated memory, or NULL if failure is simulated.
+ * @return Pointer to allocated memory, or nullptr if failure is simulated.
  *
  * @author Vitor Betmann
  */

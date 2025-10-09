@@ -1,9 +1,6 @@
 /**
  * @file StateMachine.h
- * @brief Lightweight framework for managing states, transitions, and lifecycle
- * callbacks.
- *
- * The State Machine module provides a simple, flexible system for defining and
+ * @brief `StateMachine` provides a simple, flexible system for defining and
  * controlling game flow through independent states. Each state can specify its
  * own behavior using enter, update, draw, and exit callback functions.
  *
@@ -125,7 +122,7 @@ bool smSetState(const char *name, void *args);
 /**
  * @brief Retrieves the name of the currently active state.
  *
- * @return A pointer to the name of the current state, or NULL if none is active.
+ * @return A pointer to the name of the current state, or nullptr if none is active.
  *
  * @note The returned string is owned by the state machine. The user must not
  *       attempt to modify or free it and should make a copy before doing so.
