@@ -43,7 +43,7 @@ Function pointer type for state entry callbacks.
       file loading), the user is responsible for handling the failure within the
       function.
 
-- **Example:**
+**Example:**
 
 ```c
 typedef struct {
@@ -73,7 +73,7 @@ Function pointer type for state update callbacks.
 - **Parameters:**
     - `dt` — Delta time in seconds since the last update.
 
-- **Example:**
+**Example:**
 
 ```c
 void myStateUpdate(float dt) {
@@ -88,7 +88,7 @@ void myStateUpdate(float dt) {
 
 Function pointer type for state draw callbacks.
 
-- **Example:**
+**Example:**
 
 ```c
 #include <raylib.h> // This example uses raylib for rendering 
@@ -113,7 +113,7 @@ void myStateDraw(void) {
 
 Function pointer type for state exit callbacks.
 
-- **Example:**
+**Example:**
 
 ```c
 void myStateExit(void) {
@@ -146,7 +146,7 @@ Initializes the state machine and prepares it for use.
     - Calling this function when the state machine is already started will log a
       warning and return false.
 
-- **Example:**
+**Example:**
 
 ```c
 #include "StateMachine.h"
@@ -163,7 +163,7 @@ Checks whether the state machine has been initialized.
 
 - **Returns:** True if the state machine has been started, false otherwise.
 
-- **Example:**
+**Example:**
 
 ```c
 if (smHasStarted()) {
@@ -198,7 +198,7 @@ Creates a new state with the specified name and callback functions.
     - All function pointers are optional, but at least one must be provided.
     - Attempting to create a state that already exists will fail.
 
-- **Example:**
+**Example:**
 
 ```c
 // ----- In levelOne.h -----
@@ -250,7 +250,7 @@ Checks whether a state with the given name exists.
 
 - **Returns:** True if the state exists, false otherwise.
 
-- **Example:**
+**Example:**
 
 ```c
 if (!smStateExists("level 1") {
@@ -277,7 +277,7 @@ Sets the current active state by name and triggers its enter function.
       switching.
     - The `args` pointer may be `NULL` or `nullptr` if no data is required.
 
-- **Example:**
+**Example:**
 
 ```c
 // Switch to "level 1" with no arguments.
@@ -312,7 +312,7 @@ Retrieves the name of the currently active state.
     - The pointer remains valid until the state is deleted or the state machine
       is stopped.
 
-- **Example:**
+**Example:**
 
 ```c
 const char *currState = smGetCurrentStateName();
@@ -333,7 +333,7 @@ Deletes a state by name from the state machine.
 - **Notes:**
     - Attempting to delete the currently active state will fail.
 
-- **Example:**
+**Example:**
 
 ```c
 smDeleteState("level 1");
@@ -349,7 +349,7 @@ Retrieves the total number of registered states.
 - **Returns:** The number of registered states, or -1 if the state machine is
   not started.
 
-- **Example:**
+**Example:**
 
 ```c
 int myStateCount = smGetStateCound();
@@ -378,7 +378,7 @@ Updates the currently active state.
 - **Notes:**
     - If the current state has no update function, a warning is logged.
 
-- **Example:**
+**Example:**
 
 ```c
 #include <time.h>
@@ -410,7 +410,7 @@ Executes the draw function of the currently active state.
 - **Notes:**
     - If the current state has no draw function, a warning is logged.
 
-- **Example:**
+**Example:**
 
 ```c
 while (true) {
@@ -440,7 +440,7 @@ Stops the state machine and frees all allocated states.
     - The exit function of the current state is called before cleanup.
     - After stopping, the state machine must be restarted with smStart().
 
-- **Example:**
+**Example:**
 
 ```c
 int main(void) {

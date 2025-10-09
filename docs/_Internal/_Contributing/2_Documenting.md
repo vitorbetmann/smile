@@ -103,7 +103,7 @@ Initializes the state machine and prepares it for use.
 - **Note:** Calling this function when the state machine is already started will
   log a warning and return false.
 
-- **Example:**
+**Example:**
 
 ```c
 smStart();
@@ -147,7 +147,7 @@ Deletes a state by name from the state machine.
 - **Notes:**
     - Attempting to delete the currently active state will fail.
 
-- **Example:**
+**Example:**
 
 ```c
 smDeleteState("level 1");

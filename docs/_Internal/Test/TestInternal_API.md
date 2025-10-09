@@ -2,11 +2,13 @@
 
 `TestInternal` provides instrumented memory allocation wrappers and fatal hooks
 for SMILE. These functions can be used in production for safe allocations and
-logging, and
-in unit tests to simulate failures.
+logging, and in unit tests to simulate failures.
 
 For testing guidelines, see
 the [Testing Contributing Doc](../_Contributing/3_Testing.md).
+
+For coding guidelines, see
+the [Coding Contributing Doc](../_Contributing/1_Coding.md).
 
 ### 🚨 Warning! This module is not thread-safe
 
@@ -19,8 +21,8 @@ the [Testing Contributing Doc](../_Contributing/3_Testing.md).
 - [Data Types](#-data-types)
     - [Enums](#-_enums_)
 - [Functions](#-functions)
-    - [Test Suites Related:](#-_test-suites-related_)
-    - [Memory Allocation Related:](#-_memory-allocation-related_)
+    - [Test Suites Related](#-_test-suites-related_)
+    - [Memory Allocation Related](#-_memory-allocation-related_)
 
 ---
 
@@ -30,8 +32,8 @@ the [Testing Contributing Doc](../_Contributing/3_Testing.md).
 
 ### — _Enums_
 
-| MemAllocFn |
-|------------|
+| `MemAllocFn` |
+|--------------|
 
 Identifies allocation functions for failure simulation. Used
 with `tsInternalDisable` to specify which type of allocation should be forced to
@@ -43,7 +45,7 @@ fail.
 | `CALLOC`  | calloc()  |
 | `REALLOC` | realloc() |
 
-- **Example:**
+**Example:**
 
 ```c
 void Test_smStart_FailsIfCallocFails(void) {
@@ -126,7 +128,12 @@ Wrapper around `malloc()` with optional failure simulation.
 **Example:**
 
 ```c
-NO EXAMPLE YET
+State *state = tsInternalMalloc(sizeof(State));
+if (!state) {
+    lgInternalLog(LOG_ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,
+                  FN_CREATE_STATE, CONSEQ_ABORTED);
+    return false;
+}
 ```
 
 <br>

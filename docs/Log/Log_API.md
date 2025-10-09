@@ -30,7 +30,7 @@ configuring fatal error handling.
 
 Function pointer type for custom fatal error handlers.
 
-- **Example:**
+**Example:**
 
 ```c
 void myFatalHandler(void) {

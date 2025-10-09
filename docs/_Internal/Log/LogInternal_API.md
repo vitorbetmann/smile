@@ -1,37 +1,41 @@
-# LogInternal API📝
+# LogInternal API 📝
 
-For logging guidelines, see
+`LogInternal` provides a logging interface for Smile modules. It contains
+internal
+logging functionality and severity levels for warnings, errors, and fatal events
+inside Smile core modules.
+
+For coding guidelines, see
 the [Coding Contributing Doc](../_Contributing/1_Coding.md).
 
 ### 🚨 Warning! This module is not thread-safe.
 
 ---
 
+<br>
+
 ## Table of Contents
 
 - [Data Types](#-data-types)
-    - [LogLevel](#loglevel)
+    - [Enums](#-_enums_)
 - [Functions](#-functions)
-- [Workflow Examples](#-workflow-examples)
+    - [Log Related](#-_log-related_)
 
 ---
+
+<br>
 
 ## 📦 Data Types
 
----
+### — _Enums_
 
-### _Enums_
+| `LogLevel` |
+|------------|
 
----
+LogInternal severity levels used by SMILE. Represents the importance of a log
+message, ranging from user-defined messages to fatal errors.
 
-### `LogLevel`
-
-LogInternal severity levels used by SMILE.
-
-Represents the importance of a log message, ranging from user-defined messages
-to fatal errors.
-
-| Enum          | Summary                                                                                              | Color  |
+| Item          | Summary                                                                                              | Color  |
 |---------------|------------------------------------------------------------------------------------------------------|--------|
 | `LOG_USER`    | For custom user generated logs. See lgLog in [Log_API](../../Log/Log_API.md).                        | Green  |
 | `LOG_INFO`    | Reports informational logs. E.g. "Start Successful."                                                 | Blue   |
@@ -39,15 +43,22 @@ to fatal errors.
 | `LOG_ERROR`   | Reports game-breaking errors. E.g. memory allocation failed.                                         | Red    |
 | `LOG_FATAL`   | Reports program breaking errors. E.g. failing to close a file.                                       | Purple |
 
+**Example:**
+
+```c
+lgInternalLog(LOG_ERROR, MODULE, CAUSE_NOT_STARTED, fnName, CONSEQ_ABORTED);
+```
+
 ---
+
+<br>
 
 ## 🔧 Functions
 
----
+### — _Log Related_
 
-###
-
-`void lgInternalLog(LogLevel level, const char *module, const char *cause,const char *fnName, const char *conseq)`
+| `void lgInternalLog(LogLevel level, const char *module, const char *cause,const char *fnName, const char *conseq)` |
+|--------------------------------------------------------------------------------------------------------------------|
 
 Used by SMILE modules to log info, warnings, errors, or fatal events.
 
@@ -69,18 +80,15 @@ bool smPrivateHasStarted(const char *fnName) {
         lgInternalLog(LOG_ERROR, MODULE, CAUSE_NOT_STARTED, fnName, CONSEQ_ABORTED);
         return false;
     }
-
+    
     return true;
 }
 ```
 
-For more, see [Workflow Examples](#-workflow-examples).
+<br>
 
----
-
-###
-
-`void lgInternalLogWithArg(LogLevel level, const char *module, const char *cause, const char *arg, const char *fnName,const char *conseq)`
+| `void lgInternalLogWithArg(LogLevel level, const char *module, const char *cause, const char *arg, const char *fnName,const char *conseq)` |
+|--------------------------------------------------------------------------------------------------------------------------------------------|
 
 Used by SMILE modules to log info, warnings, errors, or fatal events with
 additional context.
@@ -106,15 +114,15 @@ bool smPrivateIsNameValid(const char *stateName, const char *fnName) {
         return false;
     }
     
-    ... // More code
+    ...
+}
 ```
 
-For more, see [Workflow Examples](#-workflow-examples).
+For coding guidelines, see
+the [Coding Contributing Doc](../_Contributing/1_Coding.md).
 
 ---
 
-## 📖 Workflow Examples
+<br>
 
-```c
-// NO EXAMPLES YET
-```
+Authored by: Vitor Betmann

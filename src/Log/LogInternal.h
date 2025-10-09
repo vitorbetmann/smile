@@ -1,8 +1,8 @@
 /**
  * @file LogInternal.h
- * @brief TestInternal logging interface for Smile modules.
+ * @brief  LogInternal provides interface for Smile modules.
  *
- * Declares internal logging functionality and severity levels
+ * Contains internal logging functionality and severity levels
  * for warnings, errors, and fatal events inside Smile core modules.
  *
  * @author Vitor Betmann

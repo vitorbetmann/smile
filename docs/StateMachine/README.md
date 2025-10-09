@@ -1,7 +1,5 @@
 # State Machine — Getting Started 🤖
 
-Lightweight framework for managing states, transitions, and lifecycle callbacks.
-
 The State Machine module provides a simple, flexible system for defining and
 controlling game flow through independent states. Each state can specify its own
 behavior using enter, update, draw, and exit callback functions.
