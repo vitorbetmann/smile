@@ -92,8 +92,8 @@ In your main file you can begin like so:
 
 ```c
 #include "StateMachine.h"
-#include "levelOne.h"
-#include "levelTwo.h"
+#include "LevelOne.h"
+#include "LevelTwo.h"
 
 bool isRunning = true;
 
@@ -133,7 +133,7 @@ want to share, and then pass a pointer to this struct as `args`.
 followed by the enter function of the next state. See
 the [State Machine API](StateMachine_API.md) for more information.
 
-Below is a typical state header file. For example, in LevelTwo.h:
+Below is a typical state header file using LevelTwo.h as an example:
 
 ```c
 #ifndef LEVEL_TWO_H
@@ -156,8 +156,8 @@ void levelTwoDraw(void);              // Called each frame to draw levelTwo
 #endif
 ```
 
-You can now access the levelTwoArgs struct to pass in the necessary args into
-`smSetState`. In levelOne.c:
+You can now access the PlayerData struct to pass in the necessary args into
+`smSetState`. In LevelOne.c:
 
 ```c
 #include "LevelOne.h"
@@ -200,8 +200,9 @@ your custom struct type to access the data. This enables flexible communication
 and state initialization based on dynamic data and avoids reliance on global
 variables.
 
+So, in LevelTwo.c:
+
 ```c
-// levelTwo.c
 #include "levelTwo.h"
 #include "StateMachine.h"
 
