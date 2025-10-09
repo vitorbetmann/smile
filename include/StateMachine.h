@@ -24,7 +24,7 @@
  *
  * @author Vitor Betmann
  */
-typedef void (*smEnterFn)(void *args);
+typedef void (*smEnterFn)(const void *args);
 
 /**
  * @brief Function pointer type for state update callbacks.

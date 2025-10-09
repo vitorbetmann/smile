@@ -1,4 +1,4 @@
-# State Machine API 🤖
+# State Machine — API 🤖
 
 Lightweight framework for managing states, transitions, and lifecycle callbacks.
 
@@ -21,7 +21,6 @@ behavior using enter, update, draw, and exit callback functions.
     - [State Functions](#-_state-funcitons_)
     - [Lifecycle Functions](#-_lifecycle-functions_)
     - [Stop Related](#-_stop-related_)
-- [Workflow Examples](#-workflow-examples)
 
 ---
 
@@ -31,18 +30,39 @@ behavior using enter, update, draw, and exit callback functions.
 
 ### — _Function Pointers_
 
-| `void (*smEnterFn)(void *args)` |
-|---------------------------------|
+| `void (*smEnterFn)(const void *args)` |
+|---------------------------------------|
 
 Function pointer type for state entry callbacks.
 
 - **Parameters:**
     - `args` — Optional arguments passed when entering the state.
 
+- **Notes:**
+    - The enter function should handle its own resource management, such as
+      allocating memory, loading assets, or performing initialization steps.
+    - If any operation fails during setup (for example, memory allocation or
+      file loading), the user is responsible for handling the failure within the
+      function.
+
 - **Example:**
 
 ```c
-NO EXAMPLE YET
+typedef struct {
+    float xPosition;
+} PlayerData;
+
+PlayerData *myPlayerData;
+
+void myStateEnter(const void *args) {
+    myPlayerData = malloc(sizeof(PlayerData));
+    if (!myPlayerData) {
+        // Handle malloc fail
+        return;
+    }
+
+    myPlayerData->xPosition = ((const PlayerData *)args)->xPosition;
+}
 ```
 
 <br>
@@ -58,7 +78,9 @@ Function pointer type for state update callbacks.
 - **Example:**
 
 ```c
-NO EXAMPLE YET
+void myStateUpdate(float dt) {
+    myPlayerData->xPosition += 5.0f * dt;
+}
 ```
 
 <br>
@@ -71,7 +93,19 @@ Function pointer type for state draw callbacks.
 - **Example:**
 
 ```c
-NO EXAMPLE YET
+#include <raylib.h> // This example uses raylib for rendering 
+
+void myStateDraw(void) {
+    BeginDrawing();
+    ClearBackground(BLACK);
+
+    // Player is a red circle moving right.    
+    int radius = 10;
+    int yPosition = 200;
+    DrawCircle(myPlayerData->xPosition, yPosition, radius, RED);
+    
+    EndDrawing();
+}
 ```
 
 <br>
@@ -84,12 +118,16 @@ Function pointer type for state exit callbacks.
 - **Example:**
 
 ```c
-NO EXAMPLE YET
+void myStateExit(void) {
+    free(myPlayerData);
+    myPlayerData = nullptr;
+}
 ```
 
 <br>
 
-For more, see [Workflow Examples](#-workflow-examples).
+For more, see [Workflow Example](README.md#-workflow-example) in
+the [State Machine Getting Started](README.md) doc.
 
 ---
 
@@ -137,7 +175,8 @@ if (smHasStarted()) {
 
 <br>
 
-For more, see [Workflow Examples](#-workflow-examples).
+For more, see [Workflow Example](README.md#-workflow-example) in
+the [State Machine Getting Started](README.md) doc.
 
 ---
 
@@ -164,7 +203,41 @@ Creates a new state with the specified name and callback functions.
 - **Example:**
 
 ```c
-NO EXAMPLE YET
+// ----- In levelOne.h -----
+#ifndef LEVEL_ONE_H
+#define LEVEL_ONE_H
+
+void levelOneUpdate(float dt);        // Called each frame to update levelOne
+void levelOneDraw(void);              // Called each frame to draw levelOne
+void levelOneExit(void);              // Called when exiting levelOne
+
+#endif
+
+
+// ----- StateOne.c -----
+#include "StateOne.h"
+#include "StateMachine.h"
+
+// No Enter function needed here as nullptr passed in when registering this state.
+
+void levelOneUpdate(float dt) {
+    // Handle update
+    
+    if (playerWon) {
+        smSetState("level 2", nullptr);
+    }
+}
+
+void levelOneDraw(void) {
+    // Handle rendering
+}
+
+void levelOneExit(void) {
+    // Handle cleanup
+}
+
+// ----- In main.c or in another state. -----
+SM_RegisterState("level 1", nullptr, levelOneUpdate, levelOneDraw, levelOneExit);
 ```
 
 <br>
@@ -189,25 +262,42 @@ if (!smStateExists("level 1") {
 
 <br>
 
-| `smSetState(const char *name, void *args)` |
-|--------------------------------------------|
+| `bool smSetState(const char *name, void *args)` |
+|-------------------------------------------------|
 
 Sets the current active state by name and triggers its enter function.
 
 - **Parameters:**
     - `name` — Name of the state to switch to.
-    - `args` — Optional arguments passed to the state's enter function.
+    - `args` — Optional pointer to arguments passed to the state's enter
+      function.
 
 - **Returns:** True if the state was successfully changed, false otherwise.
 
 - **Notes:**
-    - If a state is active, its exit function is called before switching.
+    - If a state is already active, its exit function is called before
+      switching.
+    - The `args` pointer may be `NULL` if no data is required.
 
 - **Example:**
 
 ```c
-smSetState("level 1");
+// Switch to "level 1" with no arguments.
+smSetState("level 1", NULL);
+
+...
+
+// Passing player data to next state.
+typedef struct {
+    int currentScore;
+    int highScore;
+} PlayerScore;
+
+PlayerScore score = { 10, 50 };
+smSetState("level 2", &score);
 ```
+
+<br>
 
 | `const char *smGetCurrentStateName(void)` |
 |-------------------------------------------|
@@ -269,7 +359,8 @@ int myStateCount = smGetStateCound();
 
 <br>
 
-For more, see [Workflow Examples](#-workflow-examples).
+For more, see [Workflow Example](README.md#-workflow-example) in
+the [State Machine Getting Started](README.md) doc.
 
 ---
 
@@ -332,9 +423,12 @@ while (true) {
 
 <br>
 
-For more, see [Workflow Examples](#-workflow-examples).
+For more, see [Workflow Example](README.md#-workflow-example) in
+the [State Machine Getting Started](README.md) doc.
 
 ---
+
+<br>
 
 ### — _Stop Related_
 
@@ -353,19 +447,26 @@ Stops the state machine and frees all allocated states.
 - **Example:**
 
 ```c
-smStop();
+int main(void) {
+
+    smStart();
+    ...
+
+   while (true) {
+      ...
+      smUpdate(dt);
+      smDraw();
+   }
+
+   smStop();
+}
 ```
 
 <br>
 
-For more, see [Workflow Examples](#-workflow-examples).
+For more, see [Workflow Example](README.md#-workflow-example) in
+the [State Machine Getting Started](README.md) doc.
 
 ---
 
 <br>
-
-## 📖 Workflow Examples
-
-```c
-NO EXAMPLE YET
-```

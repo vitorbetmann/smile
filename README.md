@@ -176,7 +176,7 @@ details.
 
 Explore each module’s documentation for detailed guides and examples:
 
-- [State Machine Getting Started](docs/StateMachine/StateMachine_GettingStarted.md)
+- [State Machine Getting Started](docs/StateMachine/README.md)
 - [Particle System Getting Started](docs/ParticleSystem/ParticleSystem_GettingStarted.md)
 
 Dive deeper with the full API references:
