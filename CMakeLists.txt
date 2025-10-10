@@ -79,15 +79,31 @@ target_link_libraries(smile PRIVATE "${RAYLIB_LIB}")
 # INCLUDE DIRECTORIES (HEADERS)
 # ------------------------------------------------------------------------------
 
-# Public include directories are visible to users of the Smile library
-# Private include dirs are used only within the Smile build itself
-target_include_directories(smile PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>   # during build
-        $<INSTALL_INTERFACE:include>                             # during install
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/Log                      # internal headers
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/_Internal/Common
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/_Internal/Test
+# Public headers
+target_include_directories(smile
+        PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
+        ${CMAKE_CURRENT_SOURCE_DIR}/external
 )
+
+# Automatically include all directories in src that contain headers
+file(GLOB_RECURSE SRC_HEADERS CONFIGURE_DEPENDS
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/*/*.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/_Internal/*/*.h
+)
+
+set(SRC_INCLUDE_DIRS "")
+foreach (header ${SRC_HEADERS})
+    get_filename_component(dir ${header} DIRECTORY)
+    list(APPEND SRC_INCLUDE_DIRS ${dir})
+endforeach ()
+
+# Remove duplicates
+list(REMOVE_DUPLICATES SRC_INCLUDE_DIRS)
+
+# Add them as PRIVATE include paths
+target_include_directories(smile PRIVATE ${SRC_INCLUDE_DIRS})
 
 
 # ------------------------------------------------------------------------------
@@ -134,7 +150,11 @@ if (SMILE_BUILD_TESTS)
             set(test_target "${name}Test")
             add_executable(${test_target} ${TEST_SRC})
             target_link_libraries(${test_target} PRIVATE smile)
-            target_include_directories(${test_target} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+            # Inherit all include dirs from the library
+            target_include_directories(${test_target} PRIVATE
+                    $<TARGET_PROPERTY:smile,INTERFACE_INCLUDE_DIRECTORIES>
+                    $<TARGET_PROPERTY:smile,INCLUDE_DIRECTORIES>
+            )
         else ()
             message(WARNING "No test source files found for ${name}")
         endif ()

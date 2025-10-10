@@ -2,8 +2,8 @@
 #include <stdio.h>
 
 #include "StateMachineTest.h"
-#include "../../include/StateMachine.h"
-#include "../../src/_Internal/Test/TestInternal.h"
+#include "StateMachine.h"
+#include "TestInternal.h"
 
 // -----------------------------------------------------------------------------
 // Base Tests

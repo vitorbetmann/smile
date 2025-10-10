@@ -10,14 +10,15 @@
 // -----------------------------------------------------------------------------
 
 #include <string.h>
-#include <../../external/uthash.h>
+#include <uthash.h>
 
-#include "../../include/StateMachine.h"
+#include "StateMachine.h"
 #include "StateMachineInternal.h"
 #include "StateMachineMessages.h"
-#include "../src/Log/LogInternal.h"
-#include "../src/_Internal/Test/TestInternal.h"
-#include "../src/_Internal/Common/CommonInternalMessages.h"
+
+#include "LogInternal.h"
+#include "TestInternal.h"
+#include "CommonInternalMessages.h"
 
 // -----------------------------------------------------------------------------
 // Variables
