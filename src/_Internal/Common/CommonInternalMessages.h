@@ -1,5 +1,5 @@
-#ifndef COMMON_MESSAGES_H
-#define COMMON_MESSAGES_H
+#ifndef SMILE_COMMON_MESSAGES_H
+#define SMILE_COMMON_MESSAGES_H
 
 // -----------------------------------------------------------------------------
 // Functions Names

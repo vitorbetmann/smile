@@ -14,7 +14,7 @@ configuring fatal error handling.
 - [Data Types](#-data-types)
     - [Function Pointers](#-_function-pointers_)
 - [Functions](#-functions)
-    - [Log Related](#-_log-related_)
+    - [Logging Related](#-_logging-related_)
     - [Fatal Handling Related](#-_log-related_)
 
 ---
@@ -45,7 +45,7 @@ void myFatalHandler(void) {
 
 ## 🔧 Functions
 
-### — _Log Related_
+### — _Logging Related_
 
 | `void lgLog(const char *msg, ...)` |
 |------------------------------------|

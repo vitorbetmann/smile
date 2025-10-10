@@ -1,7 +1,7 @@
 // TODO document this
 
-#ifndef PARTICLE_SYSTEM_H
-#define PARTICLE_SYSTEM_H
+#ifndef SMILE_PARTICLE_SYSTEM_H
+#define SMILE_PARTICLE_SYSTEM_H
 // --------------------------------------------------
 // Includes
 // --------------------------------------------------
@@ -11,8 +11,8 @@
 // Data types
 // --------------------------------------------------
 typedef enum {
-  UNIFORM,
-  NORMAL,
+ UNIFORM,
+ NORMAL,
 } Distribution;
 
 typedef struct ParticleSystem ParticleSystem;

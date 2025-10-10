@@ -6,8 +6,8 @@
  * @author Vitor Betmann
  */
 
-#ifndef LOG_H
-#define LOG_H
+#ifndef SMILE_LOG_H
+#define SMILE_LOG_H
 
 // -----------------------------------------------------------------------------
 // Data types

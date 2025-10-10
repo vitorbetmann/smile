@@ -1,5 +1,5 @@
-#ifndef STATE_MACHINE_TEST_H
-#define STATE_MACHINE_TEST_H
+#ifndef SMILE_STATE_MACHINE_TEST_H
+#define SMILE_STATE_MACHINE_TEST_H
 
 // --------------------------------------------------
 // Includes

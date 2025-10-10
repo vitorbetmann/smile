@@ -1,5 +1,5 @@
-// #ifndef SAVE_LOAD_TEST_H
-// #define SAVE_LOAD_TEST_H
+// #ifndef SMILE_SAVE_LOAD_TEST_H
+// #define SMILE_SAVE_LOAD_TEST_H
 //
 // // --------------------------------------------------
 // // Includes

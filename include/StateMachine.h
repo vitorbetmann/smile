@@ -7,8 +7,8 @@
  * @author Vitor Betmann
  */
 
-#ifndef STATE_MACHINE_H
-#define STATE_MACHINE_H
+#ifndef SMILE_STATE_MACHINE_H
+#define SMILE_STATE_MACHINE_H
 
 // -----------------------------------------------------------------------------
 // Data types

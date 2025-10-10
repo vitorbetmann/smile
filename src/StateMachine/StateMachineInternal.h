@@ -1,5 +1,5 @@
-#ifndef STATE_MACHINE_INTERNAL_H
-#define STATE_MACHINE_INTERNAL_H
+#ifndef SMILE_STATE_MACHINE_INTERNAL_H
+#define SMILE_STATE_MACHINE_INTERNAL_H
 
 // --------------------------------------------------
 // Includes

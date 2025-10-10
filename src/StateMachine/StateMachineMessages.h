@@ -1,5 +1,5 @@
-#ifndef STATE_MACHINE_MESSAGES_H
-#define STATE_MACHINE_MESSAGES_H
+#ifndef SMILE_STATE_MACHINE_MESSAGES_H
+#define SMILE_STATE_MACHINE_MESSAGES_H
 
 // -----------------------------------------------------------------------------
 // Module Name

@@ -8,8 +8,8 @@
  * @author Vitor Betmann
  */
 
-#ifndef LOG_INTERNAL_H
-#define LOG_INTERNAL_H
+#ifndef SMILE_LOG_INTERNAL_H
+#define SMILE_LOG_INTERNAL_H
 
 // -----------------------------------------------------------------------------
 // Data types

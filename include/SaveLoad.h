@@ -1,5 +1,5 @@
-#ifndef SAVE_LOAD_SYSTEM_H
-#define SAVE_LOAD_SYSTEM_H
+#ifndef SMILE_SAVE_LOAD_H
+#define SMILE_SAVE_LOAD_H
 
 // --------------------------------------------------
 // Includes
