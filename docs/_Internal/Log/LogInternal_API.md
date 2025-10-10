@@ -32,7 +32,7 @@ the [Coding Contributing Doc](../_Contributing/1_Coding.md).
 | `LogLevel` |
 |------------|
 
-LogInternal severity levels used by SMILE. Represents the importance of a log
+LogInternal severity levels used by Smile. Represents the importance of a log
 message, ranging from user-defined messages to fatal errors.
 
 | Item          | Summary                                                                                              | Color  |
@@ -60,7 +60,7 @@ lgInternalLog(LOG_ERROR, MODULE, CAUSE_NOT_STARTED, fnName, CONSEQ_ABORTED);
 | `void lgInternalLog(LogLevel level, const char *module, const char *cause,const char *fnName, const char *conseq)` |
 |--------------------------------------------------------------------------------------------------------------------|
 
-Used by SMILE modules to log info, warnings, errors, or fatal events.
+Used by Smile modules to log info, warnings, errors, or fatal events.
 
 Provides module name, cause, function name, and consequences for context.
 
@@ -90,7 +90,7 @@ bool smPrivateHasStarted(const char *fnName) {
 | `void lgInternalLogWithArg(LogLevel level, const char *module, const char *cause, const char *arg, const char *fnName,const char *conseq)` |
 |--------------------------------------------------------------------------------------------------------------------------------------------|
 
-Used by SMILE modules to log info, warnings, errors, or fatal events with
+Used by Smile modules to log info, warnings, errors, or fatal events with
 additional context.
 
 Similar to lgInternalLog, but includes an extra argument string for additional

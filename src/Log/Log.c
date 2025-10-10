@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "include/Log.h"
+#include "../include/Log.h"
 #include "LogInternal.h"
 
 // -----------------------------------------------------------------------------
@@ -48,7 +48,7 @@
  * @author Vitor Betmann
  */
 static void lgPrivateLog(LogLevel level, const char *origin, const char *msg,
-                        ...);
+                         ...);
 
 /**
  * @brief Outputs formatted messages.
@@ -64,7 +64,7 @@ static void lgPrivateLog(LogLevel level, const char *origin, const char *msg,
  * @author Vitor Betmann
  */
 static void lgPrivateLogV(LogLevel level, const char *origin, const char *msg,
-                         va_list args);
+                          va_list args);
 
 /**
  * @brief Determines if logging is enabled for a given level.
@@ -86,7 +86,7 @@ static bool lgPrivateIsLevelEnabled(LogLevel level);
  * @author Vitor Betmann
  */
 static void lgPrivateGetColorAndPrefix(LogLevel level, const char **color,
-                                      const char **prefix);
+                                       const char **prefix);
 
 /**
  * @brief Default handler for fatal log events.
@@ -144,7 +144,7 @@ void lgInternalLogWithArg(LogLevel level, const char *module,
 // -----------------------------------------------------------------------------
 
 static void lgPrivateLog(LogLevel level, const char *origin, const char *msg,
-                        ...) {
+                         ...) {
     va_list args;
     va_start(args, msg);
     lgPrivateLogV(level, origin, msg, args);
@@ -152,7 +152,7 @@ static void lgPrivateLog(LogLevel level, const char *origin, const char *msg,
 }
 
 void lgPrivateLogV(LogLevel level, const char *origin, const char *msg,
-                  va_list args) {
+                   va_list args) {
     if (!lgPrivateIsLevelEnabled(level)) {
         return;
     }
@@ -180,13 +180,13 @@ void lgPrivateLogV(LogLevel level, const char *origin, const char *msg,
 static bool lgPrivateIsLevelEnabled(LogLevel level) {
     switch (level) {
         case LOG_INFO:
-#ifdef SMILE_INFO
+#ifdef SMILE_LOG_INFO
             return true;
 #else
             return false;
 #endif
         case LOG_WARNING:
-#ifdef SMILE_WARNINGS
+#ifdef SMILE_LOG_WARNING
             return true;
 #else
             return false;
@@ -197,7 +197,7 @@ static bool lgPrivateIsLevelEnabled(LogLevel level) {
 }
 
 static void lgPrivateGetColorAndPrefix(LogLevel level, const char **color,
-                                      const char **prefix) {
+                                       const char **prefix) {
     switch (level) {
         case LOG_USER:
             *color = LOG_GREEN;

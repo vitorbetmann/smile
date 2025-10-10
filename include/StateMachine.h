@@ -117,7 +117,7 @@ bool smStateExists(const char *name);
  *
  * @author Vitor Betmann
  */
-bool smSetState(const char *name, void *args);
+bool smSetState(const char *name, const void *args);
 
 /**
  * @brief Retrieves the name of the currently active state.

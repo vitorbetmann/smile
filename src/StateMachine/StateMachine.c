@@ -10,14 +10,14 @@
 // -----------------------------------------------------------------------------
 
 #include <string.h>
-#include <external/uthash.h>
+#include <../../external/uthash.h>
 
-#include "include/StateMachine.h"
+#include "../../include/StateMachine.h"
 #include "StateMachineInternal.h"
 #include "StateMachineMessages.h"
-#include "src/Log/LogInternal.h"
-#include "src/_Internal/Test/TestInternal.h"
-#include "src/_Internal/Common/CommonInternalMessages.h"
+#include "../src/Log/LogInternal.h"
+#include "../src/_Internal/Test/TestInternal.h"
+#include "../src/_Internal/Common/CommonInternalMessages.h"
 
 // -----------------------------------------------------------------------------
 // Variables
@@ -143,7 +143,7 @@ bool smStateExists(const char *name) {
     return smInternalGetEntry(name);
 }
 
-bool smSetState(const char *name, void *args) {
+bool smSetState(const char *name, const void *args) {
     if (!smPrivateHasStarted(FN_SET_STATE)) {
         return false;
     }

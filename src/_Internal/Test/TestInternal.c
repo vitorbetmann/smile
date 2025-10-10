@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "src/_Internal/Test/TestInternal.h"
+#include "TestInternal.h"
 
 // --------------------------------------------------
 // TestInternal state

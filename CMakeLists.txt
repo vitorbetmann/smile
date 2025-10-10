@@ -1,116 +1,159 @@
-# Minimum required CMake version
+# ------------------------------------------------------------------------------
+# Smile compiles in Release mode by default, with tests disabled.
+# Enable developer mode with -DSMILE_DEVELOPER=ON to build with tests and debug settings.
+# ------------------------------------------------------------------------------
+
 cmake_minimum_required(VERSION 3.25)
+project(Smile VERSION 1.0 LANGUAGES C)
 
-# Set project name and metadata
-cmake_path(GET CMAKE_CURRENT_SOURCE_DIR FILENAME PROJECT_NAME)
-project(${PROJECT_NAME} VERSION 1.0 LANGUAGES C)
+# ------------------------------------------------------------------------------
+# COMPILER CONFIGURATION
+# ------------------------------------------------------------------------------
 
-# Compiler configuration
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_C_STANDARD_REQUIRED ON)
+
+# Export compile commands for tools like clangd or IDE integration
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_C_EXTENSIONS OFF)   # OFF = strict ISO C, ON = allow GNU extensions
+
+# Disable compiler-specific extensions (GNU, MSVC, etc.) for strict ISO compliance
+set(CMAKE_C_EXTENSIONS OFF)
 
 
-# Raylib precompiled static lib and headers in external/
+# ------------------------------------------------------------------------------
+# DEVELOPER MODE
+# ------------------------------------------------------------------------------
+
+option(SMILE_DEVELOPER "Enable Smile developer mode (Debug build with tests)" OFF)
+
+# Default build type and tests
+if (NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+endif ()
+if (NOT DEFINED SMILE_BUILD_TESTS)
+    set(SMILE_BUILD_TESTS OFF CACHE BOOL "Build test executables" FORCE)
+endif ()
+
+# Developer mode overrides defaults
+if (SMILE_DEVELOPER)
+    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
+    set(SMILE_BUILD_TESTS ON CACHE BOOL "Build test executables" FORCE)
+endif ()
+
+message(STATUS "Smile — Build type: ${CMAKE_BUILD_TYPE}")
+
+
+# ------------------------------------------------------------------------------
+# RAYLIB CONFIGURATION
+# ------------------------------------------------------------------------------
+
+# Path to the bundled Raylib static library and headers (in external/raylib/)
 set(RAYLIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/raylib")
-set(RAYLIB_LIB "${RAYLIB_DIR}/libraylib.a")
-set(RAYLIB_INCLUDE "${RAYLIB_DIR}/include")
+set(RAYLIB_LIB "${RAYLIB_DIR}/libraylib.a")     # precompiled static lib
+set(RAYLIB_INCLUDE "${RAYLIB_DIR}/include")     # include headers
 
-# Build the SMILE static library
-add_library(smile STATIC
-        src/StateMachine/StateMachine.c
-        src/ParticleSystem/ParticleSystem.c
-        src/SaveLoad/SaveLoad.c
 
-        src/Log/Log.c
-        src/_Internal/Test/TestInternal.c
+# ------------------------------------------------------------------------------
+# BUILD THE "smile" STATIC LIBRARY
+# ------------------------------------------------------------------------------
+
+# Automatically gather all C source files in src/*/*.c and src/_Internal/*/*.c
+file(GLOB SRC_PUBLIC "src/*/*.c")
+file(GLOB SRC_INTERNAL "src/_Internal/*/*.c")
+
+set(SRC_FILES
+        ${SRC_PUBLIC}
+        ${SRC_INTERNAL}
 )
 
-# Include raylib headers for Smile
+add_library(smile STATIC ${SRC_FILES})
+
+# Add raylib headers so Smile can include them internally
 target_include_directories(smile PRIVATE "${RAYLIB_INCLUDE}")
 
-# Link raylib static library for Smile
+# Link the precompiled raylib static library into Smile
 target_link_libraries(smile PRIVATE "${RAYLIB_LIB}")
 
 
-# Set public and private include paths
+# ------------------------------------------------------------------------------
+# INCLUDE DIRECTORIES (HEADERS)
+# ------------------------------------------------------------------------------
+
+# Public include directories are visible to users of the Smile library
+# Private include dirs are used only within the Smile build itself
 target_include_directories(smile PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/Log
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>   # during build
+        $<INSTALL_INTERFACE:include>                             # during install
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/Log                      # internal headers
         ${CMAKE_CURRENT_SOURCE_DIR}/src/_Internal/Common
         ${CMAKE_CURRENT_SOURCE_DIR}/src/_Internal/Test
 )
-target_include_directories(smile PRIVATE "${RAYLIB_SRC_DIR}")
 
-# Option to enable/disable release mode
-option(SMILE_RELEASE "Compile SMILE in release mode" ON)
 
-# Option to enable/disable warnings
-option(SMILE_WARNINGS "Enable runtime warning messages from SMILE" ON)
+# ------------------------------------------------------------------------------
+# BUILD CONFIGURATION OPTIONS
+# ------------------------------------------------------------------------------
 
-# Option to enable/disable info logs
-option(SMILE_INFO "Enable runtime info messages from SMILE" ON)
+option(SMILE_LOG_WARNING "Enable runtime warning logs from Smile" ON)
+option(SMILE_LOG_INFO "Enable runtime info logs from Smile" ON)
 
-# Inform user
-if (SMILE_RELEASE)
-    message(STATUS "SMILE: Compiling in RELEASE mode")
-    add_compile_definitions(SMILE_RELEASE)
+# ------------------------------------------------------------------------------
+# CONDITIONAL COMPILE DEFINITIONS
+# ------------------------------------------------------------------------------
+
+# Logging settings
+if (SMILE_LOG_WARNING)
+    add_compile_definitions(SMILE_LOG_WARNING)
+    message(STATUS "Smile — Warning logs ENABLED")
 else ()
-    message(STATUS "SMILE: Compiling in DEBUG mode")
+    message(STATUS "Smile — Warning logs DISABLED")
 endif ()
 
-if (SMILE_WARNINGS AND NOT SMILE_RELEASE)
-    message(STATUS "SMILE: Warnings ENABLED")
-    add_compile_definitions(SMILE_WARNINGS)
+if (SMILE_LOG_INFO)
+    add_compile_definitions(SMILE_LOG_INFO)
+    message(STATUS "Smile — Info logs ENABLED")
 else ()
-    message(STATUS "SMILE: Warnings DISABLED")
+    message(STATUS "Smile — Info logs DISABLED")
 endif ()
 
-if (SMILE_INFO AND NOT SMILE_RELEASE)
-    message(STATUS "SMILE: Info logs ENABLED")
-    add_compile_definitions(SMILE_INFO)
-else ()
-    message(STATUS "SMILE: Info logs DISABLED")
-endif ()
 
-# Option to enable test builds
-option(SMILE_TESTS "Build test executables" OFF)
-if (SMILE_TESTS)
-    message(STATUS "SMILE: Compiling TEST files")
+# ------------------------------------------------------------------------------
+# TEST BUILD OPTION
+# ------------------------------------------------------------------------------
 
-    # --------------------------------------------------------------------------
-    # PUBLIC
-    # --------------------------------------------------------------------------
+option(SMILE_BUILD_TESTS "Build test executables" OFF)
 
-    # Log
-    # TODO Add and link Log test
+if (SMILE_BUILD_TESTS)
+    if (SMILE_DEVELOPER OR CMAKE_VERBOSE_MAKEFILE)
+        message(STATUS "Smile: Compiling TEST files")
+    endif ()
 
-    # ParticleSystem
-    # TODO Add and link Particle System test
+    function(add_smile_test name)
+        file(GLOB TEST_SRC "${CMAKE_CURRENT_SOURCE_DIR}/test/${name}/*.c")
+        if (TEST_SRC)
+            set(test_target "${name}Test")
+            add_executable(${test_target} ${TEST_SRC})
+            target_link_libraries(${test_target} PRIVATE smile)
+            target_include_directories(${test_target} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+        else ()
+            message(WARNING "No test source files found for ${name}")
+        endif ()
+    endfunction()
 
-    # SaveLoad
-    add_executable(SaveLoadTest test/SaveLoad/SaveLoadTest.c)
-    target_link_libraries(SaveLoadTest PRIVATE smile)
-    target_include_directories(SaveLoadTest PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    # --------------------------
+    # PUBLIC TESTS
+    # --------------------------
 
-    # StateMachine
-    add_executable(StateMachineTest test/StateMachine/StateMachineTest.c)
-    target_link_libraries(StateMachineTest PRIVATE smile)
-    target_include_directories(StateMachineTest PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    # TODO add_smile_test(LogTest)
+    # TODO add_smile_test(ParticleSystemTest)
+    add_smile_test(SaveLoad)
+    add_smile_test(StateMachine)
 
-    # --------------------------------------------------------------------------
-    # INTERNAL
-    # --------------------------------------------------------------------------
+    # --------------------------
+    # INTERNAL TESTS
+    # --------------------------
 
-    # CommonInternal
-    # TODO #13 Add and link CommonInternal test
-
-    # LogInternal
-    # TODO #13 Add and link LogInternal test
-
-    # TestInternal
-    # TODO #13 Add and link TestInternal test
-
+    # TODO add_smile_test(CommonInternaltest)
+    # TODO add_smile_test(LogInternalTest)
+    # TODO add_smile_test(TestInternalTest)
 endif ()
