@@ -113,7 +113,7 @@ int main(void) {
     /* Start in the first state. This example state requires no arguments, so we
      * pass in nullptr.
      */
-    smSetState("one", nullptr); 
+    smSetState("level 1", nullptr); 
     
     clock_t lastTime = clock();
     

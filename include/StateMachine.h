@@ -71,7 +71,7 @@ bool smStart(void);
  *
  * @author Vitor Betmann
  */
-bool smHasStarted(void);
+bool smIsRunning(void);
 
 // State Functions
 
@@ -169,6 +169,8 @@ int smGetStateCount(void);
  * @author Vitor Betmann
  */
 bool smUpdate(float dt);
+
+float smGetDt(void);
 
 /**
  * @brief Executes the draw function of the currently active state.

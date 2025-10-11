@@ -6,7 +6,7 @@
 // --------------------------------------------------
 
 #include "StateMachine.h"
-#include <uthash.h>
+#include <external/uthash.h>
 
 // --------------------------------------------------
 // Data types
@@ -30,6 +30,7 @@ typedef struct {
   StateMap *stateMap;
   const State *currState;
   int stateCount;
+  unsigned long lastTime;
 } StateMachineTracker;
 
 // --------------------------------------------------

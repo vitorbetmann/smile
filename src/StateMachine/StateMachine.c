@@ -10,15 +10,16 @@
 // -----------------------------------------------------------------------------
 
 #include <string.h>
-#include <uthash.h>
+#include <time.h>
+#include <external/uthash.h>
 
 #include "StateMachine.h"
 #include "StateMachineInternal.h"
 #include "StateMachineMessages.h"
 
-#include "LogInternal.h"
-#include "TestInternal.h"
-#include "CommonInternalMessages.h"
+#include "src/Log/LogInternal.h"
+#include "src/_Internal/Test/TestInternal.h"
+#include "src/_Internal/Common/CommonInternalMessages.h"
 
 // -----------------------------------------------------------------------------
 // Variables
@@ -59,7 +60,7 @@ bool smStart(void) {
     return true;
 }
 
-bool smHasStarted(void) {
+bool smIsRunning(void) {
     return tracker;
 }
 
@@ -251,6 +252,22 @@ bool smUpdate(float dt) {
     return true;
 }
 
+float smGetDt(void) {
+    if (!smPrivateHasStarted(FN_GET_DT)) {
+        return -1.0f;
+    }
+
+    clock_t currentTime = clock();
+    float dt = (float) (currentTime - tracker->lastTime) / CLOCKS_PER_SEC;
+    tracker->lastTime = currentTime;
+
+    return dt;
+}
+
+bool smSetFPS(int fps) {
+    return false;
+}
+
 bool smDraw(void) {
     if (!smPrivateHasStarted(FN_DRAW)) {
         return false;
@@ -303,7 +320,7 @@ bool smStop(void) {
 }
 
 // -----------------------------------------------------------------------------
-// Functions - TestInternal
+// Functions - Internal
 // -----------------------------------------------------------------------------
 
 const State *smInternalGetState(const char *name) {
@@ -322,7 +339,7 @@ StateMap *smInternalGetEntry(const char *name) {
 // -----------------------------------------------------------------------------
 
 bool smPrivateHasStarted(const char *fnName) {
-    if (!smHasStarted()) {
+    if (!smIsRunning()) {
         lgInternalLog(LOG_ERROR, MODULE, CAUSE_NOT_STARTED, fnName,
                       CONSEQ_ABORTED);
         return false;

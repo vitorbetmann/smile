@@ -20,6 +20,7 @@
 #define FN_DELETE_STATE "DeleteState"
 // Lifecycle Functions
 #define FN_UPDATE "Update"
+#define FN_GET_DT "GetDt"
 #define FN_DRAW "Draw"
 
 // -----------------------------------------------------------------------------
