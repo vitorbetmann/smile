@@ -30,7 +30,11 @@ typedef struct {
   StateMap *stateMap;
   const State *currState;
   int stateCount;
-  unsigned long lastTime;
+#if defined(_WIN32)
+  // TODO add Windows support
+#else
+  struct timespec lastTime;
+#endif
 } StateMachineTracker;
 
 // --------------------------------------------------

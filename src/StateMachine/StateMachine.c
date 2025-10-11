@@ -257,9 +257,17 @@ float smGetDt(void) {
         return -1.0f;
     }
 
-    clock_t currentTime = clock();
-    float dt = (float) (currentTime - tracker->lastTime) / CLOCKS_PER_SEC;
-    tracker->lastTime = currentTime;
+    float dt;
+
+#if defined(_WIN32)
+    // TODO add Windows support
+#elif defined(__APPLE__) || defined(__linux__)
+    struct timespec now;
+    clock_gettime(CLOCK_MONOTONIC, &now);
+    dt = (now.tv_sec - tracker->lastTime.tv_sec)
+         + (now.tv_nsec - tracker->lastTime.tv_nsec) / 1e9f;
+    tracker->lastTime = now;
+#endif
 
     return dt;
 }
