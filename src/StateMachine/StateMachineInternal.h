@@ -5,7 +5,7 @@
 // Includes
 // --------------------------------------------------
 
-#include "StateMachine.h"
+#include "include/StateMachine.h"
 #include <external/uthash.h>
 
 // --------------------------------------------------

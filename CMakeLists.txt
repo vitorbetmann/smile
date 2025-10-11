@@ -173,7 +173,7 @@ if (SMILE_BUILD_TESTS)
     # INTERNAL TESTS
     # --------------------------
 
-    # TODO add_smile_test(CommonInternaltest)
+    # TODO add_smile_test(CommonInternalTest)
     # TODO add_smile_test(LogInternalTest)
     # TODO add_smile_test(TestInternalTest)
 endif ()

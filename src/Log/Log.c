@@ -14,19 +14,19 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "Log.h"
+#include "include/Log.h"
 #include "LogInternal.h"
 
 // -----------------------------------------------------------------------------
 // Defines
 // -----------------------------------------------------------------------------
 
-#define LOG_CYAN "\033[36m"
-#define LOG_YELLOW "\033[33m"
-#define LOG_RED "\033[31m"
-#define LOG_PURPLE "\033[0;35m"
-#define LOG_GREEN "\033[32m"
-#define LOG_WHITE "\033[0m"
+#define SMILE_CYAN "\033[36m"
+#define SMILE_YELLOW "\033[33m"
+#define SMILE_RED "\033[31m"
+#define SMILE_PURPLE "\033[0;35m"
+#define SMILE_GREEN "\033[32m"
+#define SMILE_WHITE "\033[0m"
 
 #define LOG_TIME_FMT "%H:%M:%S"
 #define LOG_TIME_BUFFER_LEN 32
@@ -170,7 +170,7 @@ void lgPrivateLogV(LogLevel level, const char *origin, const char *msg,
     fprintf(stderr, "%s%s [Smile %s From %s] - ", color, timeBuf, prefix,
             origin);
     vfprintf(stderr, msg, args);
-    fprintf(stderr, "%s\n", LOG_WHITE); // Reset color
+    fprintf(stderr, "%s\n", SMILE_WHITE); // Reset color
 
     if (level == LOG_FATAL) {
         fatalHandler();
@@ -200,27 +200,27 @@ static void lgPrivateGetColorAndPrefix(LogLevel level, const char **color,
                                        const char **prefix) {
     switch (level) {
         case LOG_USER:
-            *color = LOG_GREEN;
+            *color = SMILE_GREEN;
             *prefix = "Log";
             return;
         case LOG_INFO:
-            *color = LOG_CYAN;
+            *color = SMILE_CYAN;
             *prefix = "Info";
             return;
         case LOG_WARNING:
-            *color = LOG_YELLOW;
+            *color = SMILE_YELLOW;
             *prefix = "Warning";
             return;
         case LOG_ERROR:
-            *color = LOG_RED;
+            *color = SMILE_RED;
             *prefix = "Error";
             return;
         case LOG_FATAL:
-            *color = LOG_PURPLE;
+            *color = SMILE_PURPLE;
             *prefix = "Fatal";
             return;
         default:
-            *color = LOG_WHITE;
+            *color = SMILE_WHITE;
             *prefix = "\"You Shouldn't Be Seeing This!\"";
     }
 }

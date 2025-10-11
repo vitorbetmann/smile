@@ -2,8 +2,8 @@
 #include <stdio.h>
 
 #include "StateMachineTest.h"
-#include "StateMachine.h"
-#include "TestInternal.h"
+#include "include/StateMachine.h"
+#include "src/_Internal/Test/TestInternal.h"
 
 // -----------------------------------------------------------------------------
 // Base Tests
@@ -22,7 +22,7 @@ void Test_smStop_SucceedsPostStart(void) {
 // Start Related
 
 void Test_smHasStarted_FailsPreStart(void) {
-    assert(!smHasStarted());
+    assert(!smIsRunning());
     tsInternalPass("Test_smHasStarted_FailsPreStart");
 }
 
@@ -107,7 +107,7 @@ void Test_smStart_IsIdempotentPostStart(void) {
 
 void Test_smHasStarted_SucceedsPostStart(void) {
     smStart();
-    assert(smHasStarted());
+    assert(smIsRunning());
     smStop();
     tsInternalPass("Test_smHasStarted_SucceedsPostStart");
 }
@@ -262,7 +262,7 @@ void Test_smSetState_RejectsNullStateName(void) {
     // TODO
 }
 
-void Test_smSetState_RejectsUnCreateedStateName(void) {
+void Test_smSetState_RejectsUnCreatedStateName(void) {
     // TODO
 }
 
@@ -379,7 +379,7 @@ void Test_smStop_SkipsExitIfNull(void) {
 void Test_smHasStarted_FailsPostStop(void) {
     smStart();
     smStop();
-    assert(!smHasStarted());
+    assert(!smIsRunning());
     tsInternalPass("Test_smHasStarted_FailsPostStop");
 }
 
@@ -547,7 +547,7 @@ int main() {
     puts(" • smSetState");
     Test_smSetState_AcceptsValidStateFromNull();
     Test_smSetState_RejectsNullStateName();
-    Test_smSetState_RejectsUnCreateedStateName();
+    Test_smSetState_RejectsUnCreatedStateName();
     Test_smSetState_SucceedsChangingFromOneValidStateToAnother();
     Test_smSetState_CallsExitFunctionOfCurrentState();
     Test_smSetState_CallsEnterFunctionOfNewState();
