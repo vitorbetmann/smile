@@ -129,7 +129,7 @@ If needed, replace `my_game` with the name of your project's executable.
 
 Okay, now that you have cloned and built Smile, what next?
 
-Below is a small demo of how to use the StateMachine module.
+Below is a small demo of how to use the StateMachine module:
 
 
 
