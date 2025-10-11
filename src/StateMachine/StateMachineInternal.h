@@ -32,6 +32,7 @@ typedef struct {
   StateMap *stateMap;
   const State *currState;
   int stateCount;
+  int fps;
 #if defined(_WIN32)
   // TODO add Windows support
 #else

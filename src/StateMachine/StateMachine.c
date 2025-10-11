@@ -55,6 +55,8 @@ bool smStart(void) {
         return false;
     }
 
+    tracker->fps = 60;
+
     lgInternalLog(LOG_INFO, MODULE, CAUSE_MODULE_STARTED, FN_START,
                   CONSEQ_SUCCESSFUL);
     return true;
@@ -262,11 +264,16 @@ float smGetDt(void) {
 #if defined(_WIN32)
     // TODO add Windows support
 #elif defined(__APPLE__) || defined(__linux__)
-    struct timespec now;
-    clock_gettime(CLOCK_MONOTONIC, &now);
-    dt = (now.tv_sec - tracker->lastTime.tv_sec)
-         + (now.tv_nsec - tracker->lastTime.tv_nsec) / 1e9f;
-    tracker->lastTime = now;
+    struct timespec currentTime;
+    clock_gettime(CLOCK_MONOTONIC, &currentTime);
+
+    if (tracker->lastTime.tv_sec == 0 && tracker->lastTime.tv_nsec == 0) {
+        dt = 1.0f / tracker->fps;
+    } else {
+        dt = (currentTime.tv_sec - tracker->lastTime.tv_sec)
+             + (currentTime.tv_nsec - tracker->lastTime.tv_nsec) / 1e9f;
+    }
+    tracker->lastTime = currentTime;
 #endif
 
     return dt;

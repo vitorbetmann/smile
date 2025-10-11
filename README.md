@@ -20,10 +20,10 @@ abstractions that keep your code lean, organized, and fully under your control.
 
 ## Why Smile?
 
-Smile is a modular collection of C libraries that streamline common 2D
-game-development tasks such as **managing states**, **simulating particles**,
-and **saving** or **loading data**. It’s built for developers who want
-simplicity without sacrificing control.
+Supported on Windows, Mac, and Linux, Smile is a modular collection of C
+libraries that streamline common 2D game-development tasks such as **managing
+states**, **simulating particles**, and **saving** or **loading data**. It’s
+built for developers who want simplicity without sacrificing control.
 
 You can mix and match only the modules you need (for example, using StateMachine
 without ParticleSystem) to keep your project lightweight and focused, and while
@@ -142,11 +142,11 @@ int main(void) {
     smCreateState("level 1", levelOneEnter, levelOneUpdate, levelOneDraw, levelOneExit);
     
     smSetState("menu", nullptr); // Choose where you want to start
-    smSetFPS(60); // Optional: set a target fps
     
-    while (smIsRunning()) {    // Run your game until you Stop StateMachine 
-        smUpdate(getDt());     // This updates game logic 
-        smDraw();              // This renders to the screen
+    while (smIsRunning()) {      // Run your game until you Stop StateMachine 
+        float dt = smGetDt();    // Calculate the delta time since the last frame 
+        smUpdate(dt);            // Update game logic 
+        smDraw();                // Render to the screen
     }
 }
 ```
@@ -165,7 +165,6 @@ int main(void) {
     smCreateState("level 1", levelOneEnter, levelOneUpdate, levelOneDraw, levelOneExit);
     
     smSetState("menu", nullptr); 
-    smSetFPS(60);
     
     while (smIsRunning()) {
         smUpdate(smGetDt());
