@@ -1,152 +1,161 @@
-# Smile 😊: A modular 2D game engine in C
+# Smile 😊 — A modular 2D game engine in C
 
-## What is Smile?
+**Smile** stands for **Simple Modularity Is Lowkey Elegant** — a lightweight,
+modular collection of C libraries that simplifies 2D game development.
 
-Smile stands for **Simple Modularity Is Lowkey Elegant**.
-
-It’s a modular collection of tools designed to simplify 2D game development in
-C, aimed at providing a lightweight and extensible foundation for developers at
-all skill levels.
-
-Ideal for game jams and rapid prototyping, thanks to thoughtful abstractions
-that provide full control without bloat.
+Ideal for **game jams** and **rapid prototyping**, Smile provides clean
+abstractions that keep your code lean, organized, and fully under your control.
 
 ---
 
-### Mission
+<br>
+
+## 🎮 Made with Smile
+
+---
+
+<br>
+
+## Why Smile?
+
+Smile is a modular collection of C libraries that streamline common 2D
+game-development tasks such as managing states, simulating particles, and
+saving or loading data.
+
+It’s built for developers who want simplicity without sacrificing control.
+You can mix and match only the modules you need (for example, using the
+StateMachine without the ParticleSystem) to keep your project lightweight
+and focused.
+
+While Smile doesn’t handle rendering, input, or audio directly, it integrates
+seamlessly with libraries like [raylib](https://www.raylib.com).
+
+Here’s a summary of the current modules:
+
+- **Log** — Create custom logs for debugging and control how fatal errors are
+  handled.
+- **ParticleSystem** — Add explosions, smoke, and other effects with a simple
+  yet flexible system built on raylib.
+- **SaveLoad** — Save and load your game with one-shot functions or detailed
+  session control.
+- **StateMachine** — Manage your game states and transitions cleanly and
+  efficiently.
+- **More modules coming soon!**
+
+---
+
+<br>
+
+## 🚀 Building Your Game
+
+### Prerequisites
+
+Before building Smile, make sure you have the following installed:
+
+- **CMake** 3.25 or higher
+- A build tool such as **Make** or **Ninja**
+- A C compiler such as **Clang** or **GCC**
+
+### Cloning and Building
+
+From your game directory, run:
+
+```zsh
+git clone https://github.com/vitorbetmann/smile.git
+cmake -S ./smile -B smile/build
+cmake --build smile/build
+```
+
+Smile builds as libsmile.a, a static library containing all Smile modules
+that you can link directly into your game.
+
+A typical project structure might look like this:
+
+```plaintext
+/my_game_project/
+├── main.c                # Your game's entry point
+└── smile/                # Smile cloned here
+```
+
+### Compiling
+
+There are two common ways to compile your game using Smile:
+
+---
+
+#### **Option 1 — With Clang (from your source directory)**
+
+```zsh
+clang main.c -Ismile/include -Lsmile/build -lsmile -o my_game
+```
+
+If needed, replace `main.c` with your entry source file and/or `my_game` with
+your
+desired output name.
+
+#### Option 2 — With CMake
+
+Your project directory should look like this:
+
+```plaintext
+/my_game_project/
+├── CMakeLists.txt        # Your game's CMake file
+├── main.c                # Your game's entry point
+└── smile/                # Smile cloned or copied here
+```
+
+In your CMakeLists.txt, add:
+
+```cmake
+# Add Smile as a subdirectory
+add_subdirectory(smile)
+
+# Include Smile headers
+target_include_directories(my_game PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/smile/include
+)
+
+# Link against the Smile static library
+target_link_libraries(my_game PRIVATE smile)
+```
+
+If needed, replace `my_game` with the name of your project's executable.
+
+---
+
+<br>
+
+## ⌨️ Actually Coding
+
+Okay, now that you have cloned and built Smile, what next?
+
+Below is a small demo of how to use the StateMachine module.
+
+
+
+---
+
+<br>
+
+## 🤝 Contributing
 
 > _"I built Smile to be the open source project I wish I had in my early
-programming days:_
+programming days._
 >
 > _1. Low barrier of entry_  
 > _2. Well documented_  
 > _3. Pressure-free and learning-focused environment"_
 >
-> — Betmann, creator of Smile
+> — Vitor Betmann, creator of Smile
 
 Whether you're a first-year university student, a self-taught coder, or a
 professional branching into new areas, Smile welcomes contributors who are
 curious, motivated, and eager to learn.
 
-The engine is meant to grow slowly and thoughtfully, with help from a community
-that values learning, clarity, experimentation, and shared growth — not just
-shipping features.
+Smile is meant to grow slowly and thoughtfully, with help from a community that
+values learning, clarity, experimentation, and shared growth.
 
----
-
-## ✨ Features
-
-Smile is modular, so you can include only what you need.
-
-Current modules:
-
-- **StateMachine**: Manage your game states and transitions cleanly and
-  efficiently.
-- **ParticleSystem**: Add explosions, smoke, and other effects with a simple yet
-  flexible system built on raylib.
-- **Log**: Create custom logs for debugging and customize how fatal errors are
-  handled.
-- **SaveLoad**: Save and load your game with simple one-shot functions or
-  detailed session control.
-- _More modules coming soon!_
-
----
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-Before building Smile, ensure the following are installed:
-
-- CMake version 3.25 or higher
-- A build tool such as Make or Ninja
-- A C compiler such as Clang or GCC
-
-### Clone and Build
-
-```zsh
-git clone https://github.com/vitorbetmann/smile.git
-cd smile_engine
-cmake -S . -B build
-cmake --build build
-```
-
-This builds libsmile.a — a static library that includes the StateMachine and
-ParticleSystem modules by default.
-
-Your Source Directory should now look something like this:
-
-```plaintext
-/my_game_project/
-├── main.c                # Your game's entry point
-└── smile_engine/         # Smile cloned or copied here
-```
-
----
-
-## 🎮 Building Your Game with Smile
-
-There are two common ways to compile your game using Smile:
-
-**With Clang (from your source directory):**
-
-```zsh
-clang main.c -Ismile_engine/include -Lsmile_engine/build -lsmile -o my_game
-```
-
-If needed, replace `my_game` with the desired output name and/or `main.c` with
-your entry source file.
-
-**With CMake:**
-
-Your Source Directory should look similar to this:
-
-```zsh
-/my_game_project/
-├── CMakeLists.txt        # Your game's CMake file
-├── main.c                # Your game's entry point
-└── smile_engine/         # Smile cloned or copied here
-```
-
-In your `CMakeLists.txt`, add:
-
-```cmake
-# Add Smile engine as a subdirectory
-add_subdirectory(smile_engine)
-
-# Include Smile headers
-target_include_directories(my_game PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/smile_engine/include
-)
-
-# Link against the Smile library target
-target_link_libraries(my_game PRIVATE smile)
-```
-
-Don't forget to replace `my_game` with the name of your project's executable, if
-applicable.
-
----
-
-## Contributions Welcome
-
-Smile is a place to learn, experiment, and grow — especially if you're still
-early in your programming journey.
-
-### Smile is the right place for you! No matter if you're:
-
-- A first-year computer science student curious about how game engines work.
-- An experienced web developer looking to explore graphics.
-- A self-taught programmer looking to get more comfortable with GitHub, unit
-  testing, or contributing to open source projects.
-- None of the above — just someone eager to learn something new.
-
-### What do you need to get started?
-
-Just a willingness to learn. That’s it.
-
-Smile is designed to be approachable, collaborative, and beginner-friendly —
-while still aiming to grow into something powerful and extensible over time.
+### —_What do you need to get started?_
 
 There are many ways to contribute:
 
@@ -155,31 +164,33 @@ There are many ways to contribute:
 - Writing or editing documentation
 - Asking questions, sharing insights, or helping others learn
 
-This is a space to build skills, grow confidence, and collaborate on something
-meaningful.  
-Whether you're here to level up your C programming, explore game dev concepts,
-or just try something new — you're welcome here. 😊
-
 To learn more, check
-out [how to contribute](docs/_Internal/_Contributing/Contributing.md).
+out the [Contributing Guide](docs/_Internal/_Contributing).
 
 ---
 
-## License
+<br>
+
+## 🪪 License
 
 Smile is released under the MIT License. See the [LICENSE](./LICENSE) file for
 details.
 
 ---
 
-## Documentation
+<br>
+
+## 📜 Documentation
 
 Explore each module’s documentation for detailed guides and examples:
 
-- [State Machine Getting Started](docs/StateMachine/README.md)
-- [Particle System Getting Started](docs/ParticleSystem/ParticleSystem_GettingStarted.md)
+- [Log](docs/Log)
+- [ParticleSystem](docs/ParticleSystem)
+- [SaveLoad](docs/SaveLoad)
+- [StateMachine](docs/StateMachine)
 
-Dive deeper with the full API references:
+---
 
-- [State Machine API](docs/StateMachine/StateMachine_API.md)
-- [Log API](docs/Log/Log_API.md)
+<br>
+
+Authored by: Vitor Betmann
