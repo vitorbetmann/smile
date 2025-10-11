@@ -5,8 +5,10 @@
 // Includes
 // --------------------------------------------------
 
-#include "include/StateMachine.h"
+#include <time.h>
 #include <external/uthash.h>
+
+#include "include/StateMachine.h"
 
 // --------------------------------------------------
 // Data types
