@@ -7,7 +7,7 @@
 
 // Start Functions
 #define FN_START  "Start"
-#define FN_HAS_STARTED  "HasStarted"
+#define FN_IS_RUNNING  "IsRunning"
 // Stop Functions
 #define FN_STOP  "Stop"
 
@@ -19,10 +19,10 @@
 #define CAUSE_MODULE_STARTED  "Module Started"
 #define CAUSE_MODULE_STOPPED  "Module Stopped"
 // Warnings
-#define CAUSE_ALREADY_STARTED  "Module Already Started"
+#define CAUSE_ALREADY_RUNNING  "Module Already Running"
 // Errors
 #define CAUSE_MEM_ALLOC_FAILED  "Memory Allocation Failed"
-#define CAUSE_NOT_STARTED  "Module Not Started"
+#define CAUSE_NOT_RUNNING  "Module Not Running"
 #define CAUSE_NULL_ARG  "Null Argument"
 #define CAUSE_EMPTY_ARG  "Empty Argument"
 

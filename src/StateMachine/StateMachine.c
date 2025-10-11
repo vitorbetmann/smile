@@ -43,7 +43,7 @@ static bool smPrivateIsNameValid(const char *stateName, const char *fnName);
 
 bool smStart(void) {
     if (tracker) {
-        lgInternalLog(LOG_WARNING, MODULE, CAUSE_ALREADY_STARTED, FN_START,
+        lgInternalLog(LOG_WARNING, MODULE, CAUSE_ALREADY_RUNNING, FN_START,
                       CONSEQ_ABORTED);
         return false;
     }
@@ -355,7 +355,7 @@ StateMap *smInternalGetEntry(const char *name) {
 
 bool smPrivateHasStarted(const char *fnName) {
     if (!smIsRunning()) {
-        lgInternalLog(LOG_ERROR, MODULE, CAUSE_NOT_STARTED, fnName,
+        lgInternalLog(LOG_ERROR, MODULE, CAUSE_NOT_RUNNING, fnName,
                       CONSEQ_ABORTED);
         return false;
     }
