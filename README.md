@@ -155,9 +155,7 @@ curious, motivated, and eager to learn.
 Smile is meant to grow slowly and thoughtfully, with help from a community that
 values learning, clarity, experimentation, and shared growth.
 
-### —_What do you need to get started?_
-
-There are many ways to contribute:
+If that got you excited, there are many ways to contribute:
 
 - Fixing bugs or suggesting improvements
 - Adding small features or new modules
