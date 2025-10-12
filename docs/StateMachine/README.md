@@ -4,7 +4,7 @@ The State Machine module provides a simple, flexible system for defining and
 controlling game flow through independent states. Each state can specify its own
 behavior using enter, update, draw, and exit callback functions.
 
-### 🚨 Warning! This module is not thread-safe
+### 🚨 Warning! This module is not thread-safe!
 
 ---
 
@@ -29,13 +29,13 @@ behavior using enter, update, draw, and exit callback functions.
 
 ## State Machine Lifecycle 🔄
 
-1️⃣ Begin with `smStart`. This prepares the internal system so you can register,
-switch, and manage states. No other function other than `smHasStarted` will work
-until this step is complete.
+1️⃣ Begin with `smStart`. This initializes the internal system, allowing you to
+register, switch, and manage states. No other function except `smIsRunning` will
+work until this step is complete.
 
-2️⃣ Define each state in their own header/source files to represent a
-self-contained scene (for example, a main menu, level, or pause screen). They
-must contain at least one and up to four lifecycle callbacks (enter, update,
+2️⃣ Define each state in its own header/source files to represent a
+self-contained scene (e.g., a main menu, level, or pause screen). Each state
+must define at least one, and up to four, lifecycle callbacks (enter, update,
 draw, and/or exit).
 
 3️⃣ `smCreateState` is used to register uniquely named states with its callbacks
@@ -47,9 +47,9 @@ it.
 5️⃣ `smUpdate` and `smDraw` should be called every frame (typically inside your
 game loop) to run the current state’s logic and rendering.
 
-6️⃣ **Always** call `smStop` when the StateMachine is no longer needed. This
-ensures all remaining states are cleaned up properly, preventing memory leaks or
-dangling pointers.
+6️⃣ **Always** call `smStop` when the state machine is no longer needed. This
+ensures all registered states are properly cleaned up, preventing memory leaks
+and dangling pointers.
 
 ---
 
@@ -68,7 +68,7 @@ the [State Machine API Reference](StateMachine_API.md).
 |---------------------------------------|------------------------------------------------------------------------------------------------------------------|
 | `void (*smEnterFn)(const void *args)` | Runs once when entering the state, often for loading assets or initialize data. Can take in optional parameters. |     
 | `void (*smUpdateFn)(float dt)`        | Runs every frame to update game logic. `dt` is the delta time since the last frame.                              |
-| `void (*smDrawFn)(void)`              | Runs every frame to visuals.                                                                                     |
+| `void (*smDrawFn)(void)`              | Runs every frame to render visuals.                                                                              |
 | `void (*smExitFn)(void)`              | Runs once when leaving the state. Often used for freeing memory and unloading resources.                         |
 
 ### Functions
@@ -84,6 +84,7 @@ the [State Machine API Reference](StateMachine_API.md).
 | `bool smDeleteState(const char *name)`                                                                                | Deletes a state by name. Fails if it’s currently active.                                                                                         |
 | `int smGetStateCount(void)`                                                                                           | Returns the total number of registered states, or `-1` if the state machine is not started.                                                      |
 | `bool smUpdate(float dt)`                                                                                             | Calls the update function of the active state. Returns `true` if successful.                                                                     |
+| `float smGetDt(void)`                                                                                                 | Returns the delta time (in seconds) since the last frame. Useful for maintaining consistent time-based updates across frames.                    |
 | `bool smDraw(void)`                                                                                                   | Calls the draw function of the active state. Returns `true` if successful.                                                                       |
 | `bool smStop(void)`                                                                                                   | Stops the state machine and frees all registered states. Calls the current state’s `exit` function before cleanup. Returns `true` if successful. |
 
@@ -96,44 +97,71 @@ the [State Machine API Reference](StateMachine_API.md).
 In your main file you can begin like so:
 
 ```c
-#include "StateMachine.h"
+#include <StateMachine.h>
+#include "Menu.h"
 #include "LevelOne.h"
 #include "LevelTwo.h"
-
-bool isRunning = true;
 
 int main(void) {
     // Other State Machine functions will not work if smStart is not called.
     smStart();
     
     // Create your states. Callback functions declared in respective header files.
+    smCreateState("menu", nullptr, menuUpdate, menuDraw, menuExit);
     smCreateState("level 1", nullptr, levelOneUpdate, levelOneDraw, levelOneExit);
     smCreateState("level 2", levelTwoEnter, levelTwoUpdate, levelTwoDraw, nullptr);
     
-    /* Start in the first state. This example state requires no arguments, so we
-     * pass in nullptr.
+    /* Start in the menu. In this example it requires no arguments, so we pass
+     * in nullptr.
      */
-    smSetState("level 1", nullptr); 
+    smSetState("menu", nullptr); 
     
-    clock_t lastTime = clock();
-    
-    while (isRunning) {    
-        clock_t currentTime = clock();
-        float dt = (float)(currentTime - lastTime) / CLOCKS_PER_SEC;
-        lastTime = currentTime;
-    
+    // Below is a typical game loop using Smile 
+    while (smIsRunning()) {    
+        float dt = smGetDt();
         smUpdate(dt);
         smDraw();
     }
-    
-    // Don't end you program without calling smStop. Risk of memory leak.
-    smStop();
 }
 ```
 
-You can pass custom data between states using the `args` parameter of
-`smSetState`. Typically, you define a custom struct to hold any data you
-want to share, and then pass a pointer to this struct as `args`.
+Make sure you call `smStop` before exiting your program, **otherwise you risk
+memory leaks!**
+
+Calling smStop also calls the current state's exit function and sets
+`smIsRunning` to false, breaking the main game loop. Good places to call
+`smStop()` include your main menu or pause screen:
+
+```c
+#include <StateMachine.h>
+#include "menu.h"
+
+void menuUpdate(float dt) {
+    // Handle update
+    ...
+    
+    if (PlayButtonPressed()) {
+        smSetState("level 1", nullptr);
+    }
+    
+    if (QuitButtonPressed()) {
+        smStop();
+    }
+}
+
+void menuDraw(void) {
+    // Handle rendering
+}
+
+void menuExit(void) {
+    // Handle cleanup
+}
+```
+
+You can pass custom data between states through the `args` parameter of
+`smSetState()`. Typically, this involves defining a custom struct to hold any
+data you want to share, then passing a pointer to it as `args`.
+
 `smSetState` will first call the exit function of the current state,
 followed by the enter function of the next state. See
 the [State Machine API](StateMachine_API.md) for more information.
@@ -144,7 +172,7 @@ Below is a typical state header file using LevelTwo.h as an example:
 #ifndef LEVEL_TWO_H
 #define LEVEL_TWO_H
 
-/* Below is the data that will be passed to smSetState, if its enter function
+/* Below is the data that will be passed to smSetState if its enter function
  * requires any arguments.
  */
 
@@ -165,9 +193,9 @@ You can now access the PlayerData struct to pass in the necessary args into
 `smSetState`. In LevelOne.c:
 
 ```c
+#include <StateMachine.h>
 #include "LevelOne.h"
 #include "LevelTwo.h" // Must include to have access to PlayerScore
-#include "StateMachine.h"
 
 static score = 0;
 static float playerPosition = 0;
@@ -202,18 +230,18 @@ void levelOneExit(void) {
 
 In the next state's `enter` function, you cast the `void *` argument back to
 your custom struct type to access the data. This enables flexible communication
-and state initialization based on dynamic data and avoids reliance on global
+and state initialization based on dynamic data, and avoids reliance on global
 variables.
 
 So, in LevelTwo.c:
 
 ```c
-#include "levelTwo.h"
-#include "StateMachine.h"
+#include <StateMachine.h>
+#include "LevelTwo.h"
 
 static PlayerData *myPlayerData;
 
-void myStateEnter(void *args) {    
+void levelTwoEnter(void *args) {    
     myPlayerData = malloc(sizeof(PlayerData));
     if (!myPlayerData) {
         // Handle malloc fail
@@ -230,10 +258,10 @@ void levelTwoUpdate(float dt) {
     myPlayerData->position += 5.0f * dt;
     
     if (gameOver) {
-    /* Pass nullptr if the next state's enter function requires no arguments or
-     * doesn't exist.
-     */
-    smSetState("level 1", nullptr);
+        /* Pass nullptr if the next state's enter function requires no arguments
+        * or doesn't exist.
+        */
+        smStop();
     }
                                   
 }

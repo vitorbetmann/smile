@@ -1,6 +1,6 @@
 # Welcome to Smile 😊
 
-## A modular 2D game engine in C
+## An open-source, modular 2D game engine in C
 
 **Smile** stands for **Simple Modularity Is Lowkey Elegant**, and it's a
 lightweight collection of C modules that simplifies 2D game development.
@@ -20,17 +20,17 @@ abstractions that keep your code lean, organized, and fully under your control.
 
 ## Why Smile?
 
-Supported on Mac and Linux, Smile is a modular collection of C
+Supported on Windows, Mac, and Linux, Smile is a modular collection of C
 libraries that streamline common 2D game-development tasks such as **managing
-states**, **simulating particles**, and **saving** or **loading data**. It’s
+states**, **simulating particles**, and **saving** or **loading** data. It’s
 built for developers who want simplicity without sacrificing control.
 
 You can mix and match only the modules you need (for example, using StateMachine
-without ParticleSystem) to keep your project lightweight and focused, and while
+without ParticleSystem) to keep your project lightweight and focused. And while
 Smile doesn’t handle rendering, input, or audio directly, it integrates
 seamlessly with libraries like [raylib](https://www.raylib.com).
 
-Smile's community is also active and willing to help. Have questions about
+Smile's community is also active and willing to help! Have questions about
 low-level programming, Game Development, Programming Patterns, or anything else?
 We can help you out at the [Discord Server](https://discord.gg/EdS6PwMffH).
 
@@ -70,6 +70,17 @@ A typical project structure might look like this:
 ├── main.c                # Your game's entry point
 └── smile/                # Smile cloned here
 ```
+
+**Note:**  
+By default, Smile compiles with runtime **warning** and **info** logs enabled.  
+If you want to disable them, pass the following flags when configuring your
+build with CMake:
+
+ ```zsh
+ cmake -S ./smile -B smile/build -DSMILE_LOG_WARNING=OFF -DSMILE_LOG_INFO=OFF
+ ```
+
+This will disable all Smile logging output at build time.
 
 ### Compiling
 
@@ -123,7 +134,7 @@ If needed, replace `my_game` with the name of your project's executable.
 Okay, now that you have cloned and built Smile, what next?
 
 Below is an example of how to use the StateMachine module. It follows a set of
-conventions shared across modules, making it easy to learn new ones.:
+conventions shared across modules, making it easy to learn new ones:
 
 ```c
 #include "StateMachine.h"
@@ -179,7 +190,7 @@ Then in your states' header files you could have something like:
 #ifndef MENU_H
 #define MENU_H
 
-void menuEnter(void *args);
+void menuEnter(const void *args);
 void menuUpdate(float dt);
 void menuDraw(void);
 void menuExit(void);
@@ -194,7 +205,7 @@ And in the source files:
 #include "StateMachine.h"
 
 void menuEnter(void *args) {
-    // Initialize the game.
+    // Handle initialization
 }
 
 void menuUpdate(float dt) {
@@ -251,7 +262,7 @@ programming days._
 >
 > _1. Low barrier of entry_  
 > _2. Well documented_  
-> _3. Pressure-free and learning-focused environment"_
+> _3. Learning-focused"_
 >
 > — Vitor Betmann, creator of Smile
 
@@ -263,20 +274,16 @@ Smile is meant to grow slowly and thoughtfully, with help from a community that
 values learning, clarity, experimentation, and shared growth.
 
 If that got you excited, there are many ways to contribute (**plus, you'll get
-full credit in the code and Git history to show off in portfolios or
-interviews!**):
+full credit in the code and Git history!**):
 
 - Suggesting improvements
 - Adding features
 - Writing/editing documentation
 - Making games and reporting bugs
-- Asking questions, sharing insights, or helping others learn
+- Asking questions and helping others in
+  the [Discord Server](https://discord.gg/EdS6PwMffH).
 
 To learn more, check out the [Contributing Guide](docs/_Internal/_Contributing).
-
-Also, feel free to join Smile's active community in
-the [Discord Server](https://discord.gg/EdS6PwMffH). Even if this is your first
-time working on a game engine or an open-source project, we're here to help!
 
 ---
 

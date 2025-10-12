@@ -48,7 +48,7 @@ The State Machine module provides a simple, flexible system for defining and
 controlling game flow through independent states. Each state can specify its own
 behavior using enter, update, draw, and exit callback functions.
 
-### 🚨 Warning! This module is not thread-safe
+### 🚨 Warning! This module is not thread-safe!
 ```
 
 <br>

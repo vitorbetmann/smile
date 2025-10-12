@@ -155,7 +155,7 @@ bool smDeleteState(const char *name);
  */
 int smGetStateCount(void);
 
-// Lifecycle Functions
+// Lifecycle Related
 
 /**
  * @brief Updates the currently active state.
@@ -170,6 +170,17 @@ int smGetStateCount(void);
  */
 bool smUpdate(float dt);
 
+/**
+ * @brief Calculates and returns the delta time since the last frame update.
+ *
+ * @return The time elapsed in seconds since the previous call to `smGetDt()`,
+ *         or -1.0f if the state machine has not been started.
+ *
+ * @note Delta time is measured using a high-resolution monotonic clock. On the
+ *       first call, it returns a duration equivalent to one frame at 60 FPS.
+ *
+ * @author Vitor Betmann
+ */
 float smGetDt(void);
 
 /**
@@ -191,7 +202,8 @@ bool smDraw(void);
  * @return True if the state machine was successfully stopped, false otherwise.
  *
  * @note The exit function of the current state is called before cleanup.
- *       After stopping, the state machine must be restarted with smStart().
+ *       After stopping, all internal data is reset. The state machine must be
+ *       restarted with smStart().
  *
  * @author Vitor Betmann
  */

@@ -1,10 +1,10 @@
 # State Machine — API 🤖
 
-`StateMachine` provides a simple, flexible system for defining and controlling
-game flow through independent states. Each state can specify its own behavior
-using enter, update, draw, and exit callback functions.
+The `State Machine` module provides a simple and flexible system for defining
+and controlling game flow through independent states. Each state can specify its
+own behavior using enter, update, draw, and exit callback functions.
 
-### 🚨 Warning! This module is not thread-safe
+### 🚨 Warning! This module is not thread-safe!
 
 ---
 
@@ -16,7 +16,7 @@ using enter, update, draw, and exit callback functions.
     - [Function Pointers](#-_function-pointers_)
 - [Functions](#-functions)
     - [Start Related](#-_start-related_)
-    - [State Functions](#-_state-funcitons_)
+    - [State Functions](#-_state-functions_)
     - [Lifecycle Functions](#-_lifecycle-functions_)
     - [Stop Related](#-_stop-related_)
 
@@ -31,7 +31,7 @@ using enter, update, draw, and exit callback functions.
 | `void (*smEnterFn)(const void *args)` |
 |---------------------------------------|
 
-Function pointer type for state entry callbacks.
+Function pointer type for state enter callbacks.
 
 - **Parameters:**
     - `args` — Optional arguments passed when entering the state.
@@ -39,9 +39,8 @@ Function pointer type for state entry callbacks.
 - **Notes:**
     - The enter function should handle its own resource management, such as
       allocating memory, loading assets, or performing initialization steps.
-    - If any operation fails during setup (for example, memory allocation or
-      file loading), the user is responsible for handling the failure within the
-      function.
+      -If any operation fails during setup (for example, memory allocation or
+      file loading) the user must handle the failure within the function.
 
 **Example:**
 
@@ -149,15 +148,18 @@ Initializes the state machine and prepares it for use.
 **Example:**
 
 ```c
-#include "StateMachine.h"
+#include <StateMachine.h>
 
-smStart();
+int main(void) {
+    smStart();
+    ...
+}
 ```
 
 <br>
 
-| `bool smHasStarted(void)` |
-|---------------------------|
+| `bool smIsRunning(void)` |
+|--------------------------|
 
 Checks whether the state machine has been initialized.
 
@@ -166,8 +168,8 @@ Checks whether the state machine has been initialized.
 **Example:**
 
 ```c
-if (smHasStarted()) {
-    ...
+while (smIsRunning()) {
+    // Game loop
 }
 ```
 
@@ -178,7 +180,7 @@ the [State Machine Getting Started](README.md) doc.
 
 ---
 
-### — _State Funcitons_
+### — _State Functions_
 
 | `bool smCreateState(const char *stateName, smEnterFn enterFn, smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn)` |
 |-----------------------------------------------------------------------------------------------------------------------|
@@ -201,41 +203,46 @@ Creates a new state with the specified name and callback functions.
 **Example:**
 
 ```c
-// ----- In levelOne.h -----
-#ifndef LEVEL_ONE_H
-#define LEVEL_ONE_H
+// ----- In Menu.h -----
+#ifndef MENU_H
+#define MENU_H
 
-void levelOneUpdate(float dt);        // Called each frame to update levelOne
-void levelOneDraw(void);              // Called each frame to draw levelOne
-void levelOneExit(void);              // Called when exiting levelOne
+// No enter function in this example
+void menuUpdate(float dt);           
+void menuDraw(void);                 
+void menuExit(void);                 
 
 #endif
 
 
-// ----- StateOne.c -----
-#include "StateOne.h"
-#include "StateMachine.h"
+// ----- Menu.c -----
+#include <StateMachine.h>
+#include "Menu.h"
 
-// No Enter function needed here as nullptr passed in when registering this state.
-
-void levelOneUpdate(float dt) {
+void menuUpdate(float dt) {
     // Handle update
     
-    if (playerWon) {
-        smSetState("level 2", nullptr);
+    if (PlayButtonPressed()) {
+        smSetState("level 1", nullptr);
     }
 }
 
-void levelOneDraw(void) {
+void menuDraw(void) {
     // Handle rendering
 }
 
-void levelOneExit(void) {
+void menuExit(void) {
     // Handle cleanup
 }
 
 // ----- In main.c or in another state. -----
-SM_RegisterState("level 1", nullptr, levelOneUpdate, levelOneDraw, levelOneExit);
+#include <StateMachine.h>
+
+int main(void) {
+    smStart();
+    smCreateState("menu", nullptr, menuUpdate, menuDraw, menuExit);
+    ...
+}
 ```
 
 <br>
@@ -253,8 +260,8 @@ Checks whether a state with the given name exists.
 **Example:**
 
 ```c
-if (!smStateExists("level 1") {
-    ...
+if (!smStateExists("level 1")) {
+    smCreateState("level 1", enter, update, draw, exit);
 }
 ```
 
@@ -352,7 +359,7 @@ Retrieves the total number of registered states.
 **Example:**
 
 ```c
-int myStateCount = smGetStateCound();
+int myStateCount = smGetStateCount();
 ```
 
 <br>
@@ -381,17 +388,32 @@ Updates the currently active state.
 **Example:**
 
 ```c
-#include <time.h>
+while (smIsRunning()) {    
+    float dt = smGetDt(); 
+    smUpdate(dt);
+    ...
+}
+```
 
-...
+<br>
 
-clock_t lastTime = clock();
+| `float smGetDt(void)` |
+|-----------------------|
 
-while (true) {    
-    clock_t currentTime = clock();
-    float dt = (float)(currentTime - lastTime) / CLOCKS_PER_SEC;
-    lastTime = currentTime;
+Calculates and returns the delta time since the last frame update.
 
+- **Returns:** The time elapsed in seconds since the previous call to
+  `smGetDt()`, or -1.0f if the state machine has not been started.
+
+- **Notes:**
+    - Delta time is measured using a high-resolution monotonic clock. On the
+      first call, it returns a duration equivalent to one frame at 60 FPS.
+
+**Example:**
+
+```c
+while (smIsRunning()) {    
+    float dt = smGetDt(); 
     smUpdate(dt);
     ...
 }
@@ -413,8 +435,8 @@ Executes the draw function of the currently active state.
 **Example:**
 
 ```c
-while (true) {
-    ...
+while (smIsRunning()) {    
+    smUpdate(smGetDt());
     smDraw();
 }
 ```
@@ -431,30 +453,34 @@ the [State Machine Getting Started](README.md) doc.
 | `bool smStop(void)` |
 |---------------------|
 
-Stops the state machine and frees all allocated states.
+Stops the state machine and frees all allocated memory associated with created
+states.
 
 - **Returns:** True if the state machine was successfully stopped, false
   otherwise.
 
 - **Notes:**
     - The exit function of the current state is called before cleanup.
-    - After stopping, the state machine must be restarted with smStart().
+    - After stopping, all internal data is reset. The state machine must be
+      restarted with smStart().
 
 **Example:**
 
 ```c
-int main(void) {
+#include <StateMachine.h>
+#include "menu.h"
 
-    smStart();
+void menuUpdate(float dt) {
+    // Handle update
     ...
+    
+    if (QuitButtonPressed()) {
+        smStop();
+    }
+}
 
-   while (true) {
-      ...
-      smUpdate(dt);
-      smDraw();
-   }
-
-   smStop();
+void menuDraw(void) {
+    // Handle rendering
 }
 ```
 

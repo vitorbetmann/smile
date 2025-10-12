@@ -3,7 +3,7 @@
 `Log` provides an API for writing printf-style messages to the terminal and
 configuring fatal error handling.
 
-### 🚨 Warning! This module is not thread-safe
+### 🚨 Warning! This module is not thread-safe!
 
 ---
 

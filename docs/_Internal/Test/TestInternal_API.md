@@ -10,7 +10,7 @@ the [Testing Contributing Doc](../_Contributing/3_Testing.md).
 For coding guidelines, see
 the [Coding Contributing Doc](../_Contributing/1_Coding.md).
 
-### 🚨 Warning! This module is not thread-safe
+### 🚨 Warning! This module is not thread-safe!
 
 ---
 
