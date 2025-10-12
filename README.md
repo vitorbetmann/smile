@@ -20,7 +20,7 @@ abstractions that keep your code lean, organized, and fully under your control.
 
 ## Why Smile?
 
-Supported on Windows, Mac, and Linux, Smile is a modular collection of C
+Supported on Mac and Linux, Smile is a modular collection of C
 libraries that streamline common 2D game-development tasks such as **managing
 states**, **simulating particles**, and **saving** or **loading** data. It’s
 built for developers who want simplicity without sacrificing control.
