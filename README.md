@@ -72,7 +72,11 @@ A typical project structure might look like this:
 ```
 
 **Note:**  
-By default, Smile compiles with runtime **warning** and **info** logs enabled.  
+By default, Smile compiles with runtime **warning** and **info** logs enabled.
+Below is an example of how they would appear in your terminal:
+
+![Example of Smile's Logs](docs/_Internal/__Assets/LogExample.png)
+
 If you want to disable them, pass the following flags when configuring your
 build with CMake:
 
@@ -80,7 +84,8 @@ build with CMake:
  cmake -S ./smile -B smile/build -DSMILE_LOG_WARNING=OFF -DSMILE_LOG_INFO=OFF
  ```
 
-This will disable all Smile logging output at build time.
+This will disable all Smile **warning** and **info** logging output at build
+time. Errors cannot be disabled.
 
 ### Compiling
 

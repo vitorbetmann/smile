@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "include/Log.h"
+#include "../include/Log.h"
 #include "LogInternal.h"
 
 // -----------------------------------------------------------------------------

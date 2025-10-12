@@ -1,7 +1,7 @@
 # Log — API 📝
 
-`Log` provides functions for writing printf-style messages to the terminal and
-configuring fatal error handling.
+The `Log` module provides functions for writing printf-style messages to the
+terminal and configuring fatal error handling.
 
 ### 🚨 Warning! This module is not thread-safe!
 
