@@ -20,11 +20,13 @@
 #include "../src/_Internal/Common/CommonInternalMessages.h"
 #include "../src/_Internal/Test/TestInternal.h"
 
+
 // -----------------------------------------------------------------------------
 // Variables
 // -----------------------------------------------------------------------------
 
 static StateMachineTracker *tracker;
+
 
 // -----------------------------------------------------------------------------
 // Prototypes
@@ -33,6 +35,7 @@ static StateMachineTracker *tracker;
 static bool smPrivateHasStarted(const char *fnName);
 
 static bool smPrivateIsNameValid(const char *stateName, const char *fnName);
+
 
 // -----------------------------------------------------------------------------
 // Functions - Public

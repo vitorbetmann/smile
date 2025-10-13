@@ -15,7 +15,7 @@ terminal and configuring fatal error handling.
     - [Function Pointers](#-_function-pointers_)
 - [Functions](#-functions)
     - [Logging Related](#-_logging-related_)
-    - [Fatal Handling Related](#-_log-related_)
+    - [Fatal Handling Related](#-_logging-related_)
 
 ---
 
