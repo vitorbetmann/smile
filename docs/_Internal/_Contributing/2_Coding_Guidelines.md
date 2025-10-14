@@ -784,7 +784,7 @@ for (int i = 0; i < max; i++) {
 
 <br>
 
-#### Line Limit
+#### Line Length
 
 * A line of code shouldn't extend over 80 characters.
 
@@ -835,6 +835,22 @@ void *myFunction(void) {
 ```
 
 <br>
+
+#### Declaring Pointers
+
+* Write the `*` next to the variable, not the data type.
+
+* ✅ Do
+
+```c
+Player *p;
+```
+
+❌ Don't
+
+```c
+Player* p;
+```
 
 #### Arrow Operator
 
