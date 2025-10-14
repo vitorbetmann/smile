@@ -71,7 +71,7 @@ bool slInitWith(const char *dir, const char *file);
  *
  * @author Vitor Betmann
  */
-bool slInit(void);
+bool slStart(void);
 
 /**
  * @brief Check if the SaveLoad system has been initialized.
@@ -80,7 +80,7 @@ bool slInit(void);
  *
  * @sa slInit(), slShutdown()
  */
-bool slIsInitialized(void);
+bool slIsRunning(void);
 
 // Game Dir -----------------------------------------
 

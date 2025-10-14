@@ -1,7 +1,5 @@
 # TestInternal API 🧪
 
-**Version:** 1.0.0 — **Date:** Oct 14, 2025
-
 `TestInternal` provides instrumented memory allocation wrappers and fatal hooks
 for SMILE. These functions can be used in production for safe allocations and
 logging, and in unit tests to simulate failures.
@@ -190,6 +188,6 @@ the [Coding Contributing Doc](../_Contributing/1_Coding.md).
 
 <br>
 
-| Version | Author        | Description      | Date         |
-|---------|---------------|------------------|--------------|
-| 1.0.0   | Vitor Betmann | Created document | Oct 14, 2025 |
+| Last modified | Author        | Description       |
+|---------------|---------------|-------------------|
+| Oct 14, 2025  | Vitor Betmann | Created document. |

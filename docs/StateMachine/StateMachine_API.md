@@ -1,7 +1,5 @@
 # State Machine — API 🤖
 
-**Version:** 1.0.0 — **Date:** Oct 14, 2025
-
 The `State Machine` module provides a simple and flexible system for defining
 and controlling game flow through independent states. Each state can specify its
 own behavior using enter, update, draw, and exit callback functions.
@@ -495,6 +493,6 @@ the [State Machine Getting Started](README.md) doc.
 
 <br>
 
-| Version | Author        | Description      | Date         |
-|---------|---------------|------------------|--------------|
-| 1.0.0   | Vitor Betmann | Created document | Oct 14, 2025 |
+| Last modified | Author        | Description       |
+|---------------|---------------|-------------------|
+| Oct 14, 2025  | Vitor Betmann | Created document. |

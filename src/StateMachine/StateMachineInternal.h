@@ -6,7 +6,6 @@
  */
 #ifndef SMILE_STATE_MACHINE_INTERNAL_H
 #define SMILE_STATE_MACHINE_INTERNAL_H
-
 // --------------------------------------------------
 // Includes
 // --------------------------------------------------
@@ -15,6 +14,7 @@
 #include <../external/uthash.h>
 
 #include "../include/StateMachine.h"
+
 
 // --------------------------------------------------
 // Data types
@@ -64,6 +64,7 @@ typedef struct {
   struct timespec lastTime;
 #endif
 } StateMachineTracker;
+
 
 // --------------------------------------------------
 // Prototypes

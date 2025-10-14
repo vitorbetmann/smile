@@ -21,6 +21,13 @@
 #include "../src/_Internal/Test/TestInternal.h"
 
 
+// --------------------------------------------------
+// Defines
+// --------------------------------------------------
+
+#define DEFAULT_FPS 60
+
+
 // -----------------------------------------------------------------------------
 // Variables
 // -----------------------------------------------------------------------------
@@ -32,9 +39,9 @@ static StateMachineTracker *tracker;
 // Prototypes
 // -----------------------------------------------------------------------------
 
-static bool smPrivateHasStarted(const char *fnName);
+static bool smPrivateIsRunning(const char *fnName);
 
-static bool smPrivateIsNameValid(const char *stateName, const char *fnName);
+static bool smPrivateIsNameValid(const char *name, const char *fnName);
 
 
 // -----------------------------------------------------------------------------
@@ -57,7 +64,7 @@ bool smStart(void) {
         return false;
     }
 
-    tracker->fps = 60;
+    tracker->fps = DEFAULT_FPS;
 
     lgInternalLog(LOG_INFO, MODULE, CAUSE_MODULE_STARTED, FN_START,
                   CONSEQ_SUCCESSFUL);
@@ -70,26 +77,26 @@ bool smIsRunning(void) {
 
 // State Functions
 
-bool smCreateState(const char *stateName, smEnterFn enterFn,
+bool smCreateState(const char *name, smEnterFn enterFn,
                    smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn) {
-    if (!smPrivateHasStarted(FN_CREATE_STATE)) {
+    if (!smPrivateIsRunning(FN_CREATE_STATE)) {
         return false;
     }
 
-    if (!smPrivateIsNameValid(stateName, FN_CREATE_STATE)) {
+    if (!smPrivateIsNameValid(name, FN_CREATE_STATE)) {
         return false;
     }
 
-    StateMap *entry = smInternalGetEntry(stateName);
+    StateMap *entry = smInternalGetEntry(name);
     if (entry) {
         lgInternalLogWithArg(LOG_WARNING, MODULE, CAUSE_STATE_ALREADY_EXISTS,
-                             stateName,FN_CREATE_STATE, CONSEQ_ABORTED);
+                             name,FN_CREATE_STATE, CONSEQ_ABORTED);
         return false;
     }
 
     if (!enterFn && !updateFn && !drawFn && !exitFn) {
         lgInternalLogWithArg(LOG_ERROR, MODULE, CAUSE_NO_VALID_FUNCTIONS,
-                             stateName,FN_CREATE_STATE, CONSEQ_ABORTED);
+                             name,FN_CREATE_STATE, CONSEQ_ABORTED);
         return false;
     }
 
@@ -100,13 +107,13 @@ bool smCreateState(const char *stateName, smEnterFn enterFn,
         return false;
     }
 
-    char *nameCopy = tsInternalMalloc(strlen(stateName) + 1);
+    char *nameCopy = tsInternalMalloc(strlen(name) + 1);
     if (!nameCopy) {
         lgInternalLog(LOG_ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,
                       FN_CREATE_STATE, CONSEQ_ABORTED);
         goto nameCopyError;
     }
-    strcpy(nameCopy, stateName);
+    strcpy(nameCopy, name);
 
     state->name = nameCopy;
     state->enterFn = enterFn;
@@ -126,7 +133,7 @@ bool smCreateState(const char *stateName, smEnterFn enterFn,
 
     tracker->stateCount++;
 
-    lgInternalLogWithArg(LOG_INFO, MODULE, CAUSE_STATE_CREATED, stateName,
+    lgInternalLogWithArg(LOG_INFO, MODULE, CAUSE_STATE_CREATED, name,
                          FN_CREATE_STATE, CONSEQ_SUCCESSFUL);
     return true;
 
@@ -138,7 +145,7 @@ nameCopyError:
 }
 
 bool smStateExists(const char *name) {
-    if (!smPrivateHasStarted(FN_STATE_EXISTS)) {
+    if (!smPrivateIsRunning(FN_STATE_EXISTS)) {
         return false;
     }
 
@@ -150,7 +157,7 @@ bool smStateExists(const char *name) {
 }
 
 bool smSetState(const char *name, const void *args) {
-    if (!smPrivateHasStarted(FN_SET_STATE)) {
+    if (!smPrivateIsRunning(FN_SET_STATE)) {
         return false;
     }
 
@@ -181,7 +188,7 @@ bool smSetState(const char *name, const void *args) {
 }
 
 const char *smGetCurrentStateName(void) {
-    if (!smPrivateHasStarted(FN_GET_CURRENT_STATE_NAME)) {
+    if (!smPrivateIsRunning(FN_GET_CURRENT_STATE_NAME)) {
         return nullptr;
     }
 
@@ -189,7 +196,7 @@ const char *smGetCurrentStateName(void) {
 }
 
 int smGetStateCount(void) {
-    if (!smPrivateHasStarted(FN_GET_STATE_COUNT)) {
+    if (!smPrivateIsRunning(FN_GET_STATE_COUNT)) {
         return -1;
     }
 
@@ -197,7 +204,7 @@ int smGetStateCount(void) {
 }
 
 bool smDeleteState(const char *name) {
-    if (!smPrivateHasStarted(FN_DELETE_STATE)) {
+    if (!smPrivateIsRunning(FN_DELETE_STATE)) {
         return false;
     }
 
@@ -234,7 +241,7 @@ bool smDeleteState(const char *name) {
 // Lifecycle Functions
 
 bool smUpdate(float dt) {
-    if (!smPrivateHasStarted(FN_UPDATE)) {
+    if (!smPrivateIsRunning(FN_UPDATE)) {
         return false;
     }
 
@@ -257,7 +264,7 @@ bool smUpdate(float dt) {
 }
 
 float smGetDt(void) {
-    if (!smPrivateHasStarted(FN_GET_DT)) {
+    if (!smPrivateIsRunning(FN_GET_DT)) {
         return -1.0f;
     }
 
@@ -286,7 +293,7 @@ bool smSetFPS(int fps) {
 }
 
 bool smDraw(void) {
-    if (!smPrivateHasStarted(FN_DRAW)) {
+    if (!smPrivateIsRunning(FN_DRAW)) {
         return false;
     }
 
@@ -311,7 +318,7 @@ bool smDraw(void) {
 // Stop Related
 
 bool smStop(void) {
-    if (!smPrivateHasStarted(FN_STOP)) {
+    if (!smPrivateIsRunning(FN_STOP)) {
         return false;
     }
 
@@ -355,7 +362,7 @@ StateMap *smInternalGetEntry(const char *name) {
 // Functions - Helper
 // -----------------------------------------------------------------------------
 
-bool smPrivateHasStarted(const char *fnName) {
+bool smPrivateIsRunning(const char *fnName) {
     if (!smIsRunning()) {
         lgInternalLog(LOG_ERROR, MODULE, CAUSE_NOT_RUNNING, fnName,
                       CONSEQ_ABORTED);
@@ -365,14 +372,14 @@ bool smPrivateHasStarted(const char *fnName) {
     return true;
 }
 
-bool smPrivateIsNameValid(const char *stateName, const char *fnName) {
-    if (!stateName) {
+bool smPrivateIsNameValid(const char *name, const char *fnName) {
+    if (!name) {
         lgInternalLogWithArg(LOG_ERROR, MODULE, CAUSE_NULL_ARG, "name",
                              fnName, CONSEQ_ABORTED);
         return false;
     }
 
-    if (strlen(stateName) == 0) {
+    if (strlen(name) == 0) {
         lgInternalLogWithArg(LOG_ERROR, MODULE, CAUSE_EMPTY_ARG, "name",
                              fnName, CONSEQ_ABORTED);
         return false;

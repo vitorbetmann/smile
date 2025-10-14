@@ -125,6 +125,6 @@ the [Coding Contributing Doc](../_Contributing/1_Coding.md).
 
 <br>
 
-| Version | Author        | Description      | Date         |
-|---------|---------------|------------------|--------------|
-| 1.0.0   | Vitor Betmann | Created document | Oct 14, 2025 |
+| Last modified | Author        | Description       |
+|---------------|---------------|-------------------|
+| Oct 14, 2025  | Vitor Betmann | Created document. |

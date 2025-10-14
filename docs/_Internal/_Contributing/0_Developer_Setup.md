@@ -299,6 +299,12 @@ Thanks again for helping build SMILE! 😊
 
 <br>
 
-| Version | Author        | Description      | Date         |
-|---------|---------------|------------------|--------------|
-| 1.0.0   | Vitor Betmann | Created document | Oct 14, 2025 |s
+Next: [1_Understanding_Smile](1_Understanding_Smile.md)
+
+---
+
+<br>
+
+| Last modified | Author        | Description       |
+|---------------|---------------|-------------------|
+| Oct 14, 2025  | Vitor Betmann | Created document. |

@@ -1,7 +1,5 @@
 # Log — API 📝
 
-**Version:** 1.0.0 — **Date:** Oct 14, 2025
-
 The `Log` module provides functions for writing printf-style messages to the
 terminal and configuring fatal error handling.
 
@@ -112,6 +110,6 @@ the [Log Getting Started](README.md) doc.
 
 <br>
 
-| Version | Author        | Description      | Date         |
-|---------|---------------|------------------|--------------|
-| 1.0.0   | Vitor Betmann | Created document | Oct 14, 2025 |
+| Last modified | Author        | Description       |
+|---------------|---------------|-------------------|
+| Oct 14, 2025  | Vitor Betmann | Created document. |

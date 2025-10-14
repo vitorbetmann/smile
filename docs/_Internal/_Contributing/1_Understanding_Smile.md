@@ -146,6 +146,12 @@ the [Documentation Guidelines]() doc.
 
 <br>
 
-| Version | Author        | Description      | Date         |
-|---------|---------------|------------------|--------------|
-| 1.0.0   | Vitor Betmann | Created document | Oct 14, 2025 |
+Next: [2_Coding_Guidelines](2_Coding_Guidelines.md)
+
+---
+
+<br>
+
+| Last modified | Author        | Description       |
+|---------------|---------------|-------------------|
+| Oct 14, 2025  | Vitor Betmann | Created document. |
