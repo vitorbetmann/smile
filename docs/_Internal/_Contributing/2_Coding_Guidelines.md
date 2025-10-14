@@ -326,7 +326,7 @@ int n = 10;
 
 <br>
 
-#### static variables
+#### Static Variables
 
 * For file-scoped variables, use `static`.
 
@@ -526,7 +526,7 @@ bool smPrivateIsNameValid(const char *stateName, const char *fnName);
 * Return statements should be visually attached to the logic that produces
   them — never separated by blank lines.
 
-  ✅ Example
+✅ Example
 
 ```c
 bool smStart(void) {
@@ -556,6 +556,8 @@ bool smStart(void) {
   with no blank lines between them.
 * Insert one blank line only when transitioning to a new logical step in the
   function.
+
+✅ Example
 
 ```c
 void lgPrivateLogV(LogLevel level, const char *origin, const char *msg, va_list args) {
