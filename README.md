@@ -303,4 +303,6 @@ details.
 
 <br>
 
-Authored by: Vitor Betmann
+| Author        | Description      | Date         |
+|---------------|------------------|--------------|
+| Vitor Betmann | Created document | Oct 14, 2025 |

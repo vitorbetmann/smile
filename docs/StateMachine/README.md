@@ -1,5 +1,8 @@
 # State Machine — Getting Started 🤖
 
+**Version:** 1.0.0 — **Date:** Oct 14, 2025
+
+
 The State Machine module provides a simple, flexible system for defining and
 controlling game flow through independent states. Each state can specify its own
 behavior using enter, update, draw, and exit callback functions.
@@ -277,4 +280,6 @@ void levelTwoDraw(void) {
 
 <br>
 
-Authored by: Vitor Betmann
+| Version | Author        | Description      | Date         |
+|---------|---------------|------------------|--------------|
+| 1.0.0   | Vitor Betmann | Created document | Oct 14, 2025 |
