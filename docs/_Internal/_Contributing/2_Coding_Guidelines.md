@@ -161,7 +161,7 @@ static StateMachineTracker *tracker;
 
 static bool smPrivateHasStarted(const char *fnName);
 
-static bool smPrivateIsNameValid(const char *stateName, const char *fnName);
+static bool smPrivateIsNameValid(const char *name, const char *fnName);
 
 
 // -----------------------------------------------------------------------------
@@ -180,7 +180,7 @@ bool smIsRunning(void) {
 
 // State Functions
 
-bool smCreateState(const char *stateName, smEnterFn enterFn,
+bool smCreateState(const char *name, smEnterFn enterFn,
 ```
 
 <br>
@@ -283,37 +283,20 @@ the [Documentation Guidelines]() doc.
 
 ### — _Variables and Constants_
 
-#### Variable Naming pt. 1
+#### Variable Naming — General
 
-* Variables use `camelCase`:
-
-✅ Do
-
-```c
-int myInt = 1;
-```
-
-❌ Don't
-
-```c
-int my_int = 1;    // snake_case
-int MyInt = 1;     // PascalCase
-int myint = 1;     // lowercase
-```
-
-<br>
-
-#### Variable Naming pt. 2
-
-* Variable names must not be a single character long unless it is the iteration
-  variable of a loop:
+* Use `camelCase` for all variable names.
+* Avoid single-character names except for loop counters or short
+  mathematical expressions.
+* Use descriptive names and avoid non-standard abbreviations unless common (
+  e.g., `ptr`, `buf`, `len`).
+* ⚠️ Never use globals in Smile.
 
 ✅ Do
 
 ```c
-int max = 10;
-
-for (int i = 0; i < max; i++) {
+int maxConnections = 10;
+for (int i = 0; i < maxConnections; i++) {
     ...
 }
 ```
@@ -321,33 +304,73 @@ for (int i = 0; i < max; i++) {
 ❌ Don't
 
 ```c
-int n = 10;
+int my_int = 1;           // snake_case
+int MyInt = 1;            // PascalCase
+int myint = 1;            // lowercase
+int n = 10;               // single-letter (not a loop variable)
 ```
 
 <br>
 
-#### Static Variables
+#### Variable Naming — Booleans
 
-* For file-scoped variables, use `static`.
+* Boolean variables should read naturally in conditionals and use consistent
+  prefixes that indicate their boolean nature. Common prefixes include (but
+  aren't limited to):
+    * `is`/`are` for states (`isVisible`, `areLightsOn`)
+    * `has` for ownership or presence (`hasChildren`, `hasTexture`)
+    * `should` for conditional behavior (`shouldRender`, `shouldUpdate`)
+    * `can` for capabilities (`canJump`, `canCastSpells`)
+    * Present tense for existence checks (`fileExists`, `playerLives`)
 
 ✅ Do
 
 ```c
-static int myInt;
+bool isRunning = true;
+bool hasCollision = false;
+bool canShoot = true;
+
+if (isRunning && canShoot && !hasCollision) { // Reads like natural English
+    ...
+}
 ```
 
 ❌ Don't
 
 ```c
-const int myInt;
+bool particles = false;   // doesn't follow boolean naming convention
+```
+
+<br>
+
+#### File-Scoped Variables
+
+* Always declare file-scoped variables as `static` to restrict linkage and
+  prevent naming conflicts across translation units.
+* Avoid using const at file scope without static, since that grants external
+  linkage by default and may expose internal data unintentionally.
+* If a variable is meant to be constant and private to the file, combine both.
+
+✅ Do
+
+```c
+static int playerCount;
+static const int MAX_PLAYERS = 10;
+```
+
+❌ Don't
+
+```c
+const int playerCount;        // Externally linked by default
 ```
 
 <br>
 
 #### Grouping Variables
 
-* Group variables only when they are conceptually related.
-* Avoid grouping unrelated variables just because they share a type.
+* Group variables only when they represent the same concept or logical unit.
+* Unrelated variables, even if they share a type, should be declared
+  separately.
 * ⚠️ Never group pointer declarations.
 
 ✅ Do
@@ -356,26 +379,29 @@ const int myInt;
 int width, length, height;
 int price, change;
 
-char *src;
-char *dst;
+char *source;  // Clear: source is a pointer to char
+char *destination;
 ```
 
 ❌ Don't
 
 ```c
-int width, length, height, price, change;
-char *src, *dst;
+int width, length, height, price, change;    // Unrelated groups
+char *source, destination;                   // Misleading: source is pointer, destination is not!
+int age, *agePtr;                            // Mixed types
 ```
 
 <br>
 
 #### Constant Values
 
-* Use const for local constants inside functions only.
-* Use #define or an enum (for related constants) for file- or module-scoped
-  constants.
-* All constants should use SCREAMING_SNAKE_CASE.
-* ⚠️ Never use #define to create function-like macros.
+* Use `const` for local constants inside functions only.
+* For file- or module-scoped constants:
+    * Use `#define` for primitive values and strings
+    * Use `enum` for related groups of integer constants
+    * Use `static const` for array/struct constants private to a file
+* All constants (including `const`) must use SCREAMING_SNAKE_CASE.
+* ⚠️ Never use `#define` to create function-like macros.
 
 ✅ Do
 
@@ -387,7 +413,7 @@ typedef enum {
     LOG_INFO,
     LOG_WARNING,
     LOG_ERROR,
-    LOG_FATAL,
+    LOG_FATAL
 } LogLevel;
 
 void myFunc(void) {
@@ -395,38 +421,49 @@ void myFunc(void) {
     char buffer[MAX_BUFFER_SIZE];
     ...
 }
+
+static const float IDENTITY_MATRIX[16] = {
+    1, 0, 0, 0,
+    0, 1, 0, 0, 
+    0, 0, 1, 0,
+    0, 0, 0, 1
+};
 ```
 
 ❌ Don't
 
 ```c
-#define SQUARE(x) ((x) * (x)) 
+#define LOG_USER 0      // Use enum for related constants instead!
+#define LOG_INFO 1
+#define LOG_WARNING 2
 
-const int MAX_BUFFER_SIZE = 1024;
+const int MAX_BUFFER_SIZE = 1024;  // file-scoped const (wrong scope)
+#define SQUARE(x) ((x) * (x))      // function-like macro
 ```
 
 <br>
 
 #### Magic Numbers
 
-* Avoid magic numbers unless they’re self-explanatory (e.g., loop indices
-  starting at i = 0, or mathematical constants in equations).
-* Define all reused or meaningful numbers as constants.
+* Avoid magic numbers. All repeated or meaningful values should be defined as
+  constants.
+* Exceptions:
+    * Loop indices (e.g., `for (int i = 0; i < max; i++)`)
+    * Simple mathematical identities (e.g., `x * 2`, `array + 1` for pointer
+      arithmetic)
+    * Zero-initialization (e.g., `memset(buffer, 0, size)`)
 
 ✅ Do
 
 ```c
-#define PI 3.14159f
-#define MAX_ENEMIES 10
+// Simple mathematical identities are acceptable as magic numbers
+position.x = origin.x + offset * 2;  // '2' is clear in context
+nextElement = current + 1;           // '+1' is idiomatic
 
-float getCircumference(float radius) {
-    return 2 * PI * radius;
-}
-
-void spawnEnemies(void) {
-    for (int i = 0; i < MAX_ENEMIES; i++) {
-        ...
-    }
+// But meaningful values should be constants
+#define TILE_SIZE 64
+if (x % TILE_SIZE == 0) {  // Not: x % 64 == 0
+    ...
 }
 ```
 
@@ -448,71 +485,129 @@ void spawnEnemies(void) {
 
 ### — _Functions_
 
-#### Naming
+#### Naming — General
 
 * All Smile functions begin with a unique two-letter lowercase module prefix,
-  followed by a name in PascalCase.
-* Common verbs include: Start, IsRunning, Stop, Get, Set, Create, Delete, and
-  Exists.
-* Using a module-specific prefix prevents naming collisions, while familiar
-  verbs make functions self-explanatory and easier to maintain.
+  followed by a PascalCase name. The prefix identifies the module (e.g., `sm`
+  for StateMachine, `lg` for Log).
+* Function names should be verbs or verb phrases that describe the action.
+  Common functions names include: `Start`, `IsRunning`, `Stop`, `Get`, `Set`,
+  `Create`, `Delete`, and `Exists`.
+* Using a consistent prefix prevents naming collisions, while shared names help
+  users quickly infer a function’s purpose even in unfamiliar modules.
 
 ✅ Example
 
 ```c
-// StateMachine module prefix: sm
+// StateMachine
 bool smStart(void);
 bool smIsRunning(void);
 
-bool smCreateState(const char *stateName, smEnterFn enterFn,
-                   smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn);
+bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
+                   smDrawFn drawFn, smExitFn exitFn);
 bool smStateExists(const char *name);
 bool smSetState(const char *name, const void *args);
 int smGetStateCount(void);
 bool smDeleteState(const char *name);
 
-float smGetDt(void);
 bool smUpdate(float dt);
 bool smDraw(void);
 
 bool smStop(void);
 
-// Log module prefix: lg
+// Log
 void lgLog(const char *msg, ...);
 void lgSetFatal(lgFatalHandler handler);
 ```
 
 <br>
 
+#### Naming — Access Levels
+
+* For different access levels, include the following after the prefix:
+    * Public: Only module prefix.
+    * Internal: Add `Internal` after prefix.
+    * Private: Add `Private` after prefix.
+
+✅ Example
+
+```c
+// Public - in StateMachine.h
+bool smStateExists(const char *name);
+
+// Internal - in StateMachine.internal.h  
+const State *smInternalGetState(const char *name);
+
+// Private - only in StateMachine.c
+bool smPrivateIsNameValid(const char *name, const char *fnName);
+```
+
+<br>
+
 #### Arguments
 
-* When appropriate, function argument order should “read” like natural language.
+* Function arguments should use `camelCase` like variables.
+* Choose descriptive names that make the argument's purpose clear.
+* When appropriate, function argument order should make the signature read like
+  natural language.
 
 ✅ Example:
 
 ```c
 void lgPrivateLogV(LogLevel level, const char *origin, const char *msg, va_list args);
-// → "Log (level) from (origin) with (message) and (args)"
+// "Log (level) from (origin) with (message) using (args)"
 
 bool smDeleteState(const char *name);
-// → "Delete state: (name)"
+// "Delete state: (name)"
 ```
 
 <br>
 
-#### Access
+#### Type Conversion
 
-* When naming `Public` functions, only include the two-letter module prefix. For
-  `Internal` or `Private` functions, add Internal or Private after the prefix.
+* Use implicit conversion for nullptr checks in both return statements and
+  conditional expressions.
+* Use explicit comparisons for numeric and other non-pointer types to make
+  conditions unambiguous.
+* This approach maintains clarity while keeping code concise for the most common
+  cases, and helps contributors quickly identify pointers without adding
+  verbosity.
 
-✅ Example:
+✅ Do
 
 ```c
-bool smStateExists(const char *name);
+bool smIsRunning(void) {
+    return tracker;  // Clearly checking if tracker is not NULL
+}
 
-const State *smInternalGetState(const char *name);
+bool smStart(void) {
+    if (tracker) {  // Clearly checking if tracker already exists
+        return false;
+    }
 
-bool smPrivateIsNameValid(const char *stateName, const char *fnName);
+    tracker = tsInternalCalloc(1, sizeof(StateMachineTracker));
+    if (!tracker) {  // Clearly hecking if allocation failed
+        return false;
+    }
+
+    return true;
+}
+
+if (playerCount > 0) {  // Clearly checking for players
+    ...
+}
+```
+
+❌ Don't
+
+```c
+if (playerCount) {  // Unclear: Could mean "any non-zero value"
+    // ...
+}
+
+bool smIsRunning(void) {
+    return tracker != NULL;  // Unnecessarily verbose
+}
 ```
 
 <br>
@@ -521,15 +616,15 @@ bool smPrivateIsNameValid(const char *stateName, const char *fnName);
 
 * Functions should handle all “failure” or “invalid” conditions first, returning
   early when appropriate. This keeps code readable, avoids deep nesting, and
-  makes the function’s
-  success path clear.
+  makes the function’s success path clear.
 * Return statements should be visually attached to the logic that produces
-  them — never separated by blank lines.
+  them, never separated by blank lines.
 
 ✅ Example
 
 ```c
 bool smStart(void) {
+    // Failure conditions first
     if (tracker) {
         lgInternalLog(LOG_WARNING, MODULE, CAUSE_ALREADY_RUNNING, FN_START, CONSEQ_ABORTED);
         return false;
@@ -541,6 +636,7 @@ bool smStart(void) {
         return false;
     }
 
+    // Success path - minimal nesting, clear flow
     tracker->fps = DEFAULT_FPS;
 
     lgInternalLog(LOG_INFO, MODULE, CAUSE_MODULE_STARTED, FN_START, CONSEQ_SUCCESSFUL);
@@ -552,10 +648,10 @@ bool smStart(void) {
 
 #### Related Logic
 
-* Lines of code that operate on the same concept or data should appear together
-  with no blank lines between them.
-* Insert one blank line only when transitioning to a new logical step in the
-  function.
+* Group related operations without blank lines and separate logical sections
+  with one blank line.
+* Each group should represent a single "conceptual step" in the function.
+* This visual organization makes the function's algorithm clear at a glance.
 
 ✅ Example
 
@@ -596,19 +692,20 @@ void lgPrivateLogV(LogLevel level, const char *origin, const char *msg, va_list 
 #### goto
 
 * Use `goto` only for cleanup paths to simplify error handling and prevent
-  memory leaks.
+  memory leaks. This improves maintainability and reduces duplicated free() or
+  close() calls.
 * ⚠️ Never use `goto` for control flow or looping.
 
-✅ Example
+✅ Do
 
 ```c
-bool smCreateState(const char *stateName, smEnterFn enterFn,
-                   smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn) {
-    StateMap *entry = smInternalGetEntry(stateName);
+bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
+                   smDrawFn drawFn, smExitFn exitFn) {
+    StateMap *entry = smInternalGetEntry(name);
     State *state = malloc(sizeof(State));
     ...
     
-    char *nameCopy = malloc(strlen(stateName) + 1);
+    char *nameCopy = malloc(strlen(name) + 1);
     if (!nameCopy) {
         ...
         goto nameCopyError;
@@ -633,14 +730,28 @@ nameCopyError:
 }
 ```
 
+❌ Don't
+
+```c
+void smPrintNumbers(void) {
+    int i = 0;
+
+start:
+    printf("%d\n", i);
+    i++;
+    if (i < 5)
+        goto start;
+}
+```
+
 <br>
 
-#### Common Module
+#### Shared Code and Messages
 
-* Use `CommonInternal.h` for shared functions and `CommonInternalMessages.h` for
-  shared messages.
-* Make sure a common function or message doesn’t already exist before creating a
-  new one.
+* Use `CommonInternal.h` for shared utility functions.
+* Use `CommonInternalMessages.h` for shared log messages and error strings.
+* This ensures consistency across modules and reduces duplication.
+* Always check these files before creating new shared resources.
 
 ✅ Example
 
@@ -655,7 +766,7 @@ nameCopyError:
 // In StateMachine.c
 bool smStateExists(const char *name) {
     if (!smIsRunning()) {
-        lgInternalLog(LOG_ERROR, MODULE, CAUSE_NOT_RUNNING, fnName, CONSEQ_ABORTED);
+        lgInternalLog(LOG_ERROR, MODULE, CAUSE_NOT_RUNNING, FN_STATE_EXISTS, CONSEQ_ABORTED);
         return false;
     }
 
@@ -671,7 +782,7 @@ bool smStateExists(const char *name) {
 
 ### — _Formatting and Layout_
 
-#### Braces pt. 1
+#### Braces — General
 
 * Place the opening brace on the same line as the function or conditional.
 * The closing brace should appear one line below the final statement.
@@ -705,9 +816,10 @@ if (true)
 
 <br>
 
-#### Braces pt. 2
+#### Braces — Dangling blocks
 
 * Use braces after loops and conditionals, even if they're only one line long.
+  This avoids accidental one-line bugs.
 * No inline if statements or "dangling" blocks.
 
 ✅ Do
@@ -723,15 +835,76 @@ if (false) {
 ```c
 if (false) return;
 
+if (false) { return; }
+
 if (false) 
     return;
 ```
 
 <br>
 
-#### Comma and Operators
+#### Declaring Pointers
 
-* Leave one space after each comma and around operators.
+* Write the pointer operator (`*`) next to the variable, not the data type. This
+  makes multiple pointer declarations clearer.
+
+* ✅ Do
+
+```c
+Player *p;
+```
+
+❌ Don't
+
+```c
+Player* p;
+```
+
+#### Dereference Operator
+
+* Leave no space between the dereference operator (`*`) and the variable.
+
+* ✅ Do
+
+```c
+int *ptr = malloc(sizeof(int));
+*ptr = 10;
+```
+
+❌ Don't
+
+```c
+int *ptr = malloc(sizeof(int));
+* ptr = 10;
+```
+
+#### Arrow Operator
+
+* Use the arrow operator (`->`) to dereference struct pointers.
+* Don’t use the dereference-dot pattern (`(*p).member`) or include spaces around
+  the arrow.
+
+✅ Do
+
+```c
+Player *p = &player;
+int score = p->score;
+```
+
+❌ Don't
+
+```c
+Player *p = &player;
+int playerScore = (*p).score;
+int playerId = p -> id;
+```
+
+<br>
+
+#### Commas and Other Operators
+
+* Leave one space after each comma and around operators, except for the
+  pointer, dereference, and arrow operators.
 
 ✅ Do
 
@@ -793,8 +966,8 @@ for (int i = 0; i < max; i++) {
 ✅ Do
 
 ```c
-bool smCreateState(const char *stateName, smEnterFn enterFn,
-                   smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn) {
+bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
+                   smDrawFn drawFn, smExitFn exitFn) {
     ...
 }
 ```
@@ -802,7 +975,7 @@ bool smCreateState(const char *stateName, smEnterFn enterFn,
 ❌ Don't
 
 ```c
-bool smCreateState(const char *stateName, smEnterFn enterFn, smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn) {
+bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn) {
     ...
 }
 ```
@@ -813,15 +986,14 @@ bool smCreateState(const char *stateName, smEnterFn enterFn, smUpdateFn updateFn
 
 #### nullptr
 
-* Use nullptr (C23 standard) instead of NULL to avoid implicit conversions and
-  ensure type safety.
+* Use `nullptr` (C23 standard) instead of `NULL` to avoid implicit conversions
+  and ensure type safety.
 
 ✅ Do
 
 ```c
 void *myFunction(void) {
     ...
-    
     return nullptr;
 }
 ```
@@ -831,54 +1003,15 @@ void *myFunction(void) {
 ```c
 void *myFunction(void) {
     ...
-    
     return NULL;
 }
 ```
 
 <br>
 
-#### Declaring Pointers
-
-* Write the `*` next to the variable, not the data type.
-
-* ✅ Do
-
-```c
-Player *p;
-```
-
-❌ Don't
-
-```c
-Player* p;
-```
-
-#### Arrow Operator
-
-* Use the -> operator to dereference struct pointers.
-* Don’t use the dereference-dot pattern ((*p).member) or include spaces around
-  the arrow.
-
-✅ Do
-
-```c
-Player *p = &player;
-int score = p->score;
-```
-
-❌ Don't
-
-```c
-Player *p = &player;
-int playerScore = (*p).score;
-int playerId = p -> id;
-```
-
-<br>
-
 #### Comments
 
+* Comments should explain **why**, not **what**.
 * Use `//` for short inline comments, and `/* ... */` for documentation blocks
   or temporarily disabling code.
 * If a variable or function call’s purpose isn’t obvious, add a concise //
@@ -903,14 +1036,11 @@ fprintf(stderr, "%s\n", SMILE_WHITE); // Reset Log color
 ❌ Don't
 
 ```c
-// Comments on multiple lines
-...
-// either for obvious code or
-...
-// for what should be a function
-...
+// The line below
+// increments i by 1
+i++;
 
-player.health = 100;  /* Single-line comment using multi-line style */
+player.health = 100;  /* player health set to 100 */
 ```
 
 <br>

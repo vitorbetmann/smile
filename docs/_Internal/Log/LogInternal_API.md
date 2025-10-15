@@ -6,7 +6,7 @@ logging functionality and severity levels for warnings, errors, and fatal events
 inside Smile core modules.
 
 For coding guidelines, see
-the [Coding Contributing Doc](../_Contributing/1_Coding.md).
+the [Coding Contributing Doc](../_Contributing/2_Coding_Guidelines.md).
 
 ### 🚨 Warning! This module is not thread-safe!
 
@@ -108,8 +108,8 @@ context.
 **Example:**
 
 ```c
-bool smPrivateIsNameValid(const char *stateName, const char *fnName) {
-    if (!stateName) {
+bool smPrivateIsNameValid(const char *name, const char *fnName) {
+    if (!name) {
         lgInternalLogWithArg(LOG_ERROR, MODULE, CAUSE_NULL_ARG, "name", fnName, CONSEQ_ABORTED);
         return false;
     }
@@ -119,7 +119,7 @@ bool smPrivateIsNameValid(const char *stateName, const char *fnName) {
 ```
 
 For coding guidelines, see
-the [Coding Contributing Doc](../_Contributing/1_Coding.md).
+the [Coding Contributing Doc](../_Contributing/2_Coding_Guidelines.md).
 
 ---
 

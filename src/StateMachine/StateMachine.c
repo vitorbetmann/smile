@@ -21,13 +21,6 @@
 #include "../src/_Internal/Test/TestInternal.h"
 
 
-// --------------------------------------------------
-// Defines
-// --------------------------------------------------
-
-#define DEFAULT_FPS 60
-
-
 // -----------------------------------------------------------------------------
 // Variables
 // -----------------------------------------------------------------------------
@@ -77,8 +70,8 @@ bool smIsRunning(void) {
 
 // State Functions
 
-bool smCreateState(const char *name, smEnterFn enterFn,
-                   smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn) {
+bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
+                   smDrawFn drawFn, smExitFn exitFn) {
     if (!smPrivateIsRunning(FN_CREATE_STATE)) {
         return false;
     }

@@ -182,13 +182,13 @@ the [State Machine Getting Started](README.md) doc.
 
 ### — _State Functions_
 
-| `bool smCreateState(const char *stateName, smEnterFn enterFn, smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn)` |
-|-----------------------------------------------------------------------------------------------------------------------|
+| `bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn)` |
+|------------------------------------------------------------------------------------------------------------------|
 
 Creates a new state with the specified name and callback functions.
 
 - **Parameters:**
-    - `stateName` — Unique name identifying the state.
+    - `name` — Unique name identifying the state.
     - `enterFn` — Callback executed when entering the state.
     - `updateFn` — Callback executed each frame during update.
     - `drawFn` — Callback executed each frame during rendering.
