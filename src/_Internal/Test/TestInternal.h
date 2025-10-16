@@ -27,7 +27,7 @@ typedef enum {
     MALLOC,
     CALLOC,
     REALLOC,
-} MemAllocFn;
+} InternalMemAllocFn;
 
 // --------------------------------------------------
 // Functions
@@ -54,7 +54,7 @@ void tsInternalPass(const char *fnName);
  *
  * @author Vitor Betmann
  */
-bool tsInternalDisable(MemAllocFn fnName, unsigned int at);
+bool tsInternalDisable(InternalMemAllocFn fnName, unsigned int at);
 
 /**
  * @brief Wrapper around malloc() with optional failure simulation.

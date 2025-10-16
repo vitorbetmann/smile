@@ -39,7 +39,7 @@ typedef struct {
   smUpdateFn updateFn;
   smDrawFn drawFn;
   smExitFn exitFn;
-} State;
+} InternalState;
 
 /**
  * @brief Maps a state name to its corresponding State structure.
@@ -49,9 +49,9 @@ typedef struct {
  */
 typedef struct {
   char *name;
-  State *state;
+  InternalState *state;
   UT_hash_handle hh;
-} StateMap;
+} InternalStateMap;
 
 /**
  * @brief Tracks the current state machine context.
@@ -61,8 +61,8 @@ typedef struct {
  * calculations.
  */
 typedef struct {
-  StateMap *stateMap;
-  const State *currState;
+  InternalStateMap *stateMap;
+  const InternalState *currState;
   int stateCount;
   int fps;
 #if defined(_WIN32)
@@ -70,7 +70,7 @@ typedef struct {
 #else
   struct timespec lastTime;
 #endif
-} StateMachineTracker;
+} InternalTracker;
 
 
 // --------------------------------------------------
@@ -83,7 +83,7 @@ typedef struct {
  * @param name The name of the state to look up.
  * @return Pointer to the matching State, or NULL if not found.
  */
-const State *smInternalGetState(const char *name);
+const InternalState *smInternalGetState(const char *name);
 
 /**
  * @brief Retrieves a pointer to a StateMap entry by name.
@@ -91,6 +91,6 @@ const State *smInternalGetState(const char *name);
  * @param name The name of the state entry to look up.
  * @return Pointer to the matching StateMap entry, or NULL if not found.
  */
-StateMap *smInternalGetEntry(const char *name);
+InternalStateMap *smInternalGetEntry(const char *name);
 
 #endif

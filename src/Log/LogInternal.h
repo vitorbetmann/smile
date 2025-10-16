@@ -24,12 +24,12 @@
  * @author Vitor Betmann
  */
 typedef enum {
-    LOG_USER,
-    LOG_INFO,
-    LOG_WARNING,
-    LOG_ERROR,
-    LOG_FATAL,
-} LogLevel;
+    USER,
+    INFO,
+    WARNING,
+    ERROR,
+    FATAL,
+} InternalLevel;
 
 // -----------------------------------------------------------------------------
 // Prototypes
@@ -48,7 +48,7 @@ typedef enum {
  *
  * @author Vitor Betmann
  */
-void lgInternalLog(LogLevel level, const char *module,
+void lgInternalLog(InternalLevel level, const char *module,
                    const char *cause, const char *fnName, const char *conseq);
 
 /**
@@ -67,9 +67,8 @@ void lgInternalLog(LogLevel level, const char *module,
  *
  * @author Vitor Betmann
  */
-void lgInternalLogWithArg(LogLevel level, const char *module,
-                          const char *cause,
-                          const char *arg, const char *fnName,
-                          const char *conseq);
+void lgInternalLogWithArg(InternalLevel level, const char *module,
+                          const char *cause, const char *arg,
+                          const char *fnName, const char *conseq);
 
 #endif

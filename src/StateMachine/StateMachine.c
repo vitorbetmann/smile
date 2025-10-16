@@ -25,7 +25,7 @@
 // Variables
 // -----------------------------------------------------------------------------
 
-static StateMachineTracker *tracker;
+static InternalTracker *tracker;
 
 
 // -----------------------------------------------------------------------------
@@ -45,21 +45,21 @@ static bool smPrivateIsNameValid(const char *name, const char *fnName);
 
 bool smStart(void) {
     if (tracker) {
-        lgInternalLog(LOG_WARNING, MODULE, CAUSE_ALREADY_RUNNING, FN_START,
+        lgInternalLog(WARNING, MODULE, CAUSE_ALREADY_RUNNING, FN_START,
                       CONSEQ_ABORTED);
         return false;
     }
 
-    tracker = tsInternalCalloc(1, sizeof(StateMachineTracker));
+    tracker = tsInternalCalloc(1, sizeof(InternalTracker));
     if (!tracker) {
-        lgInternalLog(LOG_ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, FN_START,
+        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, FN_START,
                       CONSEQ_ABORTED);
         return false;
     }
 
     tracker->fps = DEFAULT_FPS;
 
-    lgInternalLog(LOG_INFO, MODULE, CAUSE_MODULE_STARTED, FN_START,
+    lgInternalLog(INFO, MODULE, CAUSE_MODULE_STARTED, FN_START,
                   CONSEQ_SUCCESSFUL);
     return true;
 }
@@ -80,29 +80,29 @@ bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
         return false;
     }
 
-    StateMap *entry = smInternalGetEntry(name);
+    InternalStateMap *entry = smInternalGetEntry(name);
     if (entry) {
-        lgInternalLogWithArg(LOG_WARNING, MODULE, CAUSE_STATE_ALREADY_EXISTS,
+        lgInternalLogWithArg(WARNING, MODULE, CAUSE_STATE_ALREADY_EXISTS,
                              name,FN_CREATE_STATE, CONSEQ_ABORTED);
         return false;
     }
 
     if (!enterFn && !updateFn && !drawFn && !exitFn) {
-        lgInternalLogWithArg(LOG_ERROR, MODULE, CAUSE_NO_VALID_FUNCTIONS,
+        lgInternalLogWithArg(ERROR, MODULE, CAUSE_NO_VALID_FUNCTIONS,
                              name,FN_CREATE_STATE, CONSEQ_ABORTED);
         return false;
     }
 
-    State *state = tsInternalMalloc(sizeof(State));
+    InternalState *state = tsInternalMalloc(sizeof(InternalState));
     if (!state) {
-        lgInternalLog(LOG_ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,
+        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,
                       FN_CREATE_STATE, CONSEQ_ABORTED);
         return false;
     }
 
     char *nameCopy = tsInternalMalloc(strlen(name) + 1);
     if (!nameCopy) {
-        lgInternalLog(LOG_ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,
+        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,
                       FN_CREATE_STATE, CONSEQ_ABORTED);
         goto nameCopyError;
     }
@@ -114,9 +114,9 @@ bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
     state->drawFn = drawFn;
     state->exitFn = exitFn;
 
-    StateMap *mapEntry = tsInternalMalloc(sizeof(StateMap));
+    InternalStateMap *mapEntry = tsInternalMalloc(sizeof(InternalStateMap));
     if (!mapEntry) {
-        lgInternalLog(LOG_ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,
+        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,
                       FN_CREATE_STATE, CONSEQ_ABORTED);
         goto mapEntryError;
     }
@@ -126,7 +126,7 @@ bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
 
     tracker->stateCount++;
 
-    lgInternalLogWithArg(LOG_INFO, MODULE, CAUSE_STATE_CREATED, name,
+    lgInternalLogWithArg(INFO, MODULE, CAUSE_STATE_CREATED, name,
                          FN_CREATE_STATE, CONSEQ_SUCCESSFUL);
     return true;
 
@@ -158,9 +158,9 @@ bool smSetState(const char *name, const void *args) {
         return false;
     }
 
-    const State *nextState = smInternalGetState(name);
+    const InternalState *nextState = smInternalGetState(name);
     if (!nextState) {
-        lgInternalLogWithArg(LOG_WARNING, MODULE, CAUSE_STATE_NOT_FOUND,
+        lgInternalLogWithArg(WARNING, MODULE, CAUSE_STATE_NOT_FOUND,
                              name,FN_SET_STATE, CONSEQ_ABORTED);
         return false;
     }
@@ -175,7 +175,7 @@ bool smSetState(const char *name, const void *args) {
         tracker->currState->enterFn(args);
     }
 
-    lgInternalLogWithArg(LOG_INFO, MODULE, CAUSE_STATE_SET_TO, name,
+    lgInternalLogWithArg(INFO, MODULE, CAUSE_STATE_SET_TO, name,
                          FN_SET_STATE, CONSEQ_SUCCESSFUL);
     return true;
 }
@@ -206,15 +206,15 @@ bool smDeleteState(const char *name) {
     }
 
     if (tracker->currState && strcmp(name, tracker->currState->name) == 0) {
-        lgInternalLogWithArg(LOG_ERROR, MODULE,
+        lgInternalLogWithArg(ERROR, MODULE,
                              CAUSE_CANNOT_DELETE_CURR_STATE,
                              name, FN_DELETE_STATE, CONSEQ_ABORTED);
         return false;
     }
 
-    StateMap *entry = smInternalGetEntry(name);
+    InternalStateMap *entry = smInternalGetEntry(name);
     if (!entry) {
-        lgInternalLogWithArg(LOG_WARNING, MODULE, CAUSE_STATE_NOT_FOUND,
+        lgInternalLogWithArg(WARNING, MODULE, CAUSE_STATE_NOT_FOUND,
                              name,FN_DELETE_STATE, CONSEQ_ABORTED);
         return false;
     }
@@ -226,7 +226,7 @@ bool smDeleteState(const char *name) {
 
     tracker->stateCount--;
 
-    lgInternalLogWithArg(LOG_INFO, MODULE, CAUSE_STATE_DELETED, name,
+    lgInternalLogWithArg(INFO, MODULE, CAUSE_STATE_DELETED, name,
                          FN_DELETE_STATE, CONSEQ_SUCCESSFUL);
     return true;
 }
@@ -239,13 +239,13 @@ bool smUpdate(float dt) {
     }
 
     if (!tracker->currState) {
-        lgInternalLog(LOG_ERROR, MODULE, CAUSE_NULL_CURR_STATE, FN_UPDATE,
+        lgInternalLog(ERROR, MODULE, CAUSE_NULL_CURR_STATE, FN_UPDATE,
                       CONSEQ_ABORTED);
         return false;
     }
 
     if (!tracker->currState->updateFn) {
-        lgInternalLogWithArg(LOG_WARNING, MODULE,
+        lgInternalLogWithArg(WARNING, MODULE,
                              CAUSE_NULL_STATE_UPDATE_FN,
                              tracker->currState->name, FN_UPDATE,
                              CONSEQ_ABORTED);
@@ -291,13 +291,13 @@ bool smDraw(void) {
     }
 
     if (!tracker->currState) {
-        lgInternalLog(LOG_ERROR, MODULE, CAUSE_NULL_CURR_STATE,
+        lgInternalLog(ERROR, MODULE, CAUSE_NULL_CURR_STATE,
                       FN_DRAW, CONSEQ_ABORTED);
         return false;
     }
 
     if (!tracker->currState->drawFn) {
-        lgInternalLogWithArg(LOG_WARNING, MODULE,
+        lgInternalLogWithArg(WARNING, MODULE,
                              CAUSE_NULL_STATE_DRAW_FN,
                              tracker->currState->name, FN_DRAW,
                              CONSEQ_ABORTED);
@@ -320,7 +320,7 @@ bool smStop(void) {
     }
     tracker->currState = nullptr;
 
-    StateMap *el, *tmp;
+    InternalStateMap *el, *tmp;
     HASH_ITER(hh, tracker->stateMap, el, tmp) {
         HASH_DEL(tracker->stateMap, el);
         free(el->state->name);
@@ -331,7 +331,7 @@ bool smStop(void) {
     free(tracker);
     tracker = nullptr;
 
-    lgInternalLog(LOG_INFO, MODULE, CAUSE_MODULE_STOPPED, FN_STOP,
+    lgInternalLog(INFO, MODULE, CAUSE_MODULE_STOPPED, FN_STOP,
                   CONSEQ_SUCCESSFUL);
     return true;
 }
@@ -340,13 +340,13 @@ bool smStop(void) {
 // Functions - Internal
 // -----------------------------------------------------------------------------
 
-const State *smInternalGetState(const char *name) {
-    StateMap *entry = smInternalGetEntry(name);
+const InternalState *smInternalGetState(const char *name) {
+    InternalStateMap *entry = smInternalGetEntry(name);
     return entry ? entry->state : nullptr;
 }
 
-StateMap *smInternalGetEntry(const char *name) {
-    StateMap *entry;
+InternalStateMap *smInternalGetEntry(const char *name) {
+    InternalStateMap *entry;
     HASH_FIND_STR(tracker->stateMap, name, entry);
     return entry;
 }
@@ -357,7 +357,7 @@ StateMap *smInternalGetEntry(const char *name) {
 
 bool smPrivateIsRunning(const char *fnName) {
     if (!smIsRunning()) {
-        lgInternalLog(LOG_ERROR, MODULE, CAUSE_NOT_RUNNING, fnName,
+        lgInternalLog(ERROR, MODULE, CAUSE_NOT_RUNNING, fnName,
                       CONSEQ_ABORTED);
         return false;
     }
@@ -367,13 +367,13 @@ bool smPrivateIsRunning(const char *fnName) {
 
 bool smPrivateIsNameValid(const char *name, const char *fnName) {
     if (!name) {
-        lgInternalLogWithArg(LOG_ERROR, MODULE, CAUSE_NULL_ARG, "name",
+        lgInternalLogWithArg(ERROR, MODULE, CAUSE_NULL_ARG, "name",
                              fnName, CONSEQ_ABORTED);
         return false;
     }
 
     if (strlen(name) == 0) {
-        lgInternalLogWithArg(LOG_ERROR, MODULE, CAUSE_EMPTY_ARG, "name",
+        lgInternalLogWithArg(ERROR, MODULE, CAUSE_EMPTY_ARG, "name",
                              fnName, CONSEQ_ABORTED);
         return false;
     }

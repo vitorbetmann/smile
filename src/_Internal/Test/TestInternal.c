@@ -31,7 +31,7 @@ void tsInternalPass(const char *fnName) {
     printf("\t[PASS] %s\n", fnName);
 }
 
-bool tsInternalDisable(MemAllocFn fnName, unsigned int at) {
+bool tsInternalDisable(InternalMemAllocFn fnName, unsigned int at) {
     switch (fnName) {
         case MALLOC:
             canMalloc = false;
