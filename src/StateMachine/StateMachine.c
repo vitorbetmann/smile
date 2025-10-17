@@ -1,5 +1,5 @@
-// TODO create internal function to trim leading and trailing whitespace
-/* TODO trim state name and reject whitespace only when:
+// TODO #10 create internal function to trim leading and trailing whitespace
+/* TODO #16 trim state name and reject whitespace only when:
  * -- registering state
  * -- changing states
  * -- checking if state exists
@@ -70,8 +70,8 @@ bool smIsRunning(void) {
 
 // State Functions
 
-bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
-                   smDrawFn drawFn, smExitFn exitFn) {
+bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update,
+                   smDrawFn draw, smExitFn exit) {
     if (!smPrivateIsRunning(FN_CREATE_STATE)) {
         return false;
     }
@@ -87,7 +87,7 @@ bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
         return false;
     }
 
-    if (!enterFn && !updateFn && !drawFn && !exitFn) {
+    if (!enter && !update && !draw && !exit) {
         lgInternalLogWithArg(ERROR, MODULE, CAUSE_NO_VALID_FUNCTIONS,
                              name,FN_CREATE_STATE, CONSEQ_ABORTED);
         return false;
@@ -109,10 +109,10 @@ bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
     strcpy(nameCopy, name);
 
     state->name = nameCopy;
-    state->enterFn = enterFn;
-    state->updateFn = updateFn;
-    state->drawFn = drawFn;
-    state->exitFn = exitFn;
+    state->enter = enter;
+    state->update = update;
+    state->draw = draw;
+    state->exit = exit;
 
     InternalStateMap *mapEntry = tsInternalMalloc(sizeof(InternalStateMap));
     if (!mapEntry) {
@@ -165,14 +165,14 @@ bool smSetState(const char *name, const void *args) {
         return false;
     }
 
-    if (tracker->currState && tracker->currState->exitFn) {
-        tracker->currState->exitFn();
+    if (tracker->currState && tracker->currState->exit) {
+        tracker->currState->exit();
     }
 
     tracker->currState = nextState;
 
-    if (tracker->currState && tracker->currState->enterFn) {
-        tracker->currState->enterFn(args);
+    if (tracker->currState && tracker->currState->enter) {
+        tracker->currState->enter(args);
     }
 
     lgInternalLogWithArg(INFO, MODULE, CAUSE_STATE_SET_TO, name,
@@ -244,7 +244,7 @@ bool smUpdate(float dt) {
         return false;
     }
 
-    if (!tracker->currState->updateFn) {
+    if (!tracker->currState->update) {
         lgInternalLogWithArg(WARNING, MODULE,
                              CAUSE_NULL_STATE_UPDATE_FN,
                              tracker->currState->name, FN_UPDATE,
@@ -252,7 +252,7 @@ bool smUpdate(float dt) {
         return false;
     }
 
-    tracker->currState->updateFn(dt);
+    tracker->currState->update(dt);
     return true;
 }
 
@@ -296,7 +296,7 @@ bool smDraw(void) {
         return false;
     }
 
-    if (!tracker->currState->drawFn) {
+    if (!tracker->currState->draw) {
         lgInternalLogWithArg(WARNING, MODULE,
                              CAUSE_NULL_STATE_DRAW_FN,
                              tracker->currState->name, FN_DRAW,
@@ -304,7 +304,7 @@ bool smDraw(void) {
         return false;
     }
 
-    tracker->currState->drawFn();
+    tracker->currState->draw();
     return true;
 }
 
@@ -315,8 +315,8 @@ bool smStop(void) {
         return false;
     }
 
-    if (tracker->currState && tracker->currState->exitFn) {
-        tracker->currState->exitFn();
+    if (tracker->currState && tracker->currState->exit) {
+        tracker->currState->exit();
     }
     tracker->currState = nullptr;
 

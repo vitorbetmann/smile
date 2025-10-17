@@ -35,10 +35,10 @@
  */
 typedef struct {
   char *name;
-  smEnterFn enterFn;
-  smUpdateFn updateFn;
-  smDrawFn drawFn;
-  smExitFn exitFn;
+  smEnterFn enter;
+  smUpdateFn update;
+  smDrawFn draw;
+  smExitFn exit;
 } InternalState;
 
 /**

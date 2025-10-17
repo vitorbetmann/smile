@@ -79,10 +79,10 @@ bool smIsRunning(void);
  * @brief Creates a new state with the specified name and callback functions.
  *
  * @param name Unique name identifying the state.
- * @param enterFn Callback executed when entering the state.
- * @param updateFn Callback executed each frame during update.
- * @param drawFn Callback executed each frame during rendering.
- * @param exitFn Callback executed when exiting the state.
+ * @param enter Callback executed when entering the state.
+ * @param update Callback executed each frame during update.
+ * @param draw Callback executed each frame during rendering.
+ * @param exit Callback executed when exiting the state.
  *
  * @return True if the state was created successfully, false otherwise.
  *
@@ -91,8 +91,8 @@ bool smIsRunning(void);
  *
  * @author Vitor Betmann
  */
-bool smCreateState(const char *name, smEnterFn enterFn,
-                   smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn);
+bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update,
+                   smDrawFn draw, smExitFn exit);
 
 /**
  * @brief Checks whether a state with the given name exists.
