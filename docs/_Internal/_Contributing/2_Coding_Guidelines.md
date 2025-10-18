@@ -36,6 +36,7 @@ consistent, and easy to reason about.
     - [Message Files](#-_message-files_)
     - [Source Files](#-_source-files_)
 - [General Conventions](#-general-conventions)
+    - [Golden Rule](#-_golden-rule_)
     - [Variables and Constants](#-_variables-and-constants_)
     - [Functions](#-_functions_)
     - [Formatting and Layout](#-_formatting-and-layout_)
@@ -315,6 +316,15 @@ the [Documentation Guidelines]() doc.
 
 ## 🧭 General Conventions
 
+Smile’s general conventions define the foundational coding habits that keep the
+codebase clean, predictable, and safe.
+These standards ensure uniformity in naming, structure, and formatting across
+all modules.
+
+### — _Golden Rule_
+
+#### ⚠️ Never use globals in Smile.
+
 ### — _Variables and Constants_
 
 #### Variable Naming — General
@@ -400,10 +410,10 @@ if (isRunning && canShoot) {    -- Reads naturally: "If is running and can shoot
 ❌ Don't
 
 ```c
--- Misleading! Doesn't indicate it's a boolean
-bool particles = false;
+bool particles = false;    -- Misleading! Doesn't indicate it's a boolean
 
-if (particles) {
+
+if (particles) {    -- Doesn't read naturally for a boolean
     ...
 }
 ```
@@ -535,9 +545,11 @@ void myFunc(void) {
 
 * Avoid magic numbers. All repeated or meaningful values should be defined as
   constants.
-* Exceptions:
+* Exceptions (values that are self-explanatory or universally understood):
     * Loop iterators.
+    * Return values from standard or external library functions.
     * Obvious mathematical formulas or operations.
+    * `return 0` at the end of `main()`.
     * Obvious initializations or allocations.
 
 ✅ Do
@@ -549,13 +561,28 @@ for (int i = 0; i < max; i++) {    -- Loop iterators
 
 ————————————————————————————————————————————————————————————————————————————————
 
+-- Return values from functions belonging to non-Smile libraries
+
+bool isSameName = strcmp(newName,oldName) == 0
+
+————————————————————————————————————————————————————————————————————————————————
+
 float c = sqrt(pow(a, 2) + pow(b, 2));    -- Mathematical formulas
 
 ————————————————————————————————————————————————————————————————————————————————
 
-next = current + 1;    -- Obvious oparations
+int next = current + 1;    -- Obvious oparations
+bool isEven = num % 2 == 0;
 
 ————————————————————————————————————————————————————————————————————————————————
+
+int main(void) {
+    ...
+    return 0;
+}
+
+————————————————————————————————————————————————————————————————————————————————
+
 
 -- Obvious initializations or allocations
 
@@ -584,6 +611,29 @@ for (int i = 0; i < 10; i++) { -- Unclear! 10 is an arbitrary number
 <br>
 
 ### — _Functions_
+
+#### Declaration and Usage
+
+* Always include `void` as a parameter if the function takes no arguments in
+  declarations and definitions. Omit when calling.
+
+✅ Do
+
+```c
+bool smIsRunning(void);    -- Declaration
+
+smIsRunning();    -- On call
+```
+
+❌ Don't
+
+```c
+bool smIsRunning();    -- Declaration not explicit
+
+smIsRunning(void);    -- Call unnecessarily verbose
+```
+
+<br>
 
 #### Naming — General
 
@@ -810,6 +860,7 @@ bool smStateExists(const char *name) {
   operations fail.
 * Log all failures through the Log module with appropriate severity levels (
   See [InternalLog](../Log/LogInternal_API.md) for details).
+* ⚠️ Always `return 0` from `main()`.
 
 ✅ Example
 
@@ -869,6 +920,12 @@ const char *smGetCurrentStateName(void) {
     return tracker->currState ? tracker->currState->name : nullptr;
 }
 
+————————————————————————————————————————————————————————————————————————————————
+
+int main(void) {
+    ...
+    return 0;
+}
 ```
 
 <br>
@@ -919,13 +976,11 @@ nameCopyError:
 ❌ Don't
 
 ```c
--- Never use goto for non-error control flow (in this example, a loop)
-
 start:
     printf("%d\n", i);
     i++;
     if (i < 5) {
-        goto start;
+        goto start;    -- Don't use goto to create a loop
     }
 ```
 
@@ -1295,12 +1350,12 @@ fprintf(stderr, "%s\n", SMILE_WHITE); // Reset Log color
 ❌ Don't
 
 ```c
--- Obvious comments
+-- Obvious comment
 player.health = 100;  // player health set to 100
 
 ————————————————————————————————————————————————————————————————————————————————
 
--- Use single-line style for multi-line comments or vice-versas
+-- Don't use single-line style for multi-line comments or vice-versas
 // @brief Function pointer type for state exit callbacks.
 // 
 // @author Vitor Betmann
@@ -1384,4 +1439,4 @@ Next: [3_Documentation_Guidelines](3_Documentation_Guidelines.md)
 
 | Last modified | Author        | Description       |
 |---------------|---------------|-------------------|
-| Oct 14, 2025  | Vitor Betmann | Created document. |
+| Oct 18, 2025  | Vitor Betmann | Created document. |
