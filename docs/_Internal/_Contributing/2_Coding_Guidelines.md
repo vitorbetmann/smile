@@ -333,40 +333,40 @@ the [Documentation Guidelines]() doc.
 ✅ Do
 
 ```c
-int stateCount;    --> Non-constant variables use camelCase
+int stateCount;    -- Non-constant variables use camelCase
 
 ————————————————————————————————————————————————————————————————————————————————
 
-char *smileModules[4];             --> Plural for non-string collections
-char *greeting = "Hello Smile";    --> Singular for strings
+char *smileModules[4];             -- Plural for non-string collections
+char *greeting = "Hello Smile";    -- Singular for strings
 
 ————————————————————————————————————————————————————————————————————————————————
 
-for (int i = 0; i < max; i++) {    --> Single-character name for loop iterator
+for (int i = 0; i < max; i++) {    -- Single-character name for loop iterator
     ...
 }
 
 ————————————————————————————————————————————————————————————————————————————————
 
-float c = sqrt(pow(a, 2) + pow(b, 2));    --> Single-character name for mathematical formulas
+float c = sqrt(pow(a, 2) + pow(b, 2));    -- Single-character name for mathematical formulas
 
 ```
 
 ❌ Don't
 
 ```c
-int my_int = 1;    --> snake_case
-int MyInt = 1;     --> PascalCase
-int myint = 1;     --> lowercase
+int my_int = 1;    -- snake_case
+int MyInt = 1;     -- PascalCase
+int myint = 1;     -- lowercase
 
 ————————————————————————————————————————————————————————————————————————————————
 
-int n = 10;    --> single-letter non-loop variable
+int n = 10;    -- single-letter non-loop variable
 
 ————————————————————————————————————————————————————————————————————————————————
 
-char *smileModule[4];               --> Misleading! Doesn't indicate a collection
-char *greetings = "Hello Smile";    --> Misleading! Indicates a collection
+char *smileModule[4];               -- Misleading! Doesn't indicate a collection
+char *greetings = "Hello Smile";    -- Misleading! Indicates a collection
 ```
 
 <br>
@@ -387,12 +387,12 @@ char *greetings = "Hello Smile";    --> Misleading! Indicates a collection
 ✅ Do
 
 ```c
-bool isRunning = true;    --> Prefixes clearly state they're booleans
+bool isRunning = true;    -- Prefixes clearly state they're booleans
 bool canShoot = false;
 
 ————————————————————————————————————————————————————————————————————————————————
 
-if (isRunning && canShoot) {    --> Reads naturally: "If is running and can shoot"
+if (isRunning && canShoot) {    -- Reads naturally: "If is running and can shoot"
     ...
 }
 ```
@@ -400,7 +400,7 @@ if (isRunning && canShoot) {    --> Reads naturally: "If is running and can shoo
 ❌ Don't
 
 ```c
---> Misleading! Doesn't indicate it's a boolean
+-- Misleading! Doesn't indicate it's a boolean
 bool particles = false;
 
 if (particles) {
@@ -423,7 +423,7 @@ static InternalTracker *tracker;
 ❌ Don't
 
 ```c
-InternalTracker *tracker;    --> Externally linked by default
+InternalTracker *tracker;    -- Externally linked by default
 ```
 
 <br>
@@ -441,27 +441,27 @@ InternalTracker *tracker;    --> Externally linked by default
 ✅ Do
 
 ```c
-int width, height, depth;    --> Different logical units in separate lines
+int width, height, depth;    -- Different logical units in separate lines
 int price, change;
 
 ————————————————————————————————————————————————————————————————————————————————
 
-char *src;    --> Pointers declared in different lines
+char *src;    -- Pointers declared in different lines
 char *dst;
 ```
 
 ❌ Don't
 
 ```c
-int width, height, depth, price, change;    --> Unrelated groups
+int width, height, depth, price, change;    -- Unrelated groups
 
 ————————————————————————————————————————————————————————————————————————————————
 
-char *src, *dst;    --> Unnecessarily verbose
+char *src, *dst;    -- Unnecessarily verbose
 
 ————————————————————————————————————————————————————————————————————————————————
 
-char *name, grade;    --> Misleading! Only one is a pointer
+char *name, grade;    -- Misleading! Only one is a pointer
 ```
 
 <br>
@@ -479,29 +479,29 @@ char *name, grade;    --> Misleading! Only one is a pointer
 ✅ Do
 
 ```c
-#define DEFAULT_FPS 60    --> #define for primitives or strings
+#define DEFAULT_FPS 60    -- #define for primitives or strings
 
 ————————————————————————————————————————————————————————————————————————————————
 
-typedef enum {    --> Enums for related groups
+typedef enum {    -- Enums for related groups
     USER,
     INFO,
     WARNING,
     ERROR,
-    FATAL
+    FATAL,
 } InternalLevel;
 
 ————————————————————————————————————————————————————————————————————————————————
 
 void myFunc(void) {
-    const int MAX_BUFFER_SIZE = 1024;    --> const inside a function
+    const int MAX_BUFFER_SIZE = 1024;    -- const inside a function
     char buffer[MAX_BUFFER_SIZE];
     ...
 }
 
 ————————————————————————————————————————————————————————————————————————————————
 
-static const float IDENTITY_MATRIX[16] = {    --> static const for file-scoped array
+static const float IDENTITY_MATRIX[16] = {    -- static const for file-scoped array
     1, 0, 0, 0,
     0, 1, 0, 0, 
     0, 0, 1, 0,
@@ -512,13 +512,13 @@ static const float IDENTITY_MATRIX[16] = {    --> static const for file-scoped a
 ❌ Don't
 
 ```c
-#define LEVEL_USER 0       --> Related integer constants should use enum     
+#define LEVEL_USER 0       -- Related integer constants should use enum     
 #define LEVEL_INFO 1
 #define LEVEL_WARNING 2    
 
 ————————————————————————————————————————————————————————————————————————————————
 
-const int MAX_BUFFER_SIZE = 1024;    --> Wrong scope.
+const int MAX_BUFFER_SIZE = 1024;    -- Wrong scope.
 
 void myFunc(void) {
     ...
@@ -526,7 +526,7 @@ void myFunc(void) {
 
 ————————————————————————————————————————————————————————————————————————————————
 
-#define SQUARE(x) ((x) * (x))    --> Function-like macro     
+#define SQUARE(x) ((x) * (x))    -- Function-like macro     
 ```
 
 <br>
@@ -543,21 +543,21 @@ void myFunc(void) {
 ✅ Do
 
 ```c
-for (int i = 0; i < max; i++) {    --> Loop iterators
+for (int i = 0; i < max; i++) {    -- Loop iterators
     ...
 }
 
 ————————————————————————————————————————————————————————————————————————————————
 
-float c = sqrt(pow(a, 2) + pow(b, 2));    --> Mathematical formulas
+float c = sqrt(pow(a, 2) + pow(b, 2));    -- Mathematical formulas
 
 ————————————————————————————————————————————————————————————————————————————————
 
-next = current + 1;    --> Obvious oparations
+next = current + 1;    -- Obvious oparations
 
 ————————————————————————————————————————————————————————————————————————————————
 
---> Obvious initializations or allocations
+-- Obvious initializations or allocations
 
 Type myStruct = { 0 };
 
@@ -565,17 +565,17 @@ InternalTracker *tracker = calloc(1, sizeof(InternalTracker));
 
 ————————————————————————————————————————————————————————————————————————————————
 
-#define DEFAULT_FPS 60    --> Meaningful or repeated values should be constants
+#define DEFAULT_FPS 60    -- Meaningful or repeated values should be constants
 ```
 
 ❌ Don't
 
 ```c
-float circumference =  2 * 3.14159f * radius;     --> Meaningful primitives should be #define'd
+float circumference =  2 * 3.14159f * radius;     -- Meaningful primitives should be #define'd
 
 ————————————————————————————————————————————————————————————————————————————————
 
-for (int i = 0; i < 10; i++) { --> Unclear! 10 is an arbitrary number
+for (int i = 0; i < 10; i++) { -- Unclear! 10 is an arbitrary number
     ...
 }
 
@@ -638,17 +638,17 @@ bool smStop(void);
 ✅ Example
 
 ```c
---> Found in StateMachine.h
+-- Found in StateMachine.h
 bool smStateExists(const char *name);
 
 ————————————————————————————————————————————————————————————————————————————————
 
---> Found in StateMachine.internal.h  
+-- Found in StateMachine.internal.h  
 const State *smInternalGetState(const char *name);
 
 ————————————————————————————————————————————————————————————————————————————————
 
---> Found in StateMachine.c
+-- Found in StateMachine.c
 bool smPrivateIsNameValid(const char *name, const char *fnName);
 ```
 
@@ -664,12 +664,12 @@ bool smPrivateIsNameValid(const char *name, const char *fnName);
 ✅ Example
 
 ```c
---> "Log (level) from (origin) with (message) using (args)"
+-- "Log (level) from (origin) with (message) using (args)"
 void lgPrivateLogV(InternalLevel level, const char *origin, const char *msg, va_list args);
 
 ————————————————————————————————————————————————————————————————————————————————
 
---> "Delete state: (name)"
+-- "Delete state: (name)"
 bool smDeleteState(const char *name);
 ```
 
@@ -683,21 +683,21 @@ bool smDeleteState(const char *name);
 ✅ Do
 
 ```c
-bool smStateExists(const char *name);    --> Implies read-only parameter
+bool smStateExists(const char *name);    -- Implies read-only parameter
 
 ————————————————————————————————————————————————————————————————————————————————
 
-bool smUpdate(float dt);    --> const is unecessary because argument is copied by value
+bool smUpdate(float dt);    -- const is unecessary because argument is copied by value
 ```
 
 ❌ Don't
 
 ```c
-bool smStateExists(char *name);    --> Misleading! Implies the function modifies the string
+bool smStateExists(char *name);    -- Misleading! Implies the function modifies the string
 
 ————————————————————————————————————————————————————————————————————————————————
 
-bool smUpdate(const float dt);    --> Unnecessarily verbose
+bool smUpdate(const float dt);    -- Unnecessarily verbose
 ```
 
 <br>
@@ -715,7 +715,7 @@ bool smUpdate(const float dt);    --> Unnecessarily verbose
 ✅ Do
 
 ```c
---> Implicit conversion for pointer checks in return statements and conditionals
+-- Implicit conversion for pointer checks in return statements and conditionals
 
 bool smIsRunning(void) {
     return tracker; 
@@ -727,7 +727,7 @@ if (tracker) {
 
 ————————————————————————————————————————————————————————————————————————————————
 
-if (playerCount > 0) {    --> Explicit comparisons for non-pointer variables 
+if (playerCount > 0) {    -- Explicit comparisons for non-pointer variables 
     ...
 }
 ```
@@ -735,14 +735,14 @@ if (playerCount > 0) {    --> Explicit comparisons for non-pointer variables
 ❌ Don't
 
 ```c
-if (playerCount) {    --> Misleading! Implies pointer
+if (playerCount) {    -- Misleading! Implies pointer
     ...
 }
 
 ————————————————————————————————————————————————————————————————————————————————
 
 bool smIsRunning(void) {
-    return tracker != nullptr;    --> Unnecessarily verbose
+    return tracker != nullptr;    -- Unnecessarily verbose
 }
 ```
 
@@ -764,26 +764,24 @@ bool smIsRunning(void) {
 
 ```c
 bool smStart(void) {
-    if (tracker) {        --> Failure conditions first
+    if (tracker) {        -- Failure conditions first
         return false;
     }
 
-    /* Code blocks related to a single task go together
-     * In this example, allocating memory and handling errors
-     */
-    tracker = tsInternalCalloc(1, sizeof(StateMachineTracker));    --> Use wrapper test functions for memory allocation
+    -- Code blocks related to a single task go together (in this example, allocating memory and handling errors)
+    tracker = tsInternalCalloc(1, sizeof(StateMachineTracker));    -- Use wrapper test functions for memory allocation
     if (!tracker) {
         return false;
     }
 
-    --> Success path
+    -- Success path
     tracker->fps = DEFAULT_FPS;
     return true;
 }
 
 ————————————————————————————————————————————————————————————————————————————————
 
---> Use Private functions for statements that are repeated throughout multiple functions
+-- Use Private functions for statements that are repeated throughout multiple functions
 
 bool smStateExists(const char *name) {
     if (!smPrivateIsRunning(FN_STATE_EXISTS)) {
@@ -816,7 +814,7 @@ bool smStateExists(const char *name) {
 ✅ Example
 
 ```c
---> Doesn't return any meaningful value for the user but returns bool for testing purposes
+-- Doesn't return any meaningful value for the user but returns bool for testing purposes
 
 bool smStart(void) {
     if (tracker) {
@@ -841,7 +839,7 @@ bool smStart(void) {
 
 ————————————————————————————————————————————————————————————————————————————————
 
---> Return bool for state checks
+-- Return bool for state checks
 
 bool smIsRunning(void) {
     return tracker;
@@ -849,7 +847,7 @@ bool smIsRunning(void) {
 
 ————————————————————————————————————————————————————————————————————————————————
 
---> Return -1, -1.0f or -1.0 on error for numeric return types
+-- Return -1, -1.0f or -1.0 on error for numeric return types
 
 int smGetStateCount(void) {
     if (!smPrivateIsRunning(FN_GET_STATE_COUNT)) {
@@ -861,7 +859,7 @@ int smGetStateCount(void) {
 
 ————————————————————————————————————————————————————————————————————————————————
 
---> Return nullptr, if appropriate, when data is unavailable or operations fail.
+-- Return nullptr, if appropriate, when data is unavailable or operations fail.
 
 const char *smGetCurrentStateName(void) {
     if (!smPrivateIsRunning(FN_GET_CURRENT_STATE_NAME)) {
@@ -885,7 +883,7 @@ const char *smGetCurrentStateName(void) {
 ✅ Do
 
 ```c
---> Only use goto for cleanup
+-- Only use goto for cleanup
 
 bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
                    smDrawFn drawFn, smExitFn exitFn) {
@@ -921,17 +919,14 @@ nameCopyError:
 ❌ Don't
 
 ```c
---> Never use goto for non-error control flow
-
-void smPrintNumbers(void) {
-    int i = 0;
+-- Never use goto for non-error control flow (in this example, a loop)
 
 start:
     printf("%d\n", i);
     i++;
-    if (i < 5)
+    if (i < 5) {
         goto start;
-}
+    }
 ```
 
 <br>
@@ -946,14 +941,14 @@ start:
 ✅ Example
 
 ```c
---> In CommonInternalMessages.h
+-- In CommonInternalMessages.h
 #define CONSEQ_ABORTED  "Aborted"
 
---> In StateMachineMessages.h
+-- In StateMachineMessages.h
 #define CAUSE_STATE_NOT_FOUND "State not found"
 #define FN_SET_STATE "SetState"
 
---> In StateMachine.c
+-- In StateMachine.c
 bool smSetState(const char *name, const void *args) {
     ...
     
@@ -976,7 +971,8 @@ bool smSetState(const char *name, const void *args) {
 
 * Always use braces, even for single-line conditionals or loops.
 * Place the opening brace on the same line as the statement, and the closing
-  brace one line after the final statement.
+  brace one line after the final statement aligned with the start of the
+  declaration.
 * Include a `struct` or `enum`'s name on the same line as the closing brace.
 
 ✅ Do
@@ -1003,7 +999,7 @@ typedef enum {
 ❌ Don't
 
 ```c
---> Wrong brace placement
+-- Wrong brace placement
 
 int main(void)
 {
@@ -1022,9 +1018,17 @@ typedef enum {
     ERROR,
     FATAL } InternalLevel;
     
+typedef enum {
+    USER,
+    INFO,
+    WARNING,
+    ERROR,
+    FATAL,
+    } InternalLevel;
+    
 ————————————————————————————————————————————————————————————————————————————————
 
---> Inline statements
+-- Inline statements
  
 if (false) { return; }
 
@@ -1032,7 +1036,7 @@ if (false) return;
 
 ————————————————————————————————————————————————————————————————————————————————
 
---> Dangling statement
+-- Dangling statement
 
 if (false) 
     return; 
@@ -1044,7 +1048,7 @@ if (false)
 
 * Write the pointer operator (`*`) next to the variable name, not the type.
 * Leave no space between the dereference operator (`*`) and the variable.
-* Use the arrow operator (`-->`) to dereference struct pointers.
+* Use the arrow operator (`--`) to dereference struct pointers.
 * ⚠️ Don’t use the dereference-dot pattern (`(*p).member`) or include spaces
   around
   the arrow.
@@ -1058,20 +1062,20 @@ int *ptr = malloc(sizeof(int));
 ————————————————————————————————————————————————————————————————————————————————
 
 Player *player = &player;
-int score = player-->score;
+int score = player--score;
 ```
 
 ❌ Don't
 
 ```c
 int *ptr = malloc(sizeof(int));
-* ptr = 10;    --> It should have no space between the dereference operator and the variable
+* ptr = 10;    -- It should have no space between the dereference operator and the variable
 
 ————————————————————————————————————————————————————————————————————————————————
 
-Player* p = &player;             --> Pointer operator should go next to the variable name
-int playerScore = (*player).score;    --> Don't use the dereference-dot pattern
-int playerId = player -> id;          --> No spaces around the arrow operator
+Player* p = &player;             -- Pointer operator should go next to the variable name
+int playerScore = (*player).score;    -- Don't use the dereference-dot pattern
+int playerId = player -> id;          -- No spaces around the arrow operator
 ```
 
 <br>
@@ -1083,22 +1087,22 @@ int playerId = player -> id;          --> No spaces around the arrow operator
 * A collection should be multi-line if it would be hard to comprehend. The
   lines should be indented.
 * `Enums` should always be multi-line.
-* For multi-line collections, always include a trailing comma.
+* Always include a trailing comma for multi-line collections.
 
 ✅ Do
 
 ```c
---> Collections that would be hard to comprehend as a single line should be multi-line
+-- Collections that would be hard to comprehend as a single line should be multi-line
 static const float IDENTITY_MATRIX[16] = {
     1, 0, 0, 0,
     0, 1, 0, 0, 
     0, 0, 1, 0,
-    0, 0, 0, 1,    --> Include trailing comma for multi-line collections
+    0, 0, 0, 1,    -- Include trailing comma for multi-line collections
 };
 
 ————————————————————————————————————————————————————————————————————————————————
 
-typedef enum {    --> Enums are always multi-line
+typedef enum {    -- Enums are always multi-line
     USER,
     INFO,
     WARNING,
@@ -1108,21 +1112,21 @@ typedef enum {    --> Enums are always multi-line
 
 ————————————————————————————————————————————————————————————————————————————————
 
-int myArray[] = { 0, 1, 2, 3, 4 };  --> Simple, short collections can be a single line long
+int myArray[] = { 0, 1, 2, 3, 4 };  -- Simple, short collections can be a single line long
 
 ————————————————————————————————————————————————————————————————————————————————
 
-int sum = num1 + num2;    --> Include spaces around operators
+int sum = num1 + num2;    -- Include spaces around operators
 ```
 
 ❌ Don't
 
 ```c
-int myArray[] = {0,1,2,3,4};    --> No spaces after commas decreases readability
+int myArray[] = {0,1,2,3,4};    -- No spaces after commas decreases readability
 
 ————————————————————————————————————————————————————————————————————————————————
 
---> Short, easy to grasp collection should be a single line long
+-- Short, easy to grasp collection should be a single line long
 
 int myArray[] = {
     0,
@@ -1132,7 +1136,7 @@ int myArray[] = {
 
 ————————————————————————————————————————————————————————————————————————————————
 
-int sum=num1+num2;    --> No spaces around operators decreases readability
+int sum=num1+num2;    -- No spaces around operators decreases readability
 ```
 
 <br>
@@ -1164,7 +1168,7 @@ while (true) {
 ✅ Do
 
 ```c
-bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update,        --> Line limit
+bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update,        -- Line limit
                    smDrawFn draw, smExitFn exit);
 ```
 
@@ -1215,23 +1219,23 @@ struct Node {
 ✅ Do
 
 ```c
-typedef struct {    --> Internal type
+typedef struct {    -- Internal type
     ...
 } InternalState;
 
 ————————————————————————————————————————————————————————————————————————————————
 
-typedef void (*smEnterFn)(const void *args);    --> Public type
+typedef void (*smEnterFn)(const void *args);    -- Public type
 ```
 
 ❌ Don't
 
 ```c
-typedef int Number;    --> Hides primitive type
+typedef int Number;    -- Hides primitive type
 
 ————————————————————————————————————————————————————————————————————————————————
 
-typedef void (*Enter)(void*);   --> No module prefix for a public type
+typedef void (*Enter)(void*);   -- No module prefix for a public type
 ```
 
 <br>
@@ -1274,7 +1278,7 @@ void *myFunction(void) {
 ✅ Do
 
 ```c
---> Document typedefs, functions, structs, enums... 
+-- Document typedefs, functions, structs, enums... 
 /**
  * @brief Function pointer type for state exit callbacks.
  *
@@ -1284,19 +1288,19 @@ typedef void (*smExitFn)(void);
 
 ————————————————————————————————————————————————————————————————————————————————
 
---> Comment on statements that are hard to understand at a glance
+-- Comment on statements that are hard to understand at a glance
 fprintf(stderr, "%s\n", SMILE_WHITE); // Reset Log color
 ```
 
 ❌ Don't
 
 ```c
---> Obvious comments
+-- Obvious comments
 player.health = 100;  // player health set to 100
 
 ————————————————————————————————————————————————————————————————————————————————
 
---> Use single-line style for multi-line comments or vice-versas
+-- Use single-line style for multi-line comments or vice-versas
 // @brief Function pointer type for state exit callbacks.
 // 
 // @author Vitor Betmann
@@ -1311,11 +1315,13 @@ typedef void (*smExitFn)(void);
   corresponding GitHub issue using the format
   `// TODO #<issue_number> <summary>`.
 * Place TODOs at the top of the file they affect.
+* ⚠️ Don't overly describe a `TODO`. That's reserved for its respective GitHub
+  issue.
 
 ✅ Do
 
 ```c
-// TODO #16 trim state name on registration    --> This is at the top of the file
+// TODO #16 trim state name on registration    -- This is at the top of the file
 // TODO #42 refactor allocation logic
 ```
 
@@ -1323,19 +1329,19 @@ typedef void (*smExitFn)(void);
 
 ```c
 bool smSetFPS(int fps) {
-    // todo implement this    --> Don't include TODO's anywhere other than at the top of the file 
+    // todo implement this    -- Don't include TODO's anywhere other than at the top of the file 
     return false;
 }
 
 ————————————————————————————————————————————————————————————————————————————————
 
-// todo: fix this    --> These TODO's don't follow Smile's convention
+// todo: fix this    -- These TODO's don't follow Smile's convention
 // fix whitespace issue later
 // TODO check names
 
 ————————————————————————————————————————————————————————————————————————————————
 
---> Really long TODO's
+-- Really long TODO's
 
 /*
  * TODO #42 this function is broken because of the complex memory allocation
