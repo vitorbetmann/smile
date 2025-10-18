@@ -146,7 +146,7 @@ the [Documentation Guidelines]() doc.
 
 <br>
 
-Next: [2_Coding_Guidelines](2_Coding_Guidelines.md)
+Next: [2.1_Coding_Guidelines - Code Organization](2.1_Coding_Guidelines_Code_Organization.md)
 
 ---
 
