@@ -57,7 +57,7 @@ From your game directory, run:
 ```zsh
 git clone https://github.com/vitorbetmann/smile.git
 cmake -S ./smile -B smile/build
-cmake --build smile/build
+cmake --build smile/build # or ninja -C smile/build
 ```
 
 Smile builds as libsmile.a, a static library containing all Smile modules
@@ -128,7 +128,8 @@ target_include_directories(my_game PRIVATE
 target_link_libraries(my_game PRIVATE smile)
 ```
 
-If needed, replace `my_game` with the name of your project's executable.
+If needed, replace `my_game` with the name of your project's executable, and you
+can compile your game normally using cmake.
 
 ---
 
