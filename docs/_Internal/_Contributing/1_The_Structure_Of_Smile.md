@@ -1,28 +1,4 @@
-# Coding Guidelines 🧑‍💻
-
-This document defines Smile’s C coding style and file organization conventions
-to ensure consistency, readability, and maintainability across all modules.
-
-😊 Style Philosophy
-
-Smile’s C style emphasizes clarity, consistency, and maintainability above all.
-Every rule in this document exists to make Smile’s codebase predictable — so
-that any developer can read, debug, or extend a module without surprises.
-
-Prefer explicitness to cleverness, readability over compression, and
-structure over spontaneity.
-Consistent formatting and naming conventions allow the code to communicate
-intent faster than comments ever could.
-
-When in doubt, write code that looks like existing Smile code — clean,
-consistent, and easy to reason about.
-
-> **Note:**  
-> Smile follows the **C23 standard** for all C source code and headers.  
-> All examples and conventions in this document assume C23-compatible compilers
-> (e.g., Clang ≥ 17, GCC ≥ 13, or MSVC ≥ 19.3).  
-> Features like `nullptr` and `bool` are used accordingly.
-
+# The Structure Of Smile 🏛️
 
 ---
 
@@ -30,123 +6,160 @@ consistent, and easy to reason about.
 
 ## Table of Contents
 
-- [Smile Structure](#-smile-structure)
-    - [Public Headers](#-_public-headers_)
-    - [Internal Headers](#-_internal-headers_)
-    - [Message Files](#-_message-files_)
-    - [Source Files](#-_source-files_)
+- [Smile's Project Root Directory](#-smiles-project-root-directory)
+- [Public and Internal](#-public-and-internal)
+    - [external](#-_external_)
+    - [include](#-_include_)
+    - [src](#-_src_)
+    - [docs](#-_docs_)
+    - [test](#-_test_)
+- [Up Next](#up-next)
 
 ---
 
 <br>
 
-## 😊 Smile Structure
+## 🌳 Smile's Project Root Directory
 
-Talk about the structure of smile's directories
+After compiling Smile, your directory should look like this:
 
-- Consistency: Each module should have its own <ModuleName>Messages.h
-- Reusability: CommonMessages.h for shared messages.
-- Maintainability: Internal functions go in ModuleNameInternal.h, helpers inside
-  .c files only.
-- naming files
+```zsh
+Smile
+├── CMakeLists.txt
+├── .gitignore
+├── LICENSE
+├── README.md
+├── build
+├── docs
+├── external
+├── include
+├── src
+└── test
+```
+
+Files in the project root can be grouped into two categories:
+
+- User-facing: These include files like `README.md` and `LICENSE`. They provide
+  information to users, explaining what Smile is, how to use it, and what to
+  expect from the project.
+- Developer-facing: These include files such as `CMakeLists.txt` and
+  `.gitignore`. They primarily support development and build processes, helping
+  maintainers and contributors work efficiently.
+
+The `build/` directory contains Smile's compiled files.
 
 <br>
 
-### — _Public Headers_
+---
 
-* naming
+## 🔑 Public and Internal
 
-Public API Functions: [modulePrefix][Verb][Object]
+Smile maintains a clear separation between user-facing and developer-facing
+components, referred to as `Public` and `Internal`.
 
-**Example:**
+`Public` encompasses all resources intended for non-developer users, including
+guides, API documentation, and header files.
 
-```c
+Within directories such as `docs`, `src`, and `test`, `_Internal` folders hold
+developer-focused documentation, internal functions, helpers, and tools.
+Anything outside `_Internal` is considered `Public`.
+
+Further explanation regarding Smile's `Public` and `Private` categorization are
+explained bellow.
+
+<br>
+
+### — _external_
+
+While the `external/` directory contains third-party libraries, it is not meant
+for users, as they're used internally by Smile to implement modules.
+
+✅ Example
+
+```zsh
+├── external
+│ ├── raylib
+│ ├── uthash.h
 ```
 
 <br>
 
-For documenting Public Headers, see [Documenting Public Headers]() in
-the [Documentation Guidelines]() doc.
+### — _include_
 
-<br>
+Only contains header files for public modules.
 
-### — _Internal Headers_
+✅ Example
 
-* Logging Related
-
-Internal Functions: [modulePrefix]Internal[Verb][Object]
-
-**Example:**
-
-```c
+```zsh
+├── include
+│ ├── Log.h
+│ ├── ParticleSystem.h
+│ ├── SaveLoad.h
+│ ├── StateMachine.h
 ```
 
 <br>
 
-For documenting Internal Headers, see [Documenting Internal Headers]() in
-the [Documentation Guidelines]() doc.
+### — _src_
+
+Each module in Smile typically has three key files:
+
+1. `ModuleName.c` – Implements the module’s public and internal functions.
+2. `ModuleNameInternal.h` – Contains internal helper functions that are
+   necessary for the module to work but are not part of the public API.
+3. `ModuleNameMessages.h` – Contains all messages related to warnings, errors,
+   or other notifications for that module.
+
+**Example: StateMachine**
+
+- `StateMachine.c` → Implements `create_state`, `set_state`, etc.
+- `StateMachineInternal.h` → Functions like `get_state` or `find_state` which
+  manipulate internal structures (e.g., the state table) not exposed to users.
+- `StateMachineMessages.h` → Contains messages like `"State already exists"`
+  used in logging.
+
+This separation ensures:
+
+- Public headers define the stable API for users.
+- Internal headers provide the tools developers need to implement the module.
+- Messages are centralized and reusable.
+-
+
+**Exception**
+The `Log` module ...
 
 <br>
 
-### — _Message Files_
+### — _docs_
 
-* Logging Related
-
-2. Module Message Files
-   Every module has a <ModuleName>Messages.h file containing:
-
-- Module name
-- Function names (FN_* defines)
-- Causes
-- Consequences
-  CommonMessages.h contains cross-module messages.
-
-**Example:**
-
-```c
-```
+**Exception**
+The `Log` module ...
 
 <br>
 
-For documenting Message Files, see [Documenting Message Files]() in
-the [Documentation Guidelines]() doc.
+### — _test_
 
 <br>
-
-### — _Source Files_
-
-* logs
-
-Log Message Pattern
-Every log for errors, warnings, or info follows a structured pattern:
-logLevel, moduleName, cause, optionalArgument, functionName, consequence
-
-**Example:**
-
-```c
-```
-
-<br>
-
-* private funcs
-
-Private Functions: [modulePrefix]Private[Description]
-
-**Example:**
-
-```c
-```
-
-<br>
-
-For documenting Source Files, see [Documenting Source Files]() in
-the [Documentation Guidelines]() doc.
 
 ---
 
 <br>
 
-Next: [2.1_Coding_Guidelines - Code Organization](2.1_Coding_Guidelines_Code_Organization.md)
+## Naming Conventions
+
+### — _Folders_
+
+<br>
+
+### — _Files_
+
+<br>
+
+---
+
+## Up Next
+
+[2.1_Coding_Guidelines - Code Organization](2.1_Coding_Guidelines_Code_Organization.md)
 
 ---
 
@@ -154,4 +167,4 @@ Next: [2.1_Coding_Guidelines - Code Organization](2.1_Coding_Guidelines_Code_Org
 
 | Last modified | Author        | Description       |
 |---------------|---------------|-------------------|
-| Oct 14, 2025  | Vitor Betmann | Created document. |
+| Oct 21, 2025  | Vitor Betmann | Created document. |

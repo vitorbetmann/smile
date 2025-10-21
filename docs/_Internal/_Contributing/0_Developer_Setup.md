@@ -28,13 +28,12 @@ development workflow:
 - [Differences Between DEV and USER Modes](#-differences-between-dev-and-user-modes)
 - [Building Smile In Developer Mode](#-building-smile-in-developer-mode)
 - [Up Next](#up-next)
--
 
 ---
 
 <br>
 
-## ≠ Differences Between DEV And USER Modes
+## ⚖️ Differences Between DEV And USER Modes
 
 By default, Smile builds in User Mode, optimized for performance and minimal
 build size. It excludes development tools and test files, focusing on delivering
