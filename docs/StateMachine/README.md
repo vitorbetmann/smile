@@ -1,3 +1,5 @@
+<!-- TODO #25 [Docs] for [StateMachine] - Add Visual Example To README -->
+
 # State Machine — Getting Started 🤖
 
 The State Machine module provides a simple, flexible system for defining and
@@ -58,7 +60,7 @@ and dangling pointers.
 ## 🔍 Quick Reference Table
 
 For detailed documentation, see
-the [State Machine API Reference](StateMachine_API.md).
+the [State Machine API Reference](StateMachineAPI.md).
 
 ### Data Types
 
@@ -164,7 +166,7 @@ data you want to share, then passing a pointer to it as `args`.
 
 `smSetState` will first call the exit function of the current state,
 followed by the enter function of the next state. See
-the [State Machine API](StateMachine_API.md) for more information.
+the [State Machine API](StateMachineAPI.md) for more information.
 
 Below is a typical state header file using LevelTwo.h as an example:
 

@@ -1,7 +1,7 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include "StateMachineTest.h"
+#include "StateMachineAPITests.h"
 #include "../include/StateMachine.h"
 #include "../src/_Internal/Test/TestInternal.h"
 

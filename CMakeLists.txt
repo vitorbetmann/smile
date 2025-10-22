@@ -145,7 +145,7 @@ if (SMILE_BUILD_TESTS)
     endif ()
 
     function(add_smile_test name)
-        file(GLOB TEST_SRC "${CMAKE_CURRENT_SOURCE_DIR}/test/${name}/*.c")
+        file(GLOB TEST_SRC "${CMAKE_CURRENT_SOURCE_DIR}/tests/${name}/*.c")
         if (TEST_SRC)
             set(test_target "${name}Test")
             add_executable(${test_target} ${TEST_SRC})

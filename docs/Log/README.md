@@ -1,3 +1,5 @@
+<!-- TODO #25 [Docs] for [Log] - Add Visual Example To README -->
+
 # Log — Getting Started 📝
 
 `Log` provides an API for writing printf-style messages to the terminal and
@@ -40,7 +42,7 @@ your custom handler.
 
 ## 🔍 Quick Reference Table
 
-For detailed documentation, see the [Log API Reference](Log_API.md).
+For detailed documentation, see the [Log API Reference](LogAPI.md).
 
 ### Data Types
 

@@ -1,3 +1,5 @@
+// TODO #20 [Feature] for [Log] - Add file logging support for standard and fatal logs
+// TODO #21 [Feature] for [Log] - Add runtime and module-specific log filtering
 /**
  * @file Log.c
  * @brief Implementation of the Smile logging system.

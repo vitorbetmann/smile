@@ -37,7 +37,7 @@ message, ranging from user-defined messages to fatal errors.
 
 | Item          | Summary                                                                                              | Color  |
 |---------------|------------------------------------------------------------------------------------------------------|--------|
-| `LOG_USER`    | For custom user generated logs. See lgLog in [Log_API](../../Log/Log_API.md).                        | Green  |
+| `LOG_USER`    | For custom user generated logs. See lgLog in [Log_API](../../Log/LogAPI.md).                         | Green  |
 | `LOG_INFO`    | Reports informational logs. E.g. "Start Successful."                                                 | Blue   |
 | `LOG_WARNING` | Reports non-game breaking or non-intentional events. E.g. calling the Start function twice in a row. | Yellow |
 | `LOG_ERROR`   | Reports game-breaking errors. E.g. memory allocation failed.                                         | Red    |
