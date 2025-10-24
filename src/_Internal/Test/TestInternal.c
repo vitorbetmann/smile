@@ -1,5 +1,5 @@
 /**
-* @file TestInternal.c
+ * @file TestInternal.c
  * @brief Implementation of test utilities for simulating allocation failures.
  *
  * Provides definitions for the functions declared in TestInternal.h.
@@ -17,7 +17,6 @@
 static bool canMalloc = true;
 static bool canCalloc = true;
 static bool canRealloc = true;
-// static bool canFatal = false;
 
 static unsigned int mallocNum;
 static unsigned int callocNum;
@@ -27,12 +26,15 @@ static unsigned int reallocNum;
 // Functions
 // --------------------------------------------------
 
-void tsInternalPass(const char *fnName) {
+void tsInternalPass(const char *fnName)
+{
     printf("\t[PASS] %s\n", fnName);
 }
 
-bool tsInternalDisable(InternalMemAllocFn fnName, unsigned int at) {
-    switch (fnName) {
+bool tsInternalDisable(InternalMemAllocFn fnName, unsigned int at)
+{
+    switch (fnName)
+    {
         case MALLOC:
             canMalloc = false;
             mallocNum = at;
@@ -50,27 +52,33 @@ bool tsInternalDisable(InternalMemAllocFn fnName, unsigned int at) {
     }
 }
 
-void *tsInternalMalloc(const size_t size) {
+void *tsInternalMalloc(const size_t size)
+{
     mallocNum--;
-    if (!canMalloc && mallocNum == 0) {
+    if (!canMalloc && mallocNum == 0)
+    {
         canMalloc = true;
         return nullptr;
     }
     return malloc(size);
 }
 
-void *tsInternalCalloc(const size_t nitems, const size_t size) {
+void *tsInternalCalloc(const size_t nitems, const size_t size)
+{
     callocNum--;
-    if (!canCalloc && callocNum == 0) {
+    if (!canCalloc && callocNum == 0)
+    {
         canCalloc = true;
         return nullptr;
     }
     return calloc(nitems, size);
 }
 
-void *tsInternalRealloc(void *ptr, const size_t size) {
+void *tsInternalRealloc(void *ptr, const size_t size)
+{
     reallocNum--;
-    if (!canRealloc && reallocNum == 0) {
+    if (!canRealloc && reallocNum == 0)
+    {
         canRealloc = true;
         return nullptr;
     }

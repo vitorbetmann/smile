@@ -15,6 +15,7 @@ behavior using enter, update, draw, and exit callback functions.
 ## Table of Contents
 
 - [Visual Example](#visual-example)
+- [Module Header](#module-header)
 - [State Machine Lifecycle](#state-machine-lifecycle-)
 - [Quick Reference Table](#-quick-reference-table)
 - [Workflow Example](#-workflow-example)
@@ -24,6 +25,21 @@ behavior using enter, update, draw, and exit callback functions.
 <br>
 
 ## Visual Example
+
+---
+
+<br>
+
+## 😊Module Header
+
+The module’s header is `StateMachine.h`. Its full Smile path is:
+`smile/include/StateMachine.h`
+
+✅ Example
+
+```c
+#include <StateMachine.h>
+```
 
 ---
 
@@ -49,7 +65,7 @@ it.
 5️⃣ `smUpdate` and `smDraw` should be called every frame (typically inside your
 game loop) to run the current state’s logic and rendering.
 
-6️⃣ **Always** call `smStop` when the state machine is no longer needed. This
+6️⃣ Always call `smStop` when the state machine is no longer needed. This
 ensures all registered states are properly cleaned up, preventing memory leaks
 and dangling pointers.
 
@@ -127,8 +143,8 @@ int main(void) {
 }
 ```
 
-Make sure you call `smStop` before exiting your program, **otherwise you risk
-memory leaks!**
+Make sure you call `smStop` before exiting your program, otherwise you risk
+memory leaks!
 
 Calling smStop also calls the current state's exit function and sets
 `smIsRunning` to false, breaking the main game loop. Good places to call

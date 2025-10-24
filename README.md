@@ -2,10 +2,10 @@
 
 ## An open-source, modular 2D game engine in C
 
-**Smile** stands for **Simple Modularity Is Lowkey Elegant**, and it's a
+Smile stands for `Simple Modularity Is Lowkey Elegant`, and it's a
 lightweight collection of C modules that simplifies 2D game development.
 
-Ideal for **game jams** and **rapid prototyping**, Smile provides clean
+Ideal for `game jams` and `rapid prototyping`, Smile provides clean
 abstractions that keep your code lean, organized, and fully under your control.
 
 ---
@@ -21,8 +21,8 @@ abstractions that keep your code lean, organized, and fully under your control.
 ## Why Smile?
 
 Supported on Mac and Linux, Smile is a modular collection of C
-libraries that streamline common 2D game-development tasks such as **managing
-states**, **simulating particles**, and **saving** or **loading** data. It’s
+libraries that streamline common 2D game-development tasks such as `managing
+states`, `simulating particles`, and `saving or loading data`. It’s
 built for developers who want simplicity without sacrificing control.
 
 You can mix and match only the modules you need (for example, using StateMachine
@@ -34,7 +34,7 @@ Smile's community is also active and willing to help! Have questions about
 low-level programming, Game Development, Programming Patterns, or anything else?
 We can help you out at the [Discord Server](https://discord.gg/EdS6PwMffH).
 
-**Learning together**! That’s what Smile is all about.
+Learning together! That’s what Smile is all about.
 
 ---
 
@@ -46,9 +46,9 @@ We can help you out at the [Discord Server](https://discord.gg/EdS6PwMffH).
 
 Before building Smile, make sure you have the following installed:
 
-- **CMake** 3.25 or higher
-- A build tool such as **Make** or **Ninja**
-- A C compiler with C23 support such as **Clang** or **GCC**
+- `CMake` 3.25 or higher
+- A build tool such as `Make` or `Ninja`
+- A C compiler with C23 support such as `Clang` or `GCC`
 
 ### Cloning and Building
 
@@ -56,8 +56,14 @@ From your game directory, run:
 
 ```zsh
 git clone https://github.com/vitorbetmann/smile.git
-cmake -S ./smile -B smile/build
+
+# Mac / Linux
+cmake -S smile -B smile/build
 cmake --build smile/build # or ninja -C smile/build
+
+# Windows
+cmake -S .\smile\ -B .\smile\build\
+cmake --build .\smile\build\ # or ninja -C .\smile\build
 ```
 
 Smile builds as libsmile.a, a static library containing all Smile modules
@@ -71,8 +77,9 @@ A typical project structure might look like this:
 └── smile/                # Smile cloned here
 ```
 
-**Note:**  
-By default, Smile compiles with runtime **warning** and **info** logs enabled.
+#### Note
+
+By default, Smile compiles with runtime `warning` and `info` logs enabled.
 Below is an example of how they would appear in your terminal:
 
 ![Example of Smile's Logs](docs/_Internal/__Assets/LogExample.png)
@@ -84,8 +91,8 @@ build with CMake:
  cmake -S ./smile -B smile/build -DSMILE_LOG_WARNING=OFF -DSMILE_LOG_INFO=OFF
  ```
 
-This will disable all Smile **warning** and **info** logging output at build
-time. **Errors** cannot be disabled.
+This will disable all Smile `warning` and `info` logging output at build
+time. `Error` logs cannot be disabled.
 
 ### Compiling
 
@@ -93,7 +100,7 @@ There are two common ways to compile your game using Smile:
 
 ---
 
-#### **Option 1 — With Clang (from your source directory)**
+#### Option 1 — With Clang (from your source directory)
 
 ```zsh
 clang main.c -Ismile/include -Lsmile/build -lsmile -o my_game
@@ -147,7 +154,8 @@ conventions shared across modules, making it easy to learn new ones:
 #include "Menu.h"            // Define your states in other files.
 #include "LevelOne.h"
 
-int main(void) {
+int main(void)
+{
      /* Most modules have a Start function. The first 2 letter preceding 'Start'
       * serve to identify from which module that function belongs (sm for
       * StateMachine, sl for SaveLoad, lg for Log...)  
@@ -160,7 +168,8 @@ int main(void) {
     
     smSetState("menu", nullptr); // Choose where you want to start
     
-    while (smIsRunning()) {      // Run your game until you Stop StateMachine 
+    while (smIsRunning())      // Run your game until you Stop StateMachine
+    { 
         float dt = smGetDt();    // Calculate the delta time since the last frame 
         smUpdate(dt);            // Update game logic 
         smDraw();                // Render to the screen
@@ -175,7 +184,8 @@ Without all the comments, this is how short your main.c file can be:
 #include "menu.h"
 #include "levelOne.h"
 
-int main(void) {
+int main(void)
+{
     smStart();
     
     smCreateState("menu", menuEnter, menuUpdate, menuDraw, menuExit);
@@ -183,7 +193,8 @@ int main(void) {
     
     smSetState("menu", nullptr); 
     
-    while (smIsRunning()) {
+    while (smIsRunning())
+    {
         smUpdate(smGetDt());
         smDraw();
     }
@@ -210,20 +221,24 @@ And in the source files:
 #include "menu.h"
 #include "StateMachine.h"
 
-void menuEnter(void *args) {
+void menuEnter(void *args)
+{
     // Handle initialization
 }
 
-void menuUpdate(float dt) {
+void menuUpdate(float dt)
+{
     // Handle inputs and updates
 
     // Changing states is easy after they're created:
-    if (PlayButtonPressed()) {
+    if (PlayButtonPressed())
+    {
         smSetState("level 1", nullptr);
     }
     
     // So is quitting the game:
-    else if (QuitButtonPressed()) {
+    else if (QuitButtonPressed())
+    {
         smStop(); /* This calls this state's exit function and sets smIsRunning
                    * to false, breaking the main game loop.
                    * Most modules have a Stop function as well. Therefore, the
@@ -233,11 +248,13 @@ void menuUpdate(float dt) {
     }
 }
 
-void menuDraw(void) {
+void menuDraw(void)
+{
     // Handle rendering
 }
 
-void menuExit(void) {
+void menuExit(void)
+{
     // Handle cleanup
 }
 ```
@@ -250,12 +267,12 @@ background so you can focus on letting your creativity out!
 If you're interested, feel free to explore each module for detailed guides and
 examples:
 
-| Module                                                            | Description                               |
-|-------------------------------------------------------------------|-------------------------------------------|
-| [Log](docs/Log)                                                   | Debug code and handle fatal errors easily |
-| [ParticleSystem](docs/ParticleSystem) (🚧 **under construction**) | Simulate smoke, dust, and fire            |
-| [SaveLoad](docs/SaveLoad) (🚧 **under construction**)             | Quickly save and load your game           |
-| [StateMachine](docs/StateMachine)                                 | Manage states and transitions cleanly.    |
+| Module                                                        | Description                               |
+|---------------------------------------------------------------|-------------------------------------------|
+| [Log](docs/Log)                                               | Debug code and handle fatal errors easily |
+| [ParticleSystem](docs/ParticleSystem) (🚧 under construction) | Simulate smoke, dust, and fire            |
+| [SaveLoad](docs/SaveLoad) (🚧 under construction)             | Quickly save and load your game           |
+| [StateMachine](docs/StateMachine)                             | Manage states and transitions cleanly.    |
 
 ---
 
@@ -279,8 +296,8 @@ curious, motivated, and eager to learn.
 Smile is meant to grow slowly and thoughtfully, with help from a community that
 values learning, clarity, experimentation, and shared growth.
 
-If that got you excited, there are many ways to contribute (**plus, you'll get
-full credit in the code and Git history!**):
+If that got you excited, there are many ways to contribute (plus, you'll get
+full credit in the code and Git history!):
 
 - Suggesting improvements
 - Adding features
@@ -304,6 +321,6 @@ details.
 
 <br>
 
-| Last modified | Author        | Description       |
-|---------------|---------------|-------------------|
-| Oct 14, 2025  | Vitor Betmann | Created document. |
+| Last modified | Author        | Description                 |
+|---------------|---------------|-----------------------------|
+| Oct 24, 2025  | Vitor Betmann | Documented Windows support. |

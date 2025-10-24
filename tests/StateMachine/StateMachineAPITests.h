@@ -18,7 +18,8 @@
 // Data types
 // --------------------------------------------------
 
-typedef struct {
+typedef struct
+{
     bool hasEntered, hasEnteredArgs;
     int enteredTimes;
 
@@ -29,7 +30,8 @@ typedef struct {
     int exitedTimes;
 } MockData;
 
-typedef struct {
+typedef struct
+{
     bool flag;
 } MockStateArgs;
 
@@ -46,22 +48,33 @@ static InternalState mockState = {.name = "mockState"};
 // Mock Functions
 // --------------------------------------------------
 
-void mockEnter(void *args) {
+void mockEnter(void *args)
+{
     md.hasEntered = true;
     md.enteredTimes++;
 
-    if (args) {
+    if (args)
+    {
         MockStateArgs *msa = args;
         md.hasEnteredArgs = msa->flag;
     }
 }
 
-void mockUpdate(float dt) { md.hasUpdated = true; }
-void mockDraw(void) { md.hasDrawn = true; }
+void mockUpdate(float dt)
+{
+    md.hasUpdated = true;
+}
 
-void mockExit(void) {
+void mockDraw(void)
+{
+    md.hasDrawn = true;
+}
+
+void mockExit(void)
+{
     md.hasExited = true;
     md.exitedTimes++;
 }
 
-#endif
+#endif // #ifndef SMILE_STATE_MACHINE_TEST_H
+

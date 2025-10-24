@@ -1,8 +1,8 @@
 // TODO #16 [Feature] for [StateMachine] - Create a function to limit the game's FPS to a max value
 
-// ---------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Includes
-// ---------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 #include <string.h>
 #include <../external/uthash.h>
@@ -16,29 +16,30 @@
 #include "../src/_Internal/Test/TestInternal.h"
 
 
-// ---------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Variables
-// ---------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 static InternalTracker *tracker;
 
 
-// ---------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Prototypes
-// ---------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 static bool smPrivateIsRunning(const char *fnName);
 
 static bool smPrivateIsNameValid(const char *name, const char *fnName);
 
-/* This function was created to preserve API consistency because the argument "name" from smCreateState collided with
- * the expected item "name" from tracker and neither should be changed.
+/* This function was created to preserve API consistency because the argument
+ * "name" from smCreateState collided with the expected item "name" from tracker
+ * and neither should be changed.
  */
 static void smPrivateAddState(InternalStateMap *mapEntry);
 
-// ---------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Functions - Public
-// ---------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 // Start Related
 
@@ -127,8 +128,8 @@ bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update,
     InternalStateMap *mapEntry = tsInternalMalloc(sizeof(InternalStateMap));
     if (!mapEntry)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,
-                      FN_CREATE_STATE, CONSEQ_ABORTED);
+        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,FN_CREATE_STATE,
+                      CONSEQ_ABORTED);
         goto mapEntryError;
     }
     mapEntry->state = state;
@@ -277,9 +278,9 @@ bool smUpdate(float dt)
 
     if (!tracker->currState->update)
     {
-        const char *stateName = tracker->currState->name;
         lgInternalLogWithArg(WARNING, MODULE,CAUSE_NULL_STATE_UPDATE_FN,
-                             stateName, FN_UPDATE,CONSEQ_ABORTED);
+                             tracker->currState->name, FN_UPDATE,
+                             CONSEQ_ABORTED);
         return false;
     }
 
@@ -337,10 +338,8 @@ bool smDraw(void)
 
     if (!tracker->currState->draw)
     {
-        const char *stateName = tracker->currState->name;
         lgInternalLogWithArg(WARNING, MODULE,CAUSE_NULL_STATE_DRAW_FN,
-                             stateName, FN_DRAW,
-                             CONSEQ_ABORTED);
+                             tracker->currState->name, FN_DRAW,CONSEQ_ABORTED);
         return false;
     }
 
@@ -380,9 +379,9 @@ bool smStop(void)
     return true;
 }
 
-// ---------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Functions - Internal
-// ---------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 const InternalState *smInternalGetState(const char *name)
 {
@@ -397,9 +396,9 @@ InternalStateMap *smInternalGetEntry(const char *name)
     return entry;
 }
 
-// ---------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Functions - Helper
-// ---------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 bool smPrivateIsRunning(const char *fnName)
 {

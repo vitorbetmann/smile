@@ -209,4 +209,4 @@ bool smDraw(void);
  */
 bool smStop(void);
 
-#endif
+#endif // #ifndef SMILE_STATE_MACHINE_H

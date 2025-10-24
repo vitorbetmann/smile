@@ -11,11 +11,26 @@ terminal and configuring fatal error handling.
 
 ## Table of Contents
 
+- [Module Header](#module-header)
 - [Data Types](#-data-types)
     - [Function Pointers](#-_function-pointers_)
 - [Functions](#-functions)
     - [Logging Related](#-_logging-related_)
     - [Fatal Handling Related](#-_logging-related_)
+
+---
+
+<br>
+
+## 😊Module Header
+
+The module’s header is `Log.h`. Its full Smile path is: `smile/include/Log.h`
+
+✅ Example
+
+```c
+#include <Log.h>
+```
 
 ---
 
@@ -33,7 +48,8 @@ Function pointer type for custom fatal error handlers.
 **Example:**
 
 ```c
-void myFatalHandler(void) {
+void myFatalHandler(void)
+{
     // Log error reason to file
     exit(EXIT_FAILURE);
 }
@@ -91,11 +107,13 @@ Sets a custom handler to be called when a fatal event occurs.
 
 ```c
 // Define a handler
-void myFatalHandler(void) {
+void myFatalHandler(void)
+{
     // Custom handler code here
 }
 
-int main() {
+int main()
+{
     lgSetFatal(MyFatalHandler);
     ... // More code
 }

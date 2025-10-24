@@ -9,7 +9,8 @@
 // Base Tests
 // -----------------------------------------------------------------------------
 
-void Test_smStop_SucceedsPostStart(void) {
+void Test_smStop_SucceedsPostStart(void)
+{
     assert(smStart());
     assert(smStop());
     tsInternalPass("Test_smStop_SucceedsPostStart");
@@ -21,39 +22,46 @@ void Test_smStop_SucceedsPostStart(void) {
 
 // Start Related
 
-void Test_smHasStarted_FailsPreStart(void) {
+void Test_smHasStarted_FailsPreStart(void)
+{
     assert(!smIsRunning());
     tsInternalPass("Test_smHasStarted_FailsPreStart");
 }
 
 // State Functions
 
-void Test_smCreateState_FailsPreStart(void) {
+void Test_smCreateState_FailsPreStart(void)
+{
     assert(!smCreateState(nullptr, nullptr, nullptr, nullptr, nullptr));
     tsInternalPass("Test_smCreateState_FailsPreStart");
 }
 
-void Test_smStateExists_FailsPreStart(void) {
+void Test_smStateExists_FailsPreStart(void)
+{
     assert(!smStateExists(nullptr));
     tsInternalPass("Test_smStateExists_FailsPreStart");
 }
 
-void Test_smSetState_FailsPreStart(void) {
+void Test_smSetState_FailsPreStart(void)
+{
     assert(!smSetState(nullptr, nullptr));
     tsInternalPass("Test_smSetState_FailsPreStart");
 }
 
-void Test_smGetCurrentStateName_FailsPreStart(void) {
+void Test_smGetCurrentStateName_FailsPreStart(void)
+{
     assert(!smGetCurrentStateName());
     tsInternalPass("Test_smGetCurrentStateName_FailsPreStart");
 }
 
-void Test_smDeleteState_FailsPreStart(void) {
+void Test_smDeleteState_FailsPreStart(void)
+{
     assert(!smDeleteState(nullptr));
     tsInternalPass("Test_smDeleteState_FailsPreStart");
 }
 
-void Test_smGetStateCount_FailsPreStart(void) {
+void Test_smGetStateCount_FailsPreStart(void)
+{
     assert(smGetStateCount() == -1);
     tsInternalPass("Test_smGetStateCount_FailsPreStart");
 }
@@ -61,19 +69,22 @@ void Test_smGetStateCount_FailsPreStart(void) {
 
 // Lifecycle Functions
 
-void Test_smUpdate_FailsPreStart(void) {
+void Test_smUpdate_FailsPreStart(void)
+{
     assert(!smUpdate(mockDt));
     tsInternalPass("Test_smUpdate_FailsPreStart");
 }
 
-void Test_smDraw_FailsPreStart(void) {
+void Test_smDraw_FailsPreStart(void)
+{
     assert(!smDraw());
     tsInternalPass("Test_smDraw_FailsPreStart");
 }
 
 // Stop
 
-void Test_smStop_FailsPreStart(void) {
+void Test_smStop_FailsPreStart(void)
+{
     assert(!smStop());
     tsInternalPass("Test_smStop_FailsPreStart");
 }
@@ -84,7 +95,8 @@ void Test_smStop_FailsPreStart(void) {
 
 // Mem Alloc Fail
 
-void Test_smStart_FailsIfCallocFails(void) {
+void Test_smStart_FailsIfCallocFails(void)
+{
     tsInternalDisable(CALLOC, 1);
     assert(!smStart());
     tsInternalPass("Test_smStart_FailsIfCallocFails");
@@ -96,16 +108,19 @@ void Test_smStart_FailsIfCallocFails(void) {
 
 // Start Related
 
-void Test_smStart_IsIdempotentPostStart(void) {
+void Test_smStart_IsIdempotentPostStart(void)
+{
     smStart();
-    for (int i = 0; i < IDEMPOTENT_ITERATIONS; i++) {
+    for (int i = 0; i < IDEMPOTENT_ITERATIONS; i++)
+    {
         assert(!smStart());
     }
     smStop();
     tsInternalPass("Test_smStart_IsIdempotentPostStart");
 }
 
-void Test_smHasStarted_SucceedsPostStart(void) {
+void Test_smHasStarted_SucceedsPostStart(void)
+{
     smStart();
     assert(smIsRunning());
     smStop();
@@ -118,207 +133,251 @@ void Test_smHasStarted_SucceedsPostStart(void) {
 
 // -- -- Name Related
 
-void Test_smCreateState_AcceptsValidStateName(void) {
+void Test_smCreateState_AcceptsValidStateName(void)
+{
     // TODO
 }
 
-void Test_smCreateState_RejectsExistingStateName(void) {
+void Test_smCreateState_RejectsExistingStateName(void)
+{
     // TODO
 }
 
-void Test_smCreateState_RejectsLongStateName(void) {
+void Test_smCreateState_RejectsLongStateName(void)
+{
     // TODO
 }
 
-void Test_smCreateState_RejectsNullStateName(void) {
+void Test_smCreateState_RejectsNullStateName(void)
+{
     smStart();
     assert(!smCreateState(nullptr, nullptr, nullptr, nullptr, nullptr));
     smStop();
     tsInternalPass("Test_smCreateState_RejectsNullStateName");
 }
 
-void Test_smCreateState_RejectsEmptyStateName(void) {
+void Test_smCreateState_RejectsEmptyStateName(void)
+{
     smStart();
     assert(!smCreateState("", nullptr, nullptr, nullptr, nullptr));
     smStop();
     tsInternalPass("Test_smCreateState_RejectsEmptyStateName");
 }
 
-void Test_smCreateState_RejectsWhitespaceOnlyStateName(void) {
+void Test_smCreateState_RejectsWhitespaceOnlyStateName(void)
+{
     // TODO
 }
 
-void Test_smCreateState_AcceptsLeadingWhitespaceOnStateName(void) {
+void Test_smCreateState_AcceptsLeadingWhitespaceOnStateName(void)
+{
     // TODO
 }
 
-void Test_smCreateState_AcceptsTrailingWhitespaceOnStateName(void) {
+void Test_smCreateState_AcceptsTrailingWhitespaceOnStateName(void)
+{
     // TODO
 }
 
-void Test_smCreateState_AcceptsLeadingAndTrailingWhitespaceOnStateName(void) {
+void Test_smCreateState_AcceptsLeadingAndTrailingWhitespaceOnStateName(void)
+{
     // TODO
 }
 
-void Test_smCreateState_TrimsLeadingWhitespaceOnStateName(void) {
+void Test_smCreateState_TrimsLeadingWhitespaceOnStateName(void)
+{
     // TODO
 }
 
-void Test_smCreateState_TrimsTrailingWhitespaceOnStateName(void) {
+void Test_smCreateState_TrimsTrailingWhitespaceOnStateName(void)
+{
     // TODO
 }
 
-void Test_smCreateState_TrimsLeadingAndTrailingWhitespaceOnStateName(void) {
+void Test_smCreateState_TrimsLeadingAndTrailingWhitespaceOnStateName(void)
+{
     // TODO
 }
 
 // -- -- State Functions Related
 
-void Test_smCreateState_AcceptsValidNameAndAllNonNullFunctions(void) {
+void Test_smCreateState_AcceptsValidNameAndAllNonNullFunctions(void)
+{
     // TODO
 }
 
-void Test_smCreateState_AcceptsValidNameAndEnterNullOnly(void) {
+void Test_smCreateState_AcceptsValidNameAndEnterNullOnly(void)
+{
     // TODO
 }
 
-void Test_smCreateState_AcceptsValidNameAndUpdateNullOnly(void) {
+void Test_smCreateState_AcceptsValidNameAndUpdateNullOnly(void)
+{
     // TODO
 }
 
-void Test_smCreateState_AcceptsValidNameAndDrawNullOnly(void) {
+void Test_smCreateState_AcceptsValidNameAndDrawNullOnly(void)
+{
     // TODO
 }
 
-void Test_smCreateState_AcceptsValidNameAndExitNullOnly(void) {
+void Test_smCreateState_AcceptsValidNameAndExitNullOnly(void)
+{
     // TODO
 }
 
-void Test_smCreateState_AcceptsValidNameAndNullEnterAndNullUpdate(void) {
+void Test_smCreateState_AcceptsValidNameAndNullEnterAndNullUpdate(void)
+{
     // TODO
 }
 
-void Test_smCreateState_AcceptsValidNameAndNullEnterAndNullDraw(void) {
+void Test_smCreateState_AcceptsValidNameAndNullEnterAndNullDraw(void)
+{
     // TODO
 }
 
-void Test_smCreateState_AcceptsValidNameAndNullEnterAndNullExit(void) {
+void Test_smCreateState_AcceptsValidNameAndNullEnterAndNullExit(void)
+{
     // TODO
 }
 
-void Test_smCreateState_AcceptsValidNameAndNullUpdateAndNullDraw(void) {
+void Test_smCreateState_AcceptsValidNameAndNullUpdateAndNullDraw(void)
+{
     // TODO
 }
 
-void Test_smCreateState_AcceptsValidNameAndNullUpdateAndNullExit(void) {
+void Test_smCreateState_AcceptsValidNameAndNullUpdateAndNullExit(void)
+{
     // TODO
 }
 
-void Test_smCreateState_AcceptsValidNameAndNullDrawAndNullExit(void) {
+void Test_smCreateState_AcceptsValidNameAndNullDrawAndNullExit(void)
+{
     // TODO
 }
 
 void Test_smCreateState_AcceptsValidNameAndNullEnterAndNullUpdateAndNullDraw(
-    void) {
+    void)
+{
     // TODO
 }
 
 void Test_smCreateState_AcceptsValidNameAndNullEnterAndNullUpdateAndNullExit(
-    void) {
+    void)
+{
     // TODO
 }
 
 void Test_smCreateState_AcceptsValidNameAndNullEnterAndNullDrawAndNullExit(
-    void) {
+    void)
+{
     // TODO
 }
 
 void Test_smCreateState_AcceptsValidNameAndNullUpdateAndNullDrawAndNullExit(
-    void) {
+    void)
+{
     // TODO
 }
 
-void Test_smCreateState_RejectsValidNameAndAllNullFunctions(void) {
+void Test_smCreateState_RejectsValidNameAndAllNullFunctions(void)
+{
     // TODO
 }
 
 // smStateExists
 
-void Test_smStateExists_AcceptsCreatedStateName(void) {
+void Test_smStateExists_AcceptsCreatedStateName(void)
+{
     // TODO
 }
 
-void Test_smStateExists_RejectsNonCreatedStateName(void) {
+void Test_smStateExists_RejectsNonCreatedStateName(void)
+{
     // TODO
 }
 
 // -- smSetState
 
-void Test_smSetState_AcceptsValidStateFromNull(void) {
+void Test_smSetState_AcceptsValidStateFromNull(void)
+{
     // TODO
 }
 
-void Test_smSetState_RejectsNullStateName(void) {
+void Test_smSetState_RejectsNullStateName(void)
+{
     // TODO
 }
 
-void Test_smSetState_RejectsUnCreatedStateName(void) {
+void Test_smSetState_RejectsUnCreatedStateName(void)
+{
     // TODO
 }
 
-void Test_smSetState_SucceedsChangingFromOneValidStateToAnother(void) {
+void Test_smSetState_SucceedsChangingFromOneValidStateToAnother(void)
+{
     // TODO
 }
 
-void Test_smSetState_CallsExitFunctionOfCurrentState(void) {
+void Test_smSetState_CallsExitFunctionOfCurrentState(void)
+{
     // TODO
 }
 
-void Test_smSetState_CallsEnterFunctionOfNewState(void) {
+void Test_smSetState_CallsEnterFunctionOfNewState(void)
+{
     // TODO
 }
 
-void Test_smSetState_CallsExitAndEnterIfChangingToSameState(void) {
+void Test_smSetState_CallsExitAndEnterIfChangingToSameState(void)
+{
     // TODO
 }
 
-void Test_smSetState_CallsEnterFunctionWithArgs(void) {
+void Test_smSetState_CallsEnterFunctionWithArgs(void)
+{
     // TODO
 }
 
 // -- smGetCurrentStateName
 
-void Test_smGetCurrentStateName_FailsPreCreateState(void) {
+void Test_smGetCurrentStateName_FailsPreCreateState(void)
+{
     smStart();
     assert(!smGetCurrentStateName());
     smStop();
     tsInternalPass("Test_smGetCurrentStateName_FailsPreCreateState");
 }
 
-void Test_smGetCurrentStateName_ReturnsCurrentStateName(void) {
+void Test_smGetCurrentStateName_ReturnsCurrentStateName(void)
+{
     // TODO
 }
 
 // -- smDeleteState
 
-void Test_smDeleteState_FailsPreCreateState(void) {
+void Test_smDeleteState_FailsPreCreateState(void)
+{
     // TODO
 }
 
 // -- smGetStateCount
 
-void Test_smGetStateCount_ReturnsZeroPostStart(void) {
+void Test_smGetStateCount_ReturnsZeroPostStart(void)
+{
     smStart();
     assert(smGetStateCount() == 0);
     smStop();
     tsInternalPass("Test_smGetStateCount_ReturnsZeroPostStart");
 }
 
-void Test_smGetStateCount_ReturnsCorrectStateCountPostCreateState(void) {
+void Test_smGetStateCount_ReturnsCorrectStateCountPostCreateState(void)
+{
     // TODO
 }
 
-void Test_smGetStateCount_ReturnsCorrectStateCountPostDeleteState(void) {
+void Test_smGetStateCount_ReturnsCorrectStateCountPostDeleteState(void)
+{
     // TODO
 }
 
@@ -326,7 +385,8 @@ void Test_smGetStateCount_ReturnsCorrectStateCountPostDeleteState(void) {
 
 // -- smUpdate
 
-void Test_smUpdate_FailsIfNullCurrentState(void) {
+void Test_smUpdate_FailsIfNullCurrentState(void)
+{
     smStart();
     assert(!smGetCurrentStateName());
     assert(!smUpdate(mockDt));
@@ -334,17 +394,20 @@ void Test_smUpdate_FailsIfNullCurrentState(void) {
     tsInternalPass("Test_smUpdate_FailsIfNullCurrentState");
 }
 
-void Test_smUpdate_CallsValidUpdateFunction(void) {
+void Test_smUpdate_CallsValidUpdateFunction(void)
+{
     // TODO
 }
 
-void Test_smUpdate_CallsValidUpdateFunctionEvenIfNullUpdate(void) {
+void Test_smUpdate_CallsValidUpdateFunctionEvenIfNullUpdate(void)
+{
     // TODO
 }
 
 // -- smDraw
 
-void Test_smDraw_FailsIfNullCurrentState(void) {
+void Test_smDraw_FailsIfNullCurrentState(void)
+{
     smStart();
     assert(!smGetCurrentStateName());
     assert(!smDraw());
@@ -352,21 +415,25 @@ void Test_smDraw_FailsIfNullCurrentState(void) {
     tsInternalPass("Test_smDraw_FailsIfNullCurrentState");
 }
 
-void Test_smDraw_CallsValidDrawFunction(void) {
+void Test_smDraw_CallsValidDrawFunction(void)
+{
     // TODO
 }
 
-void Test_smDraw_CallsValidDrawFunctionEvenIfNullDraw(void) {
+void Test_smDraw_CallsValidDrawFunctionEvenIfNullDraw(void)
+{
     // TODO
 }
 
 // Stop Related
 
-void Test_smStop_CallsExitFunctionOfCurrentState(void) {
+void Test_smStop_CallsExitFunctionOfCurrentState(void)
+{
     // TODO
 }
 
-void Test_smStop_SkipsExitIfNull(void) {
+void Test_smStop_SkipsExitIfNull(void)
+{
     // TODO
 }
 
@@ -376,7 +443,8 @@ void Test_smStop_SkipsExitIfNull(void) {
 
 // Start Related
 
-void Test_smHasStarted_FailsPostStop(void) {
+void Test_smHasStarted_FailsPostStop(void)
+{
     smStart();
     smStop();
     assert(!smIsRunning());
@@ -385,42 +453,48 @@ void Test_smHasStarted_FailsPostStop(void) {
 
 // State Functions
 
-void Test_smCreateState_FailsPostStop(void) {
+void Test_smCreateState_FailsPostStop(void)
+{
     smStart();
     smStop();
     assert(!smCreateState(nullptr, nullptr, nullptr,nullptr,nullptr));
     tsInternalPass("Test_smCreateState_FailsPostStop");
 }
 
-void Test_smStateExists_FailsPostStop(void) {
+void Test_smStateExists_FailsPostStop(void)
+{
     smStart();
     smStop();
     assert(!smStateExists(nullptr));
     tsInternalPass("Test_smStateExists_FailsPostStop");
 }
 
-void Test_smSetState_FailsPostStop(void) {
+void Test_smSetState_FailsPostStop(void)
+{
     smStart();
     smStop();
     assert(!smSetState(nullptr, nullptr));
     tsInternalPass("Test_smSetState_FailsPostStop");
 }
 
-void Test_smGetCurrentStateName_FailsPostStop(void) {
+void Test_smGetCurrentStateName_FailsPostStop(void)
+{
     smStart();
     smStop();
     assert(!smGetCurrentStateName());
     tsInternalPass("Test_smGetCurrentStateName_FailsPostStop");
 }
 
-void Test_smDeleteState_FailsPostStop(void) {
+void Test_smDeleteState_FailsPostStop(void)
+{
     smStart();
     smStop();
     assert(!smDeleteState(nullptr));
     tsInternalPass("Test_smDeleteState_FailsPostStop");
 }
 
-void Test_smGetStateCount_FailsPostStop(void) {
+void Test_smGetStateCount_FailsPostStop(void)
+{
     smStart();
     smStop();
     assert(smGetStateCount() == -1);
@@ -429,14 +503,16 @@ void Test_smGetStateCount_FailsPostStop(void) {
 
 // Lifecycle Functions
 
-void Test_smUpdate_FailsPostStop(void) {
+void Test_smUpdate_FailsPostStop(void)
+{
     smStart();
     smStop();
     assert(!smUpdate(mockDt));
     tsInternalPass("Test_smUpdate_FailsPostStop");
 }
 
-void Test_smDraw_FailsPostStop(void) {
+void Test_smDraw_FailsPostStop(void)
+{
     smStart();
     smStop();
     assert(!smDraw());
@@ -445,10 +521,12 @@ void Test_smDraw_FailsPostStop(void) {
 
 // Stop Related
 
-void Test_smStop_IsIdempotentPostStop(void) {
+void Test_smStop_IsIdempotentPostStop(void)
+{
     smStart();
     smStop();
-    for (int i = 0; i < IDEMPOTENT_ITERATIONS; i++) {
+    for (int i = 0; i < IDEMPOTENT_ITERATIONS; i++)
+    {
         assert(!smStop());
     }
     tsInternalPass("Test_smStop_IsIdempotentPostStop");
@@ -460,17 +538,20 @@ void Test_smStop_IsIdempotentPostStop(void) {
 
 // State Functions
 
-void TestStress_smCreateState_CreatingMultipleStatesCausesNoSkips(void) {
+void TestStress_smCreateState_CreatingMultipleStatesCausesNoSkips(void)
+{
     // TODO
 }
 
-void TestStress_smSetState_SettingStatesOftenCausesNoSkips(void) {
+void TestStress_smSetState_SettingStatesOftenCausesNoSkips(void)
+{
     // TODO
 }
 
 // Stop Related
 
-void TestStress_smStop_FreeingMultipleStatesCausesNoSkips(void) {
+void TestStress_smStop_FreeingMultipleStatesCausesNoSkips(void)
+{
     // TODO
 }
 
@@ -478,7 +559,8 @@ void TestStress_smStop_FreeingMultipleStatesCausesNoSkips(void) {
 // Main
 // -----------------------------------------------------------------------------
 
-int main() {
+int main()
+{
     puts("\nBASE TESTS");
     Test_smStop_SucceedsPostStart();
 

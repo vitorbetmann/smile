@@ -35,4 +35,4 @@
 // Failure
 #define CONSEQ_ABORTED  "Aborted"
 
-#endif
+#endif // #ifndef SMILE_COMMON_MESSAGES_H

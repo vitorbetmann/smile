@@ -12,6 +12,7 @@ own behavior using enter, update, draw, and exit callback functions.
 
 ## Table of Contents
 
+- [Module Header](#module-header)
 - [Data Types](#-data-types)
     - [Function Pointers](#-_function-pointers_)
 - [Functions](#-functions)
@@ -19,6 +20,21 @@ own behavior using enter, update, draw, and exit callback functions.
     - [State Functions](#-_state-functions_)
     - [Lifecycle Functions](#-_lifecycle-functions_)
     - [Stop Related](#-_stop-related_)
+
+---
+
+<br>
+
+## 😊Module Header
+
+The module’s header is `StateMachine.h`. Its full Smile path is:
+`smile/include/StateMachine.h`
+
+✅ Example
+
+```c
+#include <StateMachine.h>
+```
 
 ---
 
@@ -33,16 +49,16 @@ own behavior using enter, update, draw, and exit callback functions.
 
 Function pointer type for state enter callbacks.
 
-- **Parameters:**
+- Parameters:
     - `args` — Optional arguments passed when entering the state.
 
-- **Notes:**
+- Notes:
     - The enter function should handle its own resource management, such as
       allocating memory, loading assets, or performing initialization steps.
       -If any operation fails during setup (for example, memory allocation or
       file loading) the user must handle the failure within the function.
 
-**Example:**
+✅ Example
 
 ```c
 typedef struct {
@@ -71,10 +87,10 @@ void myStateEnter(const void *args)
 
 Function pointer type for state update callbacks.
 
-- **Parameters:**
+- Parameters:
     - `dt` — Delta time in seconds since the last update.
 
-**Example:**
+✅ Example
 
 ```c
 void myStateUpdate(float dt)
@@ -90,7 +106,7 @@ void myStateUpdate(float dt)
 
 Function pointer type for state draw callbacks.
 
-**Example:**
+✅ Example
 
 ```c
 #include <raylib.h> // This example uses raylib for rendering 
@@ -116,7 +132,7 @@ void myStateDraw(void)
 
 Function pointer type for state exit callbacks.
 
-**Example:**
+✅ Example
 
 ```c
 void myStateExit(void) {
@@ -143,13 +159,13 @@ the [State Machine Getting Started](README.md) doc.
 
 Initializes the state machine and prepares it for use.
 
-- **Returns:** True if the state machine started successfully, false otherwise.
+- Returns: True if the state machine started successfully, false otherwise.
 
-- **Notes:**
+- Notes:
     - Calling this function when the state machine is already started will log a
       warning and return false.
 
-**Example:**
+✅ Example
 
 ```c
 #include <StateMachine.h>
@@ -167,9 +183,9 @@ int main(void) {
 
 Checks whether the state machine has been initialized.
 
-- **Returns:** True if the state machine has been started, false otherwise.
+- Returns: True if the state machine has been started, false otherwise.
 
-**Example:**
+✅ Example
 
 ```c
 while (smIsRunning()) {
@@ -191,20 +207,20 @@ the [State Machine Getting Started](README.md) doc.
 
 Creates a new state with the specified name and callback functions.
 
-- **Parameters:**
+- Parameters:
     - `name` — Unique name identifying the state.
     - `enter` — Callback executed when entering the state.
     - `update` — Callback executed each frame during update.
     - `draw` — Callback executed each frame during rendering.
     - `exit` — Callback executed when exiting the state.
 
-- **Returns:** True if the state was created successfully, false otherwise.
+- Returns: True if the state was created successfully, false otherwise.
 
-- **Notes:**
+- Notes:
     - All function pointers are optional, but at least one must be provided.
     - Attempting to create a state that already exists will fail.
 
-**Example:**
+✅ Example
 
 ```c
 // ----- In Menu.h -----
@@ -261,12 +277,12 @@ int main(void)
 
 Checks whether a state with the given name exists.
 
-- **Parameters:**
+- Parameters:
     - `name` — Name of the state to check.
 
-- **Returns:** True if the state exists, false otherwise.
+- Returns: True if the state exists, false otherwise.
 
-**Example:**
+✅ Example
 
 ```c
 if (!smStateExists("level 1"))
@@ -282,19 +298,19 @@ if (!smStateExists("level 1"))
 
 Sets the current active state by name and triggers its enter function.
 
-- **Parameters:**
+- Parameters:
     - `name` — Name of the state to switch to.
     - `args` — Optional pointer to arguments passed to the state's enter
       function.
 
-- **Returns:** True if the state was successfully changed, false otherwise.
+- Returns: True if the state was successfully changed, false otherwise.
 
-- **Notes:**
+- Notes:
     - If a state is already active, its exit function is called before
       switching.
     - The `args` pointer may be `NULL` or `nullptr` if no data is required.
 
-**Example:**
+✅ Example
 
 ```c
 // Switch to "level 1" with no arguments.
@@ -319,17 +335,17 @@ smSetState("level 2", &score);
 
 Retrieves the name of the currently active state.
 
-- **Returns:** A pointer to the name of the current state, or nullptr if none is
+- Returns: A pointer to the name of the current state, or nullptr if none is
   active.
 
-- **Notes:**
+- Notes:
     - The returned string is owned by StateMachine. The user must not attempt to
       modify or free it and should make a copy of the string if they wish to do
       so.
     - The pointer remains valid until the state is deleted or the state machine
       is stopped.
 
-**Example:**
+✅ Example
 
 ```c
 const char *currState = smGetCurrentStateName();
@@ -342,15 +358,15 @@ const char *currState = smGetCurrentStateName();
 
 Deletes a state by name from the state machine.
 
-- **Parameters:**
+- Parameters:
     - `name` — Name of the state to delete.
 
-- **Returns:** True if the state was successfully deleted, false otherwise.
+- Returns: True if the state was successfully deleted, false otherwise.
 
-- **Notes:**
+- Notes:
     - Attempting to delete the currently active state will fail.
 
-**Example:**
+✅ Example
 
 ```c
 smDeleteState("level 1");
@@ -363,10 +379,10 @@ smDeleteState("level 1");
 
 Retrieves the total number of registered states.
 
-- **Returns:** The number of registered states, or -1 if the state machine is
+- Returns: The number of registered states, or -1 if the state machine is
   not started.
 
-**Example:**
+✅ Example
 
 ```c
 int myStateCount = smGetStateCount();
@@ -386,19 +402,20 @@ the [State Machine Getting Started](README.md) doc.
 
 Updates the currently active state.
 
-- **Parameters:**
+- Parameters:
     - `dt` — Delta time in seconds since the last update.
 
-- **Returns:** True if the update function was called successfully, false
+- Returns: True if the update function was called successfully, false
   otherwise.
 
-- **Notes:**
+- Notes:
     - If the current state has no update function, a warning is logged.
 
-**Example:**
+✅ Example
 
 ```c
-while (smIsRunning()) {    
+while (smIsRunning())
+{    
     float dt = smGetDt(); 
     smUpdate(dt);
     ...
@@ -412,17 +429,18 @@ while (smIsRunning()) {
 
 Calculates and returns the delta time since the last frame update.
 
-- **Returns:** The time elapsed in seconds since the previous call to
+- Returns: The time elapsed in seconds since the previous call to
   `smGetDt()`, or -1.0f if the state machine has not been started.
 
-- **Notes:**
+- Notes:
     - Delta time is measured using a high-resolution monotonic clock. On the
       first call, it returns a duration equivalent to one frame at 60 FPS.
 
-**Example:**
+✅ Example
 
 ```c
-while (smIsRunning()) {    
+while (smIsRunning())
+{    
     float dt = smGetDt(); 
     smUpdate(dt);
     ...
@@ -436,16 +454,17 @@ while (smIsRunning()) {
 
 Executes the draw function of the currently active state.
 
-- **Returns:** True if the draw function was called successfully, false
+- Returns: True if the draw function was called successfully, false
   otherwise.
 
-- **Notes:**
+- Notes:
     - If the current state has no draw function, a warning is logged.
 
-**Example:**
+✅ Example
 
 ```c
-while (smIsRunning()) {    
+while (smIsRunning())
+{    
     smUpdate(smGetDt());
     smDraw();
 }
@@ -466,30 +485,33 @@ the [State Machine Getting Started](README.md) doc.
 Stops the state machine and frees all allocated memory associated with created
 states.
 
-- **Returns:** True if the state machine was successfully stopped, false
+- Returns: True if the state machine was successfully stopped, false
   otherwise.
 
-- **Notes:**
+- Notes:
     - The exit function of the current state is called before cleanup.
     - After stopping, all internal data is reset. The state machine must be
       restarted with smStart().
 
-**Example:**
+✅ Example
 
 ```c
 #include <StateMachine.h>
 #include "menu.h"
 
-void menuUpdate(float dt) {
+void menuUpdate(float dt)
+{
     // Handle update
     ...
     
-    if (QuitButtonPressed()) {
+    if (QuitButtonPressed())
+    {
         smStop();
     }
 }
 
-void menuDraw(void) {
+void menuDraw(void)
+{
     // Handle rendering
 }
 ```

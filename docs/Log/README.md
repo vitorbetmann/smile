@@ -14,6 +14,7 @@ configuring fatal error handling.
 ## Table of Contents
 
 - [Visual Example](#visual-example)
+- [Module Header](#module-header)
 - [Log Lifecycle](#log-lifecycle-)
 - [Quick Reference Table](#-quick-reference-table)
 - [Workflow Example](#-workflow-example)
@@ -23,6 +24,20 @@ configuring fatal error handling.
 <br>
 
 ## Visual Example
+
+---
+
+<br>
+
+## 😊Module Header
+
+The module’s header is `Log.h`. Its full Smile path is: `smile/include/Log.h`
+
+✅ Example
+
+```c
+#include <Log.h>
+```
 
 ---
 
@@ -68,11 +83,13 @@ For detailed documentation, see the [Log API Reference](LogAPI.md).
 ```c
 #include "Log.h"
 
-void MyFatalHandler(void) {
+void MyFatalHandler(void)
+{
     // Custom handler code here
 }
 
-int main() {
+int main()
+{
     lgLog("Smile version %.1f is out!", 1.0f);
     // Outputs: 01:23:45 [Smile Log From User] - Smile version 1.0 is out!
 

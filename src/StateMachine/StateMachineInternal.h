@@ -4,6 +4,7 @@
  *
  * @author Vitor Betmann
  */
+
 #ifndef SMILE_STATE_MACHINE_INTERNAL_H
 #define SMILE_STATE_MACHINE_INTERNAL_H
 // --------------------------------------------------
@@ -33,7 +34,8 @@
  * Each state includes optional lifecycle functions for handling entry,
  * update, drawing, and exit logic.
  */
-typedef struct {
+typedef struct
+{
   char *name;
   smEnterFn enter;
   smUpdateFn update;
@@ -47,7 +49,8 @@ typedef struct {
  * Used internally by the state machine to efficiently look up states
  * by name using uthash.
  */
-typedef struct {
+typedef struct
+{
   char *name;
   InternalState *state;
   UT_hash_handle hh;
@@ -60,7 +63,8 @@ typedef struct {
  * active state, frame rate settings, and timing data used for delta time
  * calculations.
  */
-typedef struct {
+typedef struct
+{
   InternalStateMap *stateMap;
   const InternalState *currState;
   int stateCount;
@@ -93,4 +97,4 @@ const InternalState *smInternalGetState(const char *name);
  */
 InternalStateMap *smInternalGetEntry(const char *name);
 
-#endif
+#endif // #ifndef SMILE_STATE_MACHINE_INTERNAL_H

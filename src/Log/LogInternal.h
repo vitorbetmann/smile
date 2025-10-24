@@ -23,7 +23,8 @@
  *
  * @author Vitor Betmann
  */
-typedef enum {
+typedef enum
+{
     USER,
     INFO,
     WARNING,
@@ -71,4 +72,4 @@ void lgInternalLogWithArg(InternalLevel level, const char *module,
                           const char *cause, const char *arg,
                           const char *fnName, const char *conseq);
 
-#endif
+#endif // #ifndef SMILE_LOG_INTERNAL_H
