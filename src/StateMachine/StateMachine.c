@@ -36,6 +36,7 @@ static bool smPrivateIsRunning(const char *fnName);
 
 static bool smPrivateIsNameValid(const char *name, const char *fnName);
 
+static void smPrivateAddState(InternalStateMap *mapEntry);
 
 // -----------------------------------------------------------------------------
 // Functions - Public
@@ -122,7 +123,7 @@ bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update,
     }
     mapEntry->state = state;
     mapEntry->name = state->name;
-    HASH_ADD_STR(tracker->stateMap, name, mapEntry);
+    smPrivateAddState(mapEntry);
 
     tracker->stateCount++;
 
@@ -379,4 +380,8 @@ bool smPrivateIsNameValid(const char *name, const char *fnName) {
     }
 
     return true;
+}
+
+void smPrivateAddState(InternalStateMap *mapEntry) {
+    HASH_ADD_STR(tracker->stateMap, name, mapEntry);
 }

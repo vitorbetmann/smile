@@ -165,7 +165,11 @@ void lgPrivateLogV(InternalLevel level, const char *origin, const char *msg,
 
     const time_t EPOCH_TIME = time(nullptr);
     struct tm localTime;
+#ifdef _WIN32
+    localtime_s(&localTime, &EPOCH_TIME);
+#else
     localtime_r(&EPOCH_TIME, &localTime);
+#endif
     char timeBuf[LOG_TIME_BUFFER_LEN];
     strftime(timeBuf, sizeof(timeBuf), LOG_TIME_FMT, &localTime);
 

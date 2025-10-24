@@ -40,7 +40,7 @@ typedef struct {
 static unsigned int MULTIPLE_STATES = 1000;
 static float mockDt = 0.016;
 MockData md;
-static State mockState = {.name = "mockState"};
+static InternalState mockState = {.name = "mockState"};
 
 // --------------------------------------------------
 // Mock Functions
