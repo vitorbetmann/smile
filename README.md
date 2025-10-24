@@ -48,7 +48,7 @@ Before building Smile, make sure you have the following installed:
 
 - **CMake** 3.25 or higher
 - A build tool such as **Make** or **Ninja**
-- A C compiler such as **Clang** or **GCC**
+- A C compiler with C23 support such as **Clang** or **GCC**
 
 ### Cloning and Building
 
@@ -85,7 +85,7 @@ build with CMake:
  ```
 
 This will disable all Smile **warning** and **info** logging output at build
-time. Errors cannot be disabled.
+time. **Errors** cannot be disabled.
 
 ### Compiling
 

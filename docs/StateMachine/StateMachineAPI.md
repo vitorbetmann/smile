@@ -51,9 +51,11 @@ typedef struct {
 
 PlayerData *myPlayerData;
 
-void myStateEnter(const void *args) {
+void myStateEnter(const void *args)
+{
     myPlayerData = malloc(sizeof(PlayerData));
-    if (!myPlayerData) {
+    if (!myPlayerData)
+    {
         // Handle malloc fail
         return;
     }
@@ -75,7 +77,8 @@ Function pointer type for state update callbacks.
 **Example:**
 
 ```c
-void myStateUpdate(float dt) {
+void myStateUpdate(float dt)
+{
     myPlayerData->xPosition += 5.0f * dt;
 }
 ```
@@ -92,7 +95,8 @@ Function pointer type for state draw callbacks.
 ```c
 #include <raylib.h> // This example uses raylib for rendering 
 
-void myStateDraw(void) {
+void myStateDraw(void)
+{
     BeginDrawing();
     ClearBackground(BLACK);
 
@@ -182,17 +186,17 @@ the [State Machine Getting Started](README.md) doc.
 
 ### — _State Functions_
 
-| `bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn)` |
-|------------------------------------------------------------------------------------------------------------------|
+| `bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update, smDrawFn draw, smExitFn exit)` |
+|----------------------------------------------------------------------------------------------------------|
 
 Creates a new state with the specified name and callback functions.
 
 - **Parameters:**
     - `name` — Unique name identifying the state.
-    - `enterFn` — Callback executed when entering the state.
-    - `updateFn` — Callback executed each frame during update.
-    - `drawFn` — Callback executed each frame during rendering.
-    - `exitFn` — Callback executed when exiting the state.
+    - `enter` — Callback executed when entering the state.
+    - `update` — Callback executed each frame during update.
+    - `draw` — Callback executed each frame during rendering.
+    - `exit` — Callback executed when exiting the state.
 
 - **Returns:** True if the state was created successfully, false otherwise.
 
@@ -219,26 +223,31 @@ void menuExit(void);
 #include <StateMachine.h>
 #include "Menu.h"
 
-void menuUpdate(float dt) {
+void menuUpdate(float dt)
+{
     // Handle update
     
-    if (PlayButtonPressed()) {
+    if (PlayButtonPressed())
+    {
         smSetState("level 1", nullptr);
     }
 }
 
-void menuDraw(void) {
+void menuDraw(void)
+{
     // Handle rendering
 }
 
-void menuExit(void) {
+void menuExit(void)
+{
     // Handle cleanup
 }
 
 // ----- In main.c or in another state. -----
 #include <StateMachine.h>
 
-int main(void) {
+int main(void)
+{
     smStart();
     smCreateState("menu", nullptr, menuUpdate, menuDraw, menuExit);
     ...
@@ -260,7 +269,8 @@ Checks whether a state with the given name exists.
 **Example:**
 
 ```c
-if (!smStateExists("level 1")) {
+if (!smStateExists("level 1"))
+{
     smCreateState("level 1", enter, update, draw, exit);
 }
 ```
@@ -313,9 +323,9 @@ Retrieves the name of the currently active state.
   active.
 
 - **Notes:**
-    - The returned string is owned by the state machine. The user must not
-      attempt to modify or free it and should make a copy of the string if they
-      wish to do so.
+    - The returned string is owned by StateMachine. The user must not attempt to
+      modify or free it and should make a copy of the string if they wish to do
+      so.
     - The pointer remains valid until the state is deleted or the state machine
       is stopped.
 
@@ -493,6 +503,6 @@ the [State Machine Getting Started](README.md) doc.
 
 <br>
 
-| Last modified | Author        | Description       |
-|---------------|---------------|-------------------|
-| Oct 14, 2025  | Vitor Betmann | Created document. |
+| Last modified | Author        | Description                                                            |
+|---------------|---------------|------------------------------------------------------------------------|
+| Oct 24, 2025  | Vitor Betmann | Updated document to comply with recent added coding style conventions. |
