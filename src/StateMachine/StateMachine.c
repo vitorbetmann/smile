@@ -5,15 +5,15 @@
 // -----------------------------------------------------------------------------
 
 #include <string.h>
-#include <../external/uthash.h>
+#include <external/uthash.h>
 
-#include "../include/StateMachine.h"
+#include "include/StateMachine.h"
 #include "StateMachineInternal.h"
 #include "StateMachineMessages.h"
 
-#include "../src/Log/LogInternal.h"
-#include "../src/_Internal/Common/CommonInternalMessages.h"
-#include "../src/_Internal/Test/TestInternal.h"
+#include "src/Log/LogInternal.h"
+#include "src/_Internal/Common/CommonInternalMessages.h"
+#include "src/_Internal/Test/TestInternal.h"
 
 
 // -----------------------------------------------------------------------------

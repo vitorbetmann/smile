@@ -5,7 +5,7 @@
 // Includes
 // --------------------------------------------------
 
-#include "../../src/StateMachine/StateMachineInternal.h"
+#include "src/StateMachine/StateMachineInternal.h"
 
 // --------------------------------------------------
 // Other Defines

@@ -79,9 +79,11 @@ target_link_libraries(smile PRIVATE "${RAYLIB_LIB}")
 # INCLUDE DIRECTORIES (HEADERS)
 # ------------------------------------------------------------------------------
 
-# Public headers
+# Allow includes relative to the project root
+# Example: #include <include/Log.h>, #include <src/_Internal/StateMachine/InternalState.h>, etc.
 target_include_directories(smile
         PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}                # enables root-relative includes
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
         ${CMAKE_CURRENT_SOURCE_DIR}/external
@@ -150,8 +152,9 @@ if (SMILE_BUILD_TESTS)
             set(test_target "${name}Test")
             add_executable(${test_target} ${TEST_SRC})
             target_link_libraries(${test_target} PRIVATE smile)
-            # Inherit all include dirs from the library
+            # Inherit include dirs from the main library for consistency
             target_include_directories(${test_target} PRIVATE
+                    ${CMAKE_CURRENT_SOURCE_DIR}
                     $<TARGET_PROPERTY:smile,INTERFACE_INCLUDE_DIRECTORIES>
                     $<TARGET_PROPERTY:smile,INCLUDE_DIRECTORIES>
             )
@@ -163,16 +166,12 @@ if (SMILE_BUILD_TESTS)
     # --------------------------
     # PUBLIC TESTS
     # --------------------------
-
-    # TODO add_smile_test(LogTest)
-    # TODO add_smile_test(ParticleSystemTest)
     add_smile_test(SaveLoad)
     add_smile_test(StateMachine)
 
     # --------------------------
     # INTERNAL TESTS
     # --------------------------
-
     # TODO add_smile_test(CommonInternalTest)
     # TODO add_smile_test(LogInternalTest)
     # TODO add_smile_test(TestInternalTest)
