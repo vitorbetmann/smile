@@ -1,4 +1,5 @@
 // TODO #16 [Feature] for [StateMachine] - Create a function to limit the game's FPS to a max value
+// TODO #27 [Feature] for [StateMachine] - Create Internal Trim Function and Integrate into StateMachine Name Validation
 
 // -----------------------------------------------------------------------------
 // Includes

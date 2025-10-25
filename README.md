@@ -12,7 +12,9 @@ abstractions that keep your code lean, organized, and fully under your control.
 
 <br>
 
-## 🎮 Made with Smile
+## 🎮 Smile Demo
+
+![Smile Demo](docs/_Internal/__Assets/SmileDemo.gif)
 
 ---
 
