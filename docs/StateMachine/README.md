@@ -1,5 +1,3 @@
-<!-- TODO #25 [Docs] for [StateMachine] - Add Visual Example To README -->
-
 # State Machine — Getting Started 🤖
 
 The State Machine module provides a simple, flexible system for defining and
@@ -25,6 +23,8 @@ behavior using enter, update, draw, and exit callback functions.
 <br>
 
 ## Visual Example
+
+![StateMachine Demo](docs/_Internal/__Assets/StateMachine/StateMachineDemo.gif)
 
 ---
 

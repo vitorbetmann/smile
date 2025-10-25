@@ -14,7 +14,7 @@ abstractions that keep your code lean, organized, and fully under your control.
 
 ## 🎮 Smile Demo
 
-![Smile Demo](docs/_Internal/__Assets/SmileDemo.gif)
+![Smile Demo](docs/_Internal/__Assets/_SmileREADME/SmileDemo.gif)
 
 ---
 

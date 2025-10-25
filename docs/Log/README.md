@@ -25,6 +25,8 @@ configuring fatal error handling.
 
 ## Visual Example
 
+![Log Demo](docs/_Internal/__Assets/Log/LogDemo.gif)
+
 ---
 
 <br>
