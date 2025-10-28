@@ -2,23 +2,15 @@
 
 ## An open-source, modular 2D game engine in C
 
-Smile stands for `Simple Modularity Is Lowkey Elegant`, and it's a
+Smile stands for `Simple Modularity Is Low-Key Elegant`, and it's a
 lightweight collection of C modules that simplifies 2D game development.
 
 Ideal for `game jams` and `rapid prototyping`, Smile provides clean
 abstractions that keep your code lean, organized, and fully under your control.
 
----
-
-<br>
-
 ## 🎮 Smile Demo
 
 ![Smile Demo](docs/_Internal/__Assets/_SmileREADME/SmileDemo.gif)
-
----
-
-<br>
 
 ## Why Smile?
 
@@ -38,17 +30,13 @@ We can help you out at the [Discord Server](https://discord.gg/EdS6PwMffH).
 
 Learning together! That’s what Smile is all about.
 
----
-
-<br>
-
 ## 🚀 Building Your Game
 
 ### Prerequisites
 
 Before building Smile, make sure you have the following installed:
 
-- `CMake` 3.25 or higher
+- `CMake` 3.30 or higher
 - A build tool such as `Make` or `Ninja`
 - A C compiler with C23 support such as `Clang` or `GCC`
 
@@ -61,15 +49,15 @@ git clone https://github.com/vitorbetmann/smile.git
 
 # Mac / Linux
 cmake -S smile -B smile/build
-cmake --build smile/build # or ninja -C smile/build
+cmake --build smile/build
 
 # Windows
 cmake -S .\smile\ -B .\smile\build\
-cmake --build .\smile\build\ # or ninja -C .\smile\build
+cmake --build .\smile\build\
 ```
 
-Smile builds as libsmile.a, a static library containing all Smile modules
-that you can link directly into your game.
+Smile builds as a static library (libsmile.a on macOS/Linux, smile.lib on
+Windows) containing all Smile modules that you can link directly into your game.
 
 A typical project structure might look like this:
 
@@ -84,7 +72,7 @@ A typical project structure might look like this:
 By default, Smile compiles with runtime `warning` and `info` logs enabled.
 Below is an example of how they would appear in your terminal:
 
-![Example of Smile's Logs](docs/_Internal/__Assets/LogExample.png)
+![Example of Smile's Logs](docs/_Internal/__Assets/_SmileREADME/LogExample.png)
 
 If you want to disable them, pass the following flags when configuring your
 build with CMake:
@@ -139,10 +127,6 @@ target_link_libraries(my_game PRIVATE smile)
 
 If needed, replace `my_game` with the name of your project's executable, and you
 can compile your game normally using cmake.
-
----
-
-<br>
 
 ## ⌨️ Actually Coding
 
@@ -276,10 +260,6 @@ examples:
 | [SaveLoad](docs/SaveLoad) (🚧 under construction)             | Quickly save and load your game           |
 | [StateMachine](docs/StateMachine)                             | Manage states and transitions cleanly.    |
 
----
-
-<br>
-
 ## 🤝 Contributing
 
 > _"I built Smile to be the open source project I wish I had in my early
@@ -310,18 +290,12 @@ full credit in the code and Git history!):
 
 To learn more, check out the [Contributing Guide](docs/_Internal/_Contributing).
 
----
-
-<br>
-
 ## 🪪 License
 
 Smile is released under the MIT License. See the [LICENSE](./LICENSE) file for
 details.
 
----
-
-<br>
+## Last Modified
 
 | Last modified | Author        | Description                 |
 |---------------|---------------|-----------------------------|

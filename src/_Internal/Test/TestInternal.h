@@ -23,8 +23,7 @@
  *
  * @author Vitor Betmann
  */
-typedef enum
-{
+typedef enum {
     MALLOC,
     CALLOC,
     REALLOC,
