@@ -321,14 +321,21 @@ float smGetDt(void)
     struct timespec currentTime;
     clock_gettime(CLOCK_MONOTONIC, &currentTime);
 
+    /**
+     * On the first call, lastTime is zero-initialized, so we default to a delta
+     * time based on the target FPS. This prevents an abnormally large dt, since
+     * we don't know how long after program start clock_gettime() is invoked.
+     */
     if (tracker->lastTime.tv_sec == 0 && tracker->lastTime.tv_nsec == 0)
     {
         dt = 1.0f / tracker->fps;
     } else
     {
-        dt = (currentTime.tv_sec - tracker->lastTime.tv_sec)
-             + (currentTime.tv_nsec - tracker->lastTime.tv_nsec) / 1e9f;
+        double tempDt = currentTime.tv_sec - tracker->lastTime.tv_sec +
+                        (currentTime.tv_nsec - tracker->lastTime.tv_nsec) / 1e9;
+        dt = (float) tempDt;
     }
+
     tracker->lastTime = currentTime;
 #endif
 

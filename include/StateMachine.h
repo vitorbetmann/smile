@@ -180,7 +180,7 @@ int smGetStateCount(void);
 bool smUpdate(float dt);
 
 /**
- * @brief Calculates and returns the delta time since the last frame update.
+ * @brief Calculates the delta time, in seconds, since last invoked.
  *
  * @return The time elapsed in seconds since the previous call to `smGetDt()`,
  *         or -1.0f if the state machine has not been started.
