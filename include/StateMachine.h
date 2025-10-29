@@ -1,10 +1,18 @@
 /**
- * @file StateMachine.h
- * @brief `StateMachine` provides a simple, flexible system for defining and
- * controlling game flow through independent states. Each state can specify its
- * own behavior using enter, update, draw, and exit callback functions.
+ * @file
+ * @brief Public declarations of data types and functions for the StateMachine
+ *        module.
+ *
+ * Defines the public API for creating, switching, updating, drawing, and
+ * deleting game states. Each state encapsulates its own behavior using callback
+ * functions for entry, update, drawing, and exit events.
+ *
+ * @note Internal data structures and helper functions are defined in
+ *       StateMachineInternal.h.
  *
  * @author Vitor Betmann
+ * @date 2025-10-29
+ * @version 1.0.0
  */
 
 #ifndef SMILE_STATE_MACHINE_H
@@ -45,6 +53,7 @@ typedef void (*smDrawFn)(void);
  * @author Vitor Betmann
  */
 typedef void (*smExitFn)(void);
+
 
 // -----------------------------------------------------------------------------
 // Prototypes

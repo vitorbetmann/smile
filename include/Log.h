@@ -1,9 +1,16 @@
 /**
- * @file Log.h
- * @brief `Log` provides functions for writing printf-style messages to the
- * terminal and configuring fatal error handling.
+ * @file
+ * @brief Public declarations of data types and functions for the Log module.
+ *
+ * Defines the public API for writing printf-style messages to the terminal
+ * and configuring fatal error handling.
+ *
+ * @note Internal data structures and helper functions are defined in
+ *       LogInternal.h.
  *
  * @author Vitor Betmann
+ * @date 2025-10-29
+ * @version 1.0.0
  */
 
 #ifndef SMILE_LOG_H
@@ -19,6 +26,7 @@
  * @author Vitor Betmann
  */
 typedef void (*lgFatalHandler)(void);
+
 
 // -----------------------------------------------------------------------------
 // Prototypes

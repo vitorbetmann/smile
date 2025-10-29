@@ -1,3 +1,17 @@
+/**
+ * @file
+ * @brief Message definitions for the StateMachine module.
+ *
+ * Defines the module name, function identifiers, causes, and consequences
+ * used when logging from the StateMachine.
+ *
+ * @note Check CommonInternalMessages.h before adding new messages.
+ *
+ * @author Vitor Betmann
+ * @date 2025-10-29
+ * @version 1.0.0
+ */
+
 #ifndef SMILE_STATE_MACHINE_MESSAGES_H
 #define SMILE_STATE_MACHINE_MESSAGES_H
 
@@ -6,6 +20,7 @@
 // -----------------------------------------------------------------------------
 
 #define MODULE "StateMachine"
+
 
 // -----------------------------------------------------------------------------
 // Functions Names
@@ -22,6 +37,7 @@
 #define FN_UPDATE "Update"
 #define FN_GET_DT "GetDt"
 #define FN_DRAW "Draw"
+
 
 // -----------------------------------------------------------------------------
 // Causes

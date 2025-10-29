@@ -1,3 +1,15 @@
+/**
+* @file
+ * @brief Common definitions for shared log messages.
+ *
+ * Defines shared function identifiers, causes, and consequences
+ * that can be reused across all Smile modules for consistent logging.
+ *
+ * @author Vitor Betmann
+ * @date 2025-10-29
+ * @version 1.0.0
+ */
+
 #ifndef SMILE_COMMON_MESSAGES_H
 #define SMILE_COMMON_MESSAGES_H
 
@@ -10,6 +22,7 @@
 #define FN_IS_RUNNING  "IsRunning"
 // Stop Functions
 #define FN_STOP  "Stop"
+
 
 // -----------------------------------------------------------------------------
 // Causes
@@ -25,6 +38,7 @@
 #define CAUSE_NOT_RUNNING  "Module Not Running"
 #define CAUSE_NULL_ARG  "Null Argument"
 #define CAUSE_EMPTY_ARG  "Empty Argument"
+
 
 // -----------------------------------------------------------------------------
 // Consequences

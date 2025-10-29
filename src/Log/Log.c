@@ -1,7 +1,26 @@
-// TODO #20 [Feature] for [Log] - Add file logging support for standard and fatal logs
-// TODO #21 [Feature] for [Log] - Add runtime and module-specific log filtering
 /**
- * @file Log.c
+ * @file
+ * @brief Implementation of the StateMachine module.
+ *
+ * @see StateMachine.h
+ * @see StateMachineInternal.h
+ * @see StateMachineMessages.h
+ *
+ * @bug No known bugs.
+ *
+ * @note TODO #20 [Feature] for [Log] - Add file logging support for standard
+ *       and fatal logs
+ * @note TODO #21 [Feature] for [Log] - Add runtime and module-specific log
+ *       filtering
+ *
+ * @author Vitor Betmann
+ * @date 2025-10-29
+ * @version 1.0.0
+ */
+
+
+/**
+* @file Log.c
  * @brief Implementation of the Smile logging system.
  *
  * @author Vitor Betmann

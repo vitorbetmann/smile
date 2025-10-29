@@ -1,8 +1,16 @@
 /**
- * @file StateMachineInternal.h
- * @brief Internal structures and functions for the Smile State Machine module.
+ * @file
+ * @brief Internal declarations of data structures and functions for the
+ *        StateMachine module.
+ *
+ * Defines the private types, constants, and utilities used internally by
+ * StateMachine to manage states, timing, and runtime context.
+ *
+ * @note For the public API, see StateMachine.h.
  *
  * @author Vitor Betmann
+ * @date 2025-10-29
+ * @version 1.0.0
  */
 
 #ifndef SMILE_STATE_MACHINE_INTERNAL_H
@@ -34,8 +42,7 @@
  * Each state includes optional lifecycle functions for handling entry,
  * update, drawing, and exit logic.
  */
-typedef struct
-{
+typedef struct {
   char *name;
   smEnterFn enter;
   smUpdateFn update;
@@ -49,8 +56,7 @@ typedef struct
  * Used internally by the state machine to efficiently look up states
  * by name using uthash.
  */
-typedef struct
-{
+typedef struct {
   char *name;
   InternalState *state;
   UT_hash_handle hh;
@@ -63,8 +69,7 @@ typedef struct
  * active state, frame rate settings, and timing data used for delta time
  * calculations.
  */
-typedef struct
-{
+typedef struct {
   InternalStateMap *stateMap;
   const InternalState *currState;
   int stateCount;

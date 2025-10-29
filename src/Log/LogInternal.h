@@ -1,11 +1,16 @@
 /**
- * @file LogInternal.h
- * @brief  LogInternal provides interface for Smile modules.
+ * @file
+ * @brief Internal declarations of data structures and functions for the
+ *        LogInternal module.
  *
- * Contains internal logging functionality and severity levels
- * for warnings, errors, and fatal events inside Smile core modules.
+ * Defines the private types, constants, and utilities used internally by
+ * Smile modules to manage logging, severity levels, and contextual log messages.
+ *
+ * @note For the public API, see Log.h.
  *
  * @author Vitor Betmann
+ * @date 2025-10-29
+ * @version 1.0.0
  */
 
 #ifndef SMILE_LOG_INTERNAL_H
@@ -23,8 +28,7 @@
  *
  * @author Vitor Betmann
  */
-typedef enum
-{
+typedef enum {
     USER,
     INFO,
     WARNING,

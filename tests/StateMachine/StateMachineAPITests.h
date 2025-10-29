@@ -1,3 +1,18 @@
+/**
+ * @file
+ * @brief A concise summary of the file's purpose.
+ *
+ * A more detailed description of the file's contents,
+ * its role within the project, and any important design considerations.
+ * This section can span multiple lines.
+ *
+ * @author Vitor Betmann
+ * @date YYYY-MM-DD
+ * @version X.Y.Z (or version control system information)
+ * @bug List any known bugs or limitations here. If none, explicitly state "No known bugs."
+ * @note Any additional notes or important information for developers.
+ */
+
 #ifndef SMILE_STATE_MACHINE_TEST_H
 #define SMILE_STATE_MACHINE_TEST_H
 
@@ -18,8 +33,7 @@
 // Data types
 // --------------------------------------------------
 
-typedef struct
-{
+typedef struct {
     bool hasEntered, hasEnteredArgs;
     int enteredTimes;
 
@@ -30,8 +44,7 @@ typedef struct
     int exitedTimes;
 } MockData;
 
-typedef struct
-{
+typedef struct {
     bool flag;
 } MockStateArgs;
 

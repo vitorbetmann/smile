@@ -1,18 +1,29 @@
 /**
- * @file TestInternal.c
- * @brief Implementation of test utilities for simulating allocation failures.
+ * @file
+ * @brief Implementation of the TestInternal module.
  *
- * Provides definitions for the functions declared in TestInternal.h.
+ * @see TestInternal.h
+ *
+ * @bug No known bugs.
+ *
+ * @author Vitor Betmann
+ * @date 2025-10-29
+ * @version 1.0.0
  */
+
+// -----------------------------------------------------------------------------
+// Include
+// -----------------------------------------------------------------------------
 
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "TestInternal.h"
 
-// --------------------------------------------------
+
+// -----------------------------------------------------------------------------
 // TestInternal state
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
 
 static bool canMalloc = true;
 static bool canCalloc = true;
@@ -22,9 +33,10 @@ static unsigned int mallocNum;
 static unsigned int callocNum;
 static unsigned int reallocNum;
 
-// --------------------------------------------------
+
+// -----------------------------------------------------------------------------
 // Functions
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
 
 void tsInternalPass(const char *fnName)
 {

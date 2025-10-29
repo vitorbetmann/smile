@@ -1,9 +1,27 @@
+/**
+* @file
+ * @brief Implementation of the StateMachine API Tests.
+ *
+ * @see StateMachineAPITests.h
+ *
+ * @bug No known bugs.
+ *
+ * @author Vitor Betmann
+ * @date 2025-10-29
+ * @version 1.0.0
+ */
+
+// -----------------------------------------------------------------------------
+// Includes
+// -----------------------------------------------------------------------------
+
 #include <assert.h>
 #include <stdio.h>
 
 #include "StateMachineAPITests.h"
 #include "include/StateMachine.h"
 #include "src/_Internal/Test/TestInternal.h"
+
 
 // -----------------------------------------------------------------------------
 // Base Tests
@@ -15,6 +33,7 @@ void Test_smStop_SucceedsPostStart(void)
     assert(smStop());
     tsInternalPass("Test_smStop_SucceedsPostStart");
 }
+
 
 // -----------------------------------------------------------------------------
 // Pre-Start
@@ -89,6 +108,7 @@ void Test_smStop_FailsPreStart(void)
     tsInternalPass("Test_smStop_FailsPreStart");
 }
 
+
 // -----------------------------------------------------------------------------
 // Start
 // -----------------------------------------------------------------------------
@@ -101,6 +121,7 @@ void Test_smStart_FailsIfCallocFails(void)
     assert(!smStart());
     tsInternalPass("Test_smStart_FailsIfCallocFails");
 }
+
 
 // -----------------------------------------------------------------------------
 // Post-Start
@@ -437,6 +458,7 @@ void Test_smStop_SkipsExitIfNull(void)
     // TODO
 }
 
+
 // -----------------------------------------------------------------------------
 // Post-Stop
 // -----------------------------------------------------------------------------
@@ -532,6 +554,7 @@ void Test_smStop_IsIdempotentPostStop(void)
     tsInternalPass("Test_smStop_IsIdempotentPostStop");
 }
 
+
 // --------------------------------------------------
 // Stress tests
 // --------------------------------------------------
@@ -554,6 +577,7 @@ void TestStress_smStop_FreeingMultipleStatesCausesNoSkips(void)
 {
     // TODO
 }
+
 
 // -----------------------------------------------------------------------------
 // Main

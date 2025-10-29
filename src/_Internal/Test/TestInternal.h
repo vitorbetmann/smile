@@ -1,11 +1,14 @@
 /**
- * @file TestInternal.h
- * @brief Instrumented memory allocation and fatal hooks for Smile.
+ * @file
+ * @brief Internal declarations of data structures and functions for the
+ *        TestInternal module.
  *
  * Provides wrappers around malloc, calloc, realloc, and fatal conditions to
  * support controlled allocation behavior, error handling, and logging.
  *
  * @author Vitor Betmann
+ * @date 2025-10-29
+ * @version 1.0.0
  */
 
 #ifndef SMILE_TEST_INTERNAL_H

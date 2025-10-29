@@ -1,5 +1,22 @@
-// TODO #16 [Feature] for [StateMachine] - Create a function to limit the game's FPS to a max value
-// TODO #27 [Feature] for [StateMachine] - Create Internal Trim Function and Integrate into StateMachine Name Validation
+/**
+ * @file
+ * @brief Implementation of the StateMachine module.
+ *
+ * @see StateMachine.h
+ * @see StateMachineInternal.h
+ * @see StateMachineMessages.h
+ *
+ * @bug No known bugs.
+ *
+ * @note TODO #16 [Feature] for [StateMachine] - Create a function to limit the
+ *       game's FPS to a max value
+ * @note TODO #27 [Feature] for [StateMachine] - Create Internal Trim Function
+ *       and Integrate into StateMachine Name Validation
+ *
+ * @author Vitor Betmann
+ * @date 2025-10-29
+ * @version 1.0.0
+ */
 
 // -----------------------------------------------------------------------------
 // Includes
