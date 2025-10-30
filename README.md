@@ -47,16 +47,16 @@ From your game directory, run:
 ```zsh
 git clone https://github.com/vitorbetmann/smile.git
 
-# Mac / Linux
+# on Mac or Linux
 cmake -S smile -B smile/build
 cmake --build smile/build
 
-# Windows
+# on Windows
 cmake -S .\smile\ -B .\smile\build\
 cmake --build .\smile\build\
 ```
 
-Smile builds as a static library (libsmile.a on macOS/Linux, smile.lib on
+Smile builds as a static library (libsmile.a on Mac/Linux, smile.lib on
 Windows) containing all Smile modules that you can link directly into your game.
 
 A typical project structure might look like this:

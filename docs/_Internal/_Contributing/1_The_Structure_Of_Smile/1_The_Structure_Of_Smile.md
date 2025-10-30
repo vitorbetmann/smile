@@ -159,7 +159,7 @@ The `Log` module ...
 
 ## Up Next
 
-[2.1_Coding_Guidelines - Code Organization](2.1_Coding_Guidelines_Code_Organization.md)
+[2.1_Coding_Guidelines - Code Organization](../2_Coding_Guidelines/1_Code_Organization.md)
 
 ---
 

@@ -301,7 +301,7 @@ the [Documentation Guidelines]() doc.
 
 ## Up Next
 
-[2.2_Coding Guidelines - General Conventions](2.2_Coding_Guidelines_General_Conventions.md)
+[2.2_Coding Guidelines - General Conventions](2_General_Conventions.md)
 
 ---
 

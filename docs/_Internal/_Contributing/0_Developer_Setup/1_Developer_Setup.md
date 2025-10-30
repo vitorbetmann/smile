@@ -11,13 +11,14 @@ up your environment to start contributing.
 In addition, the other files each focus on a specific aspect of Smile’s
 development workflow:
 
-- [1_The_Structure_Of_Smile](1_The_Structure_Of_Smile.md)
-- [2.1_Coding_Guidelines_Code_Organization](2.1_Coding_Guidelines_Code_Organization.md)
-- [2.1_Coding_Guidelines_General_Guidelines](2.2_Coding_Guidelines_General_Conventions.md)
-- [3_Documentation_Guidelines](3_Documentation_Guidelines.md)
-- [4_Testing_Guidelines](4_Testing_Guidelines.md)
-- [5_Pull_Requesting](5_Pull_Requesting.md)
-- [6_Bug_Reporting_And_Suggesting_Features](6_Bug_Reporting_And_Suggesting_Features.md)
+- [1_The_Structure_Of_Smile](../1_The_Structure_Of_Smile/1_The_Structure_Of_Smile.md)
+- [2_Coding_Guidelines](../2_Coding_Guidelines)
+    - [1_Code_Organization](../2_Coding_Guidelines/1_Code_Organization.md)
+    - [2_General_Guidelines](../2_Coding_Guidelines/2_General_Conventions.md)
+- [3_Documentation_Guidelines](../3_Documentation_Guidelines/1_General_Conventions.md)
+- [4_Testing_Guidelines](../4_Testing_Guidelines/4_Testing_Guidelines.md)
+- [5_Pull_Requesting](../5_Pull_Requesting/5_Pull_Requesting.md)
+- [6_Issued_And_Suggestions](../6_Issues_And_Suggestions/6_Issues_And_Suggestions.md)
 
 ---
 
@@ -64,13 +65,13 @@ If you have not yet cloned Smile, run:
 ```zsh
 git clone https://github.com/vitorbetmann/smile.git
 cd smile
-```
+````
 
 Now you can compile it in Developer Mode:
 
 ```zsh
 cmake -S . -B build -DSMILE_DEVELOPER=ON
-cmake --build build # or ninja -C build
+cmake --build build
 ```
 
 After running the commands above, you should see the following on your terminal:
@@ -107,7 +108,7 @@ time. Errors cannot be disabled.
 ## Up Next
 
 Learn how Smile's files and directories are organized
-in [1_The_Structure_Of_Smile](1_The_Structure_Of_Smile.md)
+in [1_The_Structure_Of_Smile](../1_The_Structure_Of_Smile/1_The_Structure_Of_Smile.md)
 
 ---
 

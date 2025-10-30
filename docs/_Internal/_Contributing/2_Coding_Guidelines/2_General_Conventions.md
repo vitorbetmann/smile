@@ -1,8 +1,7 @@
 # Coding Guidelines — General Conventions 🧑‍💻
 
 This document defines Smile’s C coding standard conventions to ensure
-consistency,
-readability, maintainability, and safety across all modules.
+consistency, readability, maintainability, and safety across all modules.
 
 > Note:
 > Smile follows the C23 standard for all C source code and headers.  
@@ -587,7 +586,7 @@ bool smStateExists(const char *name)
   operations fail.
 * Return a `const` type if a certain data that belongs to Smile (not the user).
 * Log all failures through the Log module with appropriate severity levels (
-  See [InternalLog](../Log/LogInternalAPI.md) for details).
+  See [InternalLog](../../Log/LogInternalAPI.md) for details).
 * ⚠️ Always `return 0` from `main()`.
 
 ✅ Example
@@ -790,6 +789,12 @@ int main(void)
 if (false)
 {
     return;
+}
+
+switch (value)
+{
+    case 1:
+        ...
 }
 
 typedef enum {
@@ -1082,7 +1087,7 @@ void *myFunction(void)
 
 <br>
 
-#### Comments — General
+#### Comments
 
 * Comments should explain why, not what.
 * Use `//` for short inline comments, and `/* ... */` for documentation blocks
@@ -1090,7 +1095,8 @@ void *myFunction(void)
 * If a variable or function call’s purpose isn’t obvious, add a concise //
   comment. If a section needs heavy commenting to be understood, refactor it
   into a well-named function and document that instead (see
-  [3_Documentation_Guidelines](3_Documentation_Guidelines.md) for details).
+  [3_Documentation_Guidelines](../3_Documentation_Guidelines/1_General_Conventions.md)
+  for details).
 
 ✅ Do
 
@@ -1126,20 +1132,34 @@ typedef void (*smExitFn)(void);
 
 <br>
 
-#### Comments — TODOS
+#### TODOS
 
-* Each TODO comment in code should be short and concise, referencing a
-  corresponding GitHub issue using the format
-  `// TODO #<issue_number> <summary>`.
-* Place TODOs at the top of the file they affect.
-* ⚠️ Don't overly describe a `TODO`. That's reserved for its respective GitHub
-  issue.
+* Place TODOs after a `@note` tag in the file header comment of the file they
+  affect.
+* If the TODO spans multiple lines, align all subsequent lines with the first
+  word of the first line.
+* Each TODO should match its corresponding GitHub issue title.
+* Do not place TODOs in function bodies or scattered inline comments.
+* For details on overall file header structure,
+  see [Documentation Guidelines](../3_Documentation_Guidelines/1_General_Conventions.md).
+* For details on naming and creating GitHub issues,
+  see [Issued and Suggestions](../6_Issues_And_Suggestions/6_Issues_And_Suggestions.md).
 
 ✅ Do
 
 ```c
-// TODO #16 trim state name on registration    -- This is at the top of the file
-// TODO #42 refactor allocation logic
+/**
+ * @file
+ * @brief Implementation of the StateMachine module.
+ * ...
+ *
+ * @note TODO #16 [Feature] for [StateMachine] - Create a function to limit the
+ *       game's FPS to a max value
+ * @note TODO #27 [Feature] for [StateMachine] - Create Internal Trim Function
+ *       and Integrate into StateMachine Name Validation
+ *
+ * ...
+ */
 ```
 
 ❌ Don't
@@ -1153,7 +1173,9 @@ bool smSetFPS(int fps)
 
 ————————————————————————————————————————————————————————————————————————————————
 
-// todo: fix this    -- These TODO's don't follow Smile's convention
+-- These TODO's don't follow Smile's convention
+
+// todo: fix this
 // fix whitespace issue later
 // TODO check names
 
@@ -1162,9 +1184,9 @@ bool smSetFPS(int fps)
 -- Dont' create really long TODO's
 
 /*
- * TODO #42 this function is broken because of the complex memory allocation
- * logic that needs to be refactored to avoid leaks when the initialization
- * fails, see the following stack trace...
+ * @note TODO #42 this function is broken because of the complex memory allocation
+ *       logic that needs to be refactored to avoid leaks when the initialization
+ *       fails, see the following stack trace...
  */
 ```
 
@@ -1196,7 +1218,7 @@ bool smSetFPS(int fps)
 
 ## Up Next
 
-[3_Documentation_Guidelines](3_Documentation_Guidelines.md)
+[3_Documentation_Guidelines](../3_Documentation_Guidelines/1_General_Conventions.md)
 
 ---
 
