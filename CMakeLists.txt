@@ -24,22 +24,20 @@ set(CMAKE_C_EXTENSIONS OFF)
 # DEVELOPER MODE
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
-# BUILD CONFIGURATION (SIMPLE FOR USERS)
-# ------------------------------------------------------------------------------
+option(SMILE_DEVELOPER "Enable Smile developer mode (debug build with tests and internal checks)" OFF)
 
-option(SMILE_DEVELOPER "Enable Smile developer mode (Debug build with tests)" OFF)
-
+# Set defaults based on developer mode
 if (SMILE_DEVELOPER)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
     set(SMILE_BUILD_TESTS ON CACHE BOOL "Build test executables" FORCE)
+    message(STATUS "Smile developer mode enabled — building with tests and debug info")
 else ()
-    # For normal users: default to Release
     if (NOT DEFINED CMAKE_BUILD_TYPE OR "${CMAKE_BUILD_TYPE}" STREQUAL "")
         set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
     endif ()
     set(SMILE_BUILD_TESTS OFF CACHE BOOL "Build test executables" FORCE)
 endif ()
+
 
 # ------------------------------------------------------------------------------
 # RAYLIB CONFIGURATION
@@ -65,6 +63,9 @@ set(SRC_FILES
 )
 
 add_library(smile STATIC ${SRC_FILES})
+if (SMILE_DEVELOPER)
+    target_compile_definitions(smile PRIVATE SMILE_DEVELOPER)
+endif ()
 
 # Add raylib headers so Smile can include them internally
 target_include_directories(smile PRIVATE "${RAYLIB_INCLUDE}")
@@ -112,6 +113,7 @@ target_include_directories(smile PRIVATE ${SRC_INCLUDE_DIRS})
 
 option(SMILE_LOG_WARNING "Enable runtime warning logs from Smile" ON)
 option(SMILE_LOG_INFO "Enable runtime info logs from Smile" ON)
+
 
 # ------------------------------------------------------------------------------
 # CONDITIONAL COMPILE DEFINITIONS
@@ -164,6 +166,11 @@ if (SMILE_BUILD_TESTS)
     # TODO add_smile_test(LogInternalTest)
     # TODO add_smile_test(TestInternalTest)
 endif ()
+
+
+# ------------------------------------------------------------------------------
+# Messages
+# ------------------------------------------------------------------------------
 
 message(STATUS "Smile — Build type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "Smile — Warning logs: ${SMILE_LOG_WARNING}")

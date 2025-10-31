@@ -26,12 +26,15 @@
 #include <external/uthash.h>
 
 #include "include/StateMachine.h"
+
+#include "Log.h"
 #include "StateMachineInternal.h"
 #include "StateMachineMessages.h"
 
 #include "src/Log/LogInternal.h"
 #include "src/_Internal/Common/CommonInternalMessages.h"
 #include "src/_Internal/Test/TestInternal.h"
+#include "tests/StateMachine/StateMachineApiTests.h"
 
 
 // -----------------------------------------------------------------------------
@@ -54,6 +57,7 @@ static bool smPrivateIsNameValid(const char *name, const char *fnName);
  * and neither should be changed.
  */
 static void smPrivateAddState(InternalStateMap *mapEntry);
+
 
 // -----------------------------------------------------------------------------
 // Functions - Public
@@ -204,6 +208,12 @@ bool smSetState(const char *name, const void *args)
 
     if (tracker->currState && tracker->currState->exit)
     {
+#ifdef SMILE_DEVELOPER
+        if (smTestExit)
+        {
+            smTestExit(smMockData);
+        }
+#endif
         tracker->currState->exit();
     }
 

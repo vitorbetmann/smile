@@ -207,7 +207,7 @@ And in the source files:
 #include "menu.h"
 #include "StateMachine.h"
 
-void menuEnter(void *args)
+void menuEnter(const void *args)
 {
     // Handle initialization
 }

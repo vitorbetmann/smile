@@ -1,5 +1,5 @@
-#ifndef STATE_EXAMPLE_H
-#define STATE_EXAMPLE_H
+#ifndef SMILE_STATE_MACHINE_API_TESTS_H
+#define SMILE_STATE_MACHINE_API_TESTS_H
 
 // -----------------------------------------------------------------------------
 // Includes
@@ -7,30 +7,35 @@
 
 
 // -----------------------------------------------------------------------------
-// Other defines
+// Other Defines
 // -----------------------------------------------------------------------------
+
+#define STRESS_ITERATIONS 1000
+#define IDEMPOTENT_ITERATIONS 3
 
 
 // -----------------------------------------------------------------------------
 // Data types
 // -----------------------------------------------------------------------------
 
+typedef struct {
+    bool enterCalled;
+    bool exitCalled;
+} MockData;
+
+typedef void (*smTestExitFn)(MockData *args);
+
+typedef struct {
+    bool flag;
+} MockStateArgs;
+
 
 // -----------------------------------------------------------------------------
 // Prototypes
 // -----------------------------------------------------------------------------
 
-void StateExampleEnter(const void *args);
-
-void StateExampleUpdate(float dt);
-
-void StateExampleDraw(void);
-
-void StateExampleExit(void);
+extern smTestExitFn smTestExit;
+extern MockData *smMockData;
 
 
-// -----------------------------------------------------------------------------
-// Variables
-// -----------------------------------------------------------------------------
-
-#endif
+#endif // #ifndef SMILE_STATE_MACHINE_API_TESTS_H

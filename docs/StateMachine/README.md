@@ -97,7 +97,7 @@ the [State Machine API Reference](StateMachineAPI.md).
 | `bool smHasStarted(void)`                                                                                        | Checks whether the state machine has been initialized.                                                                                           |
 | `bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn)` | Registers a new named state with its lifecycle callbacks. Returns `true` if created successfully.                                                |
 | `bool smStateExists(const char *name)`                                                                           | Checks if a state with the given name exists.                                                                                                    |
-| `bool smSetState(const char *name, void *args)`                                                                  | Sets the active state by name and calls its `enter` function. Calls the previous state’s `exit` function before switching.                       |
+| `bool smSetState(const char *name, const void *args)`                                                            | Sets the active state by name and calls its `enter` function. Calls the previous state’s `exit` function before switching.                       |
 | `const char *smGetCurrentStateName(void)`                                                                        | Returns the name of the current active state, or `nullptr` if none is active.                                                                    |
 | `bool smDeleteState(const char *name)`                                                                           | Deletes a state by name. Fails if it’s currently active.                                                                                         |
 | `int smGetStateCount(void)`                                                                                      | Returns the total number of registered states, or `-1` if the state machine is not started.                                                      |
@@ -199,10 +199,10 @@ typedef struct {
     float position;
 } PlayerData;
 
-void levelTwoEnter(void *args);       // Called when entering levelTwo
-void levelTwoUpdate(float dt);        // Called each frame to update levelTwo
-void levelTwoDraw(void);              // Called each frame to draw levelTwo
-                                      // levelTwo has no Exit function
+void levelTwoEnter(const void *args);   // Called when entering levelTwo
+void levelTwoUpdate(float dt);          // Called each frame to update levelTwo
+void levelTwoDraw(void);                // Called each frame to draw levelTwo
+                                        // levelTwo has no Exit function
 
 #endif
 ```
@@ -259,7 +259,7 @@ So, in LevelTwo.c:
 
 static PlayerData *myPlayerData;
 
-void levelTwoEnter(void *args) {    
+void levelTwoEnter(const void *args) {    
     myPlayerData = malloc(sizeof(PlayerData));
     if (!myPlayerData) {
         // Handle malloc fail

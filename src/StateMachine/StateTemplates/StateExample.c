@@ -29,7 +29,7 @@
 // Functions
 // -----------------------------------------------------------------------------
 
-void StateExampleEnter(void *args) {
+void StateExampleEnter(const void *args) {
   // TODO
 }
 

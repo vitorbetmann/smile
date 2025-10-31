@@ -293,8 +293,8 @@ if (!smStateExists("level 1"))
 
 <br>
 
-| `bool smSetState(const char *name, void *args)` |
-|-------------------------------------------------|
+| `bool smSetState(const char *name, const void *args)` |
+|-------------------------------------------------------|
 
 Sets the current active state by name and triggers its enter function.
 
