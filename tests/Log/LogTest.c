@@ -1,1 +1,0 @@
-// TODO #13 Implement Log test suite

@@ -1,54 +1,61 @@
-#ifndef LOG_H
-#define LOG_H
+/**
+ * @file
+ * @brief Public declarations of data types and functions for the Log module.
+ *
+ * Defines the public API for writing printf-style messages to the terminal
+ * and configuring fatal error handling.
+ *
+ * @note Internal data structures and helper functions are defined in
+ *       LogInternal.h.
+ *
+ * @author Vitor Betmann
+ * @date 2025-10-29
+ * @version 1.0.0
+ */
 
-// --------------------------------------------------
-// Includes
-// --------------------------------------------------
+#ifndef SMILE_LOG_H
+#define SMILE_LOG_H
 
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
 // Data types
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
 
-typedef void (*SMILE_FatalHandler)(void);
+/**
+ * @brief Function pointer type for custom fatal error handlers.
+ *
+ * @author Vitor Betmann
+ */
+typedef void (*lgFatalHandler)(void);
 
-// --------------------------------------------------
+
+// -----------------------------------------------------------------------------
 // Prototypes
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
 
 /**
- * @brief Logs a formatted SMILE-style message to the terminal.
+ * @brief Logs a message to the terminal ending in a new line. Supports
+ * printf-style formatting.
  *
- * Each message includes a timestamp, the SMILE USER tag, the origin,
- * and the user-provided text. Output is written to standard error with
- * coloring for readability. A newline is automatically appended.
+ * @param msg Format string for the message to log.
+ * @param ... Additional arguments related to the format specifiers in msg.
  *
- * Example output:
- * [09:10:11] [SMILE USER from main]: Starting my new game.
- *
- * @param origin   A string identifying the source of the message (e.g.,
- *                 function name or point in the program).
- * @param msg      The format string (printf-style).
- * @param ...      Arguments matching the format string.
- *
- * @return void
+ * @note Output is written to stderr.
  *
  * @author Vitor Betmann
  */
-void LOG(const char *origin, const char *msg, ...);
+void lgLog(const char *msg, ...);
 
 /**
- * @brief Sets a custom handler for fatal log events.
+ * @brief Sets a custom handler to be called when a fatal event occurs.
  *
- * By default, fatal logs terminate the program immediately via
- * SMILE_DefaultFatalHandler(). You can override this behavior by providing your
- * own function. Passing NULL restores the default handler.
+ * @param handler Function pointer to the custom fatal handler.
+ * If NULL or nullptr, the default handler is set, which terminates the program
+ * with failure status after logging the event to the terminal.
  *
- * @param handler Pointer to a function with no parameters and no return value.
- *
- * @return void
+ * @note It's recommended your custom handler terminates the program.
  *
  * @author Vitor Betmann
  */
-void LOG_SetFatalHandler(SMILE_FatalHandler handler);
+void lgSetFatal(lgFatalHandler handler);
 
-#endif
+#endif // #ifndef SMILE_LOG_H

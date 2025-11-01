@@ -1,124 +1,222 @@
-#ifndef STATE_MACHINE_H
-#define STATE_MACHINE_H
+/**
+ * @file
+ * @brief Public declarations of data types and functions for the StateMachine
+ *        module.
+ *
+ * Defines the public API for creating, switching, updating, drawing, and
+ * deleting game states. Each state encapsulates its own behavior using callback
+ * functions for entry, update, drawing, and exit events.
+ *
+ * @note Internal data structures and helper functions are defined in
+ *       StateMachineInternal.h.
+ *
+ * @author Vitor Betmann
+ * @date 2025-10-29
+ * @version 1.0.0
+ */
 
-// --------------------------------------------------
+#ifndef SMILE_STATE_MACHINE_H
+#define SMILE_STATE_MACHINE_H
+
+// -----------------------------------------------------------------------------
 // Data types
-// --------------------------------------------------
-typedef struct StateTracker StateTracker;
-typedef struct State State;
-
-// --------------------------------------------------
-// Prototypes
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
 
 /**
- * @brief Initializes the state machine.
+ * @brief Function pointer type for state entry callbacks.
  *
- * Allocates internal structures and prepares the system to register and run
- * states.
+ * @param args Optional arguments passed when entering the state.
  *
- * @note This function is safe to call multiple times. If the machine is already
- * initialized, it returns false without error.
- *
- * @return true if initialized successfully, false if already initialized or if
- * memory allocation failed.
  * @author Vitor Betmann
  */
-bool SM_Init(void);
+typedef void (*smEnterFn)(void *args);
+
+
+/**
+ * @brief Function pointer type for state update callbacks.
+ *
+ * @param dt Delta time in seconds since the last update.
+ *
+ * @author Vitor Betmann
+ */
+typedef void (*smUpdateFn)(float dt);
+
+/**
+ * @brief Function pointer type for state draw callbacks.
+ *
+ * @author Vitor Betmann
+ */
+typedef void (*smDrawFn)(void);
+
+/**
+ * @brief Function pointer type for state exit callbacks.
+ *
+ * @author Vitor Betmann
+ */
+typedef void (*smExitFn)(void);
+
+
+// -----------------------------------------------------------------------------
+// Prototypes
+// -----------------------------------------------------------------------------
+
+// Start Related
+
+/**
+ * @brief Initializes the state machine and prepares it for use.
+ *
+ * @return True if the state machine started successfully, false otherwise.
+ *
+ * @note Calling this function when the state machine is already started
+ *       will log a warning and return false.
+ *
+ * @author Vitor Betmann
+ */
+bool smStart(void);
 
 /**
  * @brief Checks whether the state machine has been initialized.
  *
- * @return true if initialized, false otherwise.
+ * @return True if the state machine has been started, false otherwise.
+ *
  * @author Vitor Betmann
  */
-bool SM_IsInitialized(void);
+bool smIsRunning(void);
+
+// State Functions
 
 /**
- * @brief Registers a new named state with optional lifecycle callbacks.
+ * @brief Creates a new state with the specified name and callback functions.
  *
- * Each state must have a unique name. At least one lifecycle function must be
- * non-NULL.
+ * @param name Unique name identifying the state.
+ * @param enter Callback executed when entering the state.
+ * @param update Callback executed each frame during update.
+ * @param draw Callback executed each frame during rendering.
+ * @param exit Callback executed when exiting the state.
  *
- * @param name     The name of the state (must be non-NULL and non-empty).
- * @param enterFn  Called when entering this state (can be NULL).
- * @param updateFn Called every update tick while this state is active (can be
- * NULL).
- * @param drawFn   Called every frame while this state is active (can be NULL).
- * @param exitFn   Called when exiting this state (can be NULL).
+ * @return True if the state was created successfully, false otherwise.
  *
- * @return true if registration succeeds, false otherwise.
+ * @note All function pointers are optional, but at least one must be provided.
+ *       Attempting to create a state that already exists will fail.
+ *
  * @author Vitor Betmann
  */
-bool SM_RegisterState(const char *name, void (*enterFn)(void *),
-                      void (*updateFn)(float), void (*drawFn)(void),
-                      void (*exitFn)(void));
+bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update,
+                   smDrawFn draw, smExitFn exit);
 
 /**
- * @brief Checks whether a state with the given name is registered.
+ * @brief Checks whether a state with the given name exists.
  *
- * @param name The name of the state to check.
- * @return true if a state with the given name exists, false otherwise.
+ * @param name Name of the state to check.
+ *
+ * @return True if the state exists, false otherwise.
+ *
  * @author Vitor Betmann
  */
-bool SM_IsStateRegistered(const char *name);
+bool smStateExists(const char *name);
 
 /**
- * @brief Switches to a different state by name, optionally passing arguments.
+ * @brief Sets the current active state by name and triggers its enter function.
  *
- * Calls the current state's exit function (if any) and the new state's enter
- * one. Will exit and re-enter the same state if the requested name matches the
- * current state's name.
+ * @param name Name of the state to switch to.
+ * @param args Optional arguments passed to the state's enter function.
  *
- * @param name The name of the state to switch to.
- * @param args Optional arguments to pass to the new state's enter function.
+ * @return True if the state was successfully changed, false otherwise.
  *
- * @return true if the state change succeeded, false otherwise.
+ * @note If a state is active, its exit function is called before switching.
+ *
  * @author Vitor Betmann
  */
-bool SM_ChangeStateTo(const char *name, void *args);
+bool smSetState(const char *name, void *args);
 
 /**
- * @brief Calls the update function of the current active state.
+ * @brief Retrieves the name of the currently active state.
  *
- * If no update function is defined or if the machine is not initialized,
- * returns false.
+ * @return A pointer to the name of the current state, or nullptr if none is active.
  *
- * @param dt Delta time since last update.
- * @return true if update was successful, false otherwise.
+ * @note The returned string is owned by the state machine. The user must not
+ *       attempt to modify or free it and should make a copy before doing so.
+ *       The pointer remains valid until the state is deleted or the state
+ *       machine is stopped.
+ *
  * @author Vitor Betmann
  */
-bool SM_Update(float dt);
+const char *smGetCurrentStateName(void);
 
 /**
- * @brief Calls the draw function of the current active state.
+ * @brief Deletes a state by name from the state machine.
  *
- * If no draw function is defined or if the machine is not initialized, returns
- * false.
+ * @param name Name of the state to delete.
  *
- * @return true if draw was successful, false otherwise.
+ * @return True if the state was successfully deleted, false otherwise.
+ *
+ * @note Attempting to delete the currently active state will fail.
+ *
  * @author Vitor Betmann
  */
-bool SM_Draw(void);
+bool smDeleteState(const char *name);
 
 /**
- * @brief Shuts down the state machine and frees all internal memory.
+ * @brief Retrieves the total number of registered states.
  *
- * Calls the exit function of the current state (if defined) before cleanup.
- * After shutdown, all registered states are discarded and the tracker is reset.
+ * @return The number of registered states, or -1 if the state machine is not started.
  *
- * @return true if shutdown succeeded, false if the machine was not initialized.
  * @author Vitor Betmann
  */
-bool SM_Shutdown(void);
+int smGetStateCount(void);
+
+// Lifecycle Related
 
 /**
- * @brief Gets the name of the current active state.
+ * @brief Updates the currently active state.
  *
- * @return The name of the current state, or NULL if no state is active or the
- * machine is uninitialized.
+ * @param dt Delta time in seconds since the last update.
+ *
+ * @return True if the update function was called successfully, false otherwise.
+ *
+ * @note If the current state has no update function, a warning is logged.
+ *
  * @author Vitor Betmann
  */
-const char *SM_GetCurrStateName(void);
+bool smUpdate(float dt);
 
-#endif
+/**
+ * @brief Calculates the delta time, in seconds, since last invoked.
+ *
+ * @return The time elapsed in seconds since the previous call to `smGetDt()`,
+ *         or -1.0f if the state machine has not been started.
+ *
+ * @note Delta time is measured using a high-resolution monotonic clock. On the
+ *       first call, it returns a duration equivalent to one frame at 60 FPS.
+ *
+ * @author Vitor Betmann
+ */
+float smGetDt(void);
+
+/**
+ * @brief Executes the draw function of the currently active state.
+ *
+ * @return True if the draw function was called successfully, false otherwise.
+ *
+ * @note If the current state has no draw function, a warning is logged.
+ *
+ * @author Vitor Betmann
+ */
+bool smDraw(void);
+
+// Stop Related
+
+/**
+ * @brief Stops the state machine and frees all allocated states.
+ *
+ * @return True if the state machine was successfully stopped, false otherwise.
+ *
+ * @note The exit function of the current state is called before cleanup.
+ *       After stopping, all internal data is reset. The state machine must be
+ *       restarted with smStart().
+ *
+ * @author Vitor Betmann
+ */
+bool smStop(void);
+
+#endif // #ifndef SMILE_STATE_MACHINE_H

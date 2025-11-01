@@ -1,54 +1,62 @@
-#ifndef STATE_MACHINE_MESSAGES_H
-#define STATE_MACHINE_MESSAGES_H
+/**
+ * @file
+ * @brief Message definitions for the StateMachine module.
+ *
+ * Defines the module name, function identifiers, causes, and consequences
+ * used when logging from the StateMachine.
+ *
+ * @note Check CommonInternalMessages.h before adding new messages.
+ *
+ * @author Vitor Betmann
+ * @date 2025-10-29
+ * @version 1.0.0
+ */
 
-// --------------------------------------------------
-// INFO no arguments
-// --------------------------------------------------
-#define LOG_INFO_DRAW_FUNCTION_NULL "Draw function is NULL."
-#define LOG_INFO_UPDATE_FUNCTION_NULL "Update function is NULL."
+#ifndef SMILE_STATE_MACHINE_MESSAGES_H
+#define SMILE_STATE_MACHINE_MESSAGES_H
 
-// --------------------------------------------------
-// INFO w/ arguments
-// --------------------------------------------------
-#define LOG_INFO_STATE_CREATION_SUCCESSFUL "Successful state creation:"
-#define LOG_INFO_STATE_CHANGE_SUCCESSFUL "Successful state change to:"
+// -----------------------------------------------------------------------------
+// Module Name
+// -----------------------------------------------------------------------------
 
-// --------------------------------------------------
-// CAUSE no arguments
-// --------------------------------------------------
-#define LOG_CAUSE_CURRENT_STATE_NULL "Current state is NULL."
+#define MODULE "StateMachine"
 
-// --------------------------------------------------
-// CAUSE w/ arguments
-// --------------------------------------------------
-#define LOG_CAUSE_ALREADY_EXISTS "State already exists: "
-#define LOG_CAUSE_NO_VALID_FUNCTIONS "State has no valid functions: "
-#define LOG_CAUSE_STATE_NOT_FOUND "State not found: "
 
-// --------------------------------------------------
-// CONSEQes - Public
-// --------------------------------------------------
-#define LOG_CONSEQ_DRAW_ABORTED "Draw aborted."
-#define LOG_CONSEQ_UPDATE_ABORTED "Update aborted."
-#define LOG_CONSEQ_REGISTER_STATE_ABORTED "RegisterState aborted."
-#define LOG_CONSEQ_GET_CURR_STATE_NAME_ABORTED "GetCurrStateName aborted."
-#define LOG_CONSEQ_CHANGE_STATE_TO_ABORTED "ChangeStateTo aborted."
-#define LOG_CONSEQ_IS_STATE_REGISTERED_ABORTED "IsStateRegistered aborted."
+// -----------------------------------------------------------------------------
+// Functions Names
+// -----------------------------------------------------------------------------
 
-// --------------------------------------------------
-// CONSEQes - Internal
-// --------------------------------------------------
-#define LOG_CONSEQ_INTERNAL_GET_TRACKER_ABORTED "Internal_GetTracker aborted."
-#define LOG_CONSEQ_INTERNAL_SET_CURR_STATE_ABORTED                             \
-  "Internal_SetCurrState aborted."
-#define LOG_CONSEQ_INTERNAL_GET_CURR_STATE_ABORTED                             \
-  "Internal_GetCurrState aborted."
-#define LOG_CONSEQ_INTERNAL_GET_STATE_ABORTED "Internal_GetState aborted."
+// State Functions
+#define FN_CREATE_STATE "CreateState"
+#define FN_STATE_EXISTS "StateExists"
+#define FN_SET_STATE "SetState"
+#define FN_GET_CURRENT_STATE_NAME "GetCurrentStateName"
+#define FN_GET_STATE_COUNT "GetStateCount"
+#define FN_DELETE_STATE "DeleteState"
+// Lifecycle Functions
+#define FN_UPDATE "Update"
+#define FN_GET_DT "GetDt"
+#define FN_DRAW "Draw"
 
-// --------------------------------------------------
-// CONSEQes - Tests
-// --------------------------------------------------
-#define LOG_CONSEQ_TEST_GET_STATE_COUNT_ABORTED                                \
-  "Internal_GetStateCount aborted."
 
-#endif
+// -----------------------------------------------------------------------------
+// Causes
+// -----------------------------------------------------------------------------
+
+// Infos
+#define CAUSE_STATE_CREATED "State Created"
+#define CAUSE_STATE_SET_TO "State Set To"
+#define CAUSE_STATE_DELETED "State Deleted"
+// Warnings
+#define CAUSE_STATE_ALREADY_EXISTS "State already exists"
+#define CAUSE_STATE_NOT_FOUND "State not found"
+#define CAUSE_NULL_STATE_UPDATE_FN "State Has Null Update"
+#define CAUSE_NULL_STATE_DRAW_FN "State Has Null Draw"
+// Errors
+#define CAUSE_NULL_CURR_STATE "Current State Is Null"
+#define CAUSE_NO_VALID_FUNCTIONS "State Has No Valid Functions"
+#define CAUSE_CANNOT_DELETE_CURR_STATE "Cannot Delete Current State"
+// Fatals
+#define CAUSE_FAILED_TO_FREE_ALL_STATES "Failed to Free All States"
+
+#endif // #ifndef SMILE_STATE_MACHINE_MESSAGES_H

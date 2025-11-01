@@ -1,328 +1,503 @@
-// TODO(#7) trim state name when registering state and reject whitespace only
-// TODO(#8) trim state name when changing states and reject whitespace only
-// TODO(#9) create internal function to trim leading and trailing whitespace
+/**
+ * @file
+ * @brief Implementation of the StateMachine module.
+ *
+ * @see StateMachine.h
+ * @see StateMachineInternal.h
+ * @see StateMachineMessages.h
+ *
+ * @bug No known bugs.
+ *
+ * @note TODO #16 [Feature] for [StateMachine] - Create a function to limit the
+ *       game's FPS to a max value
+ * @note TODO #27 [Feature] for [StateMachine] - Create Internal Trim Function
+ *       and Integrate into StateMachine Name Validation
+ *
+ * @author Vitor Betmann
+ * @date 2025-10-29
+ * @version 1.0.0
+ */
 
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
 // Includes
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
 
-#include "StateMachine.h"
-#include "../_Internals/Log/LogInternal.h"
-#include "../_Internals/Log/LogMessages.h"
-#include "../tests/StateMachine/StateMachineTest.h"
+#include <string.h>
+#include <external/uthash.h>
+
+#include "include/StateMachine.h"
 #include "StateMachineInternal.h"
 #include "StateMachineMessages.h"
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
 
-// --------------------------------------------------
-// Defines
-// --------------------------------------------------
+#include "src/Log/LogInternal.h"
+#include "src/_Internal/Common/CommonInternalMessages.h"
+#include "src/_Internal/Test/TestInternal.h"
+#include "tests/StateMachine/StateMachineApiTests.h"
 
-#define MODULE_NAME "StateMachine"
 
-// Helper macro to check initialization and return (with error log)
-#define RETURN_FALSE_IF_NOT_INITIALIZED(conseq)                                \
-  do {                                                                         \
-    if (!tracker) {                                                            \
-      SMILE_ERR(MODULE_NAME, LOG_CAUSE_NOT_INITIALIZED, conseq);               \
-      return false;                                                            \
-    }                                                                          \
-  } while (0)
-
-#define RETURN_NULL_IF_NOT_INITIALIZED(conseq)                                 \
-  do {                                                                         \
-    if (!tracker) {                                                            \
-      SMILE_ERR(MODULE_NAME, LOG_CAUSE_NOT_INITIALIZED, conseq);               \
-      return NULL;                                                             \
-    }                                                                          \
-  } while (0)
-
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
 // Variables
-// --------------------------------------------------
-static int stateCount;
-static StateTracker *tracker;
-static bool canMalloc = true;
+// -----------------------------------------------------------------------------
 
-// --------------------------------------------------
-// Functions
-// --------------------------------------------------
+static InternalTracker *tracker;
 
-bool SM_Init(void) {
 
-  if (tracker) {
-    SMILE_WARN(MODULE_NAME, LOG_CAUSE_ALREADY_INITIALIZED,
-               LOG_CONSEQ_INIT_ABORTED);
-    return false;
-  }
+// -----------------------------------------------------------------------------
+// Prototypes
+// -----------------------------------------------------------------------------
 
-  tracker = SM_Test_Malloc(sizeof(StateTracker));
-  if (!tracker) {
-    SMILE_ERR(MODULE_NAME, LOG_CAUSE_MEM_ALLOC_FAILED, LOG_CONSEQ_INIT_ABORTED);
-    return false;
-  }
+static bool smPrivateIsRunning(const char *fnName);
 
-  tracker->stateMap = NULL;
-  tracker->currState = NULL;
-  stateCount = 0;
+static bool smPrivateIsNameValid(const char *name, const char *fnName);
 
-  SMILE_INFO(MODULE_NAME, LOG_INFO_INIT_SUCCESSFUL);
+/* This function was created to preserve API consistency because the argument
+ * "name" from smCreateState collided with the expected item "name" from tracker
+ * and neither should be changed.
+ */
+static void smPrivateAddState(InternalStateMap *mapEntry);
 
-  return true;
+
+// -----------------------------------------------------------------------------
+// Functions - Public
+// -----------------------------------------------------------------------------
+
+// Start Related
+
+bool smStart(void)
+{
+    if (tracker)
+    {
+        lgInternalLog(WARNING, MODULE, CAUSE_ALREADY_RUNNING, FN_START,
+                      CONSEQ_ABORTED);
+        return false;
+    }
+
+    tracker = tsInternalCalloc(1, sizeof(InternalTracker));
+    if (!tracker)
+    {
+        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, FN_START,
+                      CONSEQ_ABORTED);
+        return false;
+    }
+
+    tracker->fps = DEFAULT_FPS;
+
+    lgInternalLog(INFO, MODULE, CAUSE_MODULE_STARTED, FN_START,
+                  CONSEQ_SUCCESSFUL);
+    return true;
 }
 
-bool SM_IsInitialized(void) { return tracker; }
-
-bool SM_RegisterState(const char *name, void (*enterFn)(void *),
-                      void (*updateFn)(float), void (*drawFn)(void),
-                      void (*exitFn)(void)) {
-
-  RETURN_FALSE_IF_NOT_INITIALIZED(LOG_CONSEQ_REGISTER_STATE_ABORTED);
-
-  if (!name) {
-    SMILE_ERR(MODULE_NAME, LOG_CAUSE_NULL_NAME,
-              LOG_CONSEQ_REGISTER_STATE_ABORTED);
-    return false;
-  }
-
-  if (strlen(name) == 0) {
-    SMILE_ERR(MODULE_NAME, LOG_CAUSE_EMPTY_NAME,
-              LOG_CONSEQ_REGISTER_STATE_ABORTED);
-    return false;
-  }
-
-  if (SM_IsStateRegistered((char *)name)) {
-    SMILE_ERR_WITH_NAME(MODULE_NAME, LOG_CAUSE_ALREADY_EXISTS, name,
-                        LOG_CONSEQ_REGISTER_STATE_ABORTED);
-    return false;
-  }
-
-  if (!enterFn && !updateFn && !drawFn && !exitFn) {
-    SMILE_ERR_WITH_NAME(MODULE_NAME, LOG_CAUSE_NO_VALID_FUNCTIONS, name,
-                        LOG_CONSEQ_REGISTER_STATE_ABORTED);
-    return false;
-  }
-
-  State *newState = malloc(sizeof(State));
-  if (!newState) {
-    SMILE_ERR(MODULE_NAME, LOG_CAUSE_MEM_ALLOC_FAILED,
-              LOG_CONSEQ_REGISTER_STATE_ABORTED);
-    return false;
-  }
-
-  char *stateName = malloc(strlen(name) + 1);
-  if (!stateName) {
-    SMILE_ERR(MODULE_NAME, LOG_CAUSE_MEM_ALLOC_FAILED,
-              LOG_CONSEQ_REGISTER_STATE_ABORTED);
-    free(newState);
-    return false;
-  }
-  strcpy(stateName, name);
-
-  newState->name = stateName;
-  newState->enter = enterFn;
-  newState->update = updateFn;
-  newState->draw = drawFn;
-  newState->exit = exitFn;
-
-  StateMap *temp = malloc(sizeof(StateMap));
-  if (!temp) {
-    free((char *)newState->name);
-    free(newState);
-    SMILE_ERR(MODULE_NAME, LOG_CAUSE_MEM_ALLOC_FAILED,
-              LOG_CONSEQ_REGISTER_STATE_ABORTED);
-    return false;
-  }
-  temp->state = newState;
-  temp->name = newState->name;
-  HASH_ADD_STR(tracker->stateMap, name, temp);
-
-  stateCount++;
-
-  SMILE_INFO_FMT(MODULE_NAME, "%s '%s'. Total states: %d.",
-                 LOG_INFO_STATE_CREATION_SUCCESSFUL, name, stateCount);
-
-  return true;
+bool smIsRunning(void)
+{
+    return tracker;
 }
 
-bool SM_IsStateRegistered(const char *name) {
-  RETURN_FALSE_IF_NOT_INITIALIZED(LOG_CONSEQ_IS_STATE_REGISTERED_ABORTED);
+// State Functions
 
-  StateMap *entry;
-  HASH_FIND_STR(tracker->stateMap, name, entry);
-  return entry;
+bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update,
+                   smDrawFn draw, smExitFn exit)
+{
+    if (!smPrivateIsRunning(FN_CREATE_STATE))
+    {
+        return false;
+    }
+
+    if (!smPrivateIsNameValid(name, FN_CREATE_STATE))
+    {
+        return false;
+    }
+
+    InternalStateMap *entry = smInternalGetEntry(name);
+    if (entry)
+    {
+        lgInternalLogWithArg(WARNING, MODULE, CAUSE_STATE_ALREADY_EXISTS, name,
+                             FN_CREATE_STATE, CONSEQ_ABORTED);
+        return false;
+    }
+
+    if (!enter && !update && !draw && !exit)
+    {
+        lgInternalLogWithArg(ERROR, MODULE, CAUSE_NO_VALID_FUNCTIONS, name,
+                             FN_CREATE_STATE, CONSEQ_ABORTED);
+        return false;
+    }
+
+    InternalState *state = tsInternalMalloc(sizeof(InternalState));
+    if (!state)
+    {
+        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,FN_CREATE_STATE,
+                      CONSEQ_ABORTED);
+        return false;
+    }
+
+    char *nameCopy = tsInternalMalloc(strlen(name) + 1);
+    if (!nameCopy)
+    {
+        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,FN_CREATE_STATE,
+                      CONSEQ_ABORTED);
+        goto nameCopyError;
+    }
+    strcpy(nameCopy, name);
+
+    state->name = nameCopy;
+    state->enter = enter;
+    state->update = update;
+    state->draw = draw;
+    state->exit = exit;
+
+    InternalStateMap *mapEntry = tsInternalMalloc(sizeof(InternalStateMap));
+    if (!mapEntry)
+    {
+        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,FN_CREATE_STATE,
+                      CONSEQ_ABORTED);
+        goto mapEntryError;
+    }
+    mapEntry->state = state;
+    mapEntry->name = state->name;
+    smPrivateAddState(mapEntry);
+
+    tracker->stateCount++;
+
+    lgInternalLogWithArg(INFO, MODULE, CAUSE_STATE_CREATED, name,
+                         FN_CREATE_STATE, CONSEQ_SUCCESSFUL);
+    return true;
+
+mapEntryError:
+    free(nameCopy);
+nameCopyError:
+    free(state);
+    return false;
 }
 
-bool SM_ChangeStateTo(const char *name, void *args) {
+bool smStateExists(const char *name)
+{
+    if (!smPrivateIsRunning(FN_STATE_EXISTS))
+    {
+        return false;
+    }
 
-  RETURN_FALSE_IF_NOT_INITIALIZED(LOG_CONSEQ_CHANGE_STATE_TO_ABORTED);
+    if (!smPrivateIsNameValid(name, FN_STATE_EXISTS))
+    {
+        return false;
+    }
 
-  if (!name) {
-    SMILE_ERR(MODULE_NAME, LOG_CAUSE_NULL_NAME,
-              LOG_CONSEQ_CHANGE_STATE_TO_ABORTED);
-    return false;
-  }
-
-  if (strlen(name) == 0) {
-    SMILE_ERR(MODULE_NAME, LOG_CAUSE_EMPTY_NAME,
-              LOG_CONSEQ_CHANGE_STATE_TO_ABORTED);
-    return false;
-  }
-
-  State *nextState = (State *)SM_Internal_GetState(name);
-  if (!nextState) {
-    SMILE_WARN_WITH_NAME(MODULE_NAME, LOG_CAUSE_STATE_NOT_FOUND, name,
-                         LOG_CONSEQ_CHANGE_STATE_TO_ABORTED);
-    return false;
-  }
-
-  State *currState = (State *)SM_Internal_GetCurrState();
-  if (currState && currState->exit) {
-    currState->exit();
-  }
-
-  SM_Internal_SetCurrState(nextState);
-
-  currState = (State *)SM_Internal_GetCurrState();
-  if (currState && currState->enter) {
-    currState->enter(args);
-  }
-
-  SMILE_INFO_WITH_NAME(MODULE_NAME, LOG_INFO_STATE_CHANGE_SUCCESSFUL, name);
-
-  return true;
+    return smInternalGetEntry(name);
 }
 
-bool SM_Update(float dt) {
-  RETURN_FALSE_IF_NOT_INITIALIZED(LOG_CONSEQ_UPDATE_ABORTED);
+bool smSetState(const char *name, void *args)
+{
+    if (!smPrivateIsRunning(FN_SET_STATE))
+    {
+        return false;
+    }
 
-  State *currState = (State *)SM_Internal_GetCurrState();
+    if (!smPrivateIsNameValid(name, FN_SET_STATE))
+    {
+        return false;
+    }
 
-  if (!currState) {
-    SMILE_ERR(MODULE_NAME, LOG_CAUSE_CURRENT_STATE_NULL,
-              LOG_CONSEQ_UPDATE_ABORTED);
-    return false;
-  }
+    const InternalState *NEXT_STATE = smInternalGetState(name);
+    if (!NEXT_STATE)
+    {
+        lgInternalLogWithArg(WARNING, MODULE, CAUSE_STATE_NOT_FOUND, name,
+                             FN_SET_STATE, CONSEQ_ABORTED);
+        return false;
+    }
 
-  if (!currState->update) {
-    SMILE_WARN_WITH_NAME(MODULE_NAME, LOG_INFO_UPDATE_FUNCTION_NULL,
-                         currState->name, LOG_CONSEQ_UPDATE_ABORTED);
-    return false;
-  }
+    if (tracker->currState && tracker->currState->exit)
+    {
+#ifdef SMILE_DEVELOPER
+        if (smTestExit)
+        {
+            smTestExit(smMockData);
+        }
+#endif
+        tracker->currState->exit();
+    }
 
-  currState->update(dt);
-  return true;
+    tracker->currState = NEXT_STATE;
+
+    if (tracker->currState && tracker->currState->enter)
+    {
+#ifdef SMILE_DEVELOPER
+        if (args && smTestEnterWithArgs)
+        {
+            smTestEnterWithArgs(smMockData, args);
+        } else if (smTestEnter)
+        {
+            smTestEnter(smMockData);
+        }
+#endif
+        tracker->currState->enter(args);
+    }
+
+    lgInternalLogWithArg(INFO, MODULE, CAUSE_STATE_SET_TO, name,FN_SET_STATE,
+                         CONSEQ_SUCCESSFUL);
+    return true;
 }
 
-bool SM_Draw(void) {
-  RETURN_FALSE_IF_NOT_INITIALIZED(LOG_CONSEQ_DRAW_ABORTED);
+const char *smGetCurrentStateName(void)
+{
+    if (!smPrivateIsRunning(FN_GET_CURRENT_STATE_NAME))
+    {
+        return nullptr;
+    }
 
-  State *currState = (State *)SM_Internal_GetCurrState();
+    return tracker->currState ? tracker->currState->name : nullptr;
+}
 
-  if (!currState) {
-    SMILE_ERR(MODULE_NAME, LOG_CAUSE_CURRENT_STATE_NULL,
-              LOG_CONSEQ_DRAW_ABORTED);
+int smGetStateCount(void)
+{
+    if (!smPrivateIsRunning(FN_GET_STATE_COUNT))
+    {
+        return -1;
+    }
+
+    return tracker->stateCount;
+}
+
+bool smDeleteState(const char *name)
+{
+    if (!smPrivateIsRunning(FN_DELETE_STATE))
+    {
+        return false;
+    }
+
+    if (!smPrivateIsNameValid(name, FN_DELETE_STATE))
+    {
+        return false;
+    }
+
+    if (tracker->currState && strcmp(name, tracker->currState->name) == 0)
+    {
+        lgInternalLogWithArg(ERROR, MODULE,CAUSE_CANNOT_DELETE_CURR_STATE, name,
+                             FN_DELETE_STATE, CONSEQ_ABORTED);
+        return false;
+    }
+
+    InternalStateMap *entry = smInternalGetEntry(name);
+    if (!entry)
+    {
+        lgInternalLogWithArg(WARNING, MODULE, CAUSE_STATE_NOT_FOUND, name,
+                             FN_DELETE_STATE, CONSEQ_ABORTED);
+        return false;
+    }
+
+    HASH_DEL(tracker->stateMap, entry);
+    free(entry->state->name);
+    free(entry->state);
+    free(entry);
+
+    tracker->stateCount--;
+
+    lgInternalLogWithArg(INFO, MODULE, CAUSE_STATE_DELETED, name,
+                         FN_DELETE_STATE, CONSEQ_SUCCESSFUL);
+    return true;
+}
+
+// Lifecycle Functions
+
+bool smUpdate(float dt)
+{
+    if (!smPrivateIsRunning(FN_UPDATE))
+    {
+        return false;
+    }
+
+    if (!tracker->currState)
+    {
+        lgInternalLog(ERROR, MODULE, CAUSE_NULL_CURR_STATE, FN_UPDATE,
+                      CONSEQ_ABORTED);
+        return false;
+    }
+
+    if (!tracker->currState->update)
+    {
+        lgInternalLogWithArg(WARNING, MODULE,CAUSE_NULL_STATE_UPDATE_FN,
+                             tracker->currState->name, FN_UPDATE,
+                             CONSEQ_ABORTED);
+        return false;
+    }
+
+    tracker->currState->update(dt);
+    return true;
+}
+
+float smGetDt(void)
+{
+    if (!smPrivateIsRunning(FN_GET_DT))
+    {
+        return -1.0f;
+    }
+
+    float dt;
+
+#if defined(_WIN32)
+    // TODO add Windows support
+#elif defined(__APPLE__) || defined(__linux__)
+    struct timespec currentTime;
+
+#ifdef SMILE_DEVELOPER
+    currentTime = smMockCurrTime;
+#else
+    clock_gettime(CLOCK_MONOTONIC, &currentTime);
+#endif
+
+    /**
+     * On the first call, lastTime is zero-initialized, so we default to a delta
+     * time based on the target FPS. This prevents an abnormally large dt, since
+     * we don't know how long after program start clock_gettime() is invoked.
+     */
+    if (tracker->lastTime.tv_sec == 0 && tracker->lastTime.tv_nsec == 0)
+    {
+        dt = (float) (1.0 / tracker->fps);
+    } else
+    {
+        double tempDt = currentTime.tv_sec - tracker->lastTime.tv_sec +
+                        (currentTime.tv_nsec - tracker->lastTime.tv_nsec) / 1e9;
+        dt = (float) tempDt;
+    }
+
+    tracker->lastTime = currentTime;
+#endif
+
+    return dt;
+}
+
+bool smSetFPS(int fps)
+{
     return false;
-  }
-
-  if (!currState->draw) {
-    SMILE_WARN_WITH_NAME(MODULE_NAME, LOG_INFO_DRAW_FUNCTION_NULL,
-                         currState->name, LOG_CONSEQ_DRAW_ABORTED);
-    return false;
-  }
-
-  currState->draw();
-  return true;
 }
 
-bool SM_Shutdown(void) {
+bool smDraw(void)
+{
+    if (!smPrivateIsRunning(FN_DRAW))
+    {
+        return false;
+    }
 
-  RETURN_FALSE_IF_NOT_INITIALIZED(LOG_CONSEQ_SHUTDOWN_ABORTED);
+    if (!tracker->currState)
+    {
+        lgInternalLog(ERROR, MODULE, CAUSE_NULL_CURR_STATE,FN_DRAW,
+                      CONSEQ_ABORTED);
+        return false;
+    }
 
-  State *currState = (State *)SM_Internal_GetCurrState();
-  if (currState && currState->exit) {
-    currState->exit();
-  }
-  SM_Internal_SetCurrState(NULL);
+    if (!tracker->currState->draw)
+    {
+        lgInternalLogWithArg(WARNING, MODULE,CAUSE_NULL_STATE_DRAW_FN,
+                             tracker->currState->name, FN_DRAW,CONSEQ_ABORTED);
+        return false;
+    }
 
-  StateMap *el, *tmp;
-  HASH_ITER(hh, tracker->stateMap, el, tmp) {
-    HASH_DEL(tracker->stateMap, el);
-    free((char *)el->state->name);
-    free(el->state);
-    free(el);
-    stateCount--;
-  }
-
-  free(tracker);
-  tracker = NULL;
-
-  SMILE_INFO(MODULE_NAME, LOG_INFO_SHUTDOWN_SUCCESSFUL);
-
-  return true;
+    tracker->currState->draw();
+    return true;
 }
 
-const char *SM_GetCurrStateName(void) {
+// Stop Related
 
-  if (!tracker) {
-    SMILE_ERR(MODULE_NAME, LOG_CAUSE_NOT_INITIALIZED,
-              LOG_CONSEQ_GET_CURR_STATE_NAME_ABORTED);
-    return NULL;
-  }
+bool smStop(void)
+{
+    if (!smPrivateIsRunning(FN_STOP))
+    {
+        return false;
+    }
 
-  return tracker->currState ? tracker->currState->name : NULL;
+    if (tracker->currState && tracker->currState->exit)
+    {
+#ifdef SMILE_DEVELOPER
+        if (smTestExit)
+        {
+            smTestExit(smMockData);
+        }
+#endif
+        tracker->currState->exit();
+    }
+    tracker->currState = nullptr;
+
+    InternalStateMap *el, *tmp;
+    HASH_ITER(hh, tracker->stateMap, el, tmp)
+    {
+        HASH_DEL(tracker->stateMap, el);
+        free(el->state->name);
+        free(el->state);
+        free(el);
+        tracker->stateCount--;
+    }
+
+    bool isFatal = false;
+    if (smGetStateCount() != 0)
+    {
+        isFatal = true;
+    }
+
+    free(tracker);
+    tracker = nullptr;
+
+    if (isFatal)
+    {
+        lgInternalLog(FATAL, MODULE, CAUSE_FAILED_TO_FREE_ALL_STATES, FN_STOP,
+                      CONSEQ_ABORTED);
+        return false;
+    }
+
+    lgInternalLog(INFO, MODULE, CAUSE_MODULE_STOPPED, FN_STOP,
+                  CONSEQ_SUCCESSFUL);
+    return true;
 }
 
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
 // Functions - Internal
-// --------------------------------------------------
+// -----------------------------------------------------------------------------
 
-bool SM_Internal_SetCurrState(const State *state) {
-
-  RETURN_FALSE_IF_NOT_INITIALIZED(LOG_CONSEQ_INTERNAL_SET_CURR_STATE_ABORTED);
-
-  tracker->currState = state;
-  return true;
+const InternalState *smInternalGetState(const char *name)
+{
+    InternalStateMap *entry = smInternalGetEntry(name);
+    return entry ? entry->state : nullptr;
 }
 
-const State *SM_Internal_GetCurrState(void) {
-
-  if (!tracker) {
-    SMILE_ERR(MODULE_NAME, LOG_CAUSE_NOT_INITIALIZED,
-              LOG_CONSEQ_INTERNAL_GET_CURR_STATE_ABORTED);
-    return NULL;
-  }
-
-  return tracker->currState;
+InternalStateMap *smInternalGetEntry(const char *name)
+{
+    InternalStateMap *entry;
+    HASH_FIND_STR(tracker->stateMap, name, entry);
+    return entry;
 }
 
-const State *SM_Internal_GetState(const char *name) {
+// -----------------------------------------------------------------------------
+// Functions - Helper
+// -----------------------------------------------------------------------------
 
-  RETURN_NULL_IF_NOT_INITIALIZED(LOG_CONSEQ_INTERNAL_GET_STATE_ABORTED);
+bool smPrivateIsRunning(const char *fnName)
+{
+    if (!smIsRunning())
+    {
+        lgInternalLog(ERROR, MODULE, CAUSE_NOT_RUNNING, fnName,CONSEQ_ABORTED);
+        return false;
+    }
 
-  StateMap *sm;
-  HASH_FIND_STR(tracker->stateMap, name, sm);
-  return sm ? sm->state : NULL;
+    return true;
 }
 
-// --------------------------------------------------
-// Functions - Tests
-// --------------------------------------------------
+bool smPrivateIsNameValid(const char *name, const char *fnName)
+{
+    if (!name)
+    {
+        lgInternalLogWithArg(ERROR, MODULE, CAUSE_NULL_ARG, "name", fnName,
+                             CONSEQ_ABORTED);
+        return false;
+    }
 
-const StateTracker *SM_Test_GetTracker(void) { return tracker; }
+    if (strlen(name) == 0)
+    {
+        lgInternalLogWithArg(ERROR, MODULE, CAUSE_EMPTY_ARG, "name", fnName,
+                             CONSEQ_ABORTED);
+        return false;
+    }
 
-const int SM_Test_GetStateCount(void) { return stateCount; }
-
-bool SM_Test_SetCanMalloc(bool toggle) {
-  canMalloc = toggle;
-  return toggle;
+    return true;
 }
 
-void *SM_Test_Malloc(size_t size) {
-  if (!canMalloc) {
-    return NULL;
-  }
-  return malloc(size);
+void smPrivateAddState(InternalStateMap *mapEntry)
+{
+    HASH_ADD_STR(tracker->stateMap, name, mapEntry);
 }

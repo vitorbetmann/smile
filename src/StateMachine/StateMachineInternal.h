@@ -1,88 +1,106 @@
-#ifndef STATE_MACHINE_INTERNAL_H
-#define STATE_MACHINE_INTERNAL_H
+/**
+ * @file
+ * @brief Internal declarations of data structures and functions for the
+ *        StateMachine module.
+ *
+ * Defines the private types, constants, and utilities used internally by
+ * StateMachine to manage states, timing, and runtime context.
+ *
+ * @note For the public API, see StateMachine.h.
+ *
+ * @author Vitor Betmann
+ * @date 2025-10-29
+ * @version 1.0.0
+ */
+
+#ifndef SMILE_STATE_MACHINE_INTERNAL_H
+#define SMILE_STATE_MACHINE_INTERNAL_H
 
 // --------------------------------------------------
 // Includes
 // --------------------------------------------------
-#include "../../external/uthash.h"
-#include "StateMachine.h"
+
+#include <time.h>
+#include <external/uthash.h>
+
+#include "include/StateMachine.h"
+
+
+// --------------------------------------------------
+// Defines
+// --------------------------------------------------
+
+#define DEFAULT_FPS 60
+
 
 // --------------------------------------------------
 // Data types
 // --------------------------------------------------
 
 /**
- * @brief Internal representation of a state.
+ * @brief Represents an individual state within the state machine.
  *
- * Each state can optionally define enter, update, draw, and exit callbacks.
- * @author Vitor Betmann
- */
-struct State {
-  const char *name;
-  void (*enter)(void *args);
-  void (*update)(float dt);
-  void (*draw)();
-  void (*exit)();
-};
-
-/**
- * @brief Internal hash entry mapping a state's name to its struct.
- * @author Vitor Betmann
+ * Each state includes optional lifecycle functions for handling entry,
+ * update, drawing, and exit logic.
  */
 typedef struct {
-  const char *name;
-  State *state;
-  UT_hash_handle hh;
-} StateMap;
+  char *name;
+  smEnterFn enter;
+  smUpdateFn update;
+  smDrawFn draw;
+  smExitFn exit;
+} InternalState;
 
 /**
- * @brief Internal tracker holding the registered states and the current state.
- * @author Vitor Betmann
+ * @brief Maps a state name to its corresponding State structure.
+ *
+ * Used internally by the state machine to efficiently look up states
+ * by name using uthash.
  */
-struct StateTracker {
-  StateMap *stateMap;
-  const State *currState;
-};
+typedef struct {
+  char *name;
+  InternalState *state;
+  UT_hash_handle hh;
+} InternalStateMap;
+
+/**
+ * @brief Tracks the current state machine context.
+ *
+ * Contains all runtime information such as registered states, the current
+ * active state, frame rate settings, and timing data used for delta time
+ * calculations.
+ */
+typedef struct {
+  InternalStateMap *stateMap;
+  const InternalState *currState;
+  int stateCount;
+  int fps;
+#if defined(_WIN32)
+  // TODO add Windows support
+#else
+  struct timespec lastTime;
+#endif
+} InternalTracker;
+
 
 // --------------------------------------------------
 // Prototypes
 // --------------------------------------------------
 
 /**
- * @brief Sets the current active state without calling lifecycle callbacks.
+ * @brief Retrieves a pointer to a State by name.
  *
- * For internal use only. This bypasses any exit/enter logic and just updates
- * the internal state pointer.
- *
- * @param state Pointer to the state to set as current.
- * @return true if the tracker was initialized and the state was set, false
- * otherwise.
- * @author Vitor Betmann
+ * @param name The name of the state to look up.
+ * @return Pointer to the matching State, or NULL if not found.
  */
-bool SM_Internal_SetCurrState(const State *state);
+const InternalState *smInternalGetState(const char *name);
 
 /**
- * @brief Returns a pointer to the currently active state.
+ * @brief Retrieves a pointer to a StateMap entry by name.
  *
- * For internal use only. Returns NULL if the state machine is not initialized
- * or no state is active.
- *
- * @return const State* Pointer to the current state, or NULL.
- * @author Vitor Betmann
+ * @param name The name of the state entry to look up.
+ * @return Pointer to the matching StateMap entry, or NULL if not found.
  */
-const State *SM_Internal_GetCurrState(void);
+InternalStateMap *smInternalGetEntry(const char *name);
 
-/**
- * @brief Looks up a state by its registered name.
- *
- * For internal use only. Performs a hash table lookup and returns a pointer
- * to the internal state if found.
- *
- * @param name Name of the state to find.
- * @return const State* Pointer to the matching state, or NULL if not found or
- * uninitialized.
- * @author Vitor Betmann
- */
-const State *SM_Internal_GetState(const char *name);
-
-#endif
+#endif // #ifndef SMILE_STATE_MACHINE_INTERNAL_H

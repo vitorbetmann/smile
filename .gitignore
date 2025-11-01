@@ -6,6 +6,7 @@
 /CMakeFiles/
 /CMakeCache.txt
 cmake_install.cmake
+cmake-build-debug
 Makefile
 
 # Ninja build files
@@ -26,3 +27,6 @@ Makefile
 
 # Generated files
 compile_commands.json.cache/
+
+# Jetbrains
+.idea
