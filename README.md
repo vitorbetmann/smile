@@ -1,16 +1,24 @@
 # Welcome to Smile 😊
 
-## An open-source, modular 2D game engine in C
+## An open-source C framework for 2D game development
 
 Smile stands for `Simple Modularity Is Low-Key Elegant`, and it's a
-lightweight collection of C modules that simplifies 2D game development.
+lightweight collection of modules that simplifies 2D game development.
 
 Ideal for `game jams` and `rapid prototyping`, Smile provides clean
 abstractions that keep your code lean, organized, and fully under your control.
 
 ## 🎮 Smile Demo
 
-![Smile Demo](docs/_Internal/__Assets/_SmileREADME/SmileDemo.gif)
+<p align="center">
+  <img src="docs/_Internal/__Assets/StateMachine/StateMachineDemo.gif" width="45%"/>
+  <img src="docs/_Internal/__Assets/ParticleSystem/ParticleSystemDemo.gif" width="45%"/>
+</p>
+
+<p align="center">
+  <img src="docs/_Internal/__Assets/SaveLoad/SaveLoadDemo.gif" width="45%"/>
+  <img src="docs/_Internal/__Assets/Log/LogDemo.gif" width="45%"/>
+</p>
 
 ## Why Smile?
 
@@ -27,8 +35,6 @@ seamlessly with libraries like [raylib](https://www.raylib.com).
 Smile's community is also active and willing to help! Have questions about
 low-level programming, Game Development, Programming Patterns, or anything else?
 We can help you out at the [Discord Server](https://discord.gg/EdS6PwMffH).
-
-Learning together! That’s what Smile is all about.
 
 ## 🚀 Building Your Game
 
@@ -253,12 +259,12 @@ background so you can focus on letting your creativity out!
 If you're interested, feel free to explore each module for detailed guides and
 examples:
 
-| Module                                                        | Description                               |
-|---------------------------------------------------------------|-------------------------------------------|
-| [Log](docs/Log)                                               | Debug code and handle fatal errors easily |
-| [ParticleSystem](docs/ParticleSystem) (🚧 under construction) | Simulate smoke, dust, and fire            |
-| [SaveLoad](docs/SaveLoad) (🚧 under construction)             | Quickly save and load your game           |
-| [StateMachine](docs/StateMachine)                             | Manage states and transitions cleanly.    |
+| Module                                                       | Description                               |
+|--------------------------------------------------------------|-------------------------------------------|
+| [Log](docs/Log)                                              | Debug code and handle fatal errors easily |
+| [ParticleSystem](docs/ParticleSystem) (🚧 Under Development) | Simulate smoke, dust, fire, and more      |
+| [SaveLoad](docs/SaveLoad) (🚧 Under Development)             | Quickly save and load your game           |
+| [StateMachine](docs/StateMachine)                            | Manage states and transitions cleanly     |
 
 ## 🤝 Contributing
 
@@ -271,22 +277,23 @@ programming days._
 >
 > — Vitor Betmann, creator of Smile
 
-Whether you're a first-year university student, a self-taught coder, or a
-professional branching into new areas, Smile welcomes contributors who are
-curious, motivated, and eager to learn.
+Smile is an open learning project. Everyone is welcome to use Smile to learn,
+suggest improvements, and help it evolve.
 
-Smile is meant to grow slowly and thoughtfully, with help from a community that
-values learning, clarity, experimentation, and shared growth.
+That said, Smile is also a personal sandbox project I’m building to understand
+how game frameworks work from the ground up. I reserve some systems to design
+and architect myself first as part of that learning journey and once those
+foundations are ready, contributions that improve, expand, or refine them are
+always welcome.
 
 If that got you excited, there are many ways to contribute (plus, you'll get
 full credit in the code and Git history!):
 
-- Suggesting improvements
+- Suggesting improvements/optimizations
 - Adding features
 - Writing/editing documentation
 - Making games and reporting bugs
-- Asking questions and helping others in
-  the [Discord Server](https://discord.gg/EdS6PwMffH).
+- Helping others in the [Discord Server](https://discord.gg/EdS6PwMffH).
 
 To learn more, check out the [Contributing Guide](docs/_Internal/_Contributing).
 
@@ -297,6 +304,6 @@ details.
 
 ## Last Modified
 
-| Last modified | Author        | Description                 |
-|---------------|---------------|-----------------------------|
-| Oct 24, 2025  | Vitor Betmann | Documented Windows support. |
+| Last modified | Author        | Description                                                    |
+|---------------|---------------|----------------------------------------------------------------|
+| Nov 01, 2025  | Vitor Betmann | Fixed typos; Updated examples; Rewrote Intro and Contributing; |

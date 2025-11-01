@@ -11,6 +11,33 @@
  * @version 1.0.0
  */
 
+// TODO create more tests for different types of whitespace (\n, \t, \r...)
+
+void Test_smCreateState_RejectsLongName(void)
+{
+    // TODO
+}
+
+void Test_smCreateState_RejectsWhitespaceOnlyName(void)
+{
+    // TODO
+}
+
+void Test_smCreateState_AcceptsAndTrimsLeadingWhitespaceOnName(void)
+{
+    // TODO
+}
+
+void Test_smCreateState_AcceptsAndTrimsTrailingWhitespaceOnName(void)
+{
+    // TODO
+}
+
+void Test_smCreateState_AcceptsAndTrimsLeadingAndTrailingWhitespaceOnName(void)
+{
+    // TODO
+}
+
 // -----------------------------------------------------------------------------
 // Includes
 // -----------------------------------------------------------------------------
@@ -250,11 +277,6 @@ void Test_smCreateState_RejectsExistingName(void)
     tsInternalPass("Test_smCreateState_RejectsExistingName");
 }
 
-void Test_smCreateState_RejectsLongName(void)
-{
-    // TODO
-}
-
 void Test_smCreateState_RejectsNullName(void)
 {
     smStart();
@@ -269,26 +291,6 @@ void Test_smCreateState_RejectsEmptyName(void)
     assert(!smCreateState("", nullptr, nullptr, nullptr, nullptr));
     smStop();
     tsInternalPass("Test_smCreateState_RejectsEmptyName");
-}
-
-void Test_smCreateState_RejectsWhitespaceOnlyName(void)
-{
-    // TODO
-}
-
-void Test_smCreateState_AcceptsAndTrimsLeadingWhitespaceOnName(void)
-{
-    // TODO
-}
-
-void Test_smCreateState_AcceptsAndTrimsTrailingWhitespaceOnName(void)
-{
-    // TODO
-}
-
-void Test_smCreateState_AcceptsAndTrimsLeadingAndTrailingWhitespaceOnName(void)
-{
-    // TODO
 }
 
 // -- -- State Functions Related
@@ -1029,7 +1031,7 @@ void TestStress_smSetState_SettingStatesOftenCausesNoSkips(void)
     {
         snprintf(buf, sizeof(buf), "%d", i);
         smSetState(buf, nullptr);
-        const int stateNum = atoi(smGetCurrentStateName());
+        int stateNum = atoi(smGetCurrentStateName());
         assert(stateNum == counter);
         counter++;
     }
@@ -1093,18 +1095,8 @@ int main()
     puts("  • Name Related");
     Test_smCreateState_AcceptsValidName();
     Test_smCreateState_RejectsExistingName();
-    Test_smCreateState_RejectsLongName();
     Test_smCreateState_RejectsNullName();
     Test_smCreateState_RejectsEmptyName();
-
-    // Test_smCreateState_RejectsWhitespaceOnlyStateName();
-    // TODO create more tests for different types of whitespace (\n, \t, \r...)
-    // Test_smCreateState_AcceptsLeadingWhitespaceOnStateName();
-    // Test_smCreateState_AcceptsTrailingWhitespaceOnStateName();
-    // Test_smCreateState_AcceptsLeadingAndTrailingWhitespaceOnStateName();
-    // Test_smCreateState_TrimsLeadingWhitespaceOnStateName();
-    // Test_smCreateState_TrimsTrailingWhitespaceOnStateName();
-    // Test_smCreateState_TrimsLeadingAndTrailingWhitespaceOnStateName();
 
     puts("  • State Functions Related");
     Test_smCreateState_AcceptsValidNameAndNoNullFunctions();
@@ -1162,7 +1154,6 @@ int main()
     puts("\nSTOP TESTING");
     Test_smStop_CallsNonNullExitOfCurrentState();
     Test_smStop_SkipsNullExitOfCurrentState();
-    // TODO Check for no memory leaks
 
     puts("\nPOST-STOP TESTING");
     puts("• Start Related");

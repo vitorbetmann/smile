@@ -30,7 +30,6 @@ option(SMILE_DEVELOPER "Enable Smile developer mode (debug build with tests and 
 if (SMILE_DEVELOPER)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
     set(SMILE_BUILD_TESTS ON CACHE BOOL "Build test executables" FORCE)
-    message(STATUS "Smile developer mode enabled — building with tests and debug info")
 else ()
     if (NOT DEFINED CMAKE_BUILD_TYPE OR "${CMAKE_BUILD_TYPE}" STREQUAL "")
         set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)

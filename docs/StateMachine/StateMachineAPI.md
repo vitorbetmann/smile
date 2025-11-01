@@ -76,7 +76,7 @@ void myStateEnter(void *args)
         return;
     }
 
-    myPlayerData->xPosition = ((const PlayerData *)args)->xPosition;
+    myPlayerData->xPosition = ((PlayerData *)args)->xPosition;
 }
 ```
 

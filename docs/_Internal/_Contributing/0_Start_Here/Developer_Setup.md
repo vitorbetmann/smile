@@ -11,14 +11,15 @@ up your environment to start contributing.
 In addition, the other files each focus on a specific aspect of Smile’s
 development workflow:
 
-- [1_The_Structure_Of_Smile](../1_The_Structure_Of_Smile/1_The_Structure_Of_Smile.md)
+- [1_The_Structure_Of_Smile](../1_Understanding_Smile/)
+    - [Structure](../1_Understanding_Smile/Structure.md)
 - [2_Coding_Guidelines](../2_Coding_Guidelines)
-    - [1_Code_Organization](../2_Coding_Guidelines/1_Code_Organization.md)
-    - [2_General_Guidelines](../2_Coding_Guidelines/2_General_Conventions.md)
-- [3_Documentation_Guidelines](../3_Documentation_Guidelines/1_General_Conventions.md)
-- [4_Testing_Guidelines](../4_Testing_Guidelines/4_Testing_Guidelines.md)
-- [5_Pull_Requesting](../5_Pull_Requesting/5_Pull_Requesting.md)
-- [6_Issued_And_Suggestions](../6_Issues_And_Suggestions/6_Issues_And_Suggestions.md)
+    - [Code_Organization](../2_Coding_Guidelines/Code_Organization.md)
+    - [Code_Style](../2_Coding_Guidelines/Code_Style.md)
+- [3_Documentation_Guidelines] (🚧 Under Development)
+- [4_Testing_Guidelines] (🚧 Under Development)
+- [5_Pull_Requesting] (🚧 Under Development)
+- [6_Issued_And_Suggestions] (🚧 Under Development)
 
 ---
 
@@ -78,9 +79,9 @@ After running the commands above, you should see the following on your terminal:
 
 ```plaintext
 -- Smile — Build type: Debug
--- Smile — Warning logs ENABLED
--- Smile — Info logs ENABLED
--- Smile: Compiling TEST files
+-- Smile — Warning logs: ON
+-- Smile — Info logs: ON
+-- Smile — Tests: ON
 ```
 
 This confirms Smile is built in developer mode.
@@ -89,7 +90,7 @@ This confirms Smile is built in developer mode.
 By default, Smile compiles with runtime **warning** and **info** logs enabled.
 Below is an example of how they would appear in your terminal:
 
-![Example of Smile's Logs](../__Assets/LogExample.png)
+![Example of Smile's Logs](docs/_Internal/__Assets/_SmileREADME/LogExample.png)
 
 If you want to disable them, pass the following flags when configuring your
 build with CMake:
@@ -108,12 +109,12 @@ time. Errors cannot be disabled.
 ## Up Next
 
 Learn how Smile's files and directories are organized
-in [1_The_Structure_Of_Smile](../1_The_Structure_Of_Smile/1_The_Structure_Of_Smile.md)
+in [1_The_Structure_Of_Smile](../1_Understanding_Smile/Structure.md)
 
 ---
 
 <br>
 
-| Last modified | Author        | Description       |
-|---------------|---------------|-------------------|
-| Oct 21, 2025  | Vitor Betmann | Created document. |
+| Last modified | Author (Discord Username)    | Description                                                   |
+|---------------|------------------------------|---------------------------------------------------------------|
+| Nov 01, 2025  | Vitor Betmann (vitorbetmann) | Fixed typos; Added "Under Development" to Testing Guidelines; |

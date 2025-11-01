@@ -26,7 +26,6 @@
 #include <external/uthash.h>
 
 #include "include/StateMachine.h"
-
 #include "StateMachineInternal.h"
 #include "StateMachineMessages.h"
 
@@ -197,8 +196,8 @@ bool smSetState(const char *name, void *args)
         return false;
     }
 
-    const InternalState *nextState = smInternalGetState(name);
-    if (!nextState)
+    const InternalState *NEXT_STATE = smInternalGetState(name);
+    if (!NEXT_STATE)
     {
         lgInternalLogWithArg(WARNING, MODULE, CAUSE_STATE_NOT_FOUND, name,
                              FN_SET_STATE, CONSEQ_ABORTED);
@@ -216,7 +215,7 @@ bool smSetState(const char *name, void *args)
         tracker->currState->exit();
     }
 
-    tracker->currState = nextState;
+    tracker->currState = NEXT_STATE;
 
     if (tracker->currState && tracker->currState->enter)
     {

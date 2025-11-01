@@ -265,7 +265,7 @@ void levelTwoEnter(void *args) {
         // Handle malloc fail
     }
     
-    const PlayerData *myArgs = (const PlayerData*)args;
+    PlayerData *myArgs = args;
     
     myPlayerData->score = myArgs->score;
     myPlayerData->position = myArgs->position;
@@ -295,6 +295,6 @@ void levelTwoDraw(void) {
 
 <br>
 
-| Last modified | Author        | Description       |
-|---------------|---------------|-------------------|
-| Oct 14, 2025  | Vitor Betmann | Created document. |
+| Last modified | Author (Discord)             | Description       |
+|---------------|------------------------------|-------------------|
+| Oct 14, 2025  | Vitor Betmann (vitorbetmann) | Created document. |
