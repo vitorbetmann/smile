@@ -302,7 +302,7 @@ To learn more, check out the [Contributing Guide](docs/_Internal/_Contributing).
 Smile is released under the MIT License. See the [LICENSE](./LICENSE) file for
 details.
 
-## Last Modified
+## ✏️ Last Modified
 
 | Last modified | Author        | Description                                                    |
 |---------------|---------------|----------------------------------------------------------------|

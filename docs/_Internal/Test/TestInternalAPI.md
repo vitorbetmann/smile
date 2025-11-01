@@ -7,28 +7,20 @@ for SMILE. These functions can be used in production for safe allocations and
 logging, and in unit tests to simulate failures.
 
 For testing guidelines, see
-the [Testing Contributing Doc](../_Contributing/3_Testing.md).
+the [Testing Contributing Doc](../_Contributing/4_Testing_Guidelines).
 
 For coding guidelines, see
-the [Coding Contributing Doc](../_Contributing/1_Coding.md).
+the [Coding Guidelines](../_Contributing/2_Coding_Guidelines).
 
 ### 🚨 Warning! This module is not thread-safe!
 
----
-
-<br>
-
-## Table of Contents
+## 📋 Table of Contents
 
 - [Data Types](#-data-types)
     - [Enums](#-_enums_)
 - [Functions](#-functions)
     - [Test Suites Related](#-_test-suites-related_)
     - [Memory Allocation Related](#-_memory-allocation-related_)
-
----
-
-<br>
 
 ## 📦 Data Types
 
@@ -61,10 +53,6 @@ void Test_smStart_FailsIfCallocFails(void) {
 
 For testing guidelines, see
 the [Testing Contributing Doc](../_Contributing/3_Testing.md).
-
----
-
-<br>
 
 ## 🔧 Functions
 
@@ -186,10 +174,8 @@ Wrapper around `realloc()` with optional failure simulation.
 For coding guidelines, see
 the [Coding Contributing Doc](../_Contributing/1_Coding.md).
 
----
+## ✏️ Last Modified
 
-<br>
-
-| Last modified | Author        | Description       |
-|---------------|---------------|-------------------|
-| Oct 14, 2025  | Vitor Betmann | Created document. |
+| Last modified | Author (Discord)             | Description                      |
+|---------------|------------------------------|----------------------------------|
+| Nov 01, 2025  | Vitor Betmann (vitorbetmann) | Added emojis and removed <br>'s; |

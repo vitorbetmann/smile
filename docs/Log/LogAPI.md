@@ -5,11 +5,9 @@ terminal and configuring fatal error handling.
 
 ### 🚨 Warning! This module is not thread-safe!
 
----
 
-<br>
 
-## Table of Contents
+## 📋 Table of Contents
 
 - [Module Header](#module-header)
 - [Data Types](#-data-types)
@@ -18,9 +16,7 @@ terminal and configuring fatal error handling.
     - [Logging Related](#-_logging-related_)
     - [Fatal Handling Related](#-_logging-related_)
 
----
 
-<br>
 
 ## 😊Module Header
 
@@ -32,9 +28,7 @@ The module’s header is `Log.h`. Its full Smile path is: `smile/include/Log.h`
 #include <Log.h>
 ```
 
----
 
-<br>
 
 ## 📦 Data Types
 
@@ -55,9 +49,7 @@ void myFatalHandler(void)
 }
 ```
 
----
 
-<br>
 
 ## 🔧 Functions
 
@@ -124,10 +116,8 @@ int main()
 For more, see [Workflow Example](README.md#-workflow-example) in
 the [Log Getting Started](README.md) doc.
 
----
+## ✏️ Last Modified
 
-<br>
-
-| Last modified | Author        | Description       |
-|---------------|---------------|-------------------|
-| Oct 14, 2025  | Vitor Betmann | Created document. |
+| Last modified | Author (Discord)             | Description                      |
+|---------------|------------------------------|----------------------------------|
+| Nov 01, 2025  | Vitor Betmann (vitorbetmann) | Added emojis and removed <br>'s; |

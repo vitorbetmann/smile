@@ -6,11 +6,7 @@ behavior using enter, update, draw, and exit callback functions.
 
 ### 🚨 Warning! This module is not thread-safe!
 
----
-
-<br>
-
-## Table of Contents
+## 📋 Table of Contents
 
 - [Visual Example](#visual-example)
 - [Module Header](#module-header)
@@ -18,19 +14,13 @@ behavior using enter, update, draw, and exit callback functions.
 - [Quick Reference Table](#-quick-reference-table)
 - [Workflow Example](#-workflow-example)
 
----
+## 👀 Visual Example
 
-<br>
+<p align="center">
+  <img src="docs/_Internal/__Assets/StateMachine/StateMachineDemo.gif" width="90%"/>
+</p>
 
-## Visual Example
-
-![StateMachine Demo](docs/_Internal/__Assets/StateMachine/StateMachineDemo.gif)
-
----
-
-<br>
-
-## 😊Module Header
+## 😊 Module Header
 
 The module’s header is `StateMachine.h`. Its full Smile path is:
 `smile/include/StateMachine.h`
@@ -41,11 +31,7 @@ The module’s header is `StateMachine.h`. Its full Smile path is:
 #include <StateMachine.h>
 ```
 
----
-
-<br>
-
-## State Machine Lifecycle 🔄
+## 🔄 State Machine Lifecycle
 
 1️⃣ Begin with `smStart`. This initializes the internal system, allowing you to
 register, switch, and manage states. No other function except `smIsRunning` will
@@ -68,10 +54,6 @@ game loop) to run the current state’s logic and rendering.
 6️⃣ Always call `smStop` when the state machine is no longer needed. This
 ensures all registered states are properly cleaned up, preventing memory leaks
 and dangling pointers.
-
----
-
-<br>
 
 ## 🔍 Quick Reference Table
 
@@ -106,11 +88,7 @@ the [State Machine API Reference](StateMachineAPI.md).
 | `bool smDraw(void)`                                                                                              | Calls the draw function of the active state. Returns `true` if successful.                                                                       |
 | `bool smStop(void)`                                                                                              | Stops the state machine and frees all registered states. Calls the current state’s `exit` function before cleanup. Returns `true` if successful. |
 
---- 
-
-<br>
-
-## 🧪 Workflow Example
+## 🧪️ Workflow Example
 
 In your main file you can begin like so:
 
@@ -291,10 +269,8 @@ void levelTwoDraw(void) {
 // levelTwo has no Exit function
 ```
 
----
+## ✏️ Last Modified
 
-<br>
-
-| Last modified | Author (Discord)             | Description       |
-|---------------|------------------------------|-------------------|
-| Oct 14, 2025  | Vitor Betmann (vitorbetmann) | Created document. |
+| Last modified | Author (Discord)             | Description              |
+|---------------|------------------------------|--------------------------|
+| Nov 01, 2025  | Vitor Betmann (vitorbetmann) | Improved visual example; |

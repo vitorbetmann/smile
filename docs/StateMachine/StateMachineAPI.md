@@ -6,11 +6,7 @@ own behavior using enter, update, draw, and exit callback functions.
 
 ### 🚨 Warning! This module is not thread-safe!
 
----
-
-<br>
-
-## Table of Contents
+## 📋 Table of Contents
 
 - [Module Header](#module-header)
 - [Data Types](#-data-types)
@@ -20,10 +16,6 @@ own behavior using enter, update, draw, and exit callback functions.
     - [State Functions](#-_state-functions_)
     - [Lifecycle Functions](#-_lifecycle-functions_)
     - [Stop Related](#-_stop-related_)
-
----
-
-<br>
 
 ## 😊Module Header
 
@@ -35,10 +27,6 @@ The module’s header is `StateMachine.h`. Its full Smile path is:
 ```c
 #include <StateMachine.h>
 ```
-
----
-
-<br>
 
 ## 📦 Data Types
 
@@ -145,10 +133,6 @@ void myStateExit(void) {
 
 For more, see [Workflow Example](README.md#-workflow-example) in
 the [State Machine Getting Started](README.md) doc.
-
----
-
-<br>
 
 ## 🔧 Functions
 
@@ -521,10 +505,8 @@ void menuDraw(void)
 For more, see [Workflow Example](README.md#-workflow-example) in
 the [State Machine Getting Started](README.md) doc.
 
----
+## ✏️ Last Modified
 
-<br>
-
-| Last modified | Author        | Description                                                            |
-|---------------|---------------|------------------------------------------------------------------------|
-| Oct 24, 2025  | Vitor Betmann | Updated document to comply with recent added coding style conventions. |
+| Last modified | Author (Discord)             | Description                      |
+|---------------|------------------------------|----------------------------------|
+| Nov 01, 2025  | Vitor Betmann (vitorbetmann) | Added emojis and removed <br>'s; |

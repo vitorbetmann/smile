@@ -1,29 +1,20 @@
 # LogInternal API 📝
 
 `LogInternal` provides a logging interface for Smile modules. It contains
-internal
-logging functionality and severity levels for warnings, errors, and fatal events
-inside Smile core modules.
+internal logging functionality and severity levels for warnings, errors, and
+fatal events inside Smile core modules.
 
 For coding guidelines, see
-the [Coding Contributing Doc](../_Contributing/2_Coding_Guidelines.md).
+the [Coding Guidelines](../_Contributing/2_Coding_Guidelines).
 
 ### 🚨 Warning! This module is not thread-safe!
 
----
-
-<br>
-
-## Table of Contents
+## 📋 Table of Contents
 
 - [Data Types](#-data-types)
     - [Enums](#-_enums_)
 - [Functions](#-functions)
     - [Log Related](#-_log-related_)
-
----
-
-<br>
 
 ## 📦 Data Types
 
@@ -48,10 +39,6 @@ message, ranging from user-defined messages to fatal errors.
 ```c
 lgInternalLog(LOG_ERROR, MODULE, CAUSE_NOT_STARTED, fnName, CONSEQ_ABORTED);
 ```
-
----
-
-<br>
 
 ## 🔧 Functions
 
@@ -121,10 +108,8 @@ bool smPrivateIsNameValid(const char *name, const char *fnName) {
 For coding guidelines, see
 the [Coding Contributing Doc](../_Contributing/2_Coding_Guidelines.md).
 
----
+## ✏️ Last Modified
 
-<br>
-
-| Last modified | Author        | Description       |
-|---------------|---------------|-------------------|
-| Oct 14, 2025  | Vitor Betmann | Created document. |
+| Last modified | Author (Discord)             | Description                      |
+|---------------|------------------------------|----------------------------------|
+| Nov 01, 2025  | Vitor Betmann (vitorbetmann) | Added emojis and removed <br>'s; |
