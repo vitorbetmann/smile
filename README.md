@@ -20,12 +20,13 @@ abstractions that keep your code lean, organized, and fully under your control.
   <img src="docs/_Internal/__Assets/Log/LogDemo.gif" width="45%"/>
 </p>
 
-## Why Smile?
+## 😊 Why Smile?
 
-Supported on Windows, Mac, and Linux, Smile is a modular collection of C
-libraries that streamline common 2D game-development tasks such as `managing
-states`, `simulating particles`, and `saving or loading data`. It’s
-built for developers who want simplicity without sacrificing control.
+Smile is a modular collection of C libraries that streamline common 2D
+game-development tasks such as `managing states`, `simulating particles`, and
+`saving or loading data`. It's supported on `Windows` and `Mac` (Linux untested
+but POSIX-compliant) and built for developers who want simplicity without
+sacrificing control.
 
 You can mix and match only the modules you need (for example, using StateMachine
 without ParticleSystem) to keep your project lightweight and focused. And while
