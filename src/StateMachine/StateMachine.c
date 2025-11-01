@@ -27,7 +27,6 @@
 
 #include "include/StateMachine.h"
 
-#include "Log.h"
 #include "StateMachineInternal.h"
 #include "StateMachineMessages.h"
 
@@ -186,7 +185,7 @@ bool smStateExists(const char *name)
     return smInternalGetEntry(name);
 }
 
-bool smSetState(const char *name, const void *args)
+bool smSetState(const char *name, void *args)
 {
     if (!smPrivateIsRunning(FN_SET_STATE))
     {
@@ -221,6 +220,15 @@ bool smSetState(const char *name, const void *args)
 
     if (tracker->currState && tracker->currState->enter)
     {
+#ifdef SMILE_DEVELOPER
+        if (args && smTestEnterWithArgs)
+        {
+            smTestEnterWithArgs(smMockData, args);
+        } else if (smTestEnter)
+        {
+            smTestEnter(smMockData);
+        }
+#endif
         tracker->currState->enter(args);
     }
 
@@ -329,7 +337,12 @@ float smGetDt(void)
     // TODO add Windows support
 #elif defined(__APPLE__) || defined(__linux__)
     struct timespec currentTime;
+
+#ifdef SMILE_DEVELOPER
+    currentTime = smMockCurrTime;
+#else
     clock_gettime(CLOCK_MONOTONIC, &currentTime);
+#endif
 
     /**
      * On the first call, lastTime is zero-initialized, so we default to a delta
@@ -338,7 +351,7 @@ float smGetDt(void)
      */
     if (tracker->lastTime.tv_sec == 0 && tracker->lastTime.tv_nsec == 0)
     {
-        dt = 1.0f / tracker->fps;
+        dt = (float) (1.0 / tracker->fps);
     } else
     {
         double tempDt = currentTime.tv_sec - tracker->lastTime.tv_sec +
@@ -393,6 +406,12 @@ bool smStop(void)
 
     if (tracker->currState && tracker->currState->exit)
     {
+#ifdef SMILE_DEVELOPER
+        if (smTestExit)
+        {
+            smTestExit(smMockData);
+        }
+#endif
         tracker->currState->exit();
     }
     tracker->currState = nullptr;
@@ -404,10 +423,24 @@ bool smStop(void)
         free(el->state->name);
         free(el->state);
         free(el);
+        tracker->stateCount--;
+    }
+
+    bool isFatal = false;
+    if (smGetStateCount() != 0)
+    {
+        isFatal = true;
     }
 
     free(tracker);
     tracker = nullptr;
+
+    if (isFatal)
+    {
+        lgInternalLog(FATAL, MODULE, CAUSE_FAILED_TO_FREE_ALL_STATES, FN_STOP,
+                      CONSEQ_ABORTED);
+        return false;
+    }
 
     lgInternalLog(INFO, MODULE, CAUSE_MODULE_STOPPED, FN_STOP,
                   CONSEQ_SUCCESSFUL);

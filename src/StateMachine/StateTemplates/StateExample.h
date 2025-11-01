@@ -20,7 +20,7 @@
 // Prototypes
 // -----------------------------------------------------------------------------
 
-void StateExampleEnter(const void *args);
+void StateExampleEnter(void *args);
 
 void StateExampleUpdate(float dt);
 

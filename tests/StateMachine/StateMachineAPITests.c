@@ -16,6 +16,7 @@
 // -----------------------------------------------------------------------------
 
 #include <assert.h>
+#include <math.h>
 #include <stdio.h>
 
 #include "StateMachineApiTests.h"
@@ -29,14 +30,20 @@
 // Mock & Test Functions
 // -----------------------------------------------------------------------------
 
-static void mockEnter(const void *args)
+static void mockEnter(void *args)
 {
-    if (!args)
-    {
-        return;
-    }
-    MockData *mockData = (MockData *) args;
-    mockData->enterCalled = true;
+    // Mock Enter
+}
+
+void onEnter(MockData *data)
+{
+    data->enterCount++;
+}
+
+void onEnterWithArgs(MockData *data, MockArgs *args)
+{
+    data->enterCount++;
+    args->flag = true;
 }
 
 static void mockUpdate(float dt)
@@ -54,17 +61,16 @@ static void mockExit(void)
     // Mock Exit
 }
 
-void onExit(MockData *args)
+void onExit(MockData *data)
 {
-    args->exitCalled = true;
+    data->exitCount++;
 }
-
 
 // -----------------------------------------------------------------------------
 // variables
 // -----------------------------------------------------------------------------
 
-static float mockDt = 0.016;
+static float mockDt = 0.016f;
 
 static InternalState mock = {
     .name = "mock",
@@ -82,8 +88,12 @@ static InternalState mock2 = {
     .exit = mockExit,
 };
 
+smTestEnterFn smTestEnter;
+smTestEnterWithArgsFn smTestEnterWithArgs;
 smTestExitFn smTestExit;
 MockData *smMockData;
+MockArgs *smMockArgs;
+struct timespec smMockCurrTime;
 
 
 // -----------------------------------------------------------------------------
@@ -227,8 +237,8 @@ void Test_smCreateState_AcceptsValidName(void)
 {
     smStart();
     assert(smCreateState(mock.name, mock.enter, nullptr, nullptr, nullptr));
-    tsInternalPass("Test_smCreateState_AcceptsValidName");
     smStop();
+    tsInternalPass("Test_smCreateState_AcceptsValidName");
 }
 
 void Test_smCreateState_RejectsExistingName(void)
@@ -505,7 +515,7 @@ void Test_smSetState_SucceedsChangingFromOneStateToAnotherWithNoArgs(void)
         "Test_smSetState_SucceedsChangingFromOneStateToAnotherWithNoArgs");
 }
 
-void Test_smSetState_CallsExitFunctionOfCurrentStateWhenNonNullExit(void)
+void Test_smSetState_CallsNonNullExitOfCurrentState(void)
 {
     smStart();
 
@@ -519,19 +529,18 @@ void Test_smSetState_CallsExitFunctionOfCurrentStateWhenNonNullExit(void)
     smSetState(mock.name, nullptr);
     smSetState(mock2.name, nullptr);
 
-    assert(mockData->exitCalled);
+    assert(mockData->exitCount == 1);
     free(mockData);
     smTestExit = nullptr;
     smMockData = nullptr;
 
     smStop();
     tsInternalPass(
-        "Test_smSetState_CallsExitFunctionOfCurrentStateWhenNonNullExit");
+        "Test_smSetState_CallsExitOfCurrentState");
 }
 
-void Test_smSetState_SkipsExitFunctionOfCurrentStateWhenNullExit(void)
+void Test_smSetState_SkipsNullExitOfCurrentState(void)
 {
-    // TODO
     smStart();
 
     MockData *mockData = calloc(1, sizeof(MockData));
@@ -544,29 +553,119 @@ void Test_smSetState_SkipsExitFunctionOfCurrentStateWhenNullExit(void)
     smSetState(mock.name, nullptr);
     smSetState(mock2.name, nullptr);
 
-    assert(!mockData->exitCalled);
+    assert(mockData->exitCount == 0);
     free(mockData);
     smTestExit = nullptr;
     smMockData = nullptr;
 
     smStop();
     tsInternalPass(
-        "Test_smSetState_SkipsExitFunctionOfCurrentStateWhenNullExit");
+        "Test_smSetState_SkipsNullExitOfCurrentState");
 }
 
-void Test_smSetState_CallsEnterFunctionOfNewState(void)
+void Test_smSetState_CallsNonNullEnterOfTargetState(void)
 {
-    // TODO
+    smStart();
+
+    MockData *mockData = calloc(1, sizeof(MockData));
+    smTestEnter = onEnter;
+    smMockData = mockData;
+
+    smCreateState(mock.name, nullptr, nullptr, nullptr, mockExit);
+    smCreateState(mock2.name, mockEnter, nullptr, nullptr, nullptr);
+
+    smSetState(mock.name, nullptr);
+    smSetState(mock2.name, nullptr);
+
+    assert(mockData->enterCount == 1);
+    free(mockData);
+    smTestEnter = nullptr;
+    smMockData = nullptr;
+
+    smStop();
+    tsInternalPass(
+        "Test_smSetState_CallsNonNullEnterOfTargetState");
 }
 
-void Test_smSetState_CallsExitAndEnterWhenChangingToSameState(void)
+void Test_smSetState_SkipsNullEnterOfTargetState(void)
 {
-    // TODO
+    smStart();
+
+    MockData *mockData = calloc(1, sizeof(MockData));
+    smTestEnter = onEnter;
+    smMockData = mockData;
+
+    smCreateState(mock.name, nullptr, mockUpdate, nullptr, nullptr);
+    smCreateState(mock2.name, nullptr, nullptr, nullptr, mockExit);
+
+    smSetState(mock.name, nullptr);
+    smSetState(mock2.name, nullptr);
+
+    assert(mockData->enterCount == 0);
+    free(mockData);
+    smTestEnter = nullptr;
+    smMockData = nullptr;
+
+    smStop();
+    tsInternalPass(
+        "Test_smSetState_SkipsNullEnterOfTargetState");
 }
 
-void Test_smSetState_CallsEnterFunctionWithArgs(void)
+void Test_smSetState_CallsNonNullExitAndNonNullEnterWhenTargetingSameState(
+    void)
 {
-    // TODO
+    smStart();
+
+    MockData *mockData = calloc(1, sizeof(MockData));
+    smTestEnter = onEnter;
+    smTestExit = onExit;
+    smMockData = mockData;
+
+    smCreateState(mock.name, mockEnter, nullptr, nullptr, mockExit);
+
+    smSetState(mock.name, nullptr);
+    smSetState(mock.name, nullptr);
+
+    assert(mockData->enterCount == 2);
+    assert(mockData->exitCount == 1);
+
+    free(mockData);
+    smTestEnter = nullptr;
+    smTestExit = nullptr;
+    smMockData = nullptr;
+
+    smStop();
+    tsInternalPass(
+        "Test_smSetState_CallsNonNullExitAndNonNullEnterWhenTargetingSameState");
+}
+
+void Test_smSetState_CallsNonNullEnterWithArgsOfTargetState(void)
+{
+    smStart();
+
+    MockData *mockData = calloc(1, sizeof(MockData));
+    MockArgs *mockArgs = calloc(1, sizeof(MockArgs));
+    smTestEnterWithArgs = onEnterWithArgs;
+    smMockData = mockData;
+    smMockArgs = mockArgs;
+
+    smCreateState(mock.name, nullptr, nullptr, nullptr, mockExit);
+    smCreateState(mock2.name, mockEnter, nullptr, nullptr, nullptr);
+
+    smSetState(mock.name, nullptr);
+    smSetState(mock2.name, smMockArgs);
+
+    assert(mockArgs->flag);
+
+    free(mockData);
+    free(mockArgs);
+    smTestEnter = nullptr;
+    smMockData = nullptr;
+    smMockArgs = nullptr;
+
+    smStop();
+    tsInternalPass(
+        "Test_smSetState_CallsEnterWithArgs");
 }
 
 // -- smGetCurrentStateName
@@ -662,14 +761,14 @@ void Test_smUpdate_FailsWhenNullCurrentState(void)
     tsInternalPass("Test_smUpdate_FailsWhenNullCurrentState");
 }
 
-void Test_smUpdate_CallsValidUpdateFunction(void)
+void Test_smUpdate_CallsNonNullUpdateOfCurrentState(void)
 {
     smStart();
     smCreateState(mock.name, nullptr, mock.update, nullptr, nullptr);
     smSetState(mock.name, nullptr);
     assert(smUpdate(mockDt));
     smStop();
-    tsInternalPass("Test_smUpdate_FailsWhenNullUpdate");
+    tsInternalPass("Test_smUpdate_CallsNonNullUpdateOfCurrentState");
 }
 
 void Test_smUpdate_FailsWhenNullUpdate(void)
@@ -684,9 +783,38 @@ void Test_smUpdate_FailsWhenNullUpdate(void)
 
 // -- smGetDt
 
-void Test_smGetDt_(void)
+void Test_smGetDt_UsesDefaultDtOnFirstCall(void)
 {
-    // TODO
+    smStart();
+    const float target = 1.0 / DEFAULT_FPS;
+    assert(smGetDt() == target);
+    smStop();
+    tsInternalPass("Test_smGetDt_UsesDefaultDtOnFirstCall");
+}
+
+void Test_smGetDt_UpdatesDtOnConsecutiveCalls(void)
+{
+    smStart();
+
+    // Arbitrary time for first smGetDt call
+    smMockCurrTime.tv_nsec = SM_GET_DT_FIRST_CALL_TIME_NS;
+    smMockCurrTime.tv_sec = 0;
+
+    smGetDt(); // First call uses default dt
+
+    for (int i = 0; i < FRAME_TIME_ITERATIONS; i++)
+    {
+        smMockCurrTime.tv_nsec += EXPECTED_DT * NANO_SEC_PER_SEC;
+        if (smMockCurrTime.tv_nsec >= NANO_SEC_PER_SEC)
+        {
+            smMockCurrTime.tv_sec += smMockCurrTime.tv_nsec / NANO_SEC_PER_SEC;
+            smMockCurrTime.tv_nsec %= NANO_SEC_PER_SEC;
+        }
+        assert(fabsf(smGetDt() - EXPECTED_DT) < DT_TOLERANCE);
+    }
+
+    smStop();
+    tsInternalPass("Test_smGetDt_UpdatesDtOnConsecutiveCalls");
 }
 
 
@@ -723,14 +851,50 @@ void Test_smDraw_FailsWhenNullDraw(void)
 
 // Stop Related
 
-void Test_smStop_CallsExitFunctionOfCurrentState(void)
+void Test_smStop_CallsNonNullExitOfCurrentState(void)
 {
-    // TODO
+    smStart();
+
+    MockData *mockData = calloc(1, sizeof(MockData));
+    smTestExit = onExit;
+    smMockData = mockData;
+
+    smCreateState(mock.name, nullptr, nullptr, nullptr, mockExit);
+    smSetState(mock.name, nullptr);
+
+    smStop();
+
+    assert(mockData->exitCount == 1);
+
+    free(mockData);
+    smTestExit = nullptr;
+    smMockData = nullptr;
+
+    tsInternalPass(
+        "Test_smStop_CallsExitOfCurrentState");
 }
 
-void Test_smStop_SkipsNullExit(void)
+void Test_smStop_SkipsNullExitOfCurrentState(void)
 {
-    // TODO
+    smStart();
+
+    MockData *mockData = calloc(1, sizeof(MockData));
+    smTestExit = onExit;
+    smMockData = mockData;
+
+    smCreateState(mock.name, mockEnter, nullptr, nullptr, nullptr);
+    smSetState(mock.name, nullptr);
+
+    smStop();
+
+    assert(mockData->exitCount == 0);
+
+    free(mockData);
+    smTestExit = nullptr;
+    smMockData = nullptr;
+
+    tsInternalPass(
+        "Test_smStop_SkipsNullExitOfCurrentState");
 }
 
 
@@ -838,19 +1002,55 @@ void Test_smStop_IsIdempotentPostStop(void)
 
 void TestStress_smCreateState_CreatingMultipleStatesCausesNoSkips(void)
 {
-    // TODO
+    smStart();
+    char buf[8];
+    for (int i = 0; i < STRESS_ITERATIONS; i++)
+    {
+        snprintf(buf, sizeof(buf), "%d", i);
+        smCreateState(buf, mockEnter, nullptr, nullptr, nullptr);
+    }
+    assert(smGetStateCount() == STRESS_ITERATIONS);
+    smStop();
+    tsInternalPass(
+        "TestStress_smCreateState_CreatingMultipleStatesCausesNoSkips");
 }
 
 void TestStress_smSetState_SettingStatesOftenCausesNoSkips(void)
 {
-    // TODO
+    smStart();
+    char buf[8];
+    for (int i = 0; i < STRESS_ITERATIONS; i++)
+    {
+        snprintf(buf, sizeof(buf), "%d", i);
+        smCreateState(buf, mockEnter, nullptr, nullptr, nullptr);
+    }
+    int counter = 0;
+    for (int i = 0; i < STRESS_ITERATIONS; i++)
+    {
+        snprintf(buf, sizeof(buf), "%d", i);
+        smSetState(buf, nullptr);
+        const int stateNum = atoi(smGetCurrentStateName());
+        assert(stateNum == counter);
+        counter++;
+    }
+    assert(counter == STRESS_ITERATIONS);
+    smStop();
+    tsInternalPass("TestStress_smSetState_SettingStatesOftenCausesNoSkips");
 }
 
 // Stop Related
 
 void TestStress_smStop_FreeingMultipleStatesCausesNoSkips(void)
 {
-    // TODO
+    smStart();
+    char buf[8];
+    for (int i = 0; i < STRESS_ITERATIONS; i++)
+    {
+        snprintf(buf, sizeof(buf), "%d", i);
+        smCreateState(buf, mockEnter, nullptr, nullptr, nullptr);
+    }
+    assert(smStop());
+    tsInternalPass("TestStress_smStop_FreeingMultipleStatesCausesNoSkips");
 }
 
 
@@ -897,15 +1097,15 @@ int main()
     Test_smCreateState_RejectsNullName();
     Test_smCreateState_RejectsEmptyName();
 
-    // TODO create more tests for different types of whitespace (\n, \t, \r...)
     // Test_smCreateState_RejectsWhitespaceOnlyStateName();
-    //
+    // TODO create more tests for different types of whitespace (\n, \t, \r...)
     // Test_smCreateState_AcceptsLeadingWhitespaceOnStateName();
     // Test_smCreateState_AcceptsTrailingWhitespaceOnStateName();
     // Test_smCreateState_AcceptsLeadingAndTrailingWhitespaceOnStateName();
     // Test_smCreateState_TrimsLeadingWhitespaceOnStateName();
     // Test_smCreateState_TrimsTrailingWhitespaceOnStateName();
     // Test_smCreateState_TrimsLeadingAndTrailingWhitespaceOnStateName();
+
     puts("  • State Functions Related");
     Test_smCreateState_AcceptsValidNameAndNoNullFunctions();
     Test_smCreateState_AcceptsValidNameAndNullEnter();
@@ -931,11 +1131,12 @@ int main()
     Test_smSetState_RejectsNullName();
     Test_smSetState_RejectsNonCreatedName();
     Test_smSetState_SucceedsChangingFromOneStateToAnotherWithNoArgs();
-    Test_smSetState_CallsExitFunctionOfCurrentStateWhenNonNullExit();
-    Test_smSetState_SkipsExitFunctionOfCurrentStateWhenNullExit();
-    Test_smSetState_CallsEnterFunctionOfNewState();
-    Test_smSetState_CallsExitAndEnterWhenChangingToSameState();
-    Test_smSetState_CallsEnterFunctionWithArgs();
+    Test_smSetState_CallsNonNullExitOfCurrentState();
+    Test_smSetState_SkipsNullExitOfCurrentState();
+    Test_smSetState_CallsNonNullEnterOfTargetState();
+    Test_smSetState_SkipsNullEnterOfTargetState();
+    Test_smSetState_CallsNonNullExitAndNonNullEnterWhenTargetingSameState();
+    Test_smSetState_CallsNonNullEnterWithArgsOfTargetState();
     puts(" • smGetCurrentStateName");
     Test_smGetCurrentStateName_FailsPreCreateState();
     Test_smGetCurrentStateName_ReturnsCurrentStateName();
@@ -948,17 +1149,19 @@ int main()
     puts("• Lifecycle Functions");
     puts(" • smUpdate");
     Test_smUpdate_FailsWhenNullCurrentState();
-    Test_smUpdate_CallsValidUpdateFunction();
+    Test_smUpdate_CallsNonNullUpdateOfCurrentState();
     Test_smUpdate_FailsWhenNullUpdate();
-    // TODO test with negative dt?
+    puts(" • smGetDt");
+    Test_smGetDt_UsesDefaultDtOnFirstCall();
+    Test_smGetDt_UpdatesDtOnConsecutiveCalls();
     puts(" • smDraw");
     Test_smDraw_FailsWhenNullCurrentState();
     Test_smDraw_CallsValidDrawFunction();
     Test_smDraw_FailsWhenNullDraw();
 
     puts("\nSTOP TESTING");
-    Test_smStop_CallsExitFunctionOfCurrentState();
-    Test_smStop_SkipsNullExit();
+    Test_smStop_CallsNonNullExitOfCurrentState();
+    Test_smStop_SkipsNullExitOfCurrentState();
     // TODO Check for no memory leaks
 
     puts("\nPOST-STOP TESTING");

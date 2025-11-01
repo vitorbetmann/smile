@@ -193,7 +193,7 @@ Then in your states' header files you could have something like:
 #ifndef MENU_H
 #define MENU_H
 
-void menuEnter(const void *args);
+void menuEnter(void *args);
 void menuUpdate(float dt);
 void menuDraw(void);
 void menuExit(void);
@@ -207,7 +207,7 @@ And in the source files:
 #include "menu.h"
 #include "StateMachine.h"
 
-void menuEnter(const void *args)
+void menuEnter(void *args)
 {
     // Handle initialization
 }

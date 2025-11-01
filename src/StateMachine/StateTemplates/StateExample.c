@@ -29,18 +29,22 @@
 // Functions
 // -----------------------------------------------------------------------------
 
-void StateExampleEnter(const void *args) {
+void StateExampleEnter(void *args)
+{
   // TODO
 }
 
-void StateExampleUpdate(float dt) {
+void StateExampleUpdate(float dt)
+{
   // TODO
 }
 
-void StateExampleDraw(void) {
+void StateExampleDraw(void)
+{
   // TODO
 }
 
-void StateExampleExit(void) {
+void StateExampleExit(void)
+{
   // TODO
 }

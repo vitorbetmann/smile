@@ -56,5 +56,7 @@
 #define CAUSE_NULL_CURR_STATE "Current State Is Null"
 #define CAUSE_NO_VALID_FUNCTIONS "State Has No Valid Functions"
 #define CAUSE_CANNOT_DELETE_CURR_STATE "Cannot Delete Current State"
+// Fatals
+#define CAUSE_FAILED_TO_FREE_ALL_STATES "Failed to Free All States"
 
 #endif // #ifndef SMILE_STATE_MACHINE_MESSAGES_H

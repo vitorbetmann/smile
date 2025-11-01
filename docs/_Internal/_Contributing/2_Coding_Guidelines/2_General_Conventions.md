@@ -381,7 +381,7 @@ bool smIsRunning(void);
 
 bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update, smDrawFn draw, smExitFn exit);
 bool smStateExists(const char *name);
-bool smSetState(const char *name, const void *args);
+bool smSetState(const char *name, void *args);
 int smGetStateCount(void);
 bool smDeleteState(const char *name);
 
@@ -745,7 +745,7 @@ start:
 #define FN_SET_STATE "SetState"
 
 -- In StateMachine.c
-bool smSetState(const char *name, const void *args)
+bool smSetState(const char *name, void *args)
 {
     ...
     
@@ -1045,7 +1045,7 @@ typedef struct {    -- Internal type
 
 ————————————————————————————————————————————————————————————————————————————————
 
-typedef void (*smEnterFn)(const void *args);    -- Public type
+typedef void (*smEnterFn)(void *args);    -- Public type
 ```
 
 ❌ Don't

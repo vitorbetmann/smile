@@ -29,7 +29,8 @@
  *
  * @author Vitor Betmann
  */
-typedef void (*smEnterFn)(const void *args);
+typedef void (*smEnterFn)(void *args);
+
 
 /**
  * @brief Function pointer type for state update callbacks.
@@ -126,7 +127,7 @@ bool smStateExists(const char *name);
  *
  * @author Vitor Betmann
  */
-bool smSetState(const char *name, const void *args);
+bool smSetState(const char *name, void *args);
 
 /**
  * @brief Retrieves the name of the currently active state.

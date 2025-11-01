@@ -44,8 +44,8 @@ The module’s header is `StateMachine.h`. Its full Smile path is:
 
 ### — _Function Pointers_
 
-| `void (*smEnterFn)(const void *args)` |
-|---------------------------------------|
+| `void (*smEnterFn)(void *args)` |
+|---------------------------------|
 
 Function pointer type for state enter callbacks.
 
@@ -67,7 +67,7 @@ typedef struct {
 
 PlayerData *myPlayerData;
 
-void myStateEnter(const void *args)
+void myStateEnter(void *args)
 {
     myPlayerData = malloc(sizeof(PlayerData));
     if (!myPlayerData)
@@ -293,8 +293,8 @@ if (!smStateExists("level 1"))
 
 <br>
 
-| `bool smSetState(const char *name, const void *args)` |
-|-------------------------------------------------------|
+| `bool smSetState(const char *name, void *args)` |
+|-------------------------------------------------|
 
 Sets the current active state by name and triggers its enter function.
 
