@@ -83,11 +83,7 @@ typedef struct {
   const InternalState *currState;
   int stateCount;
   int fps;
-#if defined(_WIN32)
-  // TODO add Windows support
-#else
   struct timespec lastTime;
-#endif
 } InternalTracker;
 
 

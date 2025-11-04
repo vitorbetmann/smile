@@ -132,14 +132,19 @@ bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update,
         return false;
     }
 
-    char *nameCopy = tsInternalMalloc(strlen(name) + 1);
+    const size_t nameSize = strlen(name) + 1;
+    char *nameCopy = tsInternalMalloc(nameSize);
     if (!nameCopy)
     {
         lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,FN_CREATE_STATE,
                       CONSEQ_ABORTED);
         goto nameCopyError;
     }
+#ifdef _WIN32
+    strcpy_s(nameCopy, nameSize, name); // Safe ver. of strcpy. Non-standard
+#elif defined(__APPLE__) || defined (__linux__)
     strcpy(nameCopy, name);
+#endif
 
     state->name = nameCopy;
     state->enter = enter;
@@ -333,10 +338,6 @@ float smGetDt(void)
     }
 
     float dt;
-
-#if defined(_WIN32)
-    // TODO add Windows support
-#elif defined(__APPLE__) || defined(__linux__)
     struct timespec currentTime;
 
 #ifdef SMILE_DEVELOPER
@@ -345,8 +346,7 @@ float smGetDt(void)
     clock_gettime(CLOCK_MONOTONIC, &currentTime);
 #endif
 
-    /**
-     * On the first call, lastTime is zero-initialized, so we default to a delta
+    /* On the first call, lastTime is zero-initialized, so we default to a delta
      * time based on the target FPS. This prevents an abnormally large dt, since
      * we don't know how long after program start clock_gettime() is invoked.
      */
@@ -361,7 +361,6 @@ float smGetDt(void)
     }
 
     tracker->lastTime = currentTime;
-#endif
 
     return dt;
 }
