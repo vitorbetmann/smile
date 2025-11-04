@@ -141,7 +141,7 @@ bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update,
         goto nameCopyError;
     }
 #ifdef _WIN32
-    strcpy_s(nameCopy, nameSize, name); // Safe ver. of strcpy. Non-standard
+    strcpy_s(nameCopy, nameSize, name); // Safe version of strcpy. Non-standard
 #elif defined(__APPLE__) || defined (__linux__)
     strcpy(nameCopy, name);
 #endif
