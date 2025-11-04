@@ -1,12 +1,13 @@
 /**
  * @file
- * @brief Declarations of data structures and functions for the
- *        StateMachineAPI Test suite.
+ * @brief Declarations of data types and variables for the StateMachine module
+ *        and its test suite.
  *
+ * @see StateMachine.c
  * @see StateMachineAPITests.c
  *
  * @author Vitor Betmann
- * @date 2025-11-03
+ * @date 2025-11-04
  * @version 1.0.0
  */
 
@@ -32,24 +33,54 @@
 // Data types
 // -----------------------------------------------------------------------------
 
+/**
+ * @brief Stores counters and mock state data used during test execution.
+ */
 typedef struct {
     int enterCount;
     int exitCount;
 } MockData;
 
+/**
+ * @brief Represents a simple mock argument structure passed to state functions.
+ */
 typedef struct {
     bool flag;
 } MockArgs;
 
+/**
+ * @brief Function pointer type for testing state entry callbacks without
+ *        arguments.
+ *
+ * @param data Pointer to  MockData used to track invocation counts.
+ *
+ * @author Vitor Betmann
+ */
 typedef void (*smTestEnterFn)(MockData *data);
 
+/**
+ * @brief Function pointer type for testing state entry callbacks that receive
+ *        arguments.
+ *
+ * @param data Pointer to MockData used to track invocation counts.
+ * @param args Pointer to  MockArgs containing the mock arguments.
+ *
+ * @author Vitor Betmann
+ */
 typedef void (*smTestEnterWithArgsFn)(MockData *data, MockArgs *args);
 
+/**
+ * @brief Function pointer type for testing state exit callbacks.
+ *
+ * @param data Pointer to  MockData used to track invocation counts.
+ *
+ * @author Vitor Betmann
+ */
 typedef void (*smTestExitFn)(MockData *data);
 
 
 // -----------------------------------------------------------------------------
-// Prototypes
+// Variables
 // -----------------------------------------------------------------------------
 
 extern smTestEnterFn smTestEnter;

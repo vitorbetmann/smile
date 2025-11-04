@@ -11,7 +11,7 @@
  * @see StateMachineMessages.h
  *
  * @author Vitor Betmann
- * @date 2025-11-03
+ * @date 2025-11-04
  * @version 1.0.0
  */
 
@@ -44,6 +44,8 @@
  *
  * Each state includes optional lifecycle functions for handling entry,
  * update, drawing, and exit logic.
+ *
+ * @author Vitor Betmann
  */
 typedef struct {
   char *name;
@@ -58,6 +60,8 @@ typedef struct {
  *
  * Used internally by the state machine to efficiently look up states
  * by name using uthash.
+ *
+ * @author Vitor Betmann
  */
 typedef struct {
   char *name;
@@ -71,6 +75,8 @@ typedef struct {
  * Contains all runtime information such as registered states, the current
  * active state, frame rate settings, and timing data used for delta time
  * calculations.
+ *
+ * @author Vitor Betmann
  */
 typedef struct {
   InternalStateMap *stateMap;
@@ -93,7 +99,10 @@ typedef struct {
  * @brief Retrieves a pointer to a State by name.
  *
  * @param name The name of the state to look up.
+ *
  * @return Pointer to the matching State, or NULL if not found.
+ *
+ * @author Vitor Betmann
  */
 const InternalState *smInternalGetState(const char *name);
 
@@ -101,7 +110,10 @@ const InternalState *smInternalGetState(const char *name);
  * @brief Retrieves a pointer to a StateMap entry by name.
  *
  * @param name The name of the state entry to look up.
+ *
  * @return Pointer to the matching StateMap entry, or NULL if not found.
+ *
+ * @author Vitor Betmann
  */
 InternalStateMap *smInternalGetEntry(const char *name);
 

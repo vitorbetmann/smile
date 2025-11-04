@@ -42,12 +42,12 @@ static void mockEnter(void *args)
     // Mock Enter
 }
 
-void onEnter(MockData *data)
+static void onEnter(MockData *data)
 {
     data->enterCount++;
 }
 
-void onEnterWithArgs(MockData *data, MockArgs *args)
+static void onEnterWithArgs(MockData *data, MockArgs *args)
 {
     data->enterCount++;
     args->flag = true;
@@ -68,7 +68,7 @@ static void mockExit(void)
     // Mock Exit
 }
 
-void onExit(MockData *data)
+static void onExit(MockData *data)
 {
     data->exitCount++;
 }
