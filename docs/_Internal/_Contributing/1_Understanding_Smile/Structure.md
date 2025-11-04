@@ -1,9 +1,5 @@
 # The Structure Of Smile 🏛️
 
----
-
-<br>
-
 ## Table of Contents
 
 - [Smile's Project Root Directory](#-smiles-project-root-directory)
@@ -14,10 +10,6 @@
     - [docs](#-_docs_)
     - [test](#-_test_)
 - [Up Next](#up-next)
-
----
-
-<br>
 
 ## 🌳 Smile's Project Root Directory
 
@@ -141,10 +133,6 @@ The `Log` module ...
 
 <br>
 
----
-
-<br>
-
 ## Naming Conventions
 
 ### — _Folders_
@@ -160,10 +148,6 @@ The `Log` module ...
 ## Up Next
 
 [2.1_Coding_Guidelines - Code Organization](../2_Coding_Guidelines/Code_Organization.md)
-
----
-
-<br>
 
 | Last modified | Author        | Description       |
 |---------------|---------------|-------------------|

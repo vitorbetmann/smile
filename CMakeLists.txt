@@ -135,35 +135,35 @@ endif ()
 option(SMILE_BUILD_TESTS "Build test executables" OFF)
 
 if (SMILE_BUILD_TESTS)
-    function(add_smile_test name)
-        file(GLOB TEST_SRC "${CMAKE_CURRENT_SOURCE_DIR}/tests/${name}/*.c")
+    # Helper function for adding a module API test
+    function(add_smile_api_test module_name)
+        file(GLOB TEST_SRC "${CMAKE_CURRENT_SOURCE_DIR}/tests/${module_name}/*.c")
         if (TEST_SRC)
-            set(test_target "${name}Test")
+            set(test_target "${module_name}APITest")
             add_executable(${test_target} ${TEST_SRC})
             target_link_libraries(${test_target} PRIVATE smile)
-            # Inherit include dirs from the main library for consistency
             target_include_directories(${test_target} PRIVATE
                     ${CMAKE_CURRENT_SOURCE_DIR}
                     $<TARGET_PROPERTY:smile,INTERFACE_INCLUDE_DIRECTORIES>
                     $<TARGET_PROPERTY:smile,INCLUDE_DIRECTORIES>
             )
         else ()
-            message(WARNING "No test source files found for ${name}")
+            message(WARNING "No API test source files found for module: ${module_name}")
         endif ()
     endfunction()
 
     # --------------------------
-    # PUBLIC TESTS
+    # PUBLIC API TESTS
     # --------------------------
-    add_smile_test(SaveLoad)
-    add_smile_test(StateMachine)
+    add_smile_api_test(SaveLoad)
+    add_smile_api_test(StateMachine)
 
     # --------------------------
-    # INTERNAL TESTS
+    # INTERNAL API TESTS
     # --------------------------
-    # TODO add_smile_test(CommonInternalTest)
-    # TODO add_smile_test(LogInternalTest)
-    # TODO add_smile_test(TestInternalTest)
+    # TODO add_smile_api_test(CommonInternal)
+    # TODO add_smile_api_test(LogInternal)
+    # TODO add_smile_api_test(TestInternal)
 endif ()
 
 

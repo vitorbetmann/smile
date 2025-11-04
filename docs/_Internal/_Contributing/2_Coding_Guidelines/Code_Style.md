@@ -30,7 +30,7 @@ consistency, readability, maintainability, and safety across all modules.
 
 ### — _Golden Rule_
 
-#### ⚠️ Never use globals in Smile.
+#### ⚠️ Never use globals in Smile unless it's for testing.
 
 ### — _Variables and Constants_
 
@@ -193,7 +193,9 @@ char *name, grade;    -- Misleading! Only one is a pointer
     * Use `#define` for primitive values and strings.
     * Use `enum` for related groups of integer constants.
     * Use `static const` for array/struct constants private to a file.
-* All constants must use SCREAMING_SNAKE_CASE.
+* All non-pointer constants must use SCREAMING_SNAKE_CASE.
+* `const *` variables may use camelCase if the data is meant to be read-only (
+  i.e., the pointer can change, but the content cannot).
 * ⚠️ Never use `#define` to create function-like macros.
 
 ✅ Do
@@ -228,6 +230,13 @@ static const float IDENTITY_MATRIX[16] = {    -- static const for file-scoped ar
     0, 0, 1, 0,
     0, 0, 0, 1
 };
+
+————————————————————————————————————————————————————————————————————————————————
+
+const InternalState *currState;    -- Pointer can change, content cannot.
+
+const InternalState *const CURR_STATE;    -- Neither pointer nor content can change.
+
 ```
 
 ❌ Don't
@@ -249,6 +258,11 @@ void myFunc(void)
 ————————————————————————————————————————————————————————————————————————————————
 
 #define SQUARE(x) ((x) * (x))    -- Function-like macro     
+
+————————————————————————————————————————————————————————————————————————————————
+
+const InternalState *CURR_STATE;    -- Misleading! Indicates pointer cannot change.
+
 ```
 
 <br>

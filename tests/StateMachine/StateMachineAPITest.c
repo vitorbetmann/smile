@@ -6,13 +6,6 @@
  *
  * @bug No known bugs.
  *
- * @note TODO create tests for different types of whitespace (\n, \t, \r...)
- *       Suggestions:
- *       - Test_smCreateState_RejectsWhitespaceOnlyName
- *       - Test_smCreateState_AcceptsAndTrimsLeadingWhitespaceOnName
- *       - Test_smCreateState_AcceptsAndTrimsTrailingWhitespaceOnName
- *       - Test_smCreateState_AcceptsAndTrimsLeadingAndTrailingWhitespaceOnName
- *
  * @author Vitor Betmann
  * @date 2025-11-03
  * @version 1.0.0
