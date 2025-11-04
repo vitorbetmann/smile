@@ -132,8 +132,8 @@ bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update,
         return false;
     }
 
-    const size_t nameSize = strlen(name) + 1;
-    char *nameCopy = tsInternalMalloc(nameSize);
+    const size_t NAME_SIZE = strlen(name) + 1;
+    char *nameCopy = tsInternalMalloc(NAME_SIZE);
     if (!nameCopy)
     {
         lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,FN_CREATE_STATE,
@@ -141,7 +141,7 @@ bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update,
         goto nameCopyError;
     }
 #ifdef _WIN32
-    strcpy_s(nameCopy, nameSize, name); // Safe version of strcpy. Non-standard
+    strcpy_s(nameCopy, NAME_SIZE, name); // Safe version of strcpy. Non-standard
 #elif defined(__APPLE__) || defined (__linux__)
     strcpy(nameCopy, name);
 #endif

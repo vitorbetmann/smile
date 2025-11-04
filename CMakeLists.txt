@@ -39,16 +39,6 @@ endif ()
 
 
 # ------------------------------------------------------------------------------
-# RAYLIB CONFIGURATION
-# ------------------------------------------------------------------------------
-
-# Path to the bundled Raylib static library and headers (in external/raylib/)
-set(RAYLIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/raylib")
-set(RAYLIB_LIB "${RAYLIB_DIR}/libraylib.a")     # precompiled static lib
-set(RAYLIB_INCLUDE "${RAYLIB_DIR}/include")     # include headers
-
-
-# ------------------------------------------------------------------------------
 # BUILD THE "smile" STATIC LIBRARY
 # ------------------------------------------------------------------------------
 
@@ -65,12 +55,6 @@ add_library(smile STATIC ${SRC_FILES})
 if (SMILE_DEVELOPER)
     target_compile_definitions(smile PRIVATE SMILE_DEVELOPER)
 endif ()
-
-# Add raylib headers so Smile can include them internally
-target_include_directories(smile PRIVATE "${RAYLIB_INCLUDE}")
-
-# Link the precompiled raylib static library into Smile
-target_link_libraries(smile PRIVATE "${RAYLIB_LIB}")
 
 
 # ------------------------------------------------------------------------------
