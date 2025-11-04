@@ -1,42 +1,22 @@
 /**
-* @file
+ * @file
  * @brief Implementation of the StateMachine API Tests.
  *
  * @see StateMachineAPITests.h
  *
  * @bug No known bugs.
  *
+ * @note TODO create tests for different types of whitespace (\n, \t, \r...)
+ *       Suggestions:
+ *       - Test_smCreateState_RejectsWhitespaceOnlyName
+ *       - Test_smCreateState_AcceptsAndTrimsLeadingWhitespaceOnName
+ *       - Test_smCreateState_AcceptsAndTrimsTrailingWhitespaceOnName
+ *       - Test_smCreateState_AcceptsAndTrimsLeadingAndTrailingWhitespaceOnName
+ *
  * @author Vitor Betmann
- * @date 2025-10-29
+ * @date 2025-11-03
  * @version 1.0.0
  */
-
-// TODO create more tests for different types of whitespace (\n, \t, \r...)
-
-void Test_smCreateState_RejectsLongName(void)
-{
-    // TODO
-}
-
-void Test_smCreateState_RejectsWhitespaceOnlyName(void)
-{
-    // TODO
-}
-
-void Test_smCreateState_AcceptsAndTrimsLeadingWhitespaceOnName(void)
-{
-    // TODO
-}
-
-void Test_smCreateState_AcceptsAndTrimsTrailingWhitespaceOnName(void)
-{
-    // TODO
-}
-
-void Test_smCreateState_AcceptsAndTrimsLeadingAndTrailingWhitespaceOnName(void)
-{
-    // TODO
-}
 
 // -----------------------------------------------------------------------------
 // Includes
@@ -46,7 +26,7 @@ void Test_smCreateState_AcceptsAndTrimsLeadingAndTrailingWhitespaceOnName(void)
 #include <math.h>
 #include <stdio.h>
 
-#include "StateMachineApiTests.h"
+#include "StateMachineAPITest.h"
 
 #include "StateMachineInternal.h"
 #include "include/StateMachine.h"
@@ -806,11 +786,11 @@ void Test_smGetDt_UpdatesDtOnConsecutiveCalls(void)
 
     for (int i = 0; i < FRAME_TIME_ITERATIONS; i++)
     {
-        smMockCurrTime.tv_nsec += EXPECTED_DT * NANO_SEC_PER_SEC;
-        if (smMockCurrTime.tv_nsec >= NANO_SEC_PER_SEC)
+        smMockCurrTime.tv_nsec += EXPECTED_DT * NANOSEC_PER_SEC;
+        if (smMockCurrTime.tv_nsec >= NANOSEC_PER_SEC)
         {
-            smMockCurrTime.tv_sec += smMockCurrTime.tv_nsec / NANO_SEC_PER_SEC;
-            smMockCurrTime.tv_nsec %= NANO_SEC_PER_SEC;
+            smMockCurrTime.tv_sec += smMockCurrTime.tv_nsec / NANOSEC_PER_SEC;
+            smMockCurrTime.tv_nsec %= NANOSEC_PER_SEC;
         }
         assert(fabsf(smGetDt() - EXPECTED_DT) < DT_TOLERANCE);
     }

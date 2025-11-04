@@ -5,10 +5,14 @@
  * Defines the module name, function identifiers, causes, and consequences
  * used when logging from the StateMachine.
  *
+ * @see StateMachine.c
+ * @see StateMachine.h
+ * @see StateMachineInternal.h
+ *
  * @note Check CommonInternalMessages.h before adding new messages.
  *
  * @author Vitor Betmann
- * @date 2025-10-29
+ * @date 2025-11-03
  * @version 1.0.0
  */
 

@@ -7,11 +7,12 @@
  * deleting game states. Each state encapsulates its own behavior using callback
  * functions for entry, update, drawing, and exit events.
  *
- * @note Internal data structures and helper functions are defined in
- *       StateMachineInternal.h.
+ * @see StateMachine.c
+ * @see StateMachineInternal.h
+ * @see StateMachineMessages.h
  *
  * @author Vitor Betmann
- * @date 2025-10-29
+ * @date 2025-11-03
  * @version 1.0.0
  */
 

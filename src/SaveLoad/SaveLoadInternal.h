@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 // --------------------------------------------------
-// Other defines
+// Defines
 // --------------------------------------------------
 
 #define SMILE_DIR "SmileEngine/"

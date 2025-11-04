@@ -1,16 +1,23 @@
+/**
+ * @file
+ * @brief Declarations of data structures and functions for the
+ *        StateMachineAPI Test suite.
+ *
+ * @see StateMachineAPITests.c
+ *
+ * @author Vitor Betmann
+ * @date 2025-11-03
+ * @version 1.0.0
+ */
+
 #ifndef SMILE_STATE_MACHINE_API_TESTS_H
 #define SMILE_STATE_MACHINE_API_TESTS_H
 
 // -----------------------------------------------------------------------------
-// Includes
+// Defines
 // -----------------------------------------------------------------------------
 
-
-// -----------------------------------------------------------------------------
-// Other Defines
-// -----------------------------------------------------------------------------
-
-#define NANO_SEC_PER_SEC 1000000000
+#define NANOSEC_PER_SEC 1000000000
 
 #define STRESS_ITERATIONS 1000
 #define FRAME_TIME_ITERATIONS 300

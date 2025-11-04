@@ -32,7 +32,7 @@
 #include "src/Log/LogInternal.h"
 #include "src/_Internal/Common/CommonInternalMessages.h"
 #include "src/_Internal/Test/TestInternal.h"
-#include "tests/StateMachine/StateMachineApiTests.h"
+#include "tests/StateMachine/StateMachineAPITest.h"
 
 
 // -----------------------------------------------------------------------------
@@ -80,7 +80,9 @@ bool smStart(void)
         return false;
     }
 
-    tracker->fps = DEFAULT_FPS;
+    tracker->fps = DEFAULT_FPS; /* This is just for future reference.
+                                 * For now, Smile doesn't cap the FPS.
+                                 */
 
     lgInternalLog(INFO, MODULE, CAUSE_MODULE_STARTED, FN_START,
                   CONSEQ_SUCCESSFUL);

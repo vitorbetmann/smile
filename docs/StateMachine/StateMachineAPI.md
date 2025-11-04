@@ -419,6 +419,7 @@ Calculates and returns the delta time since the last frame update.
 - Notes:
     - Delta time is measured using a high-resolution monotonic clock. On the
       first call, it returns a duration equivalent to one frame at 60 FPS.
+      After that, the FPS rate is treated as uncapped.
 
 ✅ Example
 

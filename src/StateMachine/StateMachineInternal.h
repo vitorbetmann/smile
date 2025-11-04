@@ -6,10 +6,12 @@
  * Defines the private types, constants, and utilities used internally by
  * StateMachine to manage states, timing, and runtime context.
  *
- * @note For the public API, see StateMachine.h.
+ * @see StateMachine.c
+ * @see StateMachine.h
+ * @see StateMachineMessages.h
  *
  * @author Vitor Betmann
- * @date 2025-10-29
+ * @date 2025-11-03
  * @version 1.0.0
  */
 
