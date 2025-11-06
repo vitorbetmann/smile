@@ -6,25 +6,21 @@
 for SMILE. These functions can be used in production for safe allocations and
 logging, and in unit tests to simulate failures.
 
-For testing guidelines, see
-the [Testing Contributing Doc](../_Contributing/4_Testing_Guidelines).
-
-For coding guidelines, see
-the [Coding Guidelines](../_Contributing/2_Coding_Guidelines).
-
 ### 🚨 Warning! This module is not thread-safe!
+
+---
 
 ## 📋 Table of Contents
 
 - [Data Types](#-data-types)
-    - [Enums](#-_enums_)
+    - [Enums](#-enums)
 - [Functions](#-functions)
-    - [Test Suites Related](#-_test-suites-related_)
-    - [Memory Allocation Related](#-_memory-allocation-related_)
+    - [Test Suites Related](#-test-suites-related)
+    - [Memory Allocation Related](#-memory-allocation-related)
 
 ## 📦 Data Types
 
-### — _Enums_
+### — Enums
 
 | `MemAllocFn` |
 |--------------|
@@ -39,7 +35,7 @@ fail.
 | `CALLOC`  | calloc()  |
 | `REALLOC` | realloc() |
 
-**Example:**
+✅ Example
 
 ```c
 void Test_smStart_FailsIfCallocFails(void) {
@@ -56,7 +52,7 @@ the [Testing Contributing Doc](../_Contributing/3_Testing.md).
 
 ## 🔧 Functions
 
-### — _Test Suites Related_
+### — Test Suites Related
 
 | `void tsInternalPass(const char *fnName)` |
 |-------------------------------------------|
@@ -66,7 +62,7 @@ Logs a `[PASS]` message for a successful test or operation.
 - **Parameters:**
     - `fnName` — Name of the test function or operation that passed.
 
-**Example:**
+✅ Example
 
 ```c
 void Test_smHasStarted_FailsPreStart(void) {
@@ -74,8 +70,6 @@ void Test_smHasStarted_FailsPreStart(void) {
     tsInternalPass("Test_smHasStarted_FailsPreStart");
 }
 ```
-
-<br>
 
 | `bool tsInternalDisable(MemAllocFn fnName, unsigned int at)` |
 |--------------------------------------------------------------|
@@ -91,7 +85,7 @@ occurs, normal behavior resumes.
 - **Returns:** `true` if successfully disabled, `false` if an invalid function
   type is given.
 
-**Example:**
+✅ Example
 
 ```c
 void Test_smStart_FailsIfCallocFails(void) {
@@ -103,7 +97,7 @@ void Test_smStart_FailsIfCallocFails(void) {
 
 ---
 
-### — _Memory Allocation Related_
+### — Memory Allocation Related
 
 | `void *tsInternalMalloc(size_t size)` |
 |---------------------------------------|
@@ -115,7 +109,7 @@ Wrapper around `malloc()` with optional failure simulation.
 - **Returns:** Pointer to allocated memory, or `nullptr` if failure is
   simulated.
 
-**Example:**
+✅ Example
 
 ```c
 State *state = tsInternalMalloc(sizeof(State));
@@ -125,8 +119,6 @@ if (!state) {
     return false;
 }
 ```
-
-<br>
 
 | `void *tsInternalCalloc(size_t nitems, size_t size)` |
 |------------------------------------------------------|
@@ -139,7 +131,7 @@ Wrapper around `calloc()` with optional failure simulation.
 - **Returns:** Pointer to allocated memory, or `nullptr` if failure is
   simulated.
 
-**Example:**
+✅ Example
 
 ```c
 tracker = tsInternalCalloc(1, sizeof(StateMachineTracker));
@@ -149,8 +141,6 @@ if (!tracker) {
     return false;
 }
 ```
-
-<br>
 
 | `void *tsInternalRealloc(void *ptr, size_t size)` |
 |---------------------------------------------------|
@@ -163,19 +153,14 @@ Wrapper around `realloc()` with optional failure simulation.
 - **Returns:** Pointer to reallocated memory, or `nullptr` if failure is
   simulated.
 
-**Example:**
+✅ Example
 
 ```c
 // NO EXAMPLE YET
 ```
 
-<br>
-
-For coding guidelines, see
-the [Coding Contributing Doc](../_Contributing/1_Coding.md).
-
 ## ✏️ Last Modified
 
-| Last modified | Author (Discord)             | Description                      |
-|---------------|------------------------------|----------------------------------|
-| Nov 01, 2025  | Vitor Betmann (vitorbetmann) | Added emojis and removed <br>'s; |
+| Last modified | Author (Discord)             | Description         |
+|---------------|------------------------------|---------------------|
+| Nov 06, 2025  | Vitor Betmann (vitorbetmann) | Some minor cleanup; |

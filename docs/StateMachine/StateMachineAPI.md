@@ -30,7 +30,7 @@ The module’s header is `StateMachine.h`. Its full Smile path is:
 
 ## 📦 Data Types
 
-### — _Function Pointers_
+### — Function Pointers
 
 | `void (*smEnterFn)(void *args)` |
 |---------------------------------|
@@ -68,8 +68,6 @@ void myStateEnter(void *args)
 }
 ```
 
-<br>
-
 | `void (*smUpdateFn)(float dt)` |
 |--------------------------------|
 
@@ -86,8 +84,6 @@ void myStateUpdate(float dt)
     myPlayerData->xPosition += 5.0f * dt;
 }
 ```
-
-<br>
 
 | `void (*smDrawFn)(void)` |
 |--------------------------|
@@ -113,8 +109,6 @@ void myStateDraw(void)
 }
 ```
 
-<br>
-
 | `void (*smExitFn)(void)` |
 |--------------------------|
 
@@ -129,14 +123,9 @@ void myStateExit(void) {
 }
 ```
 
-<br>
+## 🛠️ Functions
 
-For more, see [Workflow Example](README.md#-workflow-example) in
-the [State Machine Getting Started](README.md) doc.
-
-## 🔧 Functions
-
-### — _Start Related_
+### — Start Related
 
 | `bool smStart(void)` |
 |----------------------|
@@ -160,8 +149,6 @@ int main(void) {
 }
 ```
 
-<br>
-
 | `bool smIsRunning(void)` |
 |--------------------------|
 
@@ -177,14 +164,9 @@ while (smIsRunning()) {
 }
 ```
 
-<br>
-
-For more, see [Workflow Example](README.md#-workflow-example) in
-the [State Machine Getting Started](README.md) doc.
-
 ---
 
-### — _State Functions_
+### — State Functions
 
 | `bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update, smDrawFn draw, smExitFn exit)` |
 |----------------------------------------------------------------------------------------------------------|
@@ -254,8 +236,6 @@ int main(void)
 }
 ```
 
-<br>
-
 | `bool smStateExists(const char *name)` |
 |----------------------------------------|
 
@@ -274,8 +254,6 @@ if (!smStateExists("level 1"))
     smCreateState("level 1", enter, update, draw, exit);
 }
 ```
-
-<br>
 
 | `bool smSetState(const char *name, void *args)` |
 |-------------------------------------------------|
@@ -312,8 +290,6 @@ PlayerScore score = { 10, 50 };
 smSetState("level 2", &score);
 ```
 
-<br>
-
 | `const char *smGetCurrentStateName(void)` |
 |-------------------------------------------|
 
@@ -335,8 +311,6 @@ Retrieves the name of the currently active state.
 const char *currState = smGetCurrentStateName();
 ```
 
-<br>
-
 | `bool smDeleteState(const char *name)` |
 |----------------------------------------|
 
@@ -355,8 +329,6 @@ Deletes a state by name from the state machine.
 ```c
 smDeleteState("level 1");
 ```
-
-<br>
 
 | `int smGetStateCount(void)` |
 |-----------------------------|
@@ -379,7 +351,7 @@ the [State Machine Getting Started](README.md) doc.
 
 ---
 
-### — _Lifecycle Functions_
+### — Lifecycle Functions
 
 | `bool smUpdate(float dt)` |
 |---------------------------|
@@ -406,8 +378,6 @@ while (smIsRunning())
 }
 ```
 
-<br>
-
 | `float smGetDt(void)` |
 |-----------------------|
 
@@ -432,8 +402,6 @@ while (smIsRunning())
 }
 ```
 
-<br>
-
 | `bool smDraw(void)` |
 |---------------------|
 
@@ -455,14 +423,9 @@ while (smIsRunning())
 }
 ```
 
-<br>
-
-For more, see [Workflow Example](README.md#-workflow-example) in
-the [State Machine Getting Started](README.md) doc.
-
 ---
 
-### — _Stop Related_
+### — Stop Related
 
 | `bool smStop(void)` |
 |---------------------|
@@ -501,13 +464,13 @@ void menuDraw(void)
 }
 ```
 
-<br>
+## 🔄 Workflow Example
 
 For more, see [Workflow Example](README.md#-workflow-example) in
 the [State Machine Getting Started](README.md) doc.
 
 ## ✏️ Last Modified
 
-| Last modified | Author (Discord)             | Description                      |
-|---------------|------------------------------|----------------------------------|
-| Nov 01, 2025  | Vitor Betmann (vitorbetmann) | Added emojis and removed <br>'s; |
+| Last modified | Author (Discord)             | Description         |
+|---------------|------------------------------|---------------------|
+| Nov 06, 2025  | Vitor Betmann (vitorbetmann) | Some minor cleanup; |

@@ -4,21 +4,20 @@
 internal logging functionality and severity levels for warnings, errors, and
 fatal events inside Smile core modules.
 
-For coding guidelines, see
-the [Coding Guidelines](../_Contributing/2_Coding_Guidelines).
-
 ### 🚨 Warning! This module is not thread-safe!
+
+---
 
 ## 📋 Table of Contents
 
 - [Data Types](#-data-types)
-    - [Enums](#-_enums_)
+    - [Enums](#-enums)
 - [Functions](#-functions)
-    - [Log Related](#-_log-related_)
+    - [Log Related](#log-related)
 
 ## 📦 Data Types
 
-### — _Enums_
+### — Enums
 
 | `LogLevel` |
 |------------|
@@ -34,15 +33,15 @@ message, ranging from user-defined messages to fatal errors.
 | `LOG_ERROR`   | Reports game-breaking errors. E.g. memory allocation failed.                                         | Red    |
 | `LOG_FATAL`   | Reports program breaking errors. E.g. failing to close a file.                                       | Purple |
 
-**Example:**
+✅ Example
 
 ```c
 lgInternalLog(LOG_ERROR, MODULE, CAUSE_NOT_STARTED, fnName, CONSEQ_ABORTED);
 ```
 
-## 🔧 Functions
+## 🛠️ Functions
 
-### — _Log Related_
+### — Log Related
 
 | `void lgInternalLog(LogLevel level, const char *module, const char *cause,const char *fnName, const char *conseq)` |
 |--------------------------------------------------------------------------------------------------------------------|
@@ -59,7 +58,7 @@ Provides module name, cause, function name, and consequences for context.
     - `fnName` — Name of the function where the log is generated.
     - `conseq` — Consequences or additional information about the event.
 
-**Example:**
+✅ Example
 
 ```c
 bool smPrivateHasStarted(const char *fnName) {
@@ -71,8 +70,6 @@ bool smPrivateHasStarted(const char *fnName) {
     return true;
 }
 ```
-
-<br>
 
 | `void lgInternalLogWithArg(LogLevel level, const char *module, const char *cause, const char *arg, const char *fnName,const char *conseq)` |
 |--------------------------------------------------------------------------------------------------------------------------------------------|
@@ -92,7 +89,7 @@ context.
     - `fnName` — Name of the function where the log is generated.
     - `conseq` — Consequences or additional information about the event.
 
-**Example:**
+✅ Example
 
 ```c
 bool smPrivateIsNameValid(const char *name, const char *fnName) {
@@ -105,11 +102,8 @@ bool smPrivateIsNameValid(const char *name, const char *fnName) {
 }
 ```
 
-For coding guidelines, see
-the [Coding Contributing Doc](../_Contributing/2_Coding_Guidelines.md).
-
 ## ✏️ Last Modified
 
-| Last modified | Author (Discord)             | Description                      |
-|---------------|------------------------------|----------------------------------|
-| Nov 01, 2025  | Vitor Betmann (vitorbetmann) | Added emojis and removed <br>'s; |
+| Last modified | Author (Discord)             | Description         |
+|---------------|------------------------------|---------------------|
+| Nov 06, 2025  | Vitor Betmann (vitorbetmann) | Some minor cleanup; |

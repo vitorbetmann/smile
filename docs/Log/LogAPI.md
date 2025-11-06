@@ -5,7 +5,7 @@ terminal and configuring fatal error handling.
 
 ### 🚨 Warning! This module is not thread-safe!
 
-
+---
 
 ## 📋 Table of Contents
 
@@ -15,8 +15,6 @@ terminal and configuring fatal error handling.
 - [Functions](#-functions)
     - [Logging Related](#-_logging-related_)
     - [Fatal Handling Related](#-_logging-related_)
-
-
 
 ## 😊Module Header
 
@@ -28,18 +26,16 @@ The module’s header is `Log.h`. Its full Smile path is: `smile/include/Log.h`
 #include <Log.h>
 ```
 
-
-
 ## 📦 Data Types
 
-### — _Function Pointers_
+### — Function Pointers
 
 | `void (*lgFatalHandler)(void)` |
 |--------------------------------|
 
 Function pointer type for custom fatal error handlers.
 
-**Example:**
+✅ Example
 
 ```c
 void myFatalHandler(void)
@@ -49,11 +45,9 @@ void myFatalHandler(void)
 }
 ```
 
+## 🛠️ Functions
 
-
-## 🔧 Functions
-
-### — _Logging Related_
+### — Logging Related
 
 | `void lgLog(const char *msg, ...)` |
 |------------------------------------|
@@ -68,23 +62,19 @@ formatting.
 - **Note:**
     - Output is written to stderr.
 
-**Example:**
+✅ Example
 
 ```c
 lgLog("Smile version %.1f is out!", 1.0f);
 // Outputs: 01:23:45 [Smile Log From User] - Smile version 1.0 is out!
 ```
 
-<br>
-
-For more, see [Workflow Example](README.md#-workflow-example) in
-the [Log Getting Started](README.md) doc.
-
 ---
 
-### — _Fatal Handling Related_
+### — Fatal Handling Related
 
-### `void lgSetFatal(lgFatalHandler handler)`
+| `void lgSetFatal(lgFatalHandler handler)` |
+|-------------------------------------------|
 
 Sets a custom handler to be called when a fatal event occurs.
 
@@ -95,7 +85,7 @@ Sets a custom handler to be called when a fatal event occurs.
 
 - **Note:** It's recommended your custom handler terminates the program.
 
-**Example:**
+✅ Example
 
 ```c
 // Define a handler
@@ -111,13 +101,13 @@ int main()
 }
 ```
 
-<br>
+## 🔄 Workflow Example
 
 For more, see [Workflow Example](README.md#-workflow-example) in
 the [Log Getting Started](README.md) doc.
 
 ## ✏️ Last Modified
 
-| Last modified | Author (Discord)             | Description                      |
-|---------------|------------------------------|----------------------------------|
-| Nov 01, 2025  | Vitor Betmann (vitorbetmann) | Added emojis and removed <br>'s; |
+| Last modified | Author (Discord)             | Description         |
+|---------------|------------------------------|---------------------|
+| Nov 06, 2025  | Vitor Betmann (vitorbetmann) | Some minor cleanup; |

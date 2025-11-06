@@ -18,7 +18,7 @@ consistency, readability, maintainability, and safety across all modules.
 
 ## 🗂 General Guidelines
 
-### — _Section Headers_
+### Section Headers
 
 * All code-related Smile files must be organized into sections, each marked by a
   standardized comment block, referred to as a section header.

@@ -5,6 +5,8 @@ configuring fatal error handling.
 
 ### 🚨 Warning! This module is not thread-safe!
 
+---
+
 ## 📋 Table of Contents
 
 - [Visual Example](#visual-example)
@@ -29,8 +31,6 @@ The module’s header is `Log.h`. Its full Smile path is: `smile/include/Log.h`
 #include <Log.h>
 ```
 
-
-
 ## Log Lifecycle 🔄
 
 1️⃣ Use `lgLog` to print messages to the terminal and help with debugging.
@@ -39,15 +39,11 @@ The module’s header is `Log.h`. Its full Smile path is: `smile/include/Log.h`
 would end the program by default. To do so, you must pass a function pointer to
 your custom handler.
 
-
-
 ## 🔍 Quick Reference Table
-
-For detailed documentation, see the [Log API Reference](LogAPI.md).
 
 ### Data Types
 
-— _Function Pointers_
+— Function Pointers
 
 | Signature                                 | Description                                            |
 |-------------------------------------------|--------------------------------------------------------|
@@ -59,6 +55,8 @@ For detailed documentation, see the [Log API Reference](LogAPI.md).
 |-------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `void lgLog(const char *msg, ...)`        | Logs a formatted message to the terminal. Supports printf-style formatting. Output is written to stderr.                                                                             |
 | `void lgSetFatal(lgFatalHandler handler)` | Sets a custom handler to be called when a fatal event occurs. If `NULL` or `nullptr`, resets to the default handler which logs the event to the terminal and terminates the program. |
+
+For detailed documentation, see the [Log API Reference](LogAPI.md).
 
 ## 🧪 Workflow Example
 
@@ -95,6 +93,6 @@ int main()
 
 ## ✏️ Last Modified
 
-| Last modified | Author (Discord)             | Description              |
-|---------------|------------------------------|--------------------------|
-| Nov 01, 2025  | Vitor Betmann (vitorbetmann) | Improved visual example; |
+| Last modified | Author (Discord)             | Description         |
+|---------------|------------------------------|---------------------|
+| Nov 06, 2025  | Vitor Betmann (vitorbetmann) | Some minor cleanup; |

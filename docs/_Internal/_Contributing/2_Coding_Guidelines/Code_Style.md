@@ -19,13 +19,13 @@ consistency, readability, maintainability, and safety across all modules.
 
 ## 🥇 Golden Rule
 
-### ⚠️ Never use globals in Smile unless it's for testing.
+### — ⚠️ Never use globals in Smile unless it's for testing.
 
 ---
 
 ## 🌦️ Variables and Constants
 
-### Variable Naming — General
+### — Variable Naming — General
 
 * Use `camelCase` for all non-constant variable names.
 * Avoid single-character names except for loop iterators or short
@@ -80,7 +80,7 @@ char *greetings = "Hello Smile";    -- Misleading! Indicates a collection
 
 ---
 
-### Variable Naming — Booleans
+### — Variable Naming — Booleans
 
 * Boolean variables should read naturally in conditionals and use consistent
   prefixes that indicate their boolean nature. Common names include (but
@@ -121,7 +121,7 @@ if (particles)    -- Doesn't read naturally for a boolean
 
 ---
 
-### File-Scoped Non-Constant Variables
+### — File-Scoped Non-Constant Variables
 
 * Declare all file-scoped variables as `static` to restrict access.
 
@@ -139,7 +139,7 @@ InternalTracker *tracker;    -- Externally linked by default
 
 ---
 
-### Variable Declaration and Grouping
+### — Variable Declaration and Grouping
 
 * Declare each variable on its own line unless they represent the same logical
   unit.
@@ -177,7 +177,7 @@ char *name, grade;    -- Misleading! Only one is a pointer
 
 ---
 
-### Constant Values
+### — Constant Values
 
 * Use `const` for local constants inside functions only.
 * For file- or module-scoped constants:
@@ -258,7 +258,7 @@ const InternalState *CURR_STATE;    -- Misleading! Indicates pointer cannot chan
 
 ---
 
-### Magic Numbers
+### — Magic Numbers
 
 * Avoid magic numbers. All repeated or meaningful values should be defined as
   constants.
@@ -330,7 +330,7 @@ for (int i = 0; i < 10; i++)    -- Unclear! 10 is an arbitrary number
 
 ## 🛠️ Functions
 
-### Declaration and Usage
+### — Declaration and Usage
 
 * Always include `void` as a parameter if the function takes no arguments in
   declarations and definitions. Omit when calling.
@@ -353,7 +353,7 @@ smIsRunning(void);    -- Call unnecessarily verbose
 
 ---
 
-### Naming — General
+### — Naming — General
 
 * All Smile functions begin with a unique module-identifying two-letter
   lowercase module prefix, followed by a PascalCase name. Below are two tables
@@ -396,7 +396,7 @@ bool smStop(void);
 
 ---
 
-### Naming — Access Levels
+### — Naming — Access Levels
 
 * For different access levels, include the following after the prefix:
     * Public: Only module prefix.
@@ -422,7 +422,7 @@ bool smPrivateIsNameValid(const char *name, const char *fnName);
 
 ---
 
-### Parameters — General
+### — Parameters — General
 
 * Function parameters should use `camelCase`.
 * Choose descriptive names that make the argument's purpose clear.
@@ -443,7 +443,7 @@ bool smDeleteState(const char *name);
 
 ---
 
-### Parameters — Const
+### — Parameters — Const
 
 * Passed-by-reference should `const Type *ptr` when reading only.
 * Copied-by-value parameters shouldn't be `const`.
@@ -470,7 +470,7 @@ bool smUpdate(const float dt);    -- Unnecessarily verbose
 
 ---
 
-### Type Conversion
+### — Type Conversion
 
 * Use implicit conversion for nullptr checks in both return statements and
   conditional expressions.
@@ -521,7 +521,7 @@ bool smIsRunning(void)
 
 ---
 
-### Flow and Structure
+### — Flow and Structure
 
 * Skip no lines from the function signature to its first statement.
 * Handle all failure or invalid conditions first and return early. This avoids
@@ -577,7 +577,7 @@ bool smStateExists(const char *name)
 
 ---
 
-### Return Types and Error Handling
+### — Return Types and Error Handling
 
 * Return `bool` for functions that:
     * Would normally return void but require success/failure indication for
@@ -670,7 +670,7 @@ int main(void)
 
 ---
 
-### goto
+### — goto
 
 * Use `goto` only for cleanup paths to simplify error handling and prevent
   memory leaks. This improves maintainability and reduces duplicated free() or
@@ -730,7 +730,7 @@ start:
 
 ---
 
-### Shared Code and Messages
+### — Shared Code and Messages
 
 * Use `CommonInternal.h` for shared utility functions.
 * Use `CommonInternalMessages.h` for shared log messages and error strings.
@@ -766,7 +766,7 @@ bool smSetState(const char *name, void *args)
 
 ## 📖 Formatting and Layout
 
-### Braces
+### — Braces
 
 * Always use braces, even for single-line conditionals or loops.
 * For functions or statements, place the opening brace one line below it, and
@@ -863,7 +863,7 @@ if (false)
 
 ---
 
-### Pointers
+### — Pointers
 
 * Write the pointer operator (`*`) next to the variable name, not the type.
 * Leave no space between the dereference operator (`*`) and the variable.
@@ -899,7 +899,7 @@ int playerId = player -> id;          -- No spaces around the arrow operator
 
 ---
 
-### Commas and Other Operators
+### — Commas and Other Operators
 
 * Leave one space after each comma and around operators, except for the
   pointer, dereference, and arrow operators.
@@ -960,7 +960,7 @@ int sum=num1+num2;    -- No spaces around operators decreases readability
 
 ---
 
-### Indentation
+### — Indentation
 
 * Indentation occurs in increments of 4 spaces.
 * ⚠️ Never use tabs.
@@ -979,7 +979,7 @@ while (true)
 
 ---
 
-### Line Length
+### — Line Length
 
 * A line of code shouldn't extend over 80 characters.
 * For long statements (function calls, `if`, `while`, `for`, etc.), break after
@@ -1001,7 +1001,7 @@ bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn, smD
 
 ## 🃏 Miscellaneous
 
-### Typedef Preference
+### — Typedef Preference
 
 * Use `typedef` for defining `enums` and `structs`.
 
@@ -1030,7 +1030,7 @@ struct Node {
 
 ---
 
-### Type Naming
+### — Type Naming
 
 * Use `PascalCase` for all `struct`, `enum`, and `typedef` names.
 * All public types must include the module prefix as part of their name.
@@ -1061,7 +1061,7 @@ typedef void (*Enter)(void*);   -- No module prefix for a public type
 
 ---
 
-### nullptr
+### — nullptr
 
 * Use `nullptr` (C23 standard) instead of `NULL` to avoid implicit conversions
   and ensure type safety.
@@ -1088,7 +1088,7 @@ void *myFunction(void)
 
 ---
 
-### Comments
+### — Comments
 
 * Comments should explain why, not what.
 * Use `//` for short inline comments, and `/* ... */` for documentation blocks
@@ -1133,7 +1133,7 @@ typedef void (*smExitFn)(void);
 
 ---
 
-### TODOS
+### — TODOS
 
 * Place TODOs after a `@note` tag in the file header comment of the file they
   affect.
@@ -1193,7 +1193,7 @@ bool smSetFPS(int fps)
 
 ---
 
-### Preprocessor Rules
+### — Preprocessor Rules
 
 * Use `#ifdef` for single condition checks.
 * Use the `defined()` function for multiple condition checks.

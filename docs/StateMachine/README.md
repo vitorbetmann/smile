@@ -6,6 +6,8 @@ behavior using enter, update, draw, and exit callback functions.
 
 ### 🚨 Warning! This module is not thread-safe!
 
+---
+
 ## 📋 Table of Contents
 
 - [Visual Example](#visual-example)
@@ -57,12 +59,9 @@ and dangling pointers.
 
 ## 🔍 Quick Reference Table
 
-For detailed documentation, see
-the [State Machine API Reference](StateMachineAPI.md).
-
 ### Data Types
 
-— _Function Pointers_
+— Function Pointers
 
 | Signature                       | Description                                                                                                      |
 |---------------------------------|------------------------------------------------------------------------------------------------------------------|
@@ -87,6 +86,9 @@ the [State Machine API Reference](StateMachineAPI.md).
 | `float smGetDt(void)`                                                                                            | Returns the delta time (in seconds) since the last frame. Useful for maintaining consistent time-based updates across frames.                    |
 | `bool smDraw(void)`                                                                                              | Calls the draw function of the active state. Returns `true` if successful.                                                                       |
 | `bool smStop(void)`                                                                                              | Stops the state machine and frees all registered states. Calls the current state’s `exit` function before cleanup. Returns `true` if successful. |
+
+For detailed documentation, see
+the [State Machine API Reference](StateMachineAPI.md).
 
 ## 🧪️ Workflow Example
 
@@ -271,6 +273,6 @@ void levelTwoDraw(void) {
 
 ## ✏️ Last Modified
 
-| Last modified | Author (Discord)             | Description              |
-|---------------|------------------------------|--------------------------|
-| Nov 01, 2025  | Vitor Betmann (vitorbetmann) | Improved visual example; |
+| Last modified | Author (Discord)             | Description         |
+|---------------|------------------------------|---------------------|
+| Nov 06, 2025  | Vitor Betmann (vitorbetmann) | Some minor cleanup; |
