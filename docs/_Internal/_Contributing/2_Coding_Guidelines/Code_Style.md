@@ -21,6 +21,8 @@ consistency, readability, maintainability, and safety across all modules.
 
 ### ⚠️ Never use globals in Smile unless it's for testing.
 
+---
+
 ## 🌦️ Variables and Constants
 
 ### Variable Naming — General
@@ -76,6 +78,8 @@ char *smileModule[4];               -- Misleading! Doesn't indicate a collection
 char *greetings = "Hello Smile";    -- Misleading! Indicates a collection
 ```
 
+---
+
 ### Variable Naming — Booleans
 
 * Boolean variables should read naturally in conditionals and use consistent
@@ -115,6 +119,8 @@ if (particles)    -- Doesn't read naturally for a boolean
 }
 ```
 
+---
+
 ### File-Scoped Non-Constant Variables
 
 * Declare all file-scoped variables as `static` to restrict access.
@@ -130,6 +136,8 @@ static InternalTracker *tracker;
 ```c
 InternalTracker *tracker;    -- Externally linked by default
 ```
+
+---
 
 ### Variable Declaration and Grouping
 
@@ -166,6 +174,8 @@ char *src, *dst;    -- Unnecessarily verbose
 
 char *name, grade;    -- Misleading! Only one is a pointer
 ```
+
+---
 
 ### Constant Values
 
@@ -245,6 +255,8 @@ void myFunc(void)
 const InternalState *CURR_STATE;    -- Misleading! Indicates pointer cannot change.
 
 ```
+
+---
 
 ### Magic Numbers
 
@@ -339,6 +351,8 @@ bool smIsRunning();    -- Declaration not explicit
 smIsRunning(void);    -- Call unnecessarily verbose
 ```
 
+---
+
 ### Naming — General
 
 * All Smile functions begin with a unique module-identifying two-letter
@@ -380,6 +394,8 @@ bool smDraw(void);
 bool smStop(void);
 ```
 
+---
+
 ### Naming — Access Levels
 
 * For different access levels, include the following after the prefix:
@@ -404,6 +420,8 @@ const State *smInternalGetState(const char *name);
 bool smPrivateIsNameValid(const char *name, const char *fnName);
 ```
 
+---
+
 ### Parameters — General
 
 * Function parameters should use `camelCase`.
@@ -422,6 +440,8 @@ void lgPrivateLogV(InternalLevel level, const char *origin, const char *msg, va_
 -- "Delete state: (name)"
 bool smDeleteState(const char *name);
 ```
+
+---
 
 ### Parameters — Const
 
@@ -447,6 +467,8 @@ bool smStateExists(char *name);    -- Misleading! Implies the function modifies 
 
 bool smUpdate(const float dt);    -- Unnecessarily verbose
 ```
+
+---
 
 ### Type Conversion
 
@@ -496,6 +518,8 @@ bool smIsRunning(void)
     return tracker != nullptr;    -- Unnecessarily verbose
 }
 ```
+
+---
 
 ### Flow and Structure
 
@@ -550,6 +574,8 @@ bool smStateExists(const char *name)
     return smInternalGetEntry(name);
 }
 ```
+
+---
 
 ### Return Types and Error Handling
 
@@ -642,6 +668,8 @@ int main(void)
 }
 ```
 
+---
+
 ### goto
 
 * Use `goto` only for cleanup paths to simplify error handling and prevent
@@ -699,6 +727,8 @@ start:
         goto start;    -- Don't use goto to create a loop
     }
 ```
+
+---
 
 ### Shared Code and Messages
 
@@ -831,6 +861,8 @@ if (false)
     return; 
 ```
 
+---
+
 ### Pointers
 
 * Write the pointer operator (`*`) next to the variable name, not the type.
@@ -864,6 +896,8 @@ Player* p = &player;             -- Pointer operator should go next to the varia
 int playerScore = (*player).score;    -- Don't use the dereference-dot pattern
 int playerId = player -> id;          -- No spaces around the arrow operator
 ```
+
+---
 
 ### Commas and Other Operators
 
@@ -924,6 +958,8 @@ int myArray[] = {
 int sum=num1+num2;    -- No spaces around operators decreases readability
 ```
 
+---
+
 ### Indentation
 
 * Indentation occurs in increments of 4 spaces.
@@ -940,6 +976,8 @@ while (true)
     }
 }
 ```
+
+---
 
 ### Line Length
 
@@ -990,6 +1028,8 @@ struct Node {
 };
 ```
 
+---
+
 ### Type Naming
 
 * Use `PascalCase` for all `struct`, `enum`, and `typedef` names.
@@ -1019,6 +1059,8 @@ typedef int Number;    -- Hides primitive type
 typedef void (*Enter)(void*);   -- No module prefix for a public type
 ```
 
+---
+
 ### nullptr
 
 * Use `nullptr` (C23 standard) instead of `NULL` to avoid implicit conversions
@@ -1043,6 +1085,8 @@ void *myFunction(void)
     return NULL;
 }
 ```
+
+---
 
 ### Comments
 
@@ -1086,6 +1130,8 @@ player.health = 100;  // player health set to 100
 // @author Vitor Betmann
 typedef void (*smExitFn)(void);
 ```
+
+---
 
 ### TODOS
 
@@ -1145,6 +1191,8 @@ bool smSetFPS(int fps)
  */
 ```
 
+---
+
 ### Preprocessor Rules
 
 * Use `#ifdef` for single condition checks.
@@ -1167,6 +1215,8 @@ bool smSetFPS(int fps)
 
 [3_Documentation_Guidelines] (🚧 Under Development)
 
-| Last modified | Author        | Description       |
-|---------------|---------------|-------------------|
-| Oct 18, 2025  | Vitor Betmann | Created document. |
+## ✏️ Last Modified
+
+| Last modified | Author (Discord)             | Description         |
+|---------------|------------------------------|---------------------|
+| Nov 06, 2025  | Vitor Betmann (vitorbetmann) | Some minor cleanup; |

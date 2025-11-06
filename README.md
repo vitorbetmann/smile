@@ -305,6 +305,6 @@ details.
 
 ## ✏️ Last Modified
 
-| Last modified | Author        | Description                                                    |
-|---------------|---------------|----------------------------------------------------------------|
-| Nov 01, 2025  | Vitor Betmann | Fixed typos; Updated examples; Rewrote Intro and Contributing; |
+| Last modified | Author (Discord)             | Description                                                    |
+|---------------|------------------------------|----------------------------------------------------------------|
+| Nov 01, 2025  | Vitor Betmann (vitorbetmann) | Fixed typos; Updated examples; Rewrote Intro and Contributing; |
