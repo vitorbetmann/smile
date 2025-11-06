@@ -39,7 +39,7 @@ We can help you out at the [Discord Server](https://discord.gg/EdS6PwMffH).
 
 ## 🚀 Building Your Game
 
-### Prerequisites
+### — Prerequisites
 
 Before building Smile, make sure you have the following installed:
 
@@ -47,7 +47,9 @@ Before building Smile, make sure you have the following installed:
 - A build tool such as `Make` or `Ninja`
 - A C compiler with C23 support such as `Clang` or `GCC`
 
-### Cloning and Building
+---
+
+### — Cloning and Building
 
 From your game directory, run:
 
@@ -91,11 +93,11 @@ build with CMake:
 This will disable all Smile `warning` and `info` logging output at build
 time. `Error` logs cannot be disabled.
 
-### Compiling
+---
+
+### — Compiling
 
 There are two common ways to compile your game using Smile:
-
----
 
 #### Option 1 — With Clang (from your source directory)
 
@@ -305,6 +307,6 @@ details.
 
 ## ✏️ Last Modified
 
-| Last modified | Author (Discord)             | Description                                                    |
-|---------------|------------------------------|----------------------------------------------------------------|
-| Nov 01, 2025  | Vitor Betmann (vitorbetmann) | Fixed typos; Updated examples; Rewrote Intro and Contributing; |
+| Last modified | Author (Discord)             | Description         |
+|---------------|------------------------------|---------------------|
+| Nov 06, 2025  | Vitor Betmann (vitorbetmann) | Some minor cleanup; |

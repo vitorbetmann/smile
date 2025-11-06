@@ -10,12 +10,12 @@ own behavior using enter, update, draw, and exit callback functions.
 
 - [Module Header](#module-header)
 - [Data Types](#-data-types)
-    - [Function Pointers](#-_function-pointers_)
+    - [Function Pointers](#-function-pointers)
 - [Functions](#-functions)
-    - [Start Related](#-_start-related_)
-    - [State Functions](#-_state-functions_)
-    - [Lifecycle Functions](#-_lifecycle-functions_)
-    - [Stop Related](#-_stop-related_)
+    - [Start Related](#-start-related)
+    - [State Functions](#-state-functions)
+    - [Lifecycle Functions](#-lifecycle-functions)
+    - [Stop Related](#-stop-related)
 
 ## 😊Module Header
 

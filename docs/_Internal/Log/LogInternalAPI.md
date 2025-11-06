@@ -13,7 +13,7 @@ fatal events inside Smile core modules.
 - [Data Types](#-data-types)
     - [Enums](#-enums)
 - [Functions](#-functions)
-    - [Log Related](#log-related)
+    - [Log Related](#-log-related)
 
 ## 📦 Data Types
 

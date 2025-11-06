@@ -297,8 +297,10 @@ the [Documentation Guidelines]() doc.
 
 ## Up Next
 
-[2.2_Coding Guidelines - General Conventions](Code_Style.md)
+[Code_Style](Code_Style.md)
 
-| Last modified | Author        | Description       |
-|---------------|---------------|-------------------|
-| Oct 18, 2025  | Vitor Betmann | Created document. |
+## ✏️ Last Modified
+
+| Last modified | Author (Discord)             | Description       |
+|---------------|------------------------------|-------------------|
+| Nov 06, 2025  | Vitor Betmann (vitorbetmann) | Created document; |

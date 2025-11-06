@@ -10,9 +10,9 @@ behavior using enter, update, draw, and exit callback functions.
 
 ## 📋 Table of Contents
 
-- [Visual Example](#visual-example)
-- [Module Header](#module-header)
-- [State Machine Lifecycle](#state-machine-lifecycle-)
+- [Visual Example](#-visual-example)
+- [Module Header](#-module-header)
+- [State Machine Lifecycle](#-state-machine-lifecycle)
 - [Quick Reference Table](#-quick-reference-table)
 - [Workflow Example](#-workflow-example)
 

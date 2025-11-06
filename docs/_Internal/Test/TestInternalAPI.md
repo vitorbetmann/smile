@@ -45,11 +45,6 @@ void Test_smStart_FailsIfCallocFails(void) {
 }
 ```
 
-<br>
-
-For testing guidelines, see
-the [Testing Contributing Doc](../_Contributing/3_Testing.md).
-
 ## 🔧 Functions
 
 ### — Test Suites Related

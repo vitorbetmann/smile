@@ -11,10 +11,10 @@ terminal and configuring fatal error handling.
 
 - [Module Header](#module-header)
 - [Data Types](#-data-types)
-    - [Function Pointers](#-_function-pointers_)
+    - [Function Pointers](#-function-pointers)
 - [Functions](#-functions)
-    - [Logging Related](#-_logging-related_)
-    - [Fatal Handling Related](#-_logging-related_)
+    - [Logging Related](#-logging-related)
+    - [Fatal Handling Related](#-logging-related)
 
 ## 😊Module Header
 
