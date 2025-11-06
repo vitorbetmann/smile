@@ -11,10 +11,10 @@ up your environment to start contributing.
 In addition, the other files each focus on a specific aspect of Smile’s
 development workflow:
 
-- [1_The_Structure_Of_Smile] (🚧 Under Development)
+- [1_Understanding_Smile] (🚧 Under Development)
     - [Structure] (🚧 Under Development)
 - [2_Coding_Guidelines](../2_Coding_Guidelines)
-    - [Code_Organization] (🚧 Under Development)
+    - [Code_Organization](../2_Coding_Guidelines/Code_Organization.md)
     - [Code_Style](../2_Coding_Guidelines/Code_Style.md)
 - [3_Documentation_Guidelines] (🚧 Under Development)
 - [4_Testing_Guidelines] (🚧 Under Development)
@@ -108,8 +108,7 @@ time. Errors cannot be disabled.
 
 ## Up Next
 
-Learn how Smile's files and directories are organized
-in [1_The_Structure_Of_Smile](../1_Understanding_Smile/Structure.md)
+[1_Understanding_Smile] (🚧 Under Development)
 
 ---
 
