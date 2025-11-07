@@ -6,12 +6,11 @@ code-related files.
 ## Table of Contents
 
 - [General Guidelines](#-general-guidelines)
-- [Header Files](#-header-files)
+- [Header Files](#-non-test-header-files)
     - [Public Headers](#-public-headers)
     - [Internal Headers](#-internal-headers)
 - [Message Files](#-message-files)
-- [Source Files](#-source-files)
-- [Test Files](#-test-files)
+- [Source Files](#-non-test-source-files)
 
 ## 🗂 General Guidelines
 
@@ -19,6 +18,10 @@ code-related files.
 
 * All code files must be organized into sections, each marked by a standardized
   comment block, referred to as a section header.
+    * Section headers open and close with a `//` and a space and are followed by
+      77 `—`. This makes each line 80 characters long.
+    * In between the opening and closing comments, comes the section name after
+      `//` and a space.
 * Leave 1 blank line between a section header and the first line of code in that
   section.
 * Leave 2 blank lines between the end of one section and the start of the next
@@ -70,48 +73,7 @@ code-related files.
 
 ✅ Example
 
-```c
-/**
- * @file
- * @brief Public declarations of data types and functions for the Log module.
- * ...
- */
-
-
-#ifndef SMILE_LOG_H
-#define SMILE_LOG_H
-
-
-// —————————————————————————————————————————————————————————————————————————————
-// Data Types
-// —————————————————————————————————————————————————————————————————————————————
-
-/**
- * @brief Function pointer type for custom fatal error handlers.
- * ...
- */
-typedef void (*lgFatalHandler)(void);
-
-
-// —————————————————————————————————————————————————————————————————————————————
-// Prototypes
-// —————————————————————————————————————————————————————————————————————————————
-
-/**
- * @brief Logs a message to the terminal ending in a new line. Supports
- * ...
- */
-void lgLog(const char *msg, ...);
-
-/**
- * @brief Sets a custom handler to be called when a fatal event occurs.
- * ...
- */
-void lgSetFatal(lgFatalHandler handler);
-
-
-#endif // #ifndef SMILE_LOG_H
-```
+See [Log.h](../../../../include/Log.h).
 
 ### — Subheaders
 
@@ -238,9 +200,13 @@ bool smStateExists(const char *name);
 #include "StateMachineInternal.h"
 ```
 
-## 😶 Header Files
+## 😶 Non-Test Header Files
 
 * All headers must have `include guards`.
+* Should never include variables (see Smile's Golden Rule
+  in [Code_Style](Code_Style.md)).
+* See [4_Testing_Guidelines] (🚧 Under Development) for details on implementing a
+  test header file.
 
 ### — Public Headers
 
@@ -252,249 +218,39 @@ bool smStateExists(const char *name);
 
 ✅ Example
 
-```c
-/**
- * @file
- * @brief Public declarations of data types and functions for the StateMachine
- * ...
- */
-
-#ifndef SMILE_STATE_MACHINE_H
-#define SMILE_STATE_MACHINE_H
-
-
-// —————————————————————————————————————————————————————————————————————————————
-// Data Types
-// —————————————————————————————————————————————————————————————————————————————
-
-/**
- * @brief Function pointer type for state entry callbacks.
- * ...
- */
-typedef void (*smEnterFn)(void *args);
-
-
-/**
- * @brief Function pointer type for state update callbacks.
- * ...
- */
-typedef void (*smUpdateFn)(float dt);
-
-/**
- * @brief Function pointer type for state draw callbacks.
- * ...
- */
-typedef void (*smDrawFn)(void);
-
-/**
- * @brief Function pointer type for state exit callbacks.
- * ...
- */
-typedef void (*smExitFn)(void);
-
-
-// —————————————————————————————————————————————————————————————————————————————
-// Prototypes
-// —————————————————————————————————————————————————————————————————————————————
-
-// Start Related
-
-/**
- * @brief Initializes the state machine and prepares it for use.
- * ...
- */
-bool smStart(void);
-
-/**
- * @brief Checks whether the state machine has been initialized.
- * ...
- */
-bool smIsRunning(void);
-
-// State Functions
-
-/**
- * @brief Creates a new state with the specified name and callback functions.
- * ...
- */
-bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update,
-                   smDrawFn draw, smExitFn exit);
-
-/**
- * @brief Checks whether a state with the given name exists.
- * ...
- */
-bool smStateExists(const char *name);
-
-/**
- * @brief Sets the current active state by name and triggers its enter function.
- * ...
- */
-bool smSetState(const char *name, void *args);
-
-/**
- * @brief Retrieves the name of the currently active state.
- * ...
- */
-const char *smGetCurrentStateName(void);
-
-/**
- * @brief Deletes a state by name from the state machine.
- * ...
- */
-bool smDeleteState(const char *name);
-
-/**
- * @brief Retrieves the total number of registered states.
- * ...
- */
-int smGetStateCount(void);
-
-// Lifecycle Related
-
-/**
- * @brief Updates the currently active state.
- * ...
- */
-bool smUpdate(float dt);
-
-/**
- * @brief Calculates the delta time, in seconds, since last invoked.
- * ...
- */
-float smGetDt(void);
-
-/**
- * @brief Executes the draw function of the currently active state.
- * ...
- */
-bool smDraw(void);
-
-// Stop Related
-
-/**
- * @brief Stops the state machine and frees all allocated states.
- * ...
- */
-bool smStop(void);
-
-
-#endif // #ifndef SMILE_STATE_MACHINE_H
-```
+See [StateMachine.h](../../../../include/StateMachine.h).
 
 ---
 
 ### — Internal Headers
 
-* Contains declarations of internal functions and data types. They should help
+* Contains declarations of Internal functions and data types. They should help
   the module in executing its tasks but are not meant for public use.
     * For example, `smInternalGetState()` allows StateMachine to directly call
       the `enter` and `exit` functions of a state, but a user should never have
       access to that. Instead, they can call functions like `smSetState()` and
       `smUpdate()` which automatically handles memory allocation, pointer
       manipulation, and the calling of desired functions.
-* See [Code_Style](Code_Style.md) for details on naming and declaring internal
+* Though the code in Internal Header files is not to be shared with other
+  modules (e.g., StateMachineInternal.h should only be included in
+  StateMachine.c), Internal files exist for the sake of organization. Otherwise,
+  if all functions, data types, and variables were to be declared and defined in
+  a module's source file, it would grow unnecessarily large and complex.
+* See [Code_Style](Code_Style.md) for details on naming and declaring Internal
   functions and data types.
 * See [3_Documentation_Guidelines] (🚧 Under Development) for details on
   documenting.
 
 ✅ Example
 
-```c
-/**
- * @file
- * @brief Internal declarations of data structures and functions for the
- * ...
- */
-
-
-#ifndef SMILE_STATE_MACHINE_INTERNAL_H
-#define SMILE_STATE_MACHINE_INTERNAL_H
-
-
-// —————————————————————————————————————————————————————————————————————————————
-// Includes
-// —————————————————————————————————————————————————————————————————————————————
-
-#include <time.h>
-#include <uthash.h>
-
-#include "StateMachine.h"
-
-
-// —————————————————————————————————————————————————————————————————————————————
-// Defines
-// —————————————————————————————————————————————————————————————————————————————
-
-#define DEFAULT_FPS 60
-
-
-// —————————————————————————————————————————————————————————————————————————————
-// Data Types
-// —————————————————————————————————————————————————————————————————————————————
-
-/**
- * @brief Represents an individual state within the state machine.
- * ...
- */
-typedef struct {
-  char *name;
-  smEnterFn enter;
-  smUpdateFn update;
-  smDrawFn draw;
-  smExitFn exit;
-} InternalState;
-
-/**
- * @brief Maps a state name to its corresponding State structure.
- * ...
- */
-typedef struct {
-  char *name;
-  InternalState *state;
-  UT_hash_handle hh;
-} InternalStateMap;
-
-/**
- * @brief Tracks the current state machine context.
- * ...
- */
-typedef struct {
-  InternalStateMap *stateMap;
-  const InternalState *currState;
-  int stateCount;
-  int fps;
-  struct timespec lastTime;
-} InternalTracker;
-
-
-// —————————————————————————————————————————————————————————————————————————————
-// Prototypes
-// —————————————————————————————————————————————————————————————————————————————
-
-/**
- * @brief Retrieves a pointer to a State by name.
- * ...
- */
-const InternalState *smInternalGetState(const char *name);
-
-/**
- * @brief Retrieves a pointer to a StateMap entry by name.
- * ...
- */
-InternalStateMap *smInternalGetEntry(const char *name);
-
-
-#endif // #ifndef SMILE_STATE_MACHINE_INTERNAL_H
-```
-
----
+* See
+  [StateMachineInternal.h](../../../../src/StateMachine/StateMachineInternal.h).
 
 ## ✉️ Message Files
 
-* Message files contains definitions for messages to be logged to the user in
-  case of operation success, warnings, errors, and fatal conditions (i.e. the
-  program should not continue beyond that point).
+* Contain definitions for messages to be logged to the user in case of operation
+  success, warnings, errors, and fatal conditions (i.e. the program should not
+  continue beyond that point).
 * Sections in message files should have the following order and be named
   accordingly. Elements in certain sections should also be prefixed.
 
@@ -528,168 +284,27 @@ InternalStateMap *smInternalGetEntry(const char *name);
   `FN_START` and `CAUSE_MODULE_STARTED`. It should always be checked before new
   messages are added to a given module.
 
+✅ Examples
+
+* See
+  [CommonInternalMessages.h](../../../../src/_Internal/Common/CommonInternalMessages.h).
+
+* See
+  [StateMachineMessages.h](../../../../src/StateMachine/StateMachineMessages.h).
+
+## 📤 Non-Test Source Files
+
+* Contain the implementation of both Public and Internal header files.
+* File-scoped variables and functions are declared here.
+    * File-scoped functions are known as Private.
+* See [Code_Style](Code_Style.md) for more details on file-scoped variables and
+  Private Functions.
+* See [4_Testing_Guidelines] (🚧 Under Development) for details on implementing a
+  test source file.
+
 ✅ Example
 
-```c
--- CommonInternalMessages.h
-/**
- * @file
- * @brief Common definitions for shared log messages.
- * ...
- */
-
-
-#ifndef SMILE_COMMON_MESSAGES_H
-#define SMILE_COMMON_MESSAGES_H
-
-
-// —————————————————————————————————————————————————————————————————————————————
-// Functions Names
-// —————————————————————————————————————————————————————————————————————————————
-
-// Start Functions
-#define FN_START  "Start"
-...
-// Stop Functions
-#define FN_STOP  "Stop"
-
-
-// —————————————————————————————————————————————————————————————————————————————
-// Causes
-// —————————————————————————————————————————————————————————————————————————————
-
-// Infos
-#define CAUSE_MODULE_STARTED  "Module Started"
-...
-// Warnings
-#define CAUSE_ALREADY_RUNNING  "Module Already Running"
-// Errors
-#define CAUSE_MEM_ALLOC_FAILED  "Memory Allocation Failed"
-...
-
-
-// —————————————————————————————————————————————————————————————————————————————
-// Consequences
-// —————————————————————————————————————————————————————————————————————————————
-
-// Success
-#define CONSEQ_SUCCESSFUL  "Successful"
-// Failure
-#define CONSEQ_ABORTED  "Aborted"
-
-
-#endif // #ifndef SMILE_COMMON_MESSAGES_H
-
-
--- StateMachineMessages.h
-/**
- * @file
- * @brief Message definitions for the StateMachine module.
- * ...
- */
-
-
-#ifndef SMILE_STATE_MACHINE_MESSAGES_H
-#define SMILE_STATE_MACHINE_MESSAGES_H
-
-
-// —————————————————————————————————————————————————————————————————————————————
-// Module Name
-// —————————————————————————————————————————————————————————————————————————————
-
-#define MODULE "StateMachine"
-
-
-// —————————————————————————————————————————————————————————————————————————————
-// Functions Names
-// —————————————————————————————————————————————————————————————————————————————
-
-// State Functions
-#define FN_CREATE_STATE "CreateState"
-...
-// Lifecycle Functions
-#define FN_UPDATE "Update"
-...
-
-
-// —————————————————————————————————————————————————————————————————————————————
-// Causes
-// —————————————————————————————————————————————————————————————————————————————
-
-// Infos
-#define CAUSE_STATE_CREATED "State Created"
-...
-// Warnings
-#define CAUSE_STATE_ALREADY_EXISTS "State already exists"
-...
-// Errors
-#define CAUSE_NULL_CURR_STATE "Current State Is Null"
-...
-// Fatals
-#define CAUSE_FAILED_TO_FREE_ALL_STATES "Failed to Free All States"
-
-
-#endif // #ifndef SMILE_STATE_MACHINE_MESSAGES_H
-```
-
----
-
-## 📤 Source Files
-
-* logs
-
-Log Message Pattern
-Every log for errors, warnings, or info follows a structured pattern:
-logLevel, moduleName, cause, optionalArgument, functionName, consequence
-
-static void helperFunc(void) { // File scope function
-
-**Example**
-
-```c
-```
-
-<br>
-
-* private funcs
-
-Private Functions: [modulePrefix]Private[Description]
-
-**Example**
-
-```c
-```
-
-## 🧪 Test Files
-
-* logs
-
-Log Message Pattern
-Every log for errors, warnings, or info follows a structured pattern:
-logLevel, moduleName, cause, optionalArgument, functionName, consequence
-
-static void helperFunc(void) { // File scope function
-
-**Example**
-
-```c
-```
-
-<br>
-
-* private funcs
-
-Private Functions: [modulePrefix]Private[Description]
-
-**Example**
-
-```c
-```
-
-<br>
-
-For documenting Source Files, see [Documenting Source Files]() in
-the [Documentation Guidelines]() doc.
+* See [StateMachine.c](../../../../src/StateMachine/StateMachine.c).
 
 ## Up Next
 
