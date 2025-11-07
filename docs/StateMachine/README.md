@@ -19,7 +19,7 @@ behavior using enter, update, draw, and exit callback functions.
 ## 👀 Visual Example
 
 <p align="center">
-  <img src="docs/_Internal/__Assets/StateMachine/StateMachineDemo.gif" width="90%"/>
+  <img src="../../docs/_Internal/__Assets/StateMachine/StateMachineDemo.gif" width="90%"/>
 </p>
 
 ## 😊 Module Header

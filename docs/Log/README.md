@@ -18,7 +18,7 @@ configuring fatal error handling.
 ## Visual Example
 
 <p align="center">
-  <img src="docs/_Internal/__Assets/Log/LogDemo.gif" width="90%"/>
+  <img src="../../docs/_Internal/__Assets/Log/LogDemo.gif" width="90%"/>
 </p>
 
 ## 😊Module Header
