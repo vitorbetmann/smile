@@ -1,4 +1,4 @@
-# Coding Guidelines — Code Organization
+# Coding Guidelines — Code Organization 🗃️
 
 This document defines Smile’s standard conventions for organizing code and
 code-related files.
@@ -210,7 +210,7 @@ bool smStateExists(const char *name);
 
 ### — Public Headers
 
-* Contains declarations of functions and data types of user-facing API's.
+* Contains declarations of functions and data types of user-facing APIs.
 * See [Code_Style](Code_Style.md) for details on naming and declaring functions
   and data types.
 * See [3_Documentation_Guidelines] (🚧 Under Development) for details on
@@ -308,7 +308,7 @@ See [StateMachine.h](../../../../include/StateMachine.h).
 
 ## Up Next
 
-[Code_Style](Code_Style.md)
+Learn the standards for [Code_Style](Code_Style.md).
 
 ## ✏️ Last Modified
 
