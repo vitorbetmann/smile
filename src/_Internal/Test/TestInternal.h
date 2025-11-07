@@ -15,7 +15,7 @@
 #define SMILE_TEST_INTERNAL_H
 
 // —————————————————————————————————————————————————————————————————————————————
-// Data types
+// Data Types
 // —————————————————————————————————————————————————————————————————————————————
 
 /**
@@ -97,5 +97,6 @@ void *tsInternalCalloc(size_t nitems, size_t size);
  * @author Vitor Betmann
  */
 void *tsInternalRealloc(void *ptr, size_t size);
+
 
 #endif // #ifndef SMILE_TEST_INTERNAL_H

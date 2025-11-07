@@ -16,11 +16,13 @@
  * @version 1.0.0
  */
 
+
 #ifndef SMILE_STATE_MACHINE_H
 #define SMILE_STATE_MACHINE_H
 
+
 // —————————————————————————————————————————————————————————————————————————————
-// Data types
+// Data Types
 // —————————————————————————————————————————————————————————————————————————————
 
 /**
@@ -219,5 +221,6 @@ bool smDraw(void);
  * @author Vitor Betmann
  */
 bool smStop(void);
+
 
 #endif // #ifndef SMILE_STATE_MACHINE_H

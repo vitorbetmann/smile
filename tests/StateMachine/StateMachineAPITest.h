@@ -30,7 +30,7 @@
 
 
 // -----------------------------------------------------------------------------
-// Data types
+// Data Types
 // -----------------------------------------------------------------------------
 
 /**
@@ -89,5 +89,6 @@ extern smTestExitFn smTestExit;
 extern MockData *smMockData;
 extern MockArgs *smMockArgs;
 extern struct timespec smMockCurrTime;
+
 
 #endif // #ifndef SMILE_STATE_MACHINE_API_TESTS_H

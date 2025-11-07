@@ -75,6 +75,8 @@ target_include_directories(smile
 file(GLOB_RECURSE SRC_HEADERS CONFIGURE_DEPENDS
         ${CMAKE_CURRENT_SOURCE_DIR}/src/*/*.h
         ${CMAKE_CURRENT_SOURCE_DIR}/src/_Internal/*/*.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/*/*.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/_Internal/*/*.h
 )
 
 set(SRC_INCLUDE_DIRS "")

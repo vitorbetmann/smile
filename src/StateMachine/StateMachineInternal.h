@@ -15,17 +15,19 @@
  * @version 1.0.0
  */
 
+
 #ifndef SMILE_STATE_MACHINE_INTERNAL_H
 #define SMILE_STATE_MACHINE_INTERNAL_H
+
 
 // —————————————————————————————————————————————————————————————————————————————
 // Includes
 // —————————————————————————————————————————————————————————————————————————————
 
 #include <time.h>
-#include <external/uthash.h>
+#include <uthash.h>
 
-#include "include/StateMachine.h"
+#include "StateMachine.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————
@@ -36,7 +38,7 @@
 
 
 // —————————————————————————————————————————————————————————————————————————————
-// Data types
+// Data Types
 // —————————————————————————————————————————————————————————————————————————————
 
 /**
@@ -112,5 +114,6 @@ const InternalState *smInternalGetState(const char *name);
  * @author Vitor Betmann
  */
 InternalStateMap *smInternalGetEntry(const char *name);
+
 
 #endif // #ifndef SMILE_STATE_MACHINE_INTERNAL_H

@@ -25,7 +25,7 @@ consistency, readability, maintainability, and safety across all modules.
 
 ## 🌦️ Variables and Constants
 
-### — Variable Naming — General
+### — Variable Naming: General
 
 * Use `camelCase` for all non-constant variable names.
 * Avoid single-character names except for loop iterators or short
@@ -33,9 +33,9 @@ consistency, readability, maintainability, and safety across all modules.
 * Use descriptive names and avoid non-standard abbreviations unless common (
   e.g., `ptr`, `buf`, `len`).
 * Use plural for collections unless it's a string.
-* See [Type Naming](#type-naming) for rules on naming structs, enums, and
+* See [Type Naming](#-type-naming) for rules on naming structs, enums, and
   typedefs.
-* See [Constant Values](#constant-values) for rules on naming #define and
+* See [Constant Values](#-constant-values) for rules on naming #define and
   constant variables.
 
 ✅ Do
@@ -80,7 +80,7 @@ char *greetings = "Hello Smile";    -- Misleading! Indicates a collection
 
 ---
 
-### — Variable Naming — Booleans
+### — Variable Naming: Booleans
 
 * Boolean variables should read naturally in conditionals and use consistent
   prefixes that indicate their boolean nature. Common names include (but
@@ -90,7 +90,7 @@ char *greetings = "Hello Smile";    -- Misleading! Indicates a collection
     * `should` for conditional behavior (`shouldRender`, `shouldUpdate`)
     * `can` for capabilities (`canJump`, `canCastSpells`)
     * Present tense for existence checks (`fileExists`, `playerLives`)
-* See [Type Conversion](#type-conversion) for preferred boolean and pointer
+* See [Type Conversion](#-type-conversion) for preferred boolean and pointer
   comparison styles.
 
 ✅ Do
@@ -353,7 +353,7 @@ smIsRunning(void);    -- Call unnecessarily verbose
 
 ---
 
-### — Naming — General
+### — Naming: General
 
 * All Smile functions begin with a unique module-identifying two-letter
   lowercase module prefix, followed by a PascalCase name. Below are two tables
@@ -396,12 +396,14 @@ bool smStop(void);
 
 ---
 
-### — Naming — Access Levels
+### — Naming: Access Levels
 
 * For different access levels, include the following after the prefix:
     * Public: Only module prefix.
     * Internal: Add `Internal` after prefix.
     * Private: Add `Private` after prefix.
+    * Test: Add `Test` after prefix. See [4_Testing_Guidelines] (🚧 Under
+      Development) for details.
 
 ✅ Example
 
@@ -418,11 +420,17 @@ const State *smInternalGetState(const char *name);
 
 -- Found in StateMachine.c
 bool smPrivateIsNameValid(const char *name, const char *fnName);
+
+————————————————————————————————————————————————————————————————————————————————
+
+-- Found in StateMachineAPITest.h
+typedef void (*smTestExitFn)(MockData *data);
+
 ```
 
 ---
 
-### — Parameters — General
+### — Parameters: General
 
 * Function parameters should use `camelCase`.
 * Choose descriptive names that make the argument's purpose clear.
@@ -443,7 +451,7 @@ bool smDeleteState(const char *name);
 
 ---
 
-### — Parameters — Const
+### — Parameters: Const
 
 * Passed-by-reference should `const Type *ptr` when reading only.
 * Copied-by-value parameters shouldn't be `const`.
@@ -1096,7 +1104,7 @@ void *myFunction(void)
 * If a variable or function call’s purpose isn’t obvious, add a concise //
   comment. If a section needs heavy commenting to be understood, refactor it
   into a well-named function and document that instead (see
-  [3_Documentation_Guidelines](../3_Documentation_Guidelines/1_General_Conventions.md)
+  [3_Documentation_Guidelines] (🚧 Under Development)
   for details).
 
 ✅ Do
@@ -1142,9 +1150,9 @@ typedef void (*smExitFn)(void);
 * Each TODO should match its corresponding GitHub issue title.
 * Do not place TODOs in function bodies or scattered inline comments.
 * For details on overall file header structure,
-  see [Documentation Guidelines](../3_Documentation_Guidelines/1_General_Conventions.md).
+  see [3_Documentation_Guidelines] (🚧 Under Development).
 * For details on naming and creating GitHub issues,
-  see [Issued and Suggestions](../6_Issues_And_Suggestions/6_Issues_And_Suggestions.md).
+  see [6_Issued_And_Suggestions] (🚧 Under Development).
 
 ✅ Do
 

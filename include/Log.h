@@ -13,11 +13,13 @@
  * @version 1.0.0
  */
 
+
 #ifndef SMILE_LOG_H
 #define SMILE_LOG_H
 
+
 // —————————————————————————————————————————————————————————————————————————————
-// Data types
+// Data Types
 // —————————————————————————————————————————————————————————————————————————————
 
 /**
@@ -57,5 +59,6 @@ void lgLog(const char *msg, ...);
  * @author Vitor Betmann
  */
 void lgSetFatal(lgFatalHandler handler);
+
 
 #endif // #ifndef SMILE_LOG_H

@@ -16,8 +16,10 @@
  * @version 1.0.0
  */
 
+
 #ifndef SMILE_STATE_MACHINE_MESSAGES_H
 #define SMILE_STATE_MACHINE_MESSAGES_H
+
 
 // —————————————————————————————————————————————————————————————————————————————
 // Module Name
@@ -62,5 +64,6 @@
 #define CAUSE_CANNOT_DELETE_CURR_STATE "Cannot Delete Current State"
 // Fatals
 #define CAUSE_FAILED_TO_FREE_ALL_STATES "Failed to Free All States"
+
 
 #endif // #ifndef SMILE_STATE_MACHINE_MESSAGES_H

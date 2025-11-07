@@ -1,5 +1,5 @@
 /**
-* @file
+ * @file
  * @brief Common definitions for shared log messages.
  *
  * Defines shared function identifiers, causes, and consequences
@@ -10,8 +10,10 @@
  * @version 1.0.0
  */
 
+
 #ifndef SMILE_COMMON_MESSAGES_H
 #define SMILE_COMMON_MESSAGES_H
+
 
 // —————————————————————————————————————————————————————————————————————————————
 // Functions Names
@@ -48,5 +50,6 @@
 #define CONSEQ_SUCCESSFUL  "Successful"
 // Failure
 #define CONSEQ_ABORTED  "Aborted"
+
 
 #endif // #ifndef SMILE_COMMON_MESSAGES_H

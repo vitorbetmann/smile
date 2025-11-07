@@ -16,8 +16,9 @@
 #ifndef SMILE_LOG_INTERNAL_H
 #define SMILE_LOG_INTERNAL_H
 
+
 // —————————————————————————————————————————————————————————————————————————————
-// Data types
+// Data Types
 // —————————————————————————————————————————————————————————————————————————————
 
 /**
@@ -35,6 +36,7 @@ typedef enum {
     ERROR,
     FATAL,
 } InternalLevel;
+
 
 // —————————————————————————————————————————————————————————————————————————————
 // Prototypes
@@ -75,5 +77,6 @@ void lgInternalLog(InternalLevel level, const char *module,
 void lgInternalLogWithArg(InternalLevel level, const char *module,
                           const char *cause, const char *arg,
                           const char *fnName, const char *conseq);
+
 
 #endif // #ifndef SMILE_LOG_INTERNAL_H

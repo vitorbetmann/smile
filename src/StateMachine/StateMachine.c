@@ -18,21 +18,23 @@
  * @version 1.0.0
  */
 
+
 // —————————————————————————————————————————————————————————————————————————————
 // Includes
 // —————————————————————————————————————————————————————————————————————————————
 
 #include <string.h>
-#include <external/uthash.h>
+#include <time.h>
+#include <uthash.h>
 
-#include "include/StateMachine.h"
+#include "StateMachine.h"
 #include "StateMachineInternal.h"
 #include "StateMachineMessages.h"
 
-#include "src/Log/LogInternal.h"
-#include "src/_Internal/Common/CommonInternalMessages.h"
-#include "src/_Internal/Test/TestInternal.h"
-#include "tests/StateMachine/StateMachineAPITest.h"
+#include "LogInternal.h"
+#include "CommonInternalMessages.h"
+#include "TestInternal.h"
+#include "StateMachineAPITest.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————
@@ -465,7 +467,7 @@ InternalStateMap *smInternalGetEntry(const char *name)
 }
 
 // —————————————————————————————————————————————————————————————————————————————
-// Functions - Helper
+// Functions - Private
 // —————————————————————————————————————————————————————————————————————————————
 
 bool smPrivateIsRunning(const char *fnName)

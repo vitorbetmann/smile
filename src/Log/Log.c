@@ -18,14 +18,6 @@
  * @version 1.0.0
  */
 
-
-/**
-* @file Log.c
- * @brief Implementation of the Smile logging system.
- *
- * @author Vitor Betmann
- */
-
 // —————————————————————————————————————————————————————————————————————————————
 // Includes
 // —————————————————————————————————————————————————————————————————————————————
@@ -149,7 +141,7 @@ void lgSetFatal(lgFatalHandler handler)
 }
 
 // —————————————————————————————————————————————————————————————————————————————
-// Functions - TestInternal
+// Functions - Internal
 // —————————————————————————————————————————————————————————————————————————————
 
 void lgInternalLog(InternalLevel level, const char *module, const char *cause,
@@ -166,7 +158,7 @@ void lgInternalLogWithArg(InternalLevel level, const char *module,
 }
 
 // —————————————————————————————————————————————————————————————————————————————
-// Functions - Helper
+// Functions - Private
 // —————————————————————————————————————————————————————————————————————————————
 
 static void lgPrivateLog(InternalLevel level, const char *origin,
