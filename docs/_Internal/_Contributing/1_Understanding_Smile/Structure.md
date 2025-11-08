@@ -51,8 +51,14 @@ components, referred to as `Public` and `Internal`.
 `Public` encompasses all resources intended for non-developer users, including
 guides, API documentation, and header files.
 
-Within directories such as `docs`, `src`, and `test`, `_Internal` folders hold
+Within directories such as `docs`, `src`, and `test`, `_Internal` hold
 developer-focused documentation, internal functions, and tools.
+
+As you may have noticed, `_Internal` directories begin with and underscore (
+`_`). This is to easily sort it when directories are organized alphabetically,
+as directories of `Public` modules don't go under a specific folder. This
+pattern can also be found in `docs/_Internal` where `_Contributing` also starts
+with an underscore (`_`) and `__Assets` begins with two.
 
 Anything outside `_Internal` is considered `Public`.
 
@@ -167,9 +173,15 @@ This separation ensures:
 │ ├── Log  # The Log directory can be found alongside other Public directories 
 │ ├── StateMachine
 │ └── _Internal
-│     ├── Common
+│     ├── _Common
 │     └── Test
 ```
+
+Under `src/_Internal` you'll also find the `_Common` module. This contains code
+and messages that can be shared through multiple modules. For example, since
+most modules have a `Start()` function, the message `"Module Started"` is
+defined in `CommonInternalMessages` instead of being defined in every single
+module with a `Start()` function.
 
 ---
 

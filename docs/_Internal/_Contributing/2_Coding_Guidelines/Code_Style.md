@@ -373,7 +373,7 @@ smIsRunning(void);    -- Call unnecessarily verbose
 
 | Internal Module | Prefix |
 |-----------------|--------|
-| Common          | cm     |
+| _Common         | cm     |
 | Test            | ts     |
 
 ✅ Example
@@ -740,10 +740,23 @@ start:
 
 ### — Shared Code and Messages
 
-* Use `CommonInternal.h` for shared utility functions.
-* Use `CommonInternalMessages.h` for shared log messages and error strings.
-* This ensures consistency across modules and reduces duplication.
-* Always check these files before creating new shared resources.
+* Use `CommonInternal.h` for shared utility functions and
+  `CommonInternalMessages.h` for shared log messages and error strings. Always
+  check these files before creating new shared resources.
+* Message definitions should have prefixes added as specifies bellow:
+
+| Section Element | Prefix  |
+|-----------------|---------|
+| Functions Names | FN_     |
+| Causes          | CAUSE_  |
+| Consequences    | CONSEQ_ |
+
+* The macro name should have English words separated by an underscore (`_`).
+* The macro value should be the same as the macro name after the prefix but with
+  spaces instead of underscores and following standard capitalization rules.
+    * Function names are exceptions and should be written as the function is
+      declared while omitting the module prefix.
+* Do not add a period at the end of the macro value.
 
 ✅ Example
 
@@ -753,7 +766,9 @@ start:
 
 -- In StateMachineMessages.h
 #define CAUSE_STATE_NOT_FOUND "State not found"
-#define FN_SET_STATE "SetState"
+#define FN_SET_STATE "SetState"  -- Altogether, as this is the function's name
+                                 -- Also, omit the module's prefix, so smSetState
+                                    becomes SetState only
 
 -- In StateMachine.c
 bool smSetState(const char *name, void *args)
