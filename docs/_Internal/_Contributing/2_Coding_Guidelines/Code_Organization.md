@@ -287,7 +287,7 @@ See [StateMachine.h](../../../../include/StateMachine.h).
 ✅ Examples
 
 * See
-  [CommonInternalMessages.h](../../../../src/_Internal/Common/CommonInternalMessages.h).
+  [CommonInternalMessages.h](../../../../src/_Internal/_Common/CommonInternalMessages.h).
 
 * See
   [StateMachineMessages.h](../../../../src/StateMachine/StateMachineMessages.h).

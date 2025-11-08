@@ -32,7 +32,7 @@
 #include "StateMachineMessages.h"
 
 #include "LogInternal.h"
-#include "CommonInternalMessages.h"
+#include "../_Internal/_Common/CommonInternalMessages.h"
 #include "TestInternal.h"
 #include "StateMachineAPITest.h"
 

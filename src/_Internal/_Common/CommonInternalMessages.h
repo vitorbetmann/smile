@@ -1,6 +1,6 @@
 /**
  * @file
- * @brief Common definitions for shared log messages.
+ * @brief Definitions for shared log messages.
  *
  * Defines shared function identifiers, causes, and consequences
  * that can be reused across all Smile modules for consistent logging.
@@ -11,8 +11,8 @@
  */
 
 
-#ifndef SMILE_COMMON_MESSAGES_H
-#define SMILE_COMMON_MESSAGES_H
+#ifndef SMILE_COMMON_INTERNAL_MESSAGES_H
+#define SMILE_COMMON_INTERNAL_MESSAGES_H
 
 
 // —————————————————————————————————————————————————————————————————————————————
@@ -52,4 +52,5 @@
 #define CONSEQ_ABORTED  "Aborted"
 
 
-#endif // #ifndef SMILE_COMMON_MESSAGES_H
+#endif // #ifndef SMILE_COMMON_INTERNAL_MESSAGES_H
+

@@ -79,20 +79,27 @@ elaborated upon when discussing the [src](#-src) directory.
 ```zsh
 ├── src
 │ ├── Log  # Directory's name is the same as the module's name
-│ │ ├── Log.c  # Source file has same name as the module
-│ │ └── LogInternal.h  # Each module contains an internal header (see src under
+│ │   │
+│ │   ├── Log.c  # Source file has same name as the module
+│ │   │
+│ │   └── LogInternal.h  # Each module contains an internal header (see src under
 │ │                    # the Directory Breakdown  section below).
 │ ├── StateMachine 
-│ │ ├── StateMachine.c
-│ │ ├── StateMachineInternal.h 
-│ │ ├── StateMachineMessages.h  # Message file for a  Public module 
-│ └── _Internal
-│     ├── Common  # Even under _Internal, the directory's name is just the
-│     │   │       # module's name
+│ │   ├── StateMachine.c
+│ │   ├── StateMachineInternal.h 
+│ │   └── StateMachineMessages.h  # Message file for a  Public module 
+│ │
+│ └── _Internal    # _Internal begins with an underscore for sorting purposes
+│     │
+│     ├── _Common  # _Common begins with an underscore for sorting purposes
+│     │   │ 
 │     │   └── CommonInternalMessages.h  # Message files inside an _Internal 
 │     │                                 # directory are named:
 │     │                                 # <ModuleName>InternalMessages.h
-│     └── Test                
+│     │
+│     └── Test     # Even under _Internal, the directory's name is just the
+│         │        # module's name
+│         │           
 │         ├── TestInternal.c  # Source and header files inside an _Internal 
 │         └── TestInternal.h  # directory get the Internal suffix
 ```
