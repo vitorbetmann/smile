@@ -26,10 +26,10 @@
 // Functions
 // —————————————————————————————————————————————————————————————————————————————
 
-bool cmInternalIsRunning(cmIsRunningFn isRunning, const char *module,
+bool cmInternalIsRunning(cmIsRunningFn cmIsRunning, const char *module,
                          const char *fnName)
 {
-    if (!isRunning())
+    if (!cmIsRunning())
     {
         lgInternalLog(ERROR, module, CAUSE_NOT_RUNNING, fnName,
                       CONSEQ_ABORTED);

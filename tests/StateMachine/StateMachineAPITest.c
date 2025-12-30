@@ -22,8 +22,8 @@
 #include "StateMachineAPITest.h"
 
 #include "StateMachineInternal.h"
-#include "include/StateMachine.h"
-#include "src/_Internal/Test/TestInternal.h"
+#include "StateMachine.h"
+#include "TestInternal.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————

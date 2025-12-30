@@ -30,17 +30,18 @@ typedef bool (*cmIsRunningFn)(void);
 // —————————————————————————————————————————————————————————————————————————————
 
 /**
- * @brief Guard helper that ensures a module is running before proceeding.
+ * @brief Guard function that verifies that a module is running before a public
+ *        API continues, logging an error if it is not.
  *
- * @param isRunning Callback that checks whether the module is running.
+ * @param cmIsRunning Callback that checks whether the module is running.
  * @param module  Name of the module performing the check (for logging).
- * @param fnName      Name of the calling function (for logging).
+ * @param fnName  Name of the calling function (for logging).
  *
  * @return `true` if the module is running, false otherwise.
  *
  * @author Vitor Betmann
  */
-bool cmInternalIsRunning(cmIsRunningFn isRunning, const char *module,
+bool cmInternalIsRunning(cmIsRunningFn cmIsRunning, const char *module,
                          const char *fnName);
 
 #endif // #ifndef SMILE_COMMON_INTERNAL_H

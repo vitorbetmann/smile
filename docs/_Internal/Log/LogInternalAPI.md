@@ -1,4 +1,4 @@
-# LogInternal API 📝
+# LogInternal — API 📝
 
 `LogInternal` provides a logging interface for Smile modules. It contains
 internal logging functionality and severity levels for warnings, errors, and
@@ -50,7 +50,7 @@ Used by Smile modules to log info, warnings, errors, or fatal events.
 
 Provides module name, cause, function name, and consequences for context.
 
-- **Parameters:**
+- Parameters:
     - `fnName` — Name of the test function or operation that passed.
     - `level` — Severity level of the log (LOG_INFO, LOG_WARNING, etc.).
     - `module` — Name of the module generating the log.
@@ -80,7 +80,7 @@ additional context.
 Similar to lgInternalLog, but includes an extra argument string for additional
 context.
 
-- **Parameters:**
+- Parameters:
     - `fnName` — Name of the test function or operation that passed.
     - `level` — Severity level of the log (LOG_INFO, LOG_WARNING, etc.).
     - `module` — Name of the module generating the log.
