@@ -32,7 +32,8 @@
 #include "StateMachineMessages.h"
 
 #include "LogInternal.h"
-#include "../_Internal/_Common/CommonInternalMessages.h"
+#include "CommonInternal.h"
+#include "CommonInternalMessages.h"
 #include "TestInternal.h"
 #include "StateMachineAPITest.h"
 
@@ -47,8 +48,6 @@ static InternalTracker *tracker;
 // —————————————————————————————————————————————————————————————————————————————
 // Prototypes
 // —————————————————————————————————————————————————————————————————————————————
-
-static bool smPrivateIsRunning(const char *fnName);
 
 static bool smPrivateIsNameValid(const char *name, const char *fnName);
 
@@ -101,7 +100,7 @@ bool smIsRunning(void)
 bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update,
                    smDrawFn draw, smExitFn exit)
 {
-    if (!smPrivateIsRunning(FN_CREATE_STATE))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_CREATE_STATE))
     {
         return false;
     }
@@ -180,7 +179,7 @@ nameCopyError:
 
 bool smStateExists(const char *name)
 {
-    if (!smPrivateIsRunning(FN_STATE_EXISTS))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_STATE_EXISTS))
     {
         return false;
     }
@@ -195,7 +194,7 @@ bool smStateExists(const char *name)
 
 bool smSetState(const char *name, void *args)
 {
-    if (!smPrivateIsRunning(FN_SET_STATE))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_SET_STATE))
     {
         return false;
     }
@@ -247,7 +246,7 @@ bool smSetState(const char *name, void *args)
 
 const char *smGetCurrentStateName(void)
 {
-    if (!smPrivateIsRunning(FN_GET_CURRENT_STATE_NAME))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_GET_CURRENT_STATE_NAME))
     {
         return nullptr;
     }
@@ -257,7 +256,7 @@ const char *smGetCurrentStateName(void)
 
 int smGetStateCount(void)
 {
-    if (!smPrivateIsRunning(FN_GET_STATE_COUNT))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_GET_STATE_COUNT))
     {
         return -1;
     }
@@ -267,7 +266,7 @@ int smGetStateCount(void)
 
 bool smDeleteState(const char *name)
 {
-    if (!smPrivateIsRunning(FN_DELETE_STATE))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_DELETE_STATE))
     {
         return false;
     }
@@ -308,7 +307,7 @@ bool smDeleteState(const char *name)
 
 bool smUpdate(float dt)
 {
-    if (!smPrivateIsRunning(FN_UPDATE))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_UPDATE))
     {
         return false;
     }
@@ -334,7 +333,7 @@ bool smUpdate(float dt)
 
 float smGetDt(void)
 {
-    if (!smPrivateIsRunning(FN_GET_DT))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_GET_DT))
     {
         return -1.0f;
     }
@@ -374,7 +373,7 @@ bool smSetFPS(int fps)
 
 bool smDraw(void)
 {
-    if (!smPrivateIsRunning(FN_DRAW))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_DRAW))
     {
         return false;
     }
@@ -401,7 +400,7 @@ bool smDraw(void)
 
 bool smStop(void)
 {
-    if (!smPrivateIsRunning(FN_STOP))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_STOP))
     {
         return false;
     }
@@ -469,17 +468,6 @@ InternalStateMap *smInternalGetEntry(const char *name)
 // —————————————————————————————————————————————————————————————————————————————
 // Functions - Private
 // —————————————————————————————————————————————————————————————————————————————
-
-bool smPrivateIsRunning(const char *fnName)
-{
-    if (!smIsRunning())
-    {
-        lgInternalLog(ERROR, MODULE, CAUSE_NOT_RUNNING, fnName,CONSEQ_ABORTED);
-        return false;
-    }
-
-    return true;
-}
 
 bool smPrivateIsNameValid(const char *name, const char *fnName)
 {
