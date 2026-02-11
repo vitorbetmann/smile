@@ -597,7 +597,7 @@ bool smStateExists(const char *name)
   operations fail.
 * Return a `const` type if a certain data that belongs to Smile (not the user).
 * Log all failures through the Log module with appropriate severity levels (
-  See [InternalLog](../../Log/LogInternalAPI.md) for details).
+  See [InternalLog](/docs/_Internal/Log/LogInternalAPI.md) for details).
 * ⚠️ Always `return 0` from `main()`.
 
 ✅ Example
@@ -1238,8 +1238,9 @@ bool smSetFPS(int fps)
 
 [3_Documentation_Guidelines] (🚧 Under Development)
 
+
 ## ✏️ Last Modified
 
-| Last modified | Author (Discord)             | Description         |
-|---------------|------------------------------|---------------------|
-| Nov 06, 2025  | Vitor Betmann (vitorbetmann) | Some minor cleanup; |
+| Last modified | Author (username)             | Description       |
+|---------------|------------------------------|-------------------|
+| Feb 10, 2026  | vitorbetmann | Update links from relative to absolute path; Update Last Modified section to include GitHub username over Discord's; |
