@@ -33,10 +33,6 @@ without ParticleSystem) to keep your project lightweight and focused. And while
 Smile doesn’t handle rendering, input, or audio directly, it integrates
 seamlessly with libraries like [raylib](https://www.raylib.com).
 
-Smile's community is also active and willing to help! Have questions about
-low-level programming, Game Development, Programming Patterns, or anything else?
-We can help you out at the [Discord Server](https://discord.gg/EdS6PwMffH).
-
 ## 🚀 Building Your Game
 
 ### — Prerequisites
@@ -291,7 +287,6 @@ full credit in the code and Git history!):
 - Adding features
 - Writing/editing documentation
 - Making games and reporting bugs
-- Helping others in the [Discord Server](https://discord.gg/EdS6PwMffH).
 
 To learn more, check out the [Contributing Guide](docs/_Internal/_Contributing).
 
@@ -302,6 +297,6 @@ details.
 
 ## ✏️ Last Modified
 
-| Last modified | Author (Discord)             | Description         |
+| Last modified | Author (username)            | Description         |
 |---------------|------------------------------|---------------------|
-| Nov 06, 2025  | Vitor Betmann (vitorbetmann) | Some minor cleanup; |
+| Feb 10, 2026  | vitorbetmann | Some minor cleanup; |
