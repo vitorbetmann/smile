@@ -116,4 +116,4 @@ Understand the [Structure](/docs/_Internal/_Contributing/1_Understanding_Smile/S
 
 | Last modified | Author (Discord Username)    | Description                                                   |
 |---------------|------------------------------|---------------------------------------------------------------|
-| Nov 01, 2025  | Vitor Betmann (vitorbetmann) | Fixed typos; Added "Under Development" to Testing Guidelines; |
+| Feb 10, 2026  | vitorbetmann | Fixed typos; Added "Under Development" to Testing Guidelines; |
