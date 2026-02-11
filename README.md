@@ -11,13 +11,13 @@ abstractions that keep your code lean, organized, and fully under your control.
 ## 🎮 Smile Demo
 
 <p align="center">
-  <img src="docs/_Internal/__Assets/StateMachine/StateMachineDemo.gif" width="45%"/>
-  <img src="docs/_Internal/__Assets/ParticleSystem/ParticleSystemDemo.gif" width="45%"/>
+  <img src="/docs/_Internal/__Assets/StateMachine/StateMachineDemo.gif" width="45%"/>
+  <img src="/docs/_Internal/__Assets/ParticleSystem/ParticleSystemDemo.gif" width="45%"/>
 </p>
 
 <p align="center">
-  <img src="docs/_Internal/__Assets/SaveLoad/SaveLoadDemo.gif" width="45%"/>
-  <img src="docs/_Internal/__Assets/Log/LogDemo.gif" width="45%"/>
+  <img src="/docs/_Internal/__Assets/SaveLoad/SaveLoadDemo.gif" width="45%"/>
+  <img src="/docs/_Internal/__Assets/Log/LogDemo.gif" width="45%"/>
 </p>
 
 ## 😊 Why Smile?
@@ -72,7 +72,7 @@ A typical project structure might look like this:
 By default, Smile compiles with runtime `warning` and `info` logs enabled.
 Below is an example of how they would appear in your terminal:
 
-![Example of Smile's Logs](docs/_Internal/__Assets/_SmileREADME/LogExample.png)
+![Example of Smile's Logs](/docs/_Internal/__Assets/_SmileREADME/LogExample.png)
 
 If you want to disable them, pass the following flags when configuring your
 build with CMake:
@@ -255,10 +255,10 @@ examples:
 
 | Module                                                       | Description                               |
 |--------------------------------------------------------------|-------------------------------------------|
-| [Log](docs/Log)                                              | Debug code and handle fatal errors easily |
-| [ParticleSystem](docs/ParticleSystem) (🚧 Under Development) | Simulate smoke, dust, fire, and more      |
-| [SaveLoad](docs/SaveLoad) (🚧 Under Development)             | Quickly save and load your game           |
-| [StateMachine](docs/StateMachine)                            | Manage states and transitions cleanly     |
+| [Log](/docs/Log)                                              | Debug code and handle fatal errors easily |
+| [ParticleSystem](/docs/ParticleSystem) (🚧 Under Development) | Simulate smoke, dust, fire, and more      |
+| [SaveLoad](/docs/SaveLoad) (🚧 Under Development)             | Quickly save and load your game           |
+| [StateMachine](/docs/StateMachine)                            | Manage states and transitions cleanly     |
 
 ## 🤝 Contributing
 
@@ -288,7 +288,7 @@ full credit in the code and Git history!):
 - Writing/editing documentation
 - Making games and reporting bugs
 
-To learn more, check out the [Contributing Guide](docs/_Internal/_Contributing).
+To learn more, check out the [Contributing Guide](/docs/_Internal/_Contributing).
 
 ## 🪪 License
 
@@ -297,6 +297,6 @@ details.
 
 ## ✏️ Last Modified
 
-| Last modified | Author (username)            | Description         |
-|---------------|------------------------------|---------------------|
-| Feb 10, 2026  | vitorbetmann | Some minor cleanup; |
+| Last modified | Author (username)             | Description       |
+|---------------|------------------------------|-------------------|
+| Feb 10, 2026  | vitorbetmann | Update links from relative to absolute path; Update Last Modified section to include GitHub username over Discord's; |
