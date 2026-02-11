@@ -11,11 +11,11 @@ up your environment to start contributing.
 In addition, the other files each focus on a specific aspect of Smile’s
 development workflow:
 
-- [1_Understanding_Smile](../1_Understanding_Smile)
-    - [Structure](../1_Understanding_Smile/Structure.md)
-- [2_Coding_Guidelines](../2_Coding_Guidelines)
-    - [Code_Organization](../2_Coding_Guidelines/Code_Organization.md)
-    - [Code_Style](../2_Coding_Guidelines/Code_Style.md)
+- [1_Understanding_Smile](/docs/_Internal/_Contributing/1_Understanding_Smile)
+    - [Structure](/docs/_Internal/_Contributing/1_Understanding_Smile/Structure.md)
+- [2_Coding_Guidelines](/docs/_Internal/_Contributing/2_Coding_Guidelines)
+    - [Code_Organization](/docs/_Internal/_Contributing/2_Coding_Guidelines/Code_Organization.md)
+    - [Code_Style](/docs/_Internal/_Contributing/2_Coding_Guidelines/Code_Style.md)
 - [3_Documentation_Guidelines] (🚧 Under Development)
 - [4_Testing_Guidelines] (🚧 Under Development)
 - [5_Pull_Requesting] (🚧 Under Development)
@@ -90,7 +90,7 @@ This confirms Smile is built in developer mode.
 By default, Smile compiles with runtime **warning** and **info** logs enabled.
 Below is an example of how they would appear in your terminal:
 
-![Example of Smile's Logs](docs/_Internal/__Assets/_SmileREADME/LogExample.png)
+![Example of Smile's Logs](/docs/_Internal/__Assets/_SmileREADME/LogExample.png)
 
 If you want to disable them, pass the following flags when configuring your
 build with CMake:
@@ -108,7 +108,7 @@ time. Errors cannot be disabled.
 
 ## Up Next
 
-Understand the [Structure](../1_Understanding_Smile/Structure.md) of Smile.
+Understand the [Structure](/docs/_Internal/_Contributing/1_Understanding_Smile/Structure.md) of Smile.
 
 ---
 
