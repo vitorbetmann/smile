@@ -73,7 +73,7 @@ code-related files.
 
 ✅ Example
 
-See [Log.h](../../../../include/Log.h).
+See [Log.h](/include/Log.h).
 
 ### — Subheaders
 
@@ -218,7 +218,7 @@ bool smStateExists(const char *name);
 
 ✅ Example
 
-See [StateMachine.h](../../../../include/StateMachine.h).
+See [StateMachine.h](/include/StateMachine.h).
 
 ---
 
@@ -244,7 +244,7 @@ See [StateMachine.h](../../../../include/StateMachine.h).
 ✅ Example
 
 * See
-  [StateMachineInternal.h](../../../../src/StateMachine/StateMachineInternal.h).
+  [StateMachineInternal.h](/src/StateMachine/StateMachineInternal.h).
 
 ## ✉️ Message Files
 
@@ -287,10 +287,10 @@ See [StateMachine.h](../../../../include/StateMachine.h).
 ✅ Examples
 
 * See
-  [CommonInternalMessages.h](../../../../src/_Internal/_Common/CommonInternalMessages.h).
+  [CommonInternalMessages.h](/src/_Internal/_Common/CommonInternalMessages.h).
 
 * See
-  [StateMachineMessages.h](../../../../src/StateMachine/StateMachineMessages.h).
+  [StateMachineMessages.h](/src/StateMachine/StateMachineMessages.h).
 
 ## 📤 Non-Test Source Files
 
@@ -304,14 +304,14 @@ See [StateMachine.h](../../../../include/StateMachine.h).
 
 ✅ Example
 
-* See [StateMachine.c](../../../../src/StateMachine/StateMachine.c).
+* See [StateMachine.c](/src/StateMachine/StateMachine.c).
 
 ## Up Next
 
-Learn the standards for [Code_Style](Code_Style.md).
+Learn the standards for [Code_Style](/docs/_Internal/_Contributing/2_Coding_Guidelines/Code_Style.md).
 
 ## ✏️ Last Modified
 
-| Last modified | Author (Discord)             | Description       |
+| Last modified | Author (username)             | Description       |
 |---------------|------------------------------|-------------------|
-| Nov 07, 2025  | Vitor Betmann (vitorbetmann) | Created document; |
+| Feb 10, 2026  | vitorbetmann | Update links from relative to absolute path; Update Last Modified section to include GitHub username over Discord's; |
