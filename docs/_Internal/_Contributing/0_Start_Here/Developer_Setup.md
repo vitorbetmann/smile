@@ -106,7 +106,7 @@ time. Errors cannot be disabled.
 
 <br>
 
-## Up Next
+## ➡️ Up Next
 
 Understand the [Structure](/docs/_Internal/_Contributing/1_Understanding_Smile/Structure.md) of Smile.
 
@@ -114,6 +114,8 @@ Understand the [Structure](/docs/_Internal/_Contributing/1_Understanding_Smile/S
 
 <br>
 
-| Last modified | Author (Discord Username)    | Description                                                   |
-|---------------|------------------------------|---------------------------------------------------------------|
-| Feb 10, 2026  | vitorbetmann | Update links from relative to absolute; |
+## ✏️ Last Modified
+
+| Last modified | Author (username)             | Description       |
+|---------------|------------------------------|-------------------|
+| Feb 10, 2026  | vitorbetmann | Update links from relative to absolute path; Update Last Modified section to include GitHub username over Discord's; Add emoji to Up Next; |
