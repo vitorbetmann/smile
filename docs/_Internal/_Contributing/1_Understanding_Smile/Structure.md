@@ -286,10 +286,10 @@ suffix after `<ModuleName>`.
 ## ➡️ Up Next
 
 Learn the standards
-for [Code Organization](../2_Coding_Guidelines/Code_Organization.md).
+for [Code Organization](/docs/_Internal/_Contributing/2_Coding_Guidelines/Code_Organization.md).
 
 ## ✏️ Last Modified
 
-| Last modified | Author (Discord)             | Description       |
+| Last modified | Author (username)             | Description       |
 |---------------|------------------------------|-------------------|
-| Nov 07, 2025  | Vitor Betmann (vitorbetmann) | Created document; |
+| Feb 10, 2026  | vitorbetmann | Update links from relative to absolute path; Update Last Modified section to include GitHub username over Discord's; |
