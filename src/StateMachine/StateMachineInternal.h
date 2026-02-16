@@ -55,7 +55,7 @@ typedef struct {
   smUpdateFn update;
   smDrawFn draw;
   smExitFn exit;
-} InternalState;
+} smInternalState;
 
 /**
  * @brief Maps a state name to its corresponding State structure.
@@ -67,9 +67,9 @@ typedef struct {
  */
 typedef struct {
   char *name;
-  InternalState *state;
+  smInternalState *state;
   UT_hash_handle hh;
-} InternalStateMap;
+} smInternalStateMap;
 
 /**
  * @brief Tracks the current state machine context.
@@ -81,12 +81,12 @@ typedef struct {
  * @author Vitor Betmann
  */
 typedef struct {
-  InternalStateMap *stateMap;
-  const InternalState *currState;
+  smInternalStateMap *stateMap;
+  const smInternalState *currState;
   int stateCount;
   int fps;
   struct timespec lastTime;
-} InternalTracker;
+} smInternalTracker;
 
 
 // —————————————————————————————————————————————————————————————————————————————
@@ -102,7 +102,7 @@ typedef struct {
  *
  * @author Vitor Betmann
  */
-const InternalState *smInternalGetState(const char *name);
+const smInternalState *smInternalGetState(const char *name);
 
 /**
  * @brief Retrieves a pointer to a StateMap entry by name.
@@ -113,7 +113,7 @@ const InternalState *smInternalGetState(const char *name);
  *
  * @author Vitor Betmann
  */
-InternalStateMap *smInternalGetEntry(const char *name);
+smInternalStateMap *smInternalGetEntry(const char *name);
 
 
 #endif // #ifndef SMILE_STATE_MACHINE_INTERNAL_H

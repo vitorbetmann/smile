@@ -335,7 +335,7 @@ smDeleteState("level 1");
 
 Retrieves the total number of registered states.
 
-- Returns: The number of registered states, or -1 if the state machine is
+- Returns: The number of registered states, or `-1` if the state machine is
   not started.
 
 ✅ Example
@@ -384,7 +384,7 @@ while (smIsRunning())
 Calculates and returns the delta time since the last frame update.
 
 - Returns: The time elapsed in seconds since the previous call to
-  `smGetDt()`, or -1.0f if the state machine has not been started.
+  `smGetDt()`, or `-1.0f` if the state machine has not been started.
 
 - Notes:
     - Delta time is measured using a high-resolution monotonic clock. On the

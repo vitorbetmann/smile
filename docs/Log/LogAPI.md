@@ -55,11 +55,11 @@ void myFatalHandler(void)
 Logs a message to the terminal ending in a new line. Supports printf-style
 formatting.
 
-- **Parameters:**
+- Parameters:
     - `msg` — Format string for the message to log.
     - `...` — Additional arguments related to the format specifiers in msg.
 
-- **Note:**
+- Note:
     - Output is written to stderr.
 
 ✅ Example
@@ -78,12 +78,12 @@ lgLog("Smile version %.1f is out!", 1.0f);
 
 Sets a custom handler to be called when a fatal event occurs.
 
-- **Parameters:**
+- Parameters:
     - `handler` — Function pointer to the custom fatal handler. If `NULL` or
       `nullptr`, the default handler is set, which terminates the program with
       failure status after logging the event to the terminal.
 
-- **Note:** It's recommended your custom handler terminates the program.
+- Note: It's recommended your custom handler terminates the program.
 
 ✅ Example
 

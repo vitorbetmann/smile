@@ -1,6 +1,6 @@
 <!-- TODO #19 [Docs][TestInternal] Add example for tsInternalRealloc wrapper function -->
 
-# TestInternal API 🧪
+# TestInternal — API 🧪
 
 `TestInternal` provides instrumented memory allocation wrappers and fatal hooks
 for SMILE. These functions can be used in production for safe allocations and
@@ -12,11 +12,23 @@ logging, and in unit tests to simulate failures.
 
 ## 📋 Table of Contents
 
+- [Module Header](#module-header)
 - [Data Types](#-data-types)
     - [Enums](#-enums)
 - [Functions](#-functions)
     - [Test Suites Related](#-test-suites-related)
     - [Memory Allocation Related](#-memory-allocation-related)
+
+## 😊Module Header
+
+The module’s header is `TestInternal.h`. Its full Smile path is:
+`src/_Internal/Test/TestInternal.h`
+
+✅ Example
+
+```c
+#include "TestInternal.h"
+```
 
 ## 📦 Data Types
 
@@ -54,7 +66,7 @@ void Test_smStart_FailsIfCallocFails(void) {
 
 Logs a `[PASS]` message for a successful test or operation.
 
-- **Parameters:**
+- Parameters:
     - `fnName` — Name of the test function or operation that passed.
 
 ✅ Example
@@ -73,11 +85,10 @@ Temporarily disables a memory allocation function, causing it to fail at the
 specified call count. After the failure
 occurs, normal behavior resumes.
 
-- **Parameters:**
+- Parameters:
     - `fnName` — Allocation function to disable (`MALLOC`, `CALLOC`, `REALLOC`).
     - `at` — Call count at which failure occurs.
-
-- **Returns:** `true` if successfully disabled, `false` if an invalid function
+- Returns: `true` if successfully disabled, `false` if an invalid function
   type is given.
 
 ✅ Example
@@ -99,9 +110,9 @@ void Test_smStart_FailsIfCallocFails(void) {
 
 Wrapper around `malloc()` with optional failure simulation.
 
-- **Parameters:**
+- Parameters:
     - `size` — Number of bytes to allocate.
-- **Returns:** Pointer to allocated memory, or `nullptr` if failure is
+- Returns: Pointer to allocated memory, or `nullptr` if failure is
   simulated.
 
 ✅ Example
@@ -120,10 +131,10 @@ if (!state) {
 
 Wrapper around `calloc()` with optional failure simulation.
 
-- **Parameters:**
+- Parameters:
     - `nitems` — Number of elements to allocate.
     - `size` — Size of each element in bytes.
-- **Returns:** Pointer to allocated memory, or `nullptr` if failure is
+- Returns: Pointer to allocated memory, or `nullptr` if failure is
   simulated.
 
 ✅ Example
@@ -142,10 +153,11 @@ if (!tracker) {
 
 Wrapper around `realloc()` with optional failure simulation.
 
-- **Parameters:**
+- Parameters:
     - `ptr` — Pointer to an existing memory block.
     - `size` — Number of bytes to allocate.
-- **Returns:** Pointer to reallocated memory, or `nullptr` if failure is
+
+- Returns: Pointer to reallocated memory, or `nullptr` if failure is
   simulated.
 
 ✅ Example

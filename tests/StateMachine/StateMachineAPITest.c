@@ -22,8 +22,8 @@
 #include "StateMachineAPITest.h"
 
 #include "StateMachineInternal.h"
-#include "include/StateMachine.h"
-#include "src/_Internal/Test/TestInternal.h"
+#include "StateMachine.h"
+#include "TestInternal.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————
@@ -72,7 +72,7 @@ static void onExit(MockData *data)
 
 static float mockDt = 0.016f;
 
-static InternalState mock = {
+static smInternalState mock = {
     .name = "mock",
     .enter = mockEnter,
     .update = mockUpdate,
@@ -80,7 +80,7 @@ static InternalState mock = {
     .exit = mockExit,
 };
 
-static InternalState mock2 = {
+static smInternalState mock2 = {
     .name = "mock2",
     .enter = mockEnter,
     .update = mockUpdate,
