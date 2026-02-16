@@ -51,7 +51,7 @@ typedef struct {
  *
  * @author Vitor Betmann
  */
-bool slInitWith(const char *dir, const char *file);
+bool slStartWith(const char *dir, const char *file);
 
 /**
  * @brief Initialize the SaveLoad system.

@@ -10,10 +10,22 @@ fatal events inside Smile core modules.
 
 ## 📋 Table of Contents
 
+- [Module Header](#module-header)
 - [Data Types](#-data-types)
     - [Enums](#-enums)
 - [Functions](#-functions)
     - [Log Related](#-log-related)
+
+## 😊Module Header
+
+The module’s header is `LogInternal.h`. Its full Smile path is:
+`src/Log/LogInternal.h`
+
+✅ Example
+
+```c
+#include "LogInternal.h"
+```
 
 ## 📦 Data Types
 

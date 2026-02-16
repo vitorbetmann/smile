@@ -30,9 +30,9 @@
 // -----------------------------------------------------------------------------
 
 // Directory Functions
-#define GET_GAME_DIR "GetGameDir"
+#define FN_GET_GAME_DIR "GetGameDir"
 #define GET_DEFAULT_DIR "GetDefaultDir"
-#define SET_GAME_DIR "SetGameDir"
+#define FN_SET_GAME_DIR "SetGameDir"
 #define DIR_EXISTS "DirExists"
 // File Functions
 #define GET_GAME_FILE "GetGameFile"
@@ -53,8 +53,8 @@
 #define LOAD_NEXT_TO "LoadNextTo"
 #define END_LOAD_SESSION "EndLoadSession"
 // Delete Functions
-#define DELETE_DIR "DeleteDir"
-#define DELETE_FILE "DeleteFile"
+#define FN_DELETE_DIR "DeleteDir"
+#define FN_DELETE_FILE "DeleteFile"
 
 // -----------------------------------------------------------------------------
 // Causes
