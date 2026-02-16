@@ -1,6 +1,6 @@
 # Welcome to Smile 😊
 
-## An open-source C framework for 2D game development
+## An open-source, modular C library for 2D game development
 
 Smile stands for `Simple Modularity Is Low-Key Elegant`, and it's a
 lightweight collection of modules that simplifies 2D game development.
