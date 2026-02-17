@@ -4,11 +4,11 @@
 
 Smile is a modular C23 static library organized by feature.
 
-- `include/`: public API headers (`Log.h`, `SceneMachine.h`, `SaveLoad.h`).
-- `src/`: module implementations (`src/Log/`, `src/SceneMachine/`,
+- `include/`: public API headers (`Log.h`, `SceneManager.h`, `SaveLoad.h`).
+- `src/`: module implementations (`src/Log/`, `src/SceneManager/`,
   `src/SaveLoad/`) plus internal utilities in `src/_Internal/`.
 - `tests/`: API test programs by module (for example
-  `tests/SceneMachine/SceneMachineAPITest.c`).
+  `tests/SceneManager/SceneManagerAPITest.c`).
 - `docs/`: public docs and internal contributor material, especially coding
   guides in `docs/_Internal/__Contributing/2_Coding_Guidelines/`.
 - `external/`: third-party headers (currently `uthash.h`).
@@ -41,7 +41,7 @@ cmake -S . -B build -DSMILE_LOG_WARNING=OFF -DSMILE_LOG_INFO=OFF
 Builds with warning/info logs disabled at compile time.
 
 Run test executables directly from `build/` (example:
-`./build/SceneMachineAPITest`).
+`./build/SceneManagerAPITest`).
 
 ## Coding Style & Naming Conventions
 
