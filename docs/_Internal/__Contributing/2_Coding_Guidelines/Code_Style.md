@@ -41,7 +41,7 @@ consistency, readability, maintainability, and safety across all modules.
 ✅ Do
 
 ```c
-int stateCount;    -- Non-constant variables use camelCase
+int sceneCount;    -- Non-constant variables use camelCase
 
 ————————————————————————————————————————————————————————————————————————————————
 
@@ -224,7 +224,7 @@ static const float IDENTITY_MATRIX[16] = {    -- static const for file-scoped ar
 
 ————————————————————————————————————————————————————————————————————————————————
 
-const InternalState *currState;    -- Pointer can change, content cannot.
+const InternalState *currScene;    -- Pointer can change, content cannot.
 
 const InternalState *const CURR_STATE;    -- Neither pointer nor content can change.
 
@@ -369,7 +369,7 @@ smIsRunning(void);    -- Call unnecessarily verbose
 | Log            | lg     |
 | ParticleSystem | ps     |
 | SaveLoad       | sl     |
-| StateMachine   | sm     |
+| SceneManager   | sm     |
 
 | Internal Module | Prefix |
 |-----------------|--------|
@@ -382,11 +382,11 @@ smIsRunning(void);    -- Call unnecessarily verbose
 bool smStart(void);
 bool smIsRunning(void);
 
-bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update, smDrawFn draw, smExitFn exit);
-bool smStateExists(const char *name);
-bool smSetState(const char *name, void *args);
-int smGetStateCount(void);
-bool smDeleteState(const char *name);
+bool smCreateScene(const char *name, smEnterFn enter, smUpdateFn update, smDrawFn draw, smExitFn exit);
+bool smSceneExists(const char *name);
+bool smSetScene(const char *name, void *args);
+int smGetSceneCount(void);
+bool smDeleteScene(const char *name);
 
 bool smUpdate(float dt);
 bool smDraw(void);
@@ -408,22 +408,22 @@ bool smStop(void);
 ✅ Example
 
 ```c
--- Found in StateMachine.h
-bool smStateExists(const char *name);
+-- Found in SceneManager.h
+bool smSceneExists(const char *name);
 
 ————————————————————————————————————————————————————————————————————————————————
 
--- Found in StateMachine.internal.h  
-const State *smInternalGetState(const char *name);
+-- Found in SceneManager.internal.h  
+const State *smInternalGetScene(const char *name);
 
 ————————————————————————————————————————————————————————————————————————————————
 
--- Found in StateMachine.c
+-- Found in SceneManager.c
 bool smPrivateIsNameValid(const char *name, const char *fnName);
 
 ————————————————————————————————————————————————————————————————————————————————
 
--- Found in StateMachineAPITest.h
+-- Found in SceneManagerAPITest.h
 typedef void (*smTestExitFn)(MockData *data);
 
 ```
@@ -446,7 +446,7 @@ void lgPrivateLogV(InternalLevel level, const char *origin, const char *msg, va_
 ————————————————————————————————————————————————————————————————————————————————
 
 -- "Delete state: (name)"
-bool smDeleteState(const char *name);
+bool smDeleteScene(const char *name);
 ```
 
 ---
@@ -459,7 +459,7 @@ bool smDeleteState(const char *name);
 ✅ Do
 
 ```c
-bool smStateExists(const char *name);    -- Implies read-only parameter
+bool smSceneExists(const char *name);    -- Implies read-only parameter
 
 ————————————————————————————————————————————————————————————————————————————————
 
@@ -469,7 +469,7 @@ bool smUpdate(float dt);    -- const is unecessary because argument is copied by
 ❌ Don't
 
 ```c
-bool smStateExists(char *name);    -- Misleading! Implies the function modifies the string
+bool smSceneExists(char *name);    -- Misleading! Implies the function modifies the string
 
 ————————————————————————————————————————————————————————————————————————————————
 
@@ -552,7 +552,7 @@ bool smStart(void)
     }
 
     -- Code blocks related to a single task go together (in this example, allocating memory and handling errors)
-    tracker = tsInternalCalloc(1, sizeof(StateMachineTracker));    -- Use wrapper test functions for memory allocation
+    tracker = tsInternalCalloc(1, sizeof(SceneManagerTracker));    -- Use wrapper test functions for memory allocation
     if (!tracker)
     {
         return false;
@@ -567,14 +567,14 @@ bool smStart(void)
 
 -- Use Private functions for statements that are repeated throughout multiple functions
 
-bool smStateExists(const char *name)
+bool smSceneExists(const char *name)
 {
-    if (!smPrivateIsRunning(FN_STATE_EXISTS))
+    if (!smPrivateIsRunning(FN_SCENE_EXISTS))
     {
         return false;
     }
 
-    if (!smPrivateIsNameValid(name, FN_STATE_EXISTS))
+    if (!smPrivateIsNameValid(name, FN_SCENE_EXISTS))
     {
         return false;
     }
@@ -642,14 +642,14 @@ bool smIsRunning(void)
 
 -- Return -1, -1.0f or -1.0 on error for numeric return types
 
-int smGetStateCount(void)
+int smGetSceneCount(void)
 {
-    if (!smPrivateIsRunning(FN_GET_STATE_COUNT))
+    if (!smPrivateIsRunning(FN_GET_SCENE_COUNT))
     {
         return -1;
     }
 
-    return tracker->stateCount;
+    return tracker->sceneCount;
 }
 
 ————————————————————————————————————————————————————————————————————————————————
@@ -657,14 +657,14 @@ int smGetStateCount(void)
 -- Return nullptr, if appropriate, when data is unavailable or operations fail.
 -- This func also returns a const char pointer on success, meaning it belongs to
    Smile and the caller shouldn't modify or free it.
-const char *smGetCurrentStateName(void)
+const char *smGetCurrentSceneName(void)
 {
-    if (!smPrivateIsRunning(FN_GET_CURRENT_STATE_NAME))
+    if (!smPrivateIsRunning(FN_GET_CURRENT_SCENE_NAME))
     {
         return nullptr;
     }
 
-    return tracker->currState ? tracker->currState->name : nullptr;
+    return tracker->currScene ? tracker->currScene->name : nullptr;
 }
 
 ————————————————————————————————————————————————————————————————————————————————
@@ -690,7 +690,7 @@ int main(void)
 ```c
 -- Only use goto for cleanup
 
-bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
+bool smCreateScene(const char *name, smEnterFn enterFn, smUpdateFn updateFn,
                    smDrawFn drawFn, smExitFn exitFn)
 {
     StateMap *entry = smInternalGetEntry(name);
@@ -764,22 +764,22 @@ start:
 -- In CommonInternalMessages.h
 #define CONSEQ_ABORTED  "Aborted"
 
--- In StateMachineMessages.h
-#define CAUSE_STATE_NOT_FOUND "State not found"
-#define FN_SET_STATE "SetState"  -- Altogether, as this is the function's name
-                                 -- Also, omit the module's prefix, so smSetState
-                                    becomes SetState only
+-- In SceneManagerMessages.h
+#define CAUSE_SCENE_NOT_FOUND "Scene not found"
+#define FN_SET_SCENE "SetScene"  -- Altogether, as this is the function's name
+                                 -- Also, omit the module's prefix, so smSetScene
+                                    becomes SetScene only
 
--- In StateMachine.c
-bool smSetState(const char *name, void *args)
+-- In SceneManager.c
+bool smSetScene(const char *name, void *args)
 {
     ...
     
-    const InternalState *nextState = smInternalGetState(name);
+    const InternalState *nextState = smInternalGetScene(name);
     if (!nextState)
     {
-        lgInternalLogWithArg(WARNING, MODULE, CAUSE_STATE_NOT_FOUND,
-                             name,FN_SET_STATE, CONSEQ_ABORTED);
+        lgInternalLogWithArg(WARNING, MODULE, CAUSE_SCENE_NOT_FOUND,
+                             name,FN_SET_SCENE, CONSEQ_ABORTED);
         return false;
     }
     
@@ -1012,14 +1012,14 @@ while (true)
 ✅ Do
 
 ```c
-bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update,
+bool smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
                    smDrawFn draw, smExitFn exit);
 ```
 
 ❌ Don't
 
 ```c
-bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn);
+bool smCreateScene(const char *name, smEnterFn enterFn, smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn);
 ```
 
 ## 🃏 Miscellaneous
@@ -1174,13 +1174,13 @@ typedef void (*smExitFn)(void);
 ```c
 /**
  * @file
- * @brief Implementation of the StateMachine module.
+ * @brief Implementation of the SceneManager module.
  * ...
  *
- * @note TODO #16 [Feature] for [StateMachine] - Create a function to limit the
+ * @note TODO #16 [Feature] for [SceneManager] - Create a function to limit the
  *       game's FPS to a max value
- * @note TODO #27 [Feature] for [StateMachine] - Create Internal Trim Function
- *       and Integrate into StateMachine Name Validation
+ * @note TODO #27 [Feature] for [SceneManager] - Create Internal Trim Function
+ *       and Integrate into SceneManager Name Validation
  *
  * ...
  */

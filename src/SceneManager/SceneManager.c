@@ -1,17 +1,17 @@
 /**
  * @file
- * @brief Implementation of the StateMachine module.
+ * @brief Implementation of the SceneManager module.
  *
- * @see StateMachine.h
- * @see StateMachineInternal.h
- * @see StateMachineMessages.h
+ * @see SceneManager.h
+ * @see SceneManagerInternal.h
+ * @see SceneManagerMessages.h
  *
  * @bug No known bugs.
  *
- * @note TODO #16 [Feature] for [StateMachine] - Create a function to limit the
+ * @note TODO #16 [Feature] for [SceneManager] - Create a function to limit the
  *       game's FPS to a max value
- * @note TODO #27 [Feature] for [StateMachine] - Create Internal Trim Function
- *       and Integrate into StateMachine Name Validation
+ * @note TODO #27 [Feature] for [SceneManager] - Create Internal Trim Function
+ *       and Integrate into SceneManager Name Validation
  *
  * @author Vitor Betmann
  * @date 2025-10-29
@@ -27,15 +27,15 @@
 #include <time.h>
 #include <uthash.h>
 
-#include "StateMachine.h"
-#include "StateMachineInternal.h"
-#include "StateMachineMessages.h"
+#include "SceneManager.h"
+#include "SceneManagerInternal.h"
+#include "SceneManagerMessages.h"
 
 #include "LogInternal.h"
 #include "CommonInternal.h"
 #include "CommonInternalMessages.h"
 #include "TestInternal.h"
-#include "StateMachineAPITest.h"
+#include "SceneManagerAPITest.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————
@@ -52,10 +52,10 @@ static smInternalTracker *tracker;
 static bool smPrivateIsNameValid(const char *name, const char *fnName);
 
 /* This function was created to preserve API consistency because the argument
- * "name" from smCreateState collided with the expected item "name" from tracker
+ * "name" from smCreateScene collided with the expected item "name" from tracker
  * and neither should be changed.
  */
-static void smPrivateAddState(smInternalStateMap *mapEntry);
+static void smPrivateAddScene(smInternalSceneMap *mapEntry);
 
 
 // —————————————————————————————————————————————————————————————————————————————
@@ -97,38 +97,38 @@ bool smIsRunning(void)
 
 // State Functions
 
-bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update,
+bool smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
                    smDrawFn draw, smExitFn exit)
 {
-    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_CREATE_STATE))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_CREATE_SCENE))
     {
         return false;
     }
 
-    if (!smPrivateIsNameValid(name, FN_CREATE_STATE))
+    if (!smPrivateIsNameValid(name, FN_CREATE_SCENE))
     {
         return false;
     }
 
-    smInternalStateMap *entry = smInternalGetEntry(name);
+    smInternalSceneMap *entry = smInternalGetEntry(name);
     if (entry)
     {
-        lgInternalLogWithArg(WARNING, MODULE, CAUSE_STATE_ALREADY_EXISTS, name,
-                             FN_CREATE_STATE, CONSEQ_ABORTED);
+        lgInternalLogWithArg(WARNING, MODULE, CAUSE_SCENE_ALREADY_EXISTS, name,
+                             FN_CREATE_SCENE, CONSEQ_ABORTED);
         return false;
     }
 
     if (!enter && !update && !draw && !exit)
     {
         lgInternalLogWithArg(ERROR, MODULE, CAUSE_NO_VALID_FUNCTIONS, name,
-                             FN_CREATE_STATE, CONSEQ_ABORTED);
+                             FN_CREATE_SCENE, CONSEQ_ABORTED);
         return false;
     }
 
-    smInternalState *state = tsInternalMalloc(sizeof(smInternalState));
+    smInternalScene *state = tsInternalMalloc(sizeof(smInternalScene));
     if (!state)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,FN_CREATE_STATE,
+        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,FN_CREATE_SCENE,
                       CONSEQ_ABORTED);
         return false;
     }
@@ -137,7 +137,7 @@ bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update,
     char *nameCopy = tsInternalMalloc(NAME_SIZE);
     if (!nameCopy)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,FN_CREATE_STATE,
+        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,FN_CREATE_SCENE,
                       CONSEQ_ABORTED);
         goto nameCopyError;
     }
@@ -153,21 +153,21 @@ bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update,
     state->draw = draw;
     state->exit = exit;
 
-    smInternalStateMap *mapEntry = tsInternalMalloc(sizeof(smInternalStateMap));
+    smInternalSceneMap *mapEntry = tsInternalMalloc(sizeof(smInternalSceneMap));
     if (!mapEntry)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,FN_CREATE_STATE,
+        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,FN_CREATE_SCENE,
                       CONSEQ_ABORTED);
         goto mapEntryError;
     }
     mapEntry->state = state;
     mapEntry->name = state->name;
-    smPrivateAddState(mapEntry);
+    smPrivateAddScene(mapEntry);
 
-    tracker->stateCount++;
+    tracker->sceneCount++;
 
-    lgInternalLogWithArg(INFO, MODULE, CAUSE_STATE_CREATED, name,
-                         FN_CREATE_STATE, CONSEQ_SUCCESSFUL);
+    lgInternalLogWithArg(INFO, MODULE, CAUSE_SCENE_CREATED, name,
+                         FN_CREATE_SCENE, CONSEQ_SUCCESSFUL);
     return true;
 
 mapEntryError:
@@ -177,14 +177,14 @@ nameCopyError:
     return false;
 }
 
-bool smStateExists(const char *name)
+bool smSceneExists(const char *name)
 {
-    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_STATE_EXISTS))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_SCENE_EXISTS))
     {
         return false;
     }
 
-    if (!smPrivateIsNameValid(name, FN_STATE_EXISTS))
+    if (!smPrivateIsNameValid(name, FN_SCENE_EXISTS))
     {
         return false;
     }
@@ -192,27 +192,27 @@ bool smStateExists(const char *name)
     return smInternalGetEntry(name);
 }
 
-bool smSetState(const char *name, void *args)
+bool smSetScene(const char *name, void *args)
 {
-    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_SET_STATE))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_SET_SCENE))
     {
         return false;
     }
 
-    if (!smPrivateIsNameValid(name, FN_SET_STATE))
+    if (!smPrivateIsNameValid(name, FN_SET_SCENE))
     {
         return false;
     }
 
-    const smInternalState *NEXT_STATE = smInternalGetState(name);
+    const smInternalScene *NEXT_STATE = smInternalGetScene(name);
     if (!NEXT_STATE)
     {
-        lgInternalLogWithArg(WARNING, MODULE, CAUSE_STATE_NOT_FOUND, name,
-                             FN_SET_STATE, CONSEQ_ABORTED);
+        lgInternalLogWithArg(WARNING, MODULE, CAUSE_SCENE_NOT_FOUND, name,
+                             FN_SET_SCENE, CONSEQ_ABORTED);
         return false;
     }
 
-    if (tracker->currState && tracker->currState->exit)
+    if (tracker->currScene && tracker->currScene->exit)
     {
 #ifdef SMILE_DEVELOPER
         if (smTestExit)
@@ -220,12 +220,12 @@ bool smSetState(const char *name, void *args)
             smTestExit(smMockData);
         }
 #endif
-        tracker->currState->exit();
+        tracker->currScene->exit();
     }
 
-    tracker->currState = NEXT_STATE;
+    tracker->currScene = NEXT_STATE;
 
-    if (tracker->currState && tracker->currState->enter)
+    if (tracker->currScene && tracker->currScene->enter)
     {
 #ifdef SMILE_DEVELOPER
         if (args && smTestEnterWithArgs)
@@ -236,70 +236,70 @@ bool smSetState(const char *name, void *args)
             smTestEnter(smMockData);
         }
 #endif
-        tracker->currState->enter(args);
+        tracker->currScene->enter(args);
     }
 
-    lgInternalLogWithArg(INFO, MODULE, CAUSE_STATE_SET_TO, name,FN_SET_STATE,
+    lgInternalLogWithArg(INFO, MODULE, CAUSE_SCENE_SET_TO, name,FN_SET_SCENE,
                          CONSEQ_SUCCESSFUL);
     return true;
 }
 
-const char *smGetCurrentStateName(void)
+const char *smGetCurrentSceneName(void)
 {
-    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_GET_CURRENT_STATE_NAME))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_GET_CURRENT_SCENE_NAME))
     {
         return nullptr;
     }
 
-    return tracker->currState ? tracker->currState->name : nullptr;
+    return tracker->currScene ? tracker->currScene->name : nullptr;
 }
 
-int smGetStateCount(void)
+int smGetSceneCount(void)
 {
-    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_GET_STATE_COUNT))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_GET_SCENE_COUNT))
     {
         return -1;
     }
 
-    return tracker->stateCount;
+    return tracker->sceneCount;
 }
 
-bool smDeleteState(const char *name)
+bool smDeleteScene(const char *name)
 {
-    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_DELETE_STATE))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_DELETE_SCENE))
     {
         return false;
     }
 
-    if (!smPrivateIsNameValid(name, FN_DELETE_STATE))
+    if (!smPrivateIsNameValid(name, FN_DELETE_SCENE))
     {
         return false;
     }
 
-    if (tracker->currState && strcmp(name, tracker->currState->name) == 0)
+    if (tracker->currScene && strcmp(name, tracker->currScene->name) == 0)
     {
         lgInternalLogWithArg(ERROR, MODULE,CAUSE_CANNOT_DELETE_CURR_STATE, name,
-                             FN_DELETE_STATE, CONSEQ_ABORTED);
+                             FN_DELETE_SCENE, CONSEQ_ABORTED);
         return false;
     }
 
-    smInternalStateMap *entry = smInternalGetEntry(name);
+    smInternalSceneMap *entry = smInternalGetEntry(name);
     if (!entry)
     {
-        lgInternalLogWithArg(WARNING, MODULE, CAUSE_STATE_NOT_FOUND, name,
-                             FN_DELETE_STATE, CONSEQ_ABORTED);
+        lgInternalLogWithArg(WARNING, MODULE, CAUSE_SCENE_NOT_FOUND, name,
+                             FN_DELETE_SCENE, CONSEQ_ABORTED);
         return false;
     }
 
-    HASH_DEL(tracker->stateMap, entry);
+    HASH_DEL(tracker->sceneMap, entry);
     free(entry->state->name);
     free(entry->state);
     free(entry);
 
-    tracker->stateCount--;
+    tracker->sceneCount--;
 
-    lgInternalLogWithArg(INFO, MODULE, CAUSE_STATE_DELETED, name,
-                         FN_DELETE_STATE, CONSEQ_SUCCESSFUL);
+    lgInternalLogWithArg(INFO, MODULE, CAUSE_SCENE_DELETED, name,
+                         FN_DELETE_SCENE, CONSEQ_SUCCESSFUL);
     return true;
 }
 
@@ -312,22 +312,22 @@ bool smUpdate(float dt)
         return false;
     }
 
-    if (!tracker->currState)
+    if (!tracker->currScene)
     {
         lgInternalLog(ERROR, MODULE, CAUSE_NULL_CURR_STATE, FN_UPDATE,
                       CONSEQ_ABORTED);
         return false;
     }
 
-    if (!tracker->currState->update)
+    if (!tracker->currScene->update)
     {
         lgInternalLogWithArg(WARNING, MODULE,CAUSE_NULL_STATE_UPDATE_FN,
-                             tracker->currState->name, FN_UPDATE,
+                             tracker->currScene->name, FN_UPDATE,
                              CONSEQ_ABORTED);
         return false;
     }
 
-    tracker->currState->update(dt);
+    tracker->currScene->update(dt);
     return true;
 }
 
@@ -378,21 +378,21 @@ bool smDraw(void)
         return false;
     }
 
-    if (!tracker->currState)
+    if (!tracker->currScene)
     {
         lgInternalLog(ERROR, MODULE, CAUSE_NULL_CURR_STATE,FN_DRAW,
                       CONSEQ_ABORTED);
         return false;
     }
 
-    if (!tracker->currState->draw)
+    if (!tracker->currScene->draw)
     {
         lgInternalLogWithArg(WARNING, MODULE,CAUSE_NULL_STATE_DRAW_FN,
-                             tracker->currState->name, FN_DRAW,CONSEQ_ABORTED);
+                             tracker->currScene->name, FN_DRAW,CONSEQ_ABORTED);
         return false;
     }
 
-    tracker->currState->draw();
+    tracker->currScene->draw();
     return true;
 }
 
@@ -405,7 +405,7 @@ bool smStop(void)
         return false;
     }
 
-    if (tracker->currState && tracker->currState->exit)
+    if (tracker->currScene && tracker->currScene->exit)
     {
 #ifdef SMILE_DEVELOPER
         if (smTestExit)
@@ -413,22 +413,22 @@ bool smStop(void)
             smTestExit(smMockData);
         }
 #endif
-        tracker->currState->exit();
+        tracker->currScene->exit();
     }
-    tracker->currState = nullptr;
+    tracker->currScene = nullptr;
 
-    smInternalStateMap *el, *tmp;
-    HASH_ITER(hh, tracker->stateMap, el, tmp)
+    smInternalSceneMap *el, *tmp;
+    HASH_ITER(hh, tracker->sceneMap, el, tmp)
     {
-        HASH_DEL(tracker->stateMap, el);
+        HASH_DEL(tracker->sceneMap, el);
         free(el->state->name);
         free(el->state);
         free(el);
-        tracker->stateCount--;
+        tracker->sceneCount--;
     }
 
     bool isFatal = false;
-    if (smGetStateCount() != 0)
+    if (smGetSceneCount() != 0)
     {
         isFatal = true;
     }
@@ -452,16 +452,16 @@ bool smStop(void)
 // Functions - Internal
 // —————————————————————————————————————————————————————————————————————————————
 
-const smInternalState *smInternalGetState(const char *name)
+const smInternalScene *smInternalGetScene(const char *name)
 {
-    smInternalStateMap *entry = smInternalGetEntry(name);
+    smInternalSceneMap *entry = smInternalGetEntry(name);
     return entry ? entry->state : nullptr;
 }
 
-smInternalStateMap *smInternalGetEntry(const char *name)
+smInternalSceneMap *smInternalGetEntry(const char *name)
 {
-    smInternalStateMap *entry;
-    HASH_FIND_STR(tracker->stateMap, name, entry);
+    smInternalSceneMap *entry;
+    HASH_FIND_STR(tracker->sceneMap, name, entry);
     return entry;
 }
 
@@ -488,7 +488,7 @@ bool smPrivateIsNameValid(const char *name, const char *fnName)
     return true;
 }
 
-void smPrivateAddState(smInternalStateMap *mapEntry)
+void smPrivateAddScene(smInternalSceneMap *mapEntry)
 {
-    HASH_ADD_STR(tracker->stateMap, name, mapEntry);
+    HASH_ADD_STR(tracker->sceneMap, name, mapEntry);
 }

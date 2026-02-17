@@ -19,13 +19,13 @@ own behavior using enter, update, draw, and exit callback functions.
 
 ## 😊Module Header
 
-The module’s header is `StateMachine.h`. Its full Smile path is:
-`smile/include/StateMachine.h`
+The module’s header is `SceneManager.h`. Its full Smile path is:
+`smile/include/SceneManager.h`
 
 ✅ Example
 
 ```c
-#include <StateMachine.h>
+#include <SceneManager.h>
 ```
 
 ## 📦 Data Types
@@ -141,7 +141,7 @@ Initializes the state machine and prepares it for use.
 ✅ Example
 
 ```c
-#include <StateMachine.h>
+#include <SceneManager.h>
 
 int main(void) {
     smStart();
@@ -168,7 +168,7 @@ while (smIsRunning()) {
 
 ### — State Functions
 
-| `bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update, smDrawFn draw, smExitFn exit)` |
+| `bool smCreateScene(const char *name, smEnterFn enter, smUpdateFn update, smDrawFn draw, smExitFn exit)` |
 |----------------------------------------------------------------------------------------------------------|
 
 Creates a new state with the specified name and callback functions.
@@ -202,7 +202,7 @@ void menuExit(void);
 
 
 // ----- Menu.c -----
-#include <StateMachine.h>
+#include <SceneManager.h>
 #include "Menu.h"
 
 void menuUpdate(float dt)
@@ -211,7 +211,7 @@ void menuUpdate(float dt)
     
     if (PlayButtonPressed())
     {
-        smSetState("level 1", nullptr);
+        smSetScene("level 1", nullptr);
     }
 }
 
@@ -226,17 +226,17 @@ void menuExit(void)
 }
 
 // ----- In main.c or in another state. -----
-#include <StateMachine.h>
+#include <SceneManager.h>
 
 int main(void)
 {
     smStart();
-    smCreateState("menu", nullptr, menuUpdate, menuDraw, menuExit);
+    smCreateScene("menu", nullptr, menuUpdate, menuDraw, menuExit);
     ...
 }
 ```
 
-| `bool smStateExists(const char *name)` |
+| `bool smSceneExists(const char *name)` |
 |----------------------------------------|
 
 Checks whether a state with the given name exists.
@@ -249,13 +249,13 @@ Checks whether a state with the given name exists.
 ✅ Example
 
 ```c
-if (!smStateExists("level 1"))
+if (!smSceneExists("level 1"))
 {
-    smCreateState("level 1", enter, update, draw, exit);
+    smCreateScene("level 1", enter, update, draw, exit);
 }
 ```
 
-| `bool smSetState(const char *name, void *args)` |
+| `bool smSetScene(const char *name, void *args)` |
 |-------------------------------------------------|
 
 Sets the current active state by name and triggers its enter function.
@@ -276,7 +276,7 @@ Sets the current active state by name and triggers its enter function.
 
 ```c
 // Switch to "level 1" with no arguments.
-smSetState("level 1", nullptr);
+smSetScene("level 1", nullptr);
 
 ...
 
@@ -287,10 +287,10 @@ typedef struct {
 } PlayerScore;
 
 PlayerScore score = { 10, 50 };
-smSetState("level 2", &score);
+smSetScene("level 2", &score);
 ```
 
-| `const char *smGetCurrentStateName(void)` |
+| `const char *smGetCurrentSceneName(void)` |
 |-------------------------------------------|
 
 Retrieves the name of the currently active state.
@@ -299,7 +299,7 @@ Retrieves the name of the currently active state.
   active.
 
 - Notes:
-    - The returned string is owned by StateMachine. The user must not attempt to
+    - The returned string is owned by SceneManager. The user must not attempt to
       modify or free it and should make a copy of the string if they wish to do
       so.
     - The pointer remains valid until the state is deleted or the state machine
@@ -308,10 +308,10 @@ Retrieves the name of the currently active state.
 ✅ Example
 
 ```c
-const char *currState = smGetCurrentStateName();
+const char *currScene = smGetCurrentSceneName();
 ```
 
-| `bool smDeleteState(const char *name)` |
+| `bool smDeleteScene(const char *name)` |
 |----------------------------------------|
 
 Deletes a state by name from the state machine.
@@ -327,10 +327,10 @@ Deletes a state by name from the state machine.
 ✅ Example
 
 ```c
-smDeleteState("level 1");
+smDeleteScene("level 1");
 ```
 
-| `int smGetStateCount(void)` |
+| `int smGetSceneCount(void)` |
 |-----------------------------|
 
 Retrieves the total number of registered states.
@@ -341,7 +341,7 @@ Retrieves the total number of registered states.
 ✅ Example
 
 ```c
-int myStateCount = smGetStateCount();
+int myStateCount = smGetSceneCount();
 ```
 
 <br>
@@ -444,7 +444,7 @@ states.
 ✅ Example
 
 ```c
-#include <StateMachine.h>
+#include <SceneManager.h>
 #include "menu.h"
 
 void menuUpdate(float dt)

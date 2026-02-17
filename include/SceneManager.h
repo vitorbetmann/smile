@@ -1,15 +1,15 @@
 /**
  * @file
- * @brief Public declarations of data types and functions for the StateMachine
+ * @brief Public declarations of data types and functions for the SceneManager
  *        module.
  *
  * Defines the public API for creating, switching, updating, drawing, and
  * deleting game states. Each state encapsulates its own behavior using callback
  * functions for entry, update, drawing, and exit events.
  *
- * @see StateMachine.c
- * @see StateMachineInternal.h
- * @see StateMachineMessages.h
+ * @see SceneManager.c
+ * @see SceneManagerInternal.h
+ * @see SceneManagerMessages.h
  *
  * @author Vitor Betmann
  * @date 2025-11-03
@@ -17,8 +17,8 @@
  */
 
 
-#ifndef SMILE_STATE_MACHINE_H
-#define SMILE_STATE_MACHINE_H
+#ifndef SMILE_SCENE_MANAGER_H
+#define SMILE_SCENE_MANAGER_H
 
 
 // —————————————————————————————————————————————————————————————————————————————
@@ -104,7 +104,7 @@ bool smIsRunning(void);
  *
  * @author Vitor Betmann
  */
-bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update,
+bool smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
                    smDrawFn draw, smExitFn exit);
 
 /**
@@ -116,7 +116,7 @@ bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update,
  *
  * @author Vitor Betmann
  */
-bool smStateExists(const char *name);
+bool smSceneExists(const char *name);
 
 /**
  * @brief Sets the current active state by name and triggers its enter function.
@@ -130,7 +130,7 @@ bool smStateExists(const char *name);
  *
  * @author Vitor Betmann
  */
-bool smSetState(const char *name, void *args);
+bool smSetScene(const char *name, void *args);
 
 /**
  * @brief Retrieves the name of the currently active state.
@@ -144,7 +144,7 @@ bool smSetState(const char *name, void *args);
  *
  * @author Vitor Betmann
  */
-const char *smGetCurrentStateName(void);
+const char *smGetCurrentSceneName(void);
 
 /**
  * @brief Deletes a state by name from the state machine.
@@ -157,7 +157,7 @@ const char *smGetCurrentStateName(void);
  *
  * @author Vitor Betmann
  */
-bool smDeleteState(const char *name);
+bool smDeleteScene(const char *name);
 
 /**
  * @brief Retrieves the total number of registered states.
@@ -166,7 +166,7 @@ bool smDeleteState(const char *name);
  *
  * @author Vitor Betmann
  */
-int smGetStateCount(void);
+int smGetSceneCount(void);
 
 // Lifecycle Related
 
@@ -223,4 +223,4 @@ bool smDraw(void);
 bool smStop(void);
 
 
-#endif // #ifndef SMILE_STATE_MACHINE_H
+#endif // #ifndef SMILE_SCENE_MANAGER_H

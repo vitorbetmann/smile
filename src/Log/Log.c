@@ -1,10 +1,10 @@
 /**
  * @file
- * @brief Implementation of the StateMachine module.
+ * @brief Implementation of the SceneManager module.
  *
- * @see StateMachine.h
- * @see StateMachineInternal.h
- * @see StateMachineMessages.h
+ * @see SceneManager.h
+ * @see SceneManagerInternal.h
+ * @see SceneManagerMessages.h
  *
  * @bug No known bugs.
  *

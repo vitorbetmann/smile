@@ -63,9 +63,9 @@ continues, logging an error if it is not.
 ✅ Example
 
 ```c
-bool smStateExists(const char *name)
+bool smSceneExists(const char *name)
 {
-    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_STATE_EXISTS))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_SCENE_EXISTS))
     {
         return false;
     }

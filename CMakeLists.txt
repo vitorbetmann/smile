@@ -62,7 +62,7 @@ endif ()
 # ------------------------------------------------------------------------------
 
 # Allow includes relative to the project root
-# Example: #include <include/Log.h>, #include <src/_Internal/StateMachine/InternalState.h>, etc.
+# Example: #include <include/Log.h>, #include <src/_Internal/SceneManager/InternalState.h>, etc.
 target_include_directories(smile
         PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}                # enables root-relative includes
@@ -142,7 +142,7 @@ if (SMILE_BUILD_TESTS)
     # PUBLIC API TESTS
     # --------------------------
     add_smile_api_test(SaveLoad)
-    add_smile_api_test(StateMachine)
+    add_smile_api_test(SceneManager)
 
     # --------------------------
     # INTERNAL API TESTS

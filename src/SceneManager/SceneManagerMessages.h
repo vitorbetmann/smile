@@ -1,13 +1,13 @@
 /**
  * @file
- * @brief Message definitions for the StateMachine module.
+ * @brief Message definitions for the SceneManager module.
  *
  * Defines the module name, function identifiers, causes, and consequences
- * used when logging from the StateMachine.
+ * used when logging from the SceneManager.
  *
- * @see StateMachine.c
- * @see StateMachine.h
- * @see StateMachineInternal.h
+ * @see SceneManager.c
+ * @see SceneManager.h
+ * @see SceneManagerInternal.h
  *
  * @note Check CommonInternalMessages.h before adding new messages.
  *
@@ -17,15 +17,15 @@
  */
 
 
-#ifndef SMILE_STATE_MACHINE_MESSAGES_H
-#define SMILE_STATE_MACHINE_MESSAGES_H
+#ifndef SMILE_SCENE_MANAGER_MESSAGES_H
+#define SMILE_SCENE_MANAGER_MESSAGES_H
 
 
 // —————————————————————————————————————————————————————————————————————————————
 // Module Name
 // —————————————————————————————————————————————————————————————————————————————
 
-#define MODULE "StateMachine"
+#define MODULE "SceneManager"
 
 
 // —————————————————————————————————————————————————————————————————————————————
@@ -33,12 +33,12 @@
 // —————————————————————————————————————————————————————————————————————————————
 
 // State Functions
-#define FN_CREATE_STATE "CreateState"
-#define FN_STATE_EXISTS "StateExists"
-#define FN_SET_STATE "SetState"
-#define FN_GET_CURRENT_STATE_NAME "GetCurrentStateName"
-#define FN_GET_STATE_COUNT "GetStateCount"
-#define FN_DELETE_STATE "DeleteState"
+#define FN_CREATE_SCENE "CreateScene"
+#define FN_SCENE_EXISTS "SceneExists"
+#define FN_SET_SCENE "SetScene"
+#define FN_GET_CURRENT_SCENE_NAME "GetCurrentSceneName"
+#define FN_GET_SCENE_COUNT "GetSceneCount"
+#define FN_DELETE_SCENE "DeleteScene"
 // Lifecycle Functions
 #define FN_UPDATE "Update"
 #define FN_GET_DT "GetDt"
@@ -50,20 +50,20 @@
 // —————————————————————————————————————————————————————————————————————————————
 
 // Infos
-#define CAUSE_STATE_CREATED "State Created"
-#define CAUSE_STATE_SET_TO "State Set To"
-#define CAUSE_STATE_DELETED "State Deleted"
+#define CAUSE_SCENE_CREATED "Scene Created"
+#define CAUSE_SCENE_SET_TO "Scene Set To"
+#define CAUSE_SCENE_DELETED "Scene Deleted"
 // Warnings
-#define CAUSE_STATE_ALREADY_EXISTS "State already exists"
-#define CAUSE_STATE_NOT_FOUND "State not found"
-#define CAUSE_NULL_STATE_UPDATE_FN "State Has Null Update"
-#define CAUSE_NULL_STATE_DRAW_FN "State Has Null Draw"
+#define CAUSE_SCENE_ALREADY_EXISTS "Scene already exists"
+#define CAUSE_SCENE_NOT_FOUND "Scene not found"
+#define CAUSE_NULL_STATE_UPDATE_FN "Scene Has Null Update"
+#define CAUSE_NULL_STATE_DRAW_FN "Scene Has Null Draw"
 // Errors
-#define CAUSE_NULL_CURR_STATE "Current State Is Null"
-#define CAUSE_NO_VALID_FUNCTIONS "State Has No Valid Functions"
-#define CAUSE_CANNOT_DELETE_CURR_STATE "Cannot Delete Current State"
+#define CAUSE_NULL_CURR_STATE "Current Scene Is Null"
+#define CAUSE_NO_VALID_FUNCTIONS "Scene Has No Valid Functions"
+#define CAUSE_CANNOT_DELETE_CURR_STATE "Cannot Delete Current Scene"
 // Fatals
-#define CAUSE_FAILED_TO_FREE_ALL_STATES "Failed to Free All States"
+#define CAUSE_FAILED_TO_FREE_ALL_STATES "Failed to Free All Scenes"
 
 
-#endif // #ifndef SMILE_STATE_MACHINE_MESSAGES_H
+#endif // #ifndef SMILE_SCENE_MANAGER_MESSAGES_H

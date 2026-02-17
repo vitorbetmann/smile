@@ -1,18 +1,18 @@
 /**
  * @file
- * @brief Declarations of data types and variables for the StateMachine module
+ * @brief Declarations of data types and variables for the SceneManager module
  *        and its test suite.
  *
- * @see StateMachine.c
- * @see StateMachineAPITests.c
+ * @see SceneManager.c
+ * @see SceneManagerAPITests.c
  *
  * @author Vitor Betmann
  * @date 2025-11-04
  * @version 1.0.0
  */
 
-#ifndef SMILE_STATE_MACHINE_API_TESTS_H
-#define SMILE_STATE_MACHINE_API_TESTS_H
+#ifndef SMILE_SCENE_MANAGER_API_TESTS_H
+#define SMILE_SCENE_MANAGER_API_TESTS_H
 
 // -----------------------------------------------------------------------------
 // Defines
@@ -91,4 +91,4 @@ extern MockArgs *smMockArgs;
 extern struct timespec smMockCurrTime;
 
 
-#endif // #ifndef SMILE_STATE_MACHINE_API_TESTS_H
+#endif // #ifndef SMILE_SCENE_MANAGER_API_TESTS_H

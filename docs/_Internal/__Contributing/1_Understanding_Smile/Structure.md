@@ -84,10 +84,10 @@ elaborated upon when discussing the [src](#-src) directory.
 │ │   │
 │ │   └── LogInternal.h  # Each module contains an internal header (see src under
 │ │                    # the Directory Breakdown  section below).
-│ ├── StateMachine 
-│ │   ├── StateMachine.c
-│ │   ├── StateMachineInternal.h 
-│ │   └── StateMachineMessages.h  # Message file for a  Public module 
+│ ├── SceneManager 
+│ │   ├── SceneManager.c
+│ │   ├── SceneManagerInternal.h 
+│ │   └── SceneManagerMessages.h  # Message file for a  Public module 
 │ │
 │ └── _Internal    # _Internal begins with an underscore for sorting purposes
 │     │
@@ -131,7 +131,7 @@ Only contains header files for public modules.
 │ ├── Log.h
 │ ├── ParticleSystem.h
 │ ├── SaveLoad.h
-│ ├── StateMachine.h
+│ ├── SceneManager.h
 ```
 
 ---
@@ -150,14 +150,14 @@ header:
 ✅ Example
 
 ```zsh
-StateMachine
-├── StateMachine.c          # Implements `create_state`, `set_state`, etc.
+SceneManager
+├── SceneManager.c          # Implements `create_state`, `set_state`, etc.
 │
-├── StateMachineInternal.h  # Functions like `get_state` or `find_state` which
+├── SceneManagerInternal.h  # Functions like `get_state` or `find_state` which
 │                           # manipulate internal structures (e.g., the state
 │                           # table) not exposed to users.
 │
-├── StateMachineMessages.h  # Contains messages like `"State already exists"`
+├── SceneManagerMessages.h  # Contains messages like `"Scene already exists"`
                             # used in logging.
 ```
 
@@ -178,7 +178,7 @@ This separation ensures:
 ```zsh
 ├── src
 │ ├── Log  # The Log directory can be found alongside other Public directories 
-│ ├── StateMachine
+│ ├── SceneManager
 │ └── _Internal
 │     ├── _Common
 │     └── Test
@@ -210,7 +210,7 @@ documenting `Public` and `Internal` modules.
 ```zsh
 ├── docs
 │├── Log  # Documentation of Public modules
-│├── StateMachine
+│├── SceneManager
 │└── _Internal
 │    ├── Log  # Documentation of Internal modules
 │    ├── Test
@@ -227,7 +227,7 @@ documenting `Public` and `Internal` modules.
 ```zsh
 ├── docs
 │ ├── Log  # Log's Public API
-│ ├── StateMachine
+│ ├── SceneManager
 │ └── _Internal
 │     ├── Log  # Log's Internal API
 ```
@@ -246,11 +246,11 @@ conventions.
 
 ```zsh
 ├── tests
-│ ├── StateMachine  # API and tools tests for Public modules
-│ │ ├── StateMachineAPITest.c
-│ │ ├── StateMachineAPITest.h
-│ │ ├── StateMachineToolTest.c
-│ │ └── StateMachineToolTest.h
+│ ├── SceneManager  # API and tools tests for Public modules
+│ │ ├── SceneManagerAPITest.c
+│ │ ├── SceneManagerAPITest.h
+│ │ ├── SceneManagerToolTest.c
+│ │ └── SceneManagerToolTest.h
 │ └── _Internal
 │     ├── Test  # API and tools tests for Internal modules
 │     │   ├── TestInternalAPITest.c
@@ -263,7 +263,7 @@ conventions.
 
 Contains the implementation of both `Public` and `Internal` tools that can be
 called straight from the command line, reducing repetitive tasks for both users
-and developers. For example, StateMachine could have a tool to automate the
+and developers. For example, SceneManager could have a tool to automate the
 creation of State files (.c and .h) by generating boilerplate code for common
 functions
 
@@ -273,10 +273,10 @@ suffix after `<ModuleName>`.
 
 ```zsh
 ├── tools
-│├── StateMachine  # Public Tools
-││├── StateMachineTool.c
-││├── StateMachineToolInternal.h
-││└── StateMachineToolMessages.h
+│├── SceneManager  # Public Tools
+││├── SceneManagerTool.c
+││├── SceneManagerToolInternal.h
+││└── SceneManagerToolMessages.h
 │└── _Internal
 │    ├── Test  # Internal Tools
 │    │   ├── TestInternalTool.c

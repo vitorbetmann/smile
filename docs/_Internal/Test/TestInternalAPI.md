@@ -121,7 +121,7 @@ Wrapper around `malloc()` with optional failure simulation.
 State *state = tsInternalMalloc(sizeof(State));
 if (!state) {
     lgInternalLog(LOG_ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,
-                  FN_CREATE_STATE, CONSEQ_ABORTED);
+                  FN_CREATE_SCENE, CONSEQ_ABORTED);
     return false;
 }
 ```
@@ -140,7 +140,7 @@ Wrapper around `calloc()` with optional failure simulation.
 ✅ Example
 
 ```c
-tracker = tsInternalCalloc(1, sizeof(StateMachineTracker));
+tracker = tsInternalCalloc(1, sizeof(SceneManagerTracker));
 if (!tracker) {
     lgInternalLog(LOG_ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, FN_START,
                   CONSEQ_ABORTED);

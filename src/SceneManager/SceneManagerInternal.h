@@ -1,14 +1,14 @@
 /**
  * @file
  * @brief Internal declarations of data structures and functions for the
- *        StateMachine module.
+ *        SceneManager module.
  *
  * Defines the private types, constants, and utilities used internally by
- * StateMachine to manage states, timing, and runtime context.
+ * SceneManager to manage states, timing, and runtime context.
  *
- * @see StateMachine.c
- * @see StateMachine.h
- * @see StateMachineMessages.h
+ * @see SceneManager.c
+ * @see SceneManager.h
+ * @see SceneManagerMessages.h
  *
  * @author Vitor Betmann
  * @date 2025-11-04
@@ -16,8 +16,8 @@
  */
 
 
-#ifndef SMILE_STATE_MACHINE_INTERNAL_H
-#define SMILE_STATE_MACHINE_INTERNAL_H
+#ifndef SMILE_SCENE_MANAGER_INTERNAL_H
+#define SMILE_SCENE_MANAGER_INTERNAL_H
 
 
 // —————————————————————————————————————————————————————————————————————————————
@@ -27,7 +27,7 @@
 #include <time.h>
 #include <uthash.h>
 
-#include "StateMachine.h"
+#include "SceneManager.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————
@@ -55,7 +55,7 @@ typedef struct {
   smUpdateFn update;
   smDrawFn draw;
   smExitFn exit;
-} smInternalState;
+} smInternalScene;
 
 /**
  * @brief Maps a state name to its corresponding State structure.
@@ -67,9 +67,9 @@ typedef struct {
  */
 typedef struct {
   char *name;
-  smInternalState *state;
+  smInternalScene *state;
   UT_hash_handle hh;
-} smInternalStateMap;
+} smInternalSceneMap;
 
 /**
  * @brief Tracks the current state machine context.
@@ -81,9 +81,9 @@ typedef struct {
  * @author Vitor Betmann
  */
 typedef struct {
-  smInternalStateMap *stateMap;
-  const smInternalState *currState;
-  int stateCount;
+  smInternalSceneMap *sceneMap;
+  const smInternalScene *currScene;
+  int sceneCount;
   int fps;
   struct timespec lastTime;
 } smInternalTracker;
@@ -102,7 +102,7 @@ typedef struct {
  *
  * @author Vitor Betmann
  */
-const smInternalState *smInternalGetState(const char *name);
+const smInternalScene *smInternalGetScene(const char *name);
 
 /**
  * @brief Retrieves a pointer to a StateMap entry by name.
@@ -113,7 +113,7 @@ const smInternalState *smInternalGetState(const char *name);
  *
  * @author Vitor Betmann
  */
-smInternalStateMap *smInternalGetEntry(const char *name);
+smInternalSceneMap *smInternalGetEntry(const char *name);
 
 
-#endif // #ifndef SMILE_STATE_MACHINE_INTERNAL_H
+#endif // #ifndef SMILE_SCENE_MANAGER_INTERNAL_H

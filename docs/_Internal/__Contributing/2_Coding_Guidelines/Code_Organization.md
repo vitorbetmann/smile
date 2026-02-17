@@ -86,7 +86,7 @@ See [Log.h](/include/Log.h).
 ✅ Example
 
 ```c
--- In StateMachine.h (function documentation omitted for clarity)
+-- In SceneManager.h (function documentation omitted for clarity)
 // —————————————————————————————————————————————————————————————————————————————
 // Prototypes
 // —————————————————————————————————————————————————————————————————————————————
@@ -99,24 +99,24 @@ bool smIsRunning(void);
 
 // State Functions  -- Discretly but clearly separates subsections.  
 
-bool smCreateState(const char *name, smEnterFn enter, smUpdateFn update,
+bool smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
                    smDrawFn draw, smExitFn exit);
 
-bool smStateExists(const char *name);
+bool smSceneExists(const char *name);
 
 
--- In StateMachineMessages.h
+-- In SceneManagerMessages.h
 // —————————————————————————————————————————————————————————————————————————————
 // Functions Names
 // —————————————————————————————————————————————————————————————————————————————
 
 // State Functions
-#define FN_CREATE_STATE "CreateState"
-#define FN_STATE_EXISTS "StateExists"
-#define FN_SET_STATE "SetState"
-#define FN_GET_CURRENT_STATE_NAME "GetCurrentStateName"
-#define FN_GET_STATE_COUNT "GetStateCount"
-#define FN_DELETE_STATE "DeleteState"
+#define FN_CREATE_SCENE "CreateScene"
+#define FN_SCENE_EXISTS "SceneExists"
+#define FN_SET_SCENE "SetScene"
+#define FN_GET_CURRENT_SCENE_NAME "GetCurrentSceneName"
+#define FN_GET_SCENE_COUNT "GetSceneCount"
+#define FN_DELETE_SCENE "DeleteScene"
 // Lifecycle Functions
 #define FN_UPDATE "Update"
 #define FN_GET_DT "GetDt"
@@ -130,8 +130,8 @@ bool smStateExists(const char *name);
 * `#include` statements should be organized in the following order and separated
   by 1 blank line:
     * #include <> — External libraries (e.g., stdlib.h, string.h)
-    * #include "" — Related to the current module (e.g., StateMachine.h,
-      StateMachineInternal.h)
+    * #include "" — Related to the current module (e.g., SceneManager.h,
+      SceneManagerInternal.h)
     * #include "" — Files that support the current module (e.g., LogInternal,
       TestInternal.h)
 * `#include` statements should be in alphabetical order.
@@ -148,13 +148,13 @@ bool smStateExists(const char *name);
 #include <time.h>
 #include <uthash.h>
 
-#include "StateMachine.h"
-#include "StateMachineInternal.h"
-#include "StateMachineMessages.h"
+#include "SceneManager.h"
+#include "SceneManagerInternal.h"
+#include "SceneManagerMessages.h"
 
 #include "CommonInternalMessages.h"
 #include "LogInternal.h"
-#include "StateMachineAPITest.h"
+#include "SceneManagerAPITest.h"
 #include "TestInternal.h"
 ```
 
@@ -170,14 +170,14 @@ bool smStateExists(const char *name);
 ✅ Example
 
 ```c
-#ifndef SMILE_STATE_MACHINE_H
-#define SMILE_STATE_MACHINE_H
+#ifndef SMILE_SCENE_MANAGER_H
+#define SMILE_SCENE_MANAGER_H
 
 
 ...
 
 
-#endif // #ifndef SMILE_STATE_MACHINE_H
+#endif // #ifndef SMILE_SCENE_MANAGER_H
 ```
 
 ---
@@ -187,17 +187,17 @@ bool smStateExists(const char *name);
 * Never imply dependencies. Every file should include everything it needs.
 
 ```c
--- In StateMachineInternal.h
+-- In SceneManagerInternal.h
 #include <time.h>
 #include <uthash.h>
 ...
 
 
--- In StateMachine.c
+-- In SceneManager.c
 #include <string.h>
-#include <uthash.h>  -- Include again, even if already in StateMachineInternal.h
+#include <uthash.h>  -- Include again, even if already in SceneManagerInternal.h
 ...
-#include "StateMachineInternal.h"
+#include "SceneManagerInternal.h"
 ```
 
 ## 😶 Non-Test Header Files
@@ -218,7 +218,7 @@ bool smStateExists(const char *name);
 
 ✅ Example
 
-See [StateMachine.h](/include/StateMachine.h).
+See [SceneManager.h](/include/SceneManager.h).
 
 ---
 
@@ -226,14 +226,14 @@ See [StateMachine.h](/include/StateMachine.h).
 
 * Contains declarations of Internal functions and data types. They should help
   the module in executing its tasks but are not meant for public use.
-    * For example, `smInternalGetState()` allows StateMachine to directly call
+    * For example, `smInternalGetScene()` allows SceneManager to directly call
       the `enter` and `exit` functions of a state, but a user should never have
-      access to that. Instead, they can call functions like `smSetState()` and
+      access to that. Instead, they can call functions like `smSetScene()` and
       `smUpdate()` which automatically handles memory allocation, pointer
       manipulation, and the calling of desired functions.
 * Though the code in Internal Header files is not to be shared with other
-  modules (e.g., StateMachineInternal.h should only be included in
-  StateMachine.c), Internal files exist for the sake of organization. Otherwise,
+  modules (e.g., SceneManagerInternal.h should only be included in
+  SceneManager.c), Internal files exist for the sake of organization. Otherwise,
   if all functions, data types, and variables were to be declared and defined in
   a module's source file, it would grow unnecessarily large and complex.
 * See [Code_Style](Code_Style.md) for details on naming and declaring Internal
@@ -244,7 +244,7 @@ See [StateMachine.h](/include/StateMachine.h).
 ✅ Example
 
 * See
-  [StateMachineInternal.h](/src/StateMachine/StateMachineInternal.h).
+  [SceneManagerInternal.h](/src/SceneManager/SceneManagerInternal.h).
 
 ## ✉️ Message Files
 
@@ -290,7 +290,7 @@ See [StateMachine.h](/include/StateMachine.h).
   [CommonInternalMessages.h](/src/_Internal/_Common/CommonInternalMessages.h).
 
 * See
-  [StateMachineMessages.h](/src/StateMachine/StateMachineMessages.h).
+  [SceneManagerMessages.h](/src/SceneManager/SceneManagerMessages.h).
 
 ## 📤 Non-Test Source Files
 
@@ -304,7 +304,7 @@ See [StateMachine.h](/include/StateMachine.h).
 
 ✅ Example
 
-* See [StateMachine.c](/src/StateMachine/StateMachine.c).
+* See [SceneManager.c](/src/SceneManager/SceneManager.c).
 
 ## Up Next
 

@@ -19,18 +19,18 @@ behavior using enter, update, draw, and exit callback functions.
 ## 👀 Visual Example
 
 <p align="center">
-  <img src="../../docs/_Internal/__Assets/StateMachine/StateMachineDemo.gif" width="90%"/>
+  <img src="../../docs/_Internal/__Assets/SceneManager/SceneManagerDemo.gif" width="90%"/>
 </p>
 
 ## 😊 Module Header
 
-The module’s header is `StateMachine.h`. Its full Smile path is:
-`smile/include/StateMachine.h`
+The module’s header is `SceneManager.h`. Its full Smile path is:
+`smile/include/SceneManager.h`
 
 ✅ Example
 
 ```c
-#include <StateMachine.h>
+#include <SceneManager.h>
 ```
 
 ## 🔄 State Machine Lifecycle
@@ -44,10 +44,10 @@ self-contained scene (e.g., a main menu, level, or pause screen). Each state
 must define at least one, and up to four, lifecycle callbacks (enter, update,
 draw, and/or exit).
 
-3️⃣ `smCreateState` is used to register uniquely named states with its callbacks
+3️⃣ `smCreateScene` is used to register uniquely named states with its callbacks
 into memory. You can create as many states as you like.
 
-4️⃣ Use `smSetState` to transition into a new state, optionally passing data to
+4️⃣ Use `smSetScene` to transition into a new state, optionally passing data to
 it.
 
 5️⃣ `smUpdate` and `smDraw` should be called every frame (typically inside your
@@ -76,26 +76,26 @@ and dangling pointers.
 |------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
 | `bool smStart(void)`                                                                                             | Initializes the state machine and prepares it for use. Returns `true` if successful.                                                             |
 | `bool smHasStarted(void)`                                                                                        | Checks whether the state machine has been initialized.                                                                                           |
-| `bool smCreateState(const char *name, smEnterFn enterFn, smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn)` | Registers a new named state with its lifecycle callbacks. Returns `true` if created successfully.                                                |
-| `bool smStateExists(const char *name)`                                                                           | Checks if a state with the given name exists.                                                                                                    |
-| `bool smSetState(const char *name, void *args)`                                                                  | Sets the active state by name and calls its `enter` function. Calls the previous state’s `exit` function before switching.                       |
-| `const char *smGetCurrentStateName(void)`                                                                        | Returns the name of the current active state, or `nullptr` if none is active.                                                                    |
-| `bool smDeleteState(const char *name)`                                                                           | Deletes a state by name. Fails if it’s currently active.                                                                                         |
-| `int smGetStateCount(void)`                                                                                      | Returns the total number of registered states, or `-1` if the state machine is not started.                                                      |
+| `bool smCreateScene(const char *name, smEnterFn enterFn, smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn)` | Registers a new named state with its lifecycle callbacks. Returns `true` if created successfully.                                                |
+| `bool smSceneExists(const char *name)`                                                                           | Checks if a state with the given name exists.                                                                                                    |
+| `bool smSetScene(const char *name, void *args)`                                                                  | Sets the active state by name and calls its `enter` function. Calls the previous state’s `exit` function before switching.                       |
+| `const char *smGetCurrentSceneName(void)`                                                                        | Returns the name of the current active state, or `nullptr` if none is active.                                                                    |
+| `bool smDeleteScene(const char *name)`                                                                           | Deletes a state by name. Fails if it’s currently active.                                                                                         |
+| `int smGetSceneCount(void)`                                                                                      | Returns the total number of registered states, or `-1` if the state machine is not started.                                                      |
 | `bool smUpdate(float dt)`                                                                                        | Calls the update function of the active state. Returns `true` if successful.                                                                     |
 | `float smGetDt(void)`                                                                                            | Returns the delta time (in seconds) since the last frame. Useful for maintaining consistent time-based updates across frames.                    |
 | `bool smDraw(void)`                                                                                              | Calls the draw function of the active state. Returns `true` if successful.                                                                       |
 | `bool smStop(void)`                                                                                              | Stops the state machine and frees all registered states. Calls the current state’s `exit` function before cleanup. Returns `true` if successful. |
 
 For detailed documentation, see
-the [State Machine API Reference](StateMachineAPI.md).
+the [State Machine API Reference](SceneManagerAPI.md).
 
 ## 🧪️ Workflow Example
 
 In your main file you can begin like so:
 
 ```c
-#include <StateMachine.h>
+#include <SceneManager.h>
 #include "Menu.h"
 #include "LevelOne.h"
 #include "LevelTwo.h"
@@ -105,14 +105,14 @@ int main(void) {
     smStart();
     
     // Create your states. Callback functions declared in respective header files.
-    smCreateState("menu", nullptr, menuUpdate, menuDraw, menuExit);
-    smCreateState("level 1", nullptr, levelOneUpdate, levelOneDraw, levelOneExit);
-    smCreateState("level 2", levelTwoEnter, levelTwoUpdate, levelTwoDraw, nullptr);
+    smCreateScene("menu", nullptr, menuUpdate, menuDraw, menuExit);
+    smCreateScene("level 1", nullptr, levelOneUpdate, levelOneDraw, levelOneExit);
+    smCreateScene("level 2", levelTwoEnter, levelTwoUpdate, levelTwoDraw, nullptr);
     
     /* Start in the menu. In this example it requires no arguments, so we pass
      * in nullptr.
      */
-    smSetState("menu", nullptr); 
+    smSetScene("menu", nullptr); 
     
     // Below is a typical game loop using Smile 
     while (smIsRunning()) {    
@@ -131,7 +131,7 @@ Calling smStop also calls the current state's exit function and sets
 `smStop()` include your main menu or pause screen:
 
 ```c
-#include <StateMachine.h>
+#include <SceneManager.h>
 #include "menu.h"
 
 void menuUpdate(float dt) {
@@ -139,7 +139,7 @@ void menuUpdate(float dt) {
     ...
     
     if (PlayButtonPressed()) {
-        smSetState("level 1", nullptr);
+        smSetScene("level 1", nullptr);
     }
     
     if (QuitButtonPressed()) {
@@ -157,12 +157,12 @@ void menuExit(void) {
 ```
 
 You can pass custom data between states through the `args` parameter of
-`smSetState()`. Typically, this involves defining a custom struct to hold any
+`smSetScene()`. Typically, this involves defining a custom struct to hold any
 data you want to share, then passing a pointer to it as `args`.
 
-`smSetState` will first call the exit function of the current state,
+`smSetScene` will first call the exit function of the current state,
 followed by the enter function of the next state. See
-the [State Machine API](StateMachineAPI.md) for more information.
+the [State Machine API](SceneManagerAPI.md) for more information.
 
 Below is a typical state header file using LevelTwo.h as an example:
 
@@ -170,7 +170,7 @@ Below is a typical state header file using LevelTwo.h as an example:
 #ifndef LEVEL_TWO_H
 #define LEVEL_TWO_H
 
-/* Below is the data that will be passed to smSetState if its enter function
+/* Below is the data that will be passed to smSetScene if its enter function
  * requires any arguments.
  */
 
@@ -188,10 +188,10 @@ void levelTwoDraw(void);                // Called each frame to draw levelTwo
 ```
 
 You can now access the PlayerData struct to pass in the necessary args into
-`smSetState`. In LevelOne.c:
+`smSetScene`. In LevelOne.c:
 
 ```c
-#include <StateMachine.h>
+#include <SceneManager.h>
 #include "LevelOne.h"
 #include "LevelTwo.h" // Must include to have access to PlayerScore
 
@@ -211,7 +211,7 @@ void levelOneUpdate(float dt) {
             .score = 100,
             .position = 200.0;
         };
-        smSetState("level 2", &playerData);
+        smSetScene("level 2", &playerData);
     }
 }
 
@@ -234,7 +234,7 @@ variables.
 So, in LevelTwo.c:
 
 ```c
-#include <StateMachine.h>
+#include <SceneManager.h>
 #include "LevelTwo.h"
 
 static PlayerData *myPlayerData;

@@ -1,8 +1,8 @@
 /**
  * @file
- * @brief Implementation of the StateMachine API Tests.
+ * @brief Implementation of the SceneManager API Tests.
  *
- * @see StateMachineAPITests.h
+ * @see SceneManagerAPITests.h
  *
  * @bug No known bugs.
  *
@@ -19,10 +19,10 @@
 #include <math.h>
 #include <stdio.h>
 
-#include "StateMachineAPITest.h"
+#include "SceneManagerAPITest.h"
 
-#include "StateMachineInternal.h"
-#include "StateMachine.h"
+#include "SceneManagerInternal.h"
+#include "SceneManager.h"
 #include "TestInternal.h"
 
 
@@ -72,7 +72,7 @@ static void onExit(MockData *data)
 
 static float mockDt = 0.016f;
 
-static smInternalState mock = {
+static smInternalScene mock = {
     .name = "mock",
     .enter = mockEnter,
     .update = mockUpdate,
@@ -80,7 +80,7 @@ static smInternalState mock = {
     .exit = mockExit,
 };
 
-static smInternalState mock2 = {
+static smInternalScene mock2 = {
     .name = "mock2",
     .enter = mockEnter,
     .update = mockUpdate,
@@ -122,40 +122,40 @@ void Test_smHasStarted_FailsPreStart(void)
 
 // State Functions
 
-void Test_smCreateState_FailsPreStart(void)
+void Test_smCreateScene_FailsPreStart(void)
 {
-    assert(!smCreateState(nullptr, nullptr, nullptr, nullptr, nullptr));
-    tsInternalPass("Test_smCreateState_FailsPreStart");
+    assert(!smCreateScene(nullptr, nullptr, nullptr, nullptr, nullptr));
+    tsInternalPass("Test_smCreateScene_FailsPreStart");
 }
 
-void Test_smStateExists_FailsPreStart(void)
+void Test_smSceneExists_FailsPreStart(void)
 {
-    assert(!smStateExists(nullptr));
-    tsInternalPass("Test_smStateExists_FailsPreStart");
+    assert(!smSceneExists(nullptr));
+    tsInternalPass("Test_smSceneExists_FailsPreStart");
 }
 
-void Test_smSetState_FailsPreStart(void)
+void Test_smSetScene_FailsPreStart(void)
 {
-    assert(!smSetState(nullptr, nullptr));
-    tsInternalPass("Test_smSetState_FailsPreStart");
+    assert(!smSetScene(nullptr, nullptr));
+    tsInternalPass("Test_smSetScene_FailsPreStart");
 }
 
-void Test_smGetCurrentStateName_FailsPreStart(void)
+void Test_smGetCurrentSceneName_FailsPreStart(void)
 {
-    assert(!smGetCurrentStateName());
-    tsInternalPass("Test_smGetCurrentStateName_FailsPreStart");
+    assert(!smGetCurrentSceneName());
+    tsInternalPass("Test_smGetCurrentSceneName_FailsPreStart");
 }
 
-void Test_smDeleteState_FailsPreStart(void)
+void Test_smDeleteScene_FailsPreStart(void)
 {
-    assert(!smDeleteState(nullptr));
-    tsInternalPass("Test_smDeleteState_FailsPreStart");
+    assert(!smDeleteScene(nullptr));
+    tsInternalPass("Test_smDeleteScene_FailsPreStart");
 }
 
-void Test_smGetStateCount_FailsPreStart(void)
+void Test_smGetSceneCount_FailsPreStart(void)
 {
-    assert(smGetStateCount() == -1);
-    tsInternalPass("Test_smGetStateCount_FailsPreStart");
+    assert(smGetSceneCount() == -1);
+    tsInternalPass("Test_smGetSceneCount_FailsPreStart");
 }
 
 
@@ -229,268 +229,268 @@ void Test_smHasStarted_SucceedsPostStart(void)
 
 // State Functions
 
-// -- smCreateState
+// -- smCreateScene
 
 // -- -- Name Related
 
-void Test_smCreateState_AcceptsValidName(void)
+void Test_smCreateScene_AcceptsValidName(void)
 {
     smStart();
-    assert(smCreateState(mock.name, mock.enter, nullptr, nullptr, nullptr));
+    assert(smCreateScene(mock.name, mock.enter, nullptr, nullptr, nullptr));
     smStop();
-    tsInternalPass("Test_smCreateState_AcceptsValidName");
+    tsInternalPass("Test_smCreateScene_AcceptsValidName");
 }
 
-void Test_smCreateState_RejectsExistingName(void)
+void Test_smCreateScene_RejectsExistingName(void)
 {
     smStart();
-    smCreateState(mock.name, mock.enter, nullptr, nullptr, nullptr);
-    assert(!smCreateState(mock.name, mock.enter, nullptr, nullptr, nullptr));
+    smCreateScene(mock.name, mock.enter, nullptr, nullptr, nullptr);
+    assert(!smCreateScene(mock.name, mock.enter, nullptr, nullptr, nullptr));
     smStop();
-    tsInternalPass("Test_smCreateState_RejectsExistingName");
+    tsInternalPass("Test_smCreateScene_RejectsExistingName");
 }
 
-void Test_smCreateState_RejectsNullName(void)
+void Test_smCreateScene_RejectsNullName(void)
 {
     smStart();
-    assert(!smCreateState(nullptr, nullptr, nullptr, nullptr, nullptr));
+    assert(!smCreateScene(nullptr, nullptr, nullptr, nullptr, nullptr));
     smStop();
-    tsInternalPass("Test_smCreateState_RejectsNullName");
+    tsInternalPass("Test_smCreateScene_RejectsNullName");
 }
 
-void Test_smCreateState_RejectsEmptyName(void)
+void Test_smCreateScene_RejectsEmptyName(void)
 {
     smStart();
-    assert(!smCreateState("", nullptr, nullptr, nullptr, nullptr));
+    assert(!smCreateScene("", nullptr, nullptr, nullptr, nullptr));
     smStop();
-    tsInternalPass("Test_smCreateState_RejectsEmptyName");
+    tsInternalPass("Test_smCreateScene_RejectsEmptyName");
 }
 
 // -- -- State Functions Related
 
-void Test_smCreateState_AcceptsValidNameAndNoNullFunctions(void)
+void Test_smCreateScene_AcceptsValidNameAndNoNullFunctions(void)
 {
     smStart();
     assert(
-        smCreateState(mock.name, mock.enter, mock.update, mock.draw, mock.exit
+        smCreateScene(mock.name, mock.enter, mock.update, mock.draw, mock.exit
         ));
     smStop();
-    tsInternalPass("Test_smCreateState_AcceptsValidNameAndNoNullFunctions");
+    tsInternalPass("Test_smCreateScene_AcceptsValidNameAndNoNullFunctions");
 }
 
-void Test_smCreateState_AcceptsValidNameAndNullEnter(void)
+void Test_smCreateScene_AcceptsValidNameAndNullEnter(void)
 {
     smStart();
     assert(
-        smCreateState(mock.name, nullptr, mock.update, mock.draw, mock.exit));
+        smCreateScene(mock.name, nullptr, mock.update, mock.draw, mock.exit));
     smStop();
-    tsInternalPass("Test_smCreateState_AcceptsValidNameAndNullEnter");
+    tsInternalPass("Test_smCreateScene_AcceptsValidNameAndNullEnter");
 }
 
-void Test_smCreateState_AcceptsValidNameAndNullUpdate(void)
+void Test_smCreateScene_AcceptsValidNameAndNullUpdate(void)
 {
     smStart();
-    assert(smCreateState(mock.name, mock.enter, nullptr, mock.draw, mock.exit));
+    assert(smCreateScene(mock.name, mock.enter, nullptr, mock.draw, mock.exit));
     smStop();
-    tsInternalPass("Test_smCreateState_AcceptsValidNameAndNullUpdate");
+    tsInternalPass("Test_smCreateScene_AcceptsValidNameAndNullUpdate");
 }
 
-void Test_smCreateState_AcceptsValidNameAndNullDraw(void)
-{
-    smStart();
-    assert(
-        smCreateState(mock.name, mock.enter, mock.update, nullptr, mock.exit));
-    smStop();
-    tsInternalPass("Test_smCreateState_AcceptsValidNameAndNullDraw");
-}
-
-void Test_smCreateState_AcceptsValidNameAndNullExit(void)
+void Test_smCreateScene_AcceptsValidNameAndNullDraw(void)
 {
     smStart();
     assert(
-        smCreateState(mock.name, mock.enter, mock.update, mock.draw, nullptr));
+        smCreateScene(mock.name, mock.enter, mock.update, nullptr, mock.exit));
     smStop();
-    tsInternalPass("Test_smCreateState_AcceptsValidNameAndNullExit");
+    tsInternalPass("Test_smCreateScene_AcceptsValidNameAndNullDraw");
 }
 
-void Test_smCreateState_AcceptsValidNameAndNullEnterAndNullUpdate(void)
+void Test_smCreateScene_AcceptsValidNameAndNullExit(void)
 {
     smStart();
-    assert(smCreateState(mock.name, nullptr,nullptr, mock.draw, mock.exit));
+    assert(
+        smCreateScene(mock.name, mock.enter, mock.update, mock.draw, nullptr));
+    smStop();
+    tsInternalPass("Test_smCreateScene_AcceptsValidNameAndNullExit");
+}
+
+void Test_smCreateScene_AcceptsValidNameAndNullEnterAndNullUpdate(void)
+{
+    smStart();
+    assert(smCreateScene(mock.name, nullptr,nullptr, mock.draw, mock.exit));
     smStop();
     tsInternalPass(
-        "Test_smCreateState_AcceptsValidNameAndNullEnterAndNullUpdate");
+        "Test_smCreateScene_AcceptsValidNameAndNullEnterAndNullUpdate");
 }
 
-void Test_smCreateState_AcceptsValidNameAndNullEnterAndNullDraw(void)
+void Test_smCreateScene_AcceptsValidNameAndNullEnterAndNullDraw(void)
 {
     smStart();
     assert(
-        smCreateState(mock.name, nullptr, mock.update, nullptr, mock.exit
-        ));
-    smStop();
-    tsInternalPass(
-        "Test_smCreateState_AcceptsValidNameAndNullEnterAndNullDraw");
-}
-
-void Test_smCreateState_AcceptsValidNameAndNullEnterAndNullExit(void)
-{
-    smStart();
-    assert(
-        smCreateState(mock.name, nullptr, mock.update, mock.draw, nullptr
+        smCreateScene(mock.name, nullptr, mock.update, nullptr, mock.exit
         ));
     smStop();
     tsInternalPass(
-        "Test_smCreateState_AcceptsValidNameAndNullEnterAndNullExit");
+        "Test_smCreateScene_AcceptsValidNameAndNullEnterAndNullDraw");
 }
 
-void Test_smCreateState_AcceptsValidNameAndNullUpdateAndNullDraw(void)
+void Test_smCreateScene_AcceptsValidNameAndNullEnterAndNullExit(void)
 {
     smStart();
     assert(
-        smCreateState(mock.name, mock.enter, nullptr, nullptr, mock.exit
+        smCreateScene(mock.name, nullptr, mock.update, mock.draw, nullptr
         ));
     smStop();
     tsInternalPass(
-        "Test_smCreateState_AcceptsValidNameAndNullUpdateAndNullDraw");
+        "Test_smCreateScene_AcceptsValidNameAndNullEnterAndNullExit");
 }
 
-void Test_smCreateState_AcceptsValidNameAndNullUpdateAndNullExit(void)
+void Test_smCreateScene_AcceptsValidNameAndNullUpdateAndNullDraw(void)
 {
     smStart();
     assert(
-        smCreateState(mock.name, mock.enter, nullptr, mock.draw, nullptr
+        smCreateScene(mock.name, mock.enter, nullptr, nullptr, mock.exit
         ));
     smStop();
     tsInternalPass(
-        "Test_smCreateState_AcceptsValidNameAndNullUpdateAndNullExit");
+        "Test_smCreateScene_AcceptsValidNameAndNullUpdateAndNullDraw");
 }
 
-void Test_smCreateState_AcceptsValidNameAndNullDrawAndNullExit(void)
+void Test_smCreateScene_AcceptsValidNameAndNullUpdateAndNullExit(void)
 {
     smStart();
     assert(
-        smCreateState(mock.name, mock.enter, mock.update, nullptr, nullptr
+        smCreateScene(mock.name, mock.enter, nullptr, mock.draw, nullptr
         ));
     smStop();
-    tsInternalPass("Test_smCreateState_AcceptsValidNameAndNullDrawAndNullExit");
+    tsInternalPass(
+        "Test_smCreateScene_AcceptsValidNameAndNullUpdateAndNullExit");
 }
 
-void Test_smCreateState_AcceptsValidNameAndNullEnterAndNullUpdateAndNullDraw(
+void Test_smCreateScene_AcceptsValidNameAndNullDrawAndNullExit(void)
+{
+    smStart();
+    assert(
+        smCreateScene(mock.name, mock.enter, mock.update, nullptr, nullptr
+        ));
+    smStop();
+    tsInternalPass("Test_smCreateScene_AcceptsValidNameAndNullDrawAndNullExit");
+}
+
+void Test_smCreateScene_AcceptsValidNameAndNullEnterAndNullUpdateAndNullDraw(
     void)
 {
     smStart();
     assert(
-        smCreateState(mock.name, nullptr, nullptr, nullptr, mock.exit
+        smCreateScene(mock.name, nullptr, nullptr, nullptr, mock.exit
         ));
     smStop();
     tsInternalPass(
-        "Test_smCreateState_AcceptsValidNameAndNullEnterAndNullUpdateAndNullDraw");
+        "Test_smCreateScene_AcceptsValidNameAndNullEnterAndNullUpdateAndNullDraw");
 }
 
-void Test_smCreateState_AcceptsValidNameAndNullEnterAndNullUpdateAndNullExit(
+void Test_smCreateScene_AcceptsValidNameAndNullEnterAndNullUpdateAndNullExit(
     void)
 {
     smStart();
     assert(
-        smCreateState(mock.name, nullptr, nullptr, mock.draw, nullptr
+        smCreateScene(mock.name, nullptr, nullptr, mock.draw, nullptr
         ));
     smStop();
     tsInternalPass(
-        "Test_smCreateState_AcceptsValidNameAndNullEnterAndNullUpdateAndNullExit");
+        "Test_smCreateScene_AcceptsValidNameAndNullEnterAndNullUpdateAndNullExit");
 }
 
-void Test_smCreateState_AcceptsValidNameAndNullEnterAndNullDrawAndNullExit(
+void Test_smCreateScene_AcceptsValidNameAndNullEnterAndNullDrawAndNullExit(
     void)
 {
     smStart();
     assert(
-        smCreateState(mock.name, nullptr, mock.update, nullptr, nullptr
+        smCreateScene(mock.name, nullptr, mock.update, nullptr, nullptr
         ));
     smStop();
     tsInternalPass(
-        "Test_smCreateState_AcceptsValidNameAndNullEnterAndNullDrawAndNullExit");
+        "Test_smCreateScene_AcceptsValidNameAndNullEnterAndNullDrawAndNullExit");
 }
 
-void Test_smCreateState_AcceptsValidNameAndNullUpdateAndNullDrawAndNullExit(
+void Test_smCreateScene_AcceptsValidNameAndNullUpdateAndNullDrawAndNullExit(
     void)
 {
     smStart();
     assert(
-        smCreateState(mock.name, mock.enter, nullptr, nullptr, nullptr
+        smCreateScene(mock.name, mock.enter, nullptr, nullptr, nullptr
         ));
     smStop();
     tsInternalPass(
-        "Test_smCreateState_AcceptsValidNameAndNullUpdateAndNullDrawAndNullExit");
+        "Test_smCreateScene_AcceptsValidNameAndNullUpdateAndNullDrawAndNullExit");
 }
 
-void Test_smCreateState_RejectsValidNameAndAllNullFunctions(void)
+void Test_smCreateScene_RejectsValidNameAndAllNullFunctions(void)
 {
     smStart();
-    assert(!smCreateState(mock.name, nullptr, nullptr, nullptr, nullptr));
+    assert(!smCreateScene(mock.name, nullptr, nullptr, nullptr, nullptr));
     smStop();
-    tsInternalPass("Test_smCreateState_RejectsValidNameAndAllNullFunctions");
+    tsInternalPass("Test_smCreateScene_RejectsValidNameAndAllNullFunctions");
 }
 
-// smStateExists
+// smSceneExists
 
-void Test_smStateExists_AcceptsCreatedName(void)
+void Test_smSceneExists_AcceptsCreatedName(void)
 {
     smStart();
-    smCreateState(mock.name, mockEnter, nullptr, nullptr, nullptr);
-    assert(smStateExists(mock.name));
+    smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr);
+    assert(smSceneExists(mock.name));
     smStop();
-    tsInternalPass("Test_smStateExists_AcceptsCreatedName");
+    tsInternalPass("Test_smSceneExists_AcceptsCreatedName");
 }
 
-void Test_smStateExists_RejectsNonCreatedName(void)
+void Test_smSceneExists_RejectsNonCreatedName(void)
 {
     smStart();
-    assert(!smStateExists(mock.name));
+    assert(!smSceneExists(mock.name));
     smStop();
-    tsInternalPass("Test_smStateExists_RejectsNonCreatedName");
+    tsInternalPass("Test_smSceneExists_RejectsNonCreatedName");
 }
 
-// -- smSetState
+// -- smSetScene
 
-void Test_smSetState_AcceptsValidStateFromNull(void)
+void Test_smSetScene_AcceptsValidStateFromNull(void)
 {
     smStart();
-    smCreateState(mock.name, mockEnter, nullptr, nullptr, nullptr);
-    assert(smSetState(mock.name, nullptr));
+    smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr);
+    assert(smSetScene(mock.name, nullptr));
     smStop();
-    tsInternalPass("Test_smSetState_AcceptsValidStateFromNull");
+    tsInternalPass("Test_smSetScene_AcceptsValidStateFromNull");
 }
 
-void Test_smSetState_RejectsNullName(void)
+void Test_smSetScene_RejectsNullName(void)
 {
     smStart();
-    assert(!smSetState(nullptr, nullptr));
+    assert(!smSetScene(nullptr, nullptr));
     smStop();
-    tsInternalPass("Test_smSetState_RejectsNullName");
+    tsInternalPass("Test_smSetScene_RejectsNullName");
 }
 
-void Test_smSetState_RejectsNonCreatedName(void)
+void Test_smSetScene_RejectsNonCreatedName(void)
 {
     smStart();
-    assert(!smSetState(mock.name, nullptr));
+    assert(!smSetScene(mock.name, nullptr));
     smStop();
-    tsInternalPass("Test_smSetState_RejectsNonCreatedName");
+    tsInternalPass("Test_smSetScene_RejectsNonCreatedName");
 }
 
-void Test_smSetState_SucceedsChangingFromOneStateToAnotherWithNoArgs(void)
+void Test_smSetScene_SucceedsChangingFromOneStateToAnotherWithNoArgs(void)
 {
     smStart();
-    smCreateState(mock.name, mockEnter, nullptr, nullptr, nullptr);
-    smCreateState(mock2.name, mockEnter, nullptr, nullptr, nullptr);
-    smSetState(mock.name, nullptr);
-    assert(smSetState(mock2.name, nullptr));
+    smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr);
+    smCreateScene(mock2.name, mockEnter, nullptr, nullptr, nullptr);
+    smSetScene(mock.name, nullptr);
+    assert(smSetScene(mock2.name, nullptr));
     smStop();
     tsInternalPass(
-        "Test_smSetState_SucceedsChangingFromOneStateToAnotherWithNoArgs");
+        "Test_smSetScene_SucceedsChangingFromOneStateToAnotherWithNoArgs");
 }
 
-void Test_smSetState_CallsNonNullExitOfCurrentState(void)
+void Test_smSetScene_CallsNonNullExitOfCurrentState(void)
 {
     smStart();
 
@@ -498,11 +498,11 @@ void Test_smSetState_CallsNonNullExitOfCurrentState(void)
     smTestExit = onExit;
     smMockData = mockData;
 
-    smCreateState(mock.name, nullptr, nullptr, nullptr, mockExit);
-    smCreateState(mock2.name, mockEnter, nullptr, nullptr, nullptr);
+    smCreateScene(mock.name, nullptr, nullptr, nullptr, mockExit);
+    smCreateScene(mock2.name, mockEnter, nullptr, nullptr, nullptr);
 
-    smSetState(mock.name, nullptr);
-    smSetState(mock2.name, nullptr);
+    smSetScene(mock.name, nullptr);
+    smSetScene(mock2.name, nullptr);
 
     assert(mockData->exitCount == 1);
     free(mockData);
@@ -511,10 +511,10 @@ void Test_smSetState_CallsNonNullExitOfCurrentState(void)
 
     smStop();
     tsInternalPass(
-        "Test_smSetState_CallsExitOfCurrentState");
+        "Test_smSetScene_CallsExitOfCurrentState");
 }
 
-void Test_smSetState_SkipsNullExitOfCurrentState(void)
+void Test_smSetScene_SkipsNullExitOfCurrentState(void)
 {
     smStart();
 
@@ -522,11 +522,11 @@ void Test_smSetState_SkipsNullExitOfCurrentState(void)
     smTestExit = onExit;
     smMockData = mockData;
 
-    smCreateState(mock.name, mockEnter, nullptr, nullptr, nullptr);
-    smCreateState(mock2.name, nullptr, nullptr, nullptr, mockExit);
+    smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr);
+    smCreateScene(mock2.name, nullptr, nullptr, nullptr, mockExit);
 
-    smSetState(mock.name, nullptr);
-    smSetState(mock2.name, nullptr);
+    smSetScene(mock.name, nullptr);
+    smSetScene(mock2.name, nullptr);
 
     assert(mockData->exitCount == 0);
     free(mockData);
@@ -535,10 +535,10 @@ void Test_smSetState_SkipsNullExitOfCurrentState(void)
 
     smStop();
     tsInternalPass(
-        "Test_smSetState_SkipsNullExitOfCurrentState");
+        "Test_smSetScene_SkipsNullExitOfCurrentState");
 }
 
-void Test_smSetState_CallsNonNullEnterOfTargetState(void)
+void Test_smSetScene_CallsNonNullEnterOfTargetState(void)
 {
     smStart();
 
@@ -546,11 +546,11 @@ void Test_smSetState_CallsNonNullEnterOfTargetState(void)
     smTestEnter = onEnter;
     smMockData = mockData;
 
-    smCreateState(mock.name, nullptr, nullptr, nullptr, mockExit);
-    smCreateState(mock2.name, mockEnter, nullptr, nullptr, nullptr);
+    smCreateScene(mock.name, nullptr, nullptr, nullptr, mockExit);
+    smCreateScene(mock2.name, mockEnter, nullptr, nullptr, nullptr);
 
-    smSetState(mock.name, nullptr);
-    smSetState(mock2.name, nullptr);
+    smSetScene(mock.name, nullptr);
+    smSetScene(mock2.name, nullptr);
 
     assert(mockData->enterCount == 1);
     free(mockData);
@@ -559,10 +559,10 @@ void Test_smSetState_CallsNonNullEnterOfTargetState(void)
 
     smStop();
     tsInternalPass(
-        "Test_smSetState_CallsNonNullEnterOfTargetState");
+        "Test_smSetScene_CallsNonNullEnterOfTargetState");
 }
 
-void Test_smSetState_SkipsNullEnterOfTargetState(void)
+void Test_smSetScene_SkipsNullEnterOfTargetState(void)
 {
     smStart();
 
@@ -570,11 +570,11 @@ void Test_smSetState_SkipsNullEnterOfTargetState(void)
     smTestEnter = onEnter;
     smMockData = mockData;
 
-    smCreateState(mock.name, nullptr, mockUpdate, nullptr, nullptr);
-    smCreateState(mock2.name, nullptr, nullptr, nullptr, mockExit);
+    smCreateScene(mock.name, nullptr, mockUpdate, nullptr, nullptr);
+    smCreateScene(mock2.name, nullptr, nullptr, nullptr, mockExit);
 
-    smSetState(mock.name, nullptr);
-    smSetState(mock2.name, nullptr);
+    smSetScene(mock.name, nullptr);
+    smSetScene(mock2.name, nullptr);
 
     assert(mockData->enterCount == 0);
     free(mockData);
@@ -583,10 +583,10 @@ void Test_smSetState_SkipsNullEnterOfTargetState(void)
 
     smStop();
     tsInternalPass(
-        "Test_smSetState_SkipsNullEnterOfTargetState");
+        "Test_smSetScene_SkipsNullEnterOfTargetState");
 }
 
-void Test_smSetState_CallsNonNullExitAndNonNullEnterWhenTargetingSameState(
+void Test_smSetScene_CallsNonNullExitAndNonNullEnterWhenTargetingSameState(
     void)
 {
     smStart();
@@ -596,10 +596,10 @@ void Test_smSetState_CallsNonNullExitAndNonNullEnterWhenTargetingSameState(
     smTestExit = onExit;
     smMockData = mockData;
 
-    smCreateState(mock.name, mockEnter, nullptr, nullptr, mockExit);
+    smCreateScene(mock.name, mockEnter, nullptr, nullptr, mockExit);
 
-    smSetState(mock.name, nullptr);
-    smSetState(mock.name, nullptr);
+    smSetScene(mock.name, nullptr);
+    smSetScene(mock.name, nullptr);
 
     assert(mockData->enterCount == 2);
     assert(mockData->exitCount == 1);
@@ -611,10 +611,10 @@ void Test_smSetState_CallsNonNullExitAndNonNullEnterWhenTargetingSameState(
 
     smStop();
     tsInternalPass(
-        "Test_smSetState_CallsNonNullExitAndNonNullEnterWhenTargetingSameState");
+        "Test_smSetScene_CallsNonNullExitAndNonNullEnterWhenTargetingSameState");
 }
 
-void Test_smSetState_CallsNonNullEnterWithArgsOfTargetState(void)
+void Test_smSetScene_CallsNonNullEnterWithArgsOfTargetState(void)
 {
     smStart();
 
@@ -624,11 +624,11 @@ void Test_smSetState_CallsNonNullEnterWithArgsOfTargetState(void)
     smMockData = mockData;
     smMockArgs = mockArgs;
 
-    smCreateState(mock.name, nullptr, nullptr, nullptr, mockExit);
-    smCreateState(mock2.name, mockEnter, nullptr, nullptr, nullptr);
+    smCreateScene(mock.name, nullptr, nullptr, nullptr, mockExit);
+    smCreateScene(mock2.name, mockEnter, nullptr, nullptr, nullptr);
 
-    smSetState(mock.name, nullptr);
-    smSetState(mock2.name, smMockArgs);
+    smSetScene(mock.name, nullptr);
+    smSetScene(mock2.name, smMockArgs);
 
     assert(mockArgs->flag);
 
@@ -640,87 +640,87 @@ void Test_smSetState_CallsNonNullEnterWithArgsOfTargetState(void)
 
     smStop();
     tsInternalPass(
-        "Test_smSetState_CallsEnterWithArgs");
+        "Test_smSetScene_CallsEnterWithArgs");
 }
 
-// -- smGetCurrentStateName
+// -- smGetCurrentSceneName
 
-void Test_smGetCurrentStateName_FailsPreCreateState(void)
+void Test_smGetCurrentSceneName_FailsPreCreateScene(void)
 {
     smStart();
-    assert(!smGetCurrentStateName());
+    assert(!smGetCurrentSceneName());
     smStop();
-    tsInternalPass("Test_smGetCurrentStateName_FailsPreCreateState");
+    tsInternalPass("Test_smGetCurrentSceneName_FailsPreCreateScene");
 }
 
-void Test_smGetCurrentStateName_ReturnsCurrentStateName(void)
+void Test_smGetCurrentSceneName_ReturnsCurrentStateName(void)
 {
     smStart();
-    smCreateState(mock.name, mockEnter, nullptr, nullptr, nullptr);
-    smSetState(mock.name, nullptr);
-    assert(strcmp(smGetCurrentStateName(), mock.name) == 0);
+    smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr);
+    smSetScene(mock.name, nullptr);
+    assert(strcmp(smGetCurrentSceneName(), mock.name) == 0);
     smStop();
-    tsInternalPass("Test_smGetCurrentStateName_ReturnsCurrentStateName");
+    tsInternalPass("Test_smGetCurrentSceneName_ReturnsCurrentStateName");
 }
 
-// -- smDeleteState
+// -- smDeleteScene
 
-void Test_smDeleteState_FailsPreCreateState(void)
+void Test_smDeleteScene_FailsPreCreateScene(void)
 {
     smStart();
-    assert(!smDeleteState(mock.name));
+    assert(!smDeleteScene(mock.name));
     smStop();
-    tsInternalPass("Test_smDeleteState_FailsPreCreateState");
+    tsInternalPass("Test_smDeleteScene_FailsPreCreateScene");
 }
 
-void Test_smDeleteState_FailsToDeleteCurrentState(void)
+void Test_smDeleteScene_FailsToDeleteCurrentState(void)
 {
     smStart();
-    smCreateState(mock.name, mockEnter, nullptr, nullptr, nullptr);
-    smSetState(mock.name, nullptr);
-    assert(!smDeleteState(mock.name));
+    smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr);
+    smSetScene(mock.name, nullptr);
+    assert(!smDeleteScene(mock.name));
     smStop();
-    tsInternalPass("Test_smDeleteState_FailsToDeleteCurrentState");
+    tsInternalPass("Test_smDeleteScene_FailsToDeleteCurrentState");
 }
 
-void Test_smDeleteState_AcceptsNonCurrentState(void)
+void Test_smDeleteScene_AcceptsNonCurrentState(void)
 {
     smStart();
-    smCreateState(mock.name, mockEnter, nullptr, nullptr, nullptr);
-    assert(!smDeleteState(mock.name));
+    smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr);
+    assert(!smDeleteScene(mock.name));
     smStop();
-    tsInternalPass("Test_smDeleteState_FailsToDeleteCurrentState");
+    tsInternalPass("Test_smDeleteScene_FailsToDeleteCurrentState");
 }
 
-// -- smGetStateCount
+// -- smGetSceneCount
 
-void Test_smGetStateCount_ReturnsZeroPostStart(void)
+void Test_smGetSceneCount_ReturnsZeroPostStart(void)
 {
     smStart();
-    assert(smGetStateCount() == 0);
+    assert(smGetSceneCount() == 0);
     smStop();
-    tsInternalPass("Test_smGetStateCount_ReturnsZeroPostStart");
+    tsInternalPass("Test_smGetSceneCount_ReturnsZeroPostStart");
 }
 
-void Test_smGetStateCount_ReturnsCorrectStateCountPostCreateState(void)
+void Test_smGetSceneCount_ReturnsCorrectStateCountPostCreateScene(void)
 {
     smStart();
-    smCreateState(mock.name, mockEnter, nullptr, nullptr, nullptr);
-    assert(smGetStateCount() == 1);
-    smStop();
-    tsInternalPass(
-        "Test_smGetStateCount_ReturnsCorrectStateCountPostCreateState");
-}
-
-void Test_smGetStateCount_ReturnsCorrectStateCountPostDeleteState(void)
-{
-    smStart();
-    smCreateState(mock.name, mockEnter, nullptr, nullptr, nullptr);
-    smDeleteState(mock.name);
-    assert(smGetStateCount() == 0);
+    smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr);
+    assert(smGetSceneCount() == 1);
     smStop();
     tsInternalPass(
-        "Test_smGetStateCount_ReturnsCorrectStateCountPostDeleteState");
+        "Test_smGetSceneCount_ReturnsCorrectStateCountPostCreateScene");
+}
+
+void Test_smGetSceneCount_ReturnsCorrectStateCountPostDeleteScene(void)
+{
+    smStart();
+    smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr);
+    smDeleteScene(mock.name);
+    assert(smGetSceneCount() == 0);
+    smStop();
+    tsInternalPass(
+        "Test_smGetSceneCount_ReturnsCorrectStateCountPostDeleteScene");
 }
 
 // Lifecycle Functions
@@ -730,7 +730,7 @@ void Test_smGetStateCount_ReturnsCorrectStateCountPostDeleteState(void)
 void Test_smUpdate_FailsWhenNullCurrentState(void)
 {
     smStart();
-    assert(!smGetCurrentStateName());
+    assert(!smGetCurrentSceneName());
     assert(!smUpdate(mockDt));
     smStop();
     tsInternalPass("Test_smUpdate_FailsWhenNullCurrentState");
@@ -739,8 +739,8 @@ void Test_smUpdate_FailsWhenNullCurrentState(void)
 void Test_smUpdate_CallsNonNullUpdateOfCurrentState(void)
 {
     smStart();
-    smCreateState(mock.name, nullptr, mock.update, nullptr, nullptr);
-    smSetState(mock.name, nullptr);
+    smCreateScene(mock.name, nullptr, mock.update, nullptr, nullptr);
+    smSetScene(mock.name, nullptr);
     assert(smUpdate(mockDt));
     smStop();
     tsInternalPass("Test_smUpdate_CallsNonNullUpdateOfCurrentState");
@@ -749,8 +749,8 @@ void Test_smUpdate_CallsNonNullUpdateOfCurrentState(void)
 void Test_smUpdate_FailsWhenNullUpdate(void)
 {
     smStart();
-    smCreateState(mock.name, mock.enter, nullptr, nullptr, nullptr);
-    smSetState(mock.name, nullptr);
+    smCreateScene(mock.name, mock.enter, nullptr, nullptr, nullptr);
+    smSetScene(mock.name, nullptr);
     assert(!smUpdate(mockDt));
     smStop();
     tsInternalPass("Test_smUpdate_FailsWhenNullUpdate");
@@ -798,7 +798,7 @@ void Test_smGetDt_UpdatesDtOnConsecutiveCalls(void)
 void Test_smDraw_FailsWhenNullCurrentState(void)
 {
     smStart();
-    assert(!smGetCurrentStateName());
+    assert(!smGetCurrentSceneName());
     assert(!smDraw());
     smStop();
     tsInternalPass("Test_smDraw_FailsWhenNullCurrentState");
@@ -807,8 +807,8 @@ void Test_smDraw_FailsWhenNullCurrentState(void)
 void Test_smDraw_CallsValidDrawFunction(void)
 {
     smStart();
-    smCreateState(mock.name, nullptr, nullptr, mockDraw, nullptr);
-    smSetState(mock.name, nullptr);
+    smCreateScene(mock.name, nullptr, nullptr, mockDraw, nullptr);
+    smSetScene(mock.name, nullptr);
     assert(smDraw());
     smStop();
     tsInternalPass("Test_smDraw_CallsValidDrawFunction");
@@ -817,8 +817,8 @@ void Test_smDraw_CallsValidDrawFunction(void)
 void Test_smDraw_FailsWhenNullDraw(void)
 {
     smStart();
-    smCreateState(mock.name, mock.enter, nullptr, nullptr, nullptr);
-    smSetState(mock.name, nullptr);
+    smCreateScene(mock.name, mock.enter, nullptr, nullptr, nullptr);
+    smSetScene(mock.name, nullptr);
     assert(!smDraw());
     smStop();
     tsInternalPass("Test_smDraw_FailsWhenNullDraw");
@@ -834,8 +834,8 @@ void Test_smStop_CallsNonNullExitOfCurrentState(void)
     smTestExit = onExit;
     smMockData = mockData;
 
-    smCreateState(mock.name, nullptr, nullptr, nullptr, mockExit);
-    smSetState(mock.name, nullptr);
+    smCreateScene(mock.name, nullptr, nullptr, nullptr, mockExit);
+    smSetScene(mock.name, nullptr);
 
     smStop();
 
@@ -857,8 +857,8 @@ void Test_smStop_SkipsNullExitOfCurrentState(void)
     smTestExit = onExit;
     smMockData = mockData;
 
-    smCreateState(mock.name, mockEnter, nullptr, nullptr, nullptr);
-    smSetState(mock.name, nullptr);
+    smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr);
+    smSetScene(mock.name, nullptr);
 
     smStop();
 
@@ -889,52 +889,52 @@ void Test_smHasStarted_FailsPostStop(void)
 
 // State Functions
 
-void Test_smCreateState_FailsPostStop(void)
+void Test_smCreateScene_FailsPostStop(void)
 {
     smStart();
     smStop();
-    assert(!smCreateState(nullptr, nullptr, nullptr,nullptr,nullptr));
-    tsInternalPass("Test_smCreateState_FailsPostStop");
+    assert(!smCreateScene(nullptr, nullptr, nullptr,nullptr,nullptr));
+    tsInternalPass("Test_smCreateScene_FailsPostStop");
 }
 
-void Test_smStateExists_FailsPostStop(void)
+void Test_smSceneExists_FailsPostStop(void)
 {
     smStart();
     smStop();
-    assert(!smStateExists(nullptr));
-    tsInternalPass("Test_smStateExists_FailsPostStop");
+    assert(!smSceneExists(nullptr));
+    tsInternalPass("Test_smSceneExists_FailsPostStop");
 }
 
-void Test_smSetState_FailsPostStop(void)
+void Test_smSetScene_FailsPostStop(void)
 {
     smStart();
     smStop();
-    assert(!smSetState(nullptr, nullptr));
-    tsInternalPass("Test_smSetState_FailsPostStop");
+    assert(!smSetScene(nullptr, nullptr));
+    tsInternalPass("Test_smSetScene_FailsPostStop");
 }
 
-void Test_smGetCurrentStateName_FailsPostStop(void)
+void Test_smGetCurrentSceneName_FailsPostStop(void)
 {
     smStart();
     smStop();
-    assert(!smGetCurrentStateName());
-    tsInternalPass("Test_smGetCurrentStateName_FailsPostStop");
+    assert(!smGetCurrentSceneName());
+    tsInternalPass("Test_smGetCurrentSceneName_FailsPostStop");
 }
 
-void Test_smDeleteState_FailsPostStop(void)
+void Test_smDeleteScene_FailsPostStop(void)
 {
     smStart();
     smStop();
-    assert(!smDeleteState(nullptr));
-    tsInternalPass("Test_smDeleteState_FailsPostStop");
+    assert(!smDeleteScene(nullptr));
+    tsInternalPass("Test_smDeleteScene_FailsPostStop");
 }
 
-void Test_smGetStateCount_FailsPostStop(void)
+void Test_smGetSceneCount_FailsPostStop(void)
 {
     smStart();
     smStop();
-    assert(smGetStateCount() == -1);
-    tsInternalPass("Test_smGetStateCount_FailsPostStop");
+    assert(smGetSceneCount() == -1);
+    tsInternalPass("Test_smGetSceneCount_FailsPostStop");
 }
 
 // Lifecycle Functions
@@ -975,42 +975,42 @@ void Test_smStop_IsIdempotentPostStop(void)
 
 // State Functions
 
-void TestStress_smCreateState_CreatingMultipleStatesCausesNoSkips(void)
+void TestStress_smCreateScene_CreatingMultipleStatesCausesNoSkips(void)
 {
     smStart();
     char buf[8];
     for (int i = 0; i < STRESS_ITERATIONS; i++)
     {
         snprintf(buf, sizeof(buf), "%d", i);
-        smCreateState(buf, mockEnter, nullptr, nullptr, nullptr);
+        smCreateScene(buf, mockEnter, nullptr, nullptr, nullptr);
     }
-    assert(smGetStateCount() == STRESS_ITERATIONS);
+    assert(smGetSceneCount() == STRESS_ITERATIONS);
     smStop();
     tsInternalPass(
-        "TestStress_smCreateState_CreatingMultipleStatesCausesNoSkips");
+        "TestStress_smCreateScene_CreatingMultipleStatesCausesNoSkips");
 }
 
-void TestStress_smSetState_SettingStatesOftenCausesNoSkips(void)
+void TestStress_smSetScene_SettingStatesOftenCausesNoSkips(void)
 {
     smStart();
     char buf[8];
     for (int i = 0; i < STRESS_ITERATIONS; i++)
     {
         snprintf(buf, sizeof(buf), "%d", i);
-        smCreateState(buf, mockEnter, nullptr, nullptr, nullptr);
+        smCreateScene(buf, mockEnter, nullptr, nullptr, nullptr);
     }
     int counter = 0;
     for (int i = 0; i < STRESS_ITERATIONS; i++)
     {
         snprintf(buf, sizeof(buf), "%d", i);
-        smSetState(buf, nullptr);
-        int stateNum = atoi(smGetCurrentStateName());
+        smSetScene(buf, nullptr);
+        int stateNum = atoi(smGetCurrentSceneName());
         assert(stateNum == counter);
         counter++;
     }
     assert(counter == STRESS_ITERATIONS);
     smStop();
-    tsInternalPass("TestStress_smSetState_SettingStatesOftenCausesNoSkips");
+    tsInternalPass("TestStress_smSetScene_SettingStatesOftenCausesNoSkips");
 }
 
 // Stop Related
@@ -1022,7 +1022,7 @@ void TestStress_smStop_FreeingMultipleStatesCausesNoSkips(void)
     for (int i = 0; i < STRESS_ITERATIONS; i++)
     {
         snprintf(buf, sizeof(buf), "%d", i);
-        smCreateState(buf, mockEnter, nullptr, nullptr, nullptr);
+        smCreateScene(buf, mockEnter, nullptr, nullptr, nullptr);
     }
     assert(smStop());
     tsInternalPass("TestStress_smStop_FreeingMultipleStatesCausesNoSkips");
@@ -1042,12 +1042,12 @@ int main()
     puts("• Start Related");
     Test_smHasStarted_FailsPreStart();
     puts("• State Functions");
-    Test_smCreateState_FailsPreStart();
-    Test_smStateExists_FailsPreStart();
-    Test_smSetState_FailsPreStart();
-    Test_smGetCurrentStateName_FailsPreStart();
-    Test_smDeleteState_FailsPreStart();
-    Test_smGetStateCount_FailsPreStart();
+    Test_smCreateScene_FailsPreStart();
+    Test_smSceneExists_FailsPreStart();
+    Test_smSetScene_FailsPreStart();
+    Test_smGetCurrentSceneName_FailsPreStart();
+    Test_smDeleteScene_FailsPreStart();
+    Test_smGetSceneCount_FailsPreStart();
     puts("• Lifecycle Functions");
     Test_smUpdate_FailsPreStart();
     Test_smGetDt_FailsPreStart();
@@ -1064,53 +1064,53 @@ int main()
     Test_smStart_IsIdempotentPostStart();
     Test_smHasStarted_SucceedsPostStart();
     puts("• State Functions");
-    puts(" • smCreateState");
+    puts(" • smCreateScene");
     puts("  • Name Related");
-    Test_smCreateState_AcceptsValidName();
-    Test_smCreateState_RejectsExistingName();
-    Test_smCreateState_RejectsNullName();
-    Test_smCreateState_RejectsEmptyName();
+    Test_smCreateScene_AcceptsValidName();
+    Test_smCreateScene_RejectsExistingName();
+    Test_smCreateScene_RejectsNullName();
+    Test_smCreateScene_RejectsEmptyName();
 
     puts("  • State Functions Related");
-    Test_smCreateState_AcceptsValidNameAndNoNullFunctions();
-    Test_smCreateState_AcceptsValidNameAndNullEnter();
-    Test_smCreateState_AcceptsValidNameAndNullUpdate();
-    Test_smCreateState_AcceptsValidNameAndNullDraw();
-    Test_smCreateState_AcceptsValidNameAndNullExit();
-    Test_smCreateState_AcceptsValidNameAndNullEnterAndNullUpdate();
-    Test_smCreateState_AcceptsValidNameAndNullEnterAndNullDraw();
-    Test_smCreateState_AcceptsValidNameAndNullEnterAndNullExit();
-    Test_smCreateState_AcceptsValidNameAndNullUpdateAndNullDraw();
-    Test_smCreateState_AcceptsValidNameAndNullUpdateAndNullExit();
-    Test_smCreateState_AcceptsValidNameAndNullDrawAndNullExit();
-    Test_smCreateState_AcceptsValidNameAndNullEnterAndNullUpdateAndNullDraw();
-    Test_smCreateState_AcceptsValidNameAndNullEnterAndNullUpdateAndNullExit();
-    Test_smCreateState_AcceptsValidNameAndNullEnterAndNullDrawAndNullExit();
-    Test_smCreateState_AcceptsValidNameAndNullUpdateAndNullDrawAndNullExit();
-    Test_smCreateState_RejectsValidNameAndAllNullFunctions();
-    puts(" • smStateExists");
-    Test_smStateExists_AcceptsCreatedName();
-    Test_smStateExists_RejectsNonCreatedName();
-    puts(" • smSetState");
-    Test_smSetState_AcceptsValidStateFromNull();
-    Test_smSetState_RejectsNullName();
-    Test_smSetState_RejectsNonCreatedName();
-    Test_smSetState_SucceedsChangingFromOneStateToAnotherWithNoArgs();
-    Test_smSetState_CallsNonNullExitOfCurrentState();
-    Test_smSetState_SkipsNullExitOfCurrentState();
-    Test_smSetState_CallsNonNullEnterOfTargetState();
-    Test_smSetState_SkipsNullEnterOfTargetState();
-    Test_smSetState_CallsNonNullExitAndNonNullEnterWhenTargetingSameState();
-    Test_smSetState_CallsNonNullEnterWithArgsOfTargetState();
-    puts(" • smGetCurrentStateName");
-    Test_smGetCurrentStateName_FailsPreCreateState();
-    Test_smGetCurrentStateName_ReturnsCurrentStateName();
-    puts(" • smDeleteState");
-    Test_smDeleteState_FailsPreCreateState();
-    puts(" • smGetStateCount");
-    Test_smGetStateCount_ReturnsZeroPostStart();
-    Test_smGetStateCount_ReturnsCorrectStateCountPostCreateState();
-    Test_smGetStateCount_ReturnsCorrectStateCountPostDeleteState();
+    Test_smCreateScene_AcceptsValidNameAndNoNullFunctions();
+    Test_smCreateScene_AcceptsValidNameAndNullEnter();
+    Test_smCreateScene_AcceptsValidNameAndNullUpdate();
+    Test_smCreateScene_AcceptsValidNameAndNullDraw();
+    Test_smCreateScene_AcceptsValidNameAndNullExit();
+    Test_smCreateScene_AcceptsValidNameAndNullEnterAndNullUpdate();
+    Test_smCreateScene_AcceptsValidNameAndNullEnterAndNullDraw();
+    Test_smCreateScene_AcceptsValidNameAndNullEnterAndNullExit();
+    Test_smCreateScene_AcceptsValidNameAndNullUpdateAndNullDraw();
+    Test_smCreateScene_AcceptsValidNameAndNullUpdateAndNullExit();
+    Test_smCreateScene_AcceptsValidNameAndNullDrawAndNullExit();
+    Test_smCreateScene_AcceptsValidNameAndNullEnterAndNullUpdateAndNullDraw();
+    Test_smCreateScene_AcceptsValidNameAndNullEnterAndNullUpdateAndNullExit();
+    Test_smCreateScene_AcceptsValidNameAndNullEnterAndNullDrawAndNullExit();
+    Test_smCreateScene_AcceptsValidNameAndNullUpdateAndNullDrawAndNullExit();
+    Test_smCreateScene_RejectsValidNameAndAllNullFunctions();
+    puts(" • smSceneExists");
+    Test_smSceneExists_AcceptsCreatedName();
+    Test_smSceneExists_RejectsNonCreatedName();
+    puts(" • smSetScene");
+    Test_smSetScene_AcceptsValidStateFromNull();
+    Test_smSetScene_RejectsNullName();
+    Test_smSetScene_RejectsNonCreatedName();
+    Test_smSetScene_SucceedsChangingFromOneStateToAnotherWithNoArgs();
+    Test_smSetScene_CallsNonNullExitOfCurrentState();
+    Test_smSetScene_SkipsNullExitOfCurrentState();
+    Test_smSetScene_CallsNonNullEnterOfTargetState();
+    Test_smSetScene_SkipsNullEnterOfTargetState();
+    Test_smSetScene_CallsNonNullExitAndNonNullEnterWhenTargetingSameState();
+    Test_smSetScene_CallsNonNullEnterWithArgsOfTargetState();
+    puts(" • smGetCurrentSceneName");
+    Test_smGetCurrentSceneName_FailsPreCreateScene();
+    Test_smGetCurrentSceneName_ReturnsCurrentStateName();
+    puts(" • smDeleteScene");
+    Test_smDeleteScene_FailsPreCreateScene();
+    puts(" • smGetSceneCount");
+    Test_smGetSceneCount_ReturnsZeroPostStart();
+    Test_smGetSceneCount_ReturnsCorrectStateCountPostCreateScene();
+    Test_smGetSceneCount_ReturnsCorrectStateCountPostDeleteScene();
     puts("• Lifecycle Functions");
     puts(" • smUpdate");
     Test_smUpdate_FailsWhenNullCurrentState();
@@ -1132,12 +1132,12 @@ int main()
     puts("• Start Related");
     Test_smHasStarted_FailsPostStop();
     puts("• State Functions");
-    Test_smCreateState_FailsPostStop();
-    Test_smStateExists_FailsPostStop();
-    Test_smSetState_FailsPostStop();
-    Test_smGetCurrentStateName_FailsPostStop();
-    Test_smDeleteState_FailsPostStop();
-    Test_smGetStateCount_FailsPostStop();
+    Test_smCreateScene_FailsPostStop();
+    Test_smSceneExists_FailsPostStop();
+    Test_smSetScene_FailsPostStop();
+    Test_smGetCurrentSceneName_FailsPostStop();
+    Test_smDeleteScene_FailsPostStop();
+    Test_smGetSceneCount_FailsPostStop();
     puts("• Lifecycle Functions");
     Test_smUpdate_FailsPostStop();
     Test_smDraw_FailsPostStop();
@@ -1145,8 +1145,8 @@ int main()
     Test_smStop_IsIdempotentPostStop();
 
     puts("\nSTRESS TESTING");
-    TestStress_smCreateState_CreatingMultipleStatesCausesNoSkips();
-    TestStress_smSetState_SettingStatesOftenCausesNoSkips();
+    TestStress_smCreateScene_CreatingMultipleStatesCausesNoSkips();
+    TestStress_smSetScene_SettingStatesOftenCausesNoSkips();
     TestStress_smStop_FreeingMultipleStatesCausesNoSkips();
 
     puts("\nTIME TO SMILE! :)\n\tAll Tests Passed!");
