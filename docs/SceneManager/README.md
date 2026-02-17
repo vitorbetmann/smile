@@ -1,7 +1,7 @@
-# State Machine — Getting Started 🤖
+# SceneManager — Getting Started 🤖
 
-The State Machine module provides a simple, flexible system for defining and
-controlling game flow through independent states. Each state can specify its own
+scenes module provides a simple, flexible system for defining and
+controlling game flow through independent scenes. Each scene can specify its own
 behavior using enter, update, draw, and exit callback functions.
 
 ### 🚨 Warning! This module is not thread-safe!
@@ -12,7 +12,7 @@ behavior using enter, update, draw, and exit callback functions.
 
 - [Visual Example](#-visual-example)
 - [Module Header](#-module-header)
-- [State Machine Lifecycle](#-state-machine-lifecycle)
+- [SceneManager Lifecycle](#-scene-machine-lifecycle)
 - [Quick Reference Table](#-quick-reference-table)
 - [Workflow Example](#-workflow-example)
 
@@ -33,28 +33,28 @@ The module’s header is `SceneManager.h`. Its full Smile path is:
 #include <SceneManager.h>
 ```
 
-## 🔄 State Machine Lifecycle
+## 🔄 SceneManager Lifecycle
 
 1️⃣ Begin with `smStart`. This initializes the internal system, allowing you to
-register, switch, and manage states. No other function except `smIsRunning` will
+register, switch, and manage scenes. No other function except `smIsRunning` will
 work until this step is complete.
 
-2️⃣ Define each state in its own header/source files to represent a
-self-contained scene (e.g., a main menu, level, or pause screen). Each state
+2️⃣ Define each scene in its own header/source files to represent a
+self-contained scene (e.g., a main menu, level, or pause screen). Each scene
 must define at least one, and up to four, lifecycle callbacks (enter, update,
 draw, and/or exit).
 
-3️⃣ `smCreateScene` is used to register uniquely named states with its callbacks
-into memory. You can create as many states as you like.
+3️⃣ `smCreateScene` is used to register uniquely named scenes with its callbacks
+into memory. You can create as many scenes as you like.
 
-4️⃣ Use `smSetScene` to transition into a new state, optionally passing data to
+4️⃣ Use `smSetScene` to transition into a new scene, optionally passing data to
 it.
 
 5️⃣ `smUpdate` and `smDraw` should be called every frame (typically inside your
-game loop) to run the current state’s logic and rendering.
+game loop) to run the current scene’s logic and rendering.
 
-6️⃣ Always call `smStop` when the state machine is no longer needed. This
-ensures all registered states are properly cleaned up, preventing memory leaks
+6️⃣ Always call `smStop` when scenes is no longer needed. This
+ensures all registered scenes are properly cleaned up, preventing memory leaks
 and dangling pointers.
 
 ## 🔍 Quick Reference Table
@@ -65,30 +65,30 @@ and dangling pointers.
 
 | Signature                       | Description                                                                                                      |
 |---------------------------------|------------------------------------------------------------------------------------------------------------------|
-| `void (*smEnterFn)(void *args)` | Runs once when entering the state, often for loading assets or initialize data. Can take in optional parameters. |     
+| `void (*smEnterFn)(void *args)` | Runs once when entering the scene, often for loading assets or initialize data. Can take in optional parameters. |     
 | `void (*smUpdateFn)(float dt)`  | Runs every frame to update game logic. `dt` is the delta time since the last frame.                              |
 | `void (*smDrawFn)(void)`        | Runs every frame to render visuals.                                                                              |
-| `void (*smExitFn)(void)`        | Runs once when leaving the state. Often used for freeing memory and unloading resources.                         |
+| `void (*smExitFn)(void)`        | Runs once when leaving the scene. Often used for freeing memory and unloading resources.                         |
 
 ### Functions
 
-| Signature                                                                                                        | Description                                                                                                                                      |
-|------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
-| `bool smStart(void)`                                                                                             | Initializes the state machine and prepares it for use. Returns `true` if successful.                                                             |
-| `bool smHasStarted(void)`                                                                                        | Checks whether the state machine has been initialized.                                                                                           |
-| `bool smCreateScene(const char *name, smEnterFn enterFn, smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn)` | Registers a new named state with its lifecycle callbacks. Returns `true` if created successfully.                                                |
-| `bool smSceneExists(const char *name)`                                                                           | Checks if a state with the given name exists.                                                                                                    |
-| `bool smSetScene(const char *name, void *args)`                                                                  | Sets the active state by name and calls its `enter` function. Calls the previous state’s `exit` function before switching.                       |
-| `const char *smGetCurrentSceneName(void)`                                                                        | Returns the name of the current active state, or `nullptr` if none is active.                                                                    |
-| `bool smDeleteScene(const char *name)`                                                                           | Deletes a state by name. Fails if it’s currently active.                                                                                         |
-| `int smGetSceneCount(void)`                                                                                      | Returns the total number of registered states, or `-1` if the state machine is not started.                                                      |
-| `bool smUpdate(float dt)`                                                                                        | Calls the update function of the active state. Returns `true` if successful.                                                                     |
-| `float smGetDt(void)`                                                                                            | Returns the delta time (in seconds) since the last frame. Useful for maintaining consistent time-based updates across frames.                    |
-| `bool smDraw(void)`                                                                                              | Calls the draw function of the active state. Returns `true` if successful.                                                                       |
-| `bool smStop(void)`                                                                                              | Stops the state machine and frees all registered states. Calls the current state’s `exit` function before cleanup. Returns `true` if successful. |
+| Signature                                                                                                        | Description                                                                                                                           |
+|------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| `bool smStart(void)`                                                                                             | Initializes scenes and prepares it for use. Returns `true` if successful.                                                             |
+| `bool smHasStarted(void)`                                                                                        | Checks whether scenes has been initialized.                                                                                           |
+| `bool smCreateScene(const char *name, smEnterFn enterFn, smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn)` | Registers a new named scene with its lifecycle callbacks. Returns `true` if created successfully.                                     |
+| `bool smSceneExists(const char *name)`                                                                           | Checks if a scene with the given name exists.                                                                                         |
+| `bool smSetScene(const char *name, void *args)`                                                                  | Sets the active scene by name and calls its `enter` function. Calls the previous scene’s `exit` function before switching.            |
+| `const char *smGetCurrentSceneName(void)`                                                                        | Returns the name of the current active scene, or `nullptr` if none is active.                                                         |
+| `bool smDeleteScene(const char *name)`                                                                           | Deletes a scene by name. Fails if it’s currently active.                                                                              |
+| `int smGetSceneCount(void)`                                                                                      | Returns the total number of registered scenes, or `-1` if scenes is not started.                                                      |
+| `bool smUpdate(float dt)`                                                                                        | Calls the update function of the active scene. Returns `true` if successful.                                                          |
+| `float smGetDt(void)`                                                                                            | Returns the delta time (in seconds) since the last frame. Useful for maintaining consistent time-based updates across frames.         |
+| `bool smDraw(void)`                                                                                              | Calls the draw function of the active scene. Returns `true` if successful.                                                            |
+| `bool smStop(void)`                                                                                              | Stops scenes and frees all registered scenes. Calls the current scene’s `exit` function before cleanup. Returns `true` if successful. |
 
 For detailed documentation, see
-the [State Machine API Reference](SceneManagerAPI.md).
+the [SceneManager API Reference](SceneManagerAPI.md).
 
 ## 🧪️ Workflow Example
 
@@ -101,10 +101,10 @@ In your main file you can begin like so:
 #include "LevelTwo.h"
 
 int main(void) {
-    // Other State Machine functions will not work if smStart is not called.
+    // Other SceneManager functions will not work if smStart is not called.
     smStart();
     
-    // Create your states. Callback functions declared in respective header files.
+    // Create your scenes. Callback functions declared in respective header files.
     smCreateScene("menu", nullptr, menuUpdate, menuDraw, menuExit);
     smCreateScene("level 1", nullptr, levelOneUpdate, levelOneDraw, levelOneExit);
     smCreateScene("level 2", levelTwoEnter, levelTwoUpdate, levelTwoDraw, nullptr);
@@ -126,7 +126,7 @@ int main(void) {
 Make sure you call `smStop` before exiting your program, otherwise you risk
 memory leaks!
 
-Calling smStop also calls the current state's exit function and sets
+Calling smStop also calls the current scene's exit function and sets
 `smIsRunning` to false, breaking the main game loop. Good places to call
 `smStop()` include your main menu or pause screen:
 
@@ -156,15 +156,15 @@ void menuExit(void) {
 }
 ```
 
-You can pass custom data between states through the `args` parameter of
+You can pass custom data between scenes through the `args` parameter of
 `smSetScene()`. Typically, this involves defining a custom struct to hold any
 data you want to share, then passing a pointer to it as `args`.
 
-`smSetScene` will first call the exit function of the current state,
-followed by the enter function of the next state. See
-the [State Machine API](SceneManagerAPI.md) for more information.
+`smSetScene` will first call the exit function of the current scene,
+followed by the enter function of the next scene. See
+the [SceneManager API](SceneManagerAPI.md) for more information.
 
-Below is a typical state header file using LevelTwo.h as an example:
+Below is a typical scene header file using LevelTwo.h as an example:
 
 ```c
 #ifndef LEVEL_TWO_H
@@ -205,7 +205,7 @@ void levelOneUpdate(float dt) {
     score += 10;
     playerPosition += 5.0f * dt;
 
-    // Passing player data to next state.    
+    // Passing player data to next scene.    
     if (playerWon) {
         PlayerData playerData = { 
             .score = 100,
@@ -226,9 +226,9 @@ void levelOneExit(void) {
 }
 ```
 
-In the next state's `enter` function, you cast the `void *` argument back to
+In the next scene's `enter` function, you cast the `void *` argument back to
 your custom struct type to access the data. This enables flexible communication
-and state initialization based on dynamic data, and avoids reliance on global
+and scene initialization based on dynamic data, and avoids reliance on global
 variables.
 
 So, in LevelTwo.c:
@@ -256,7 +256,7 @@ void levelTwoUpdate(float dt) {
     myPlayerData->position += 5.0f * dt;
     
     if (gameOver) {
-        /* Pass nullptr if the next state's enter function requires no arguments
+        /* Pass nullptr if the next scene's enter function requires no arguments
         * or doesn't exist.
         */
         smStop();
@@ -273,6 +273,6 @@ void levelTwoDraw(void) {
 
 ## ✏️ Last Modified
 
-| Last modified | Author (Discord)             | Description         |
-|---------------|------------------------------|---------------------|
-| Nov 06, 2025  | Vitor Betmann (vitorbetmann) | Some minor cleanup; |
+| Last modified | Author (username) | Description                           |
+|---------------|-------------------|---------------------------------------|
+| Feb 17, 2026  | vitorbetmann      | Renamed StateMachine to SceneManager; |

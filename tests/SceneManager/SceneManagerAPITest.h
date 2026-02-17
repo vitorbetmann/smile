@@ -7,8 +7,8 @@
  * @see SceneManagerAPITests.c
  *
  * @author Vitor Betmann
- * @date 2025-11-04
- * @version 1.0.0
+ * @date 2026-02-17
+ * @version 1.1.0
  */
 
 #ifndef SMILE_SCENE_MANAGER_API_TESTS_H
@@ -34,7 +34,7 @@
 // -----------------------------------------------------------------------------
 
 /**
- * @brief Stores counters and mock state data used during test execution.
+ * @brief Stores counters and mock scene data used during test execution.
  */
 typedef struct {
     int enterCount;
@@ -42,14 +42,14 @@ typedef struct {
 } MockData;
 
 /**
- * @brief Represents a simple mock argument structure passed to state functions.
+ * @brief Represents a simple mock argument structure passed to scene functions.
  */
 typedef struct {
     bool flag;
 } MockArgs;
 
 /**
- * @brief Function pointer type for testing state entry callbacks without
+ * @brief Function pointer type for testing scene entry callbacks without
  *        arguments.
  *
  * @param data Pointer to  MockData used to track invocation counts.
@@ -59,7 +59,7 @@ typedef struct {
 typedef void (*smTestEnterFn)(MockData *data);
 
 /**
- * @brief Function pointer type for testing state entry callbacks that receive
+ * @brief Function pointer type for testing scene entry callbacks that receive
  *        arguments.
  *
  * @param data Pointer to MockData used to track invocation counts.
@@ -70,7 +70,7 @@ typedef void (*smTestEnterFn)(MockData *data);
 typedef void (*smTestEnterWithArgsFn)(MockData *data, MockArgs *args);
 
 /**
- * @brief Function pointer type for testing state exit callbacks.
+ * @brief Function pointer type for testing scene exit callbacks.
  *
  * @param data Pointer to  MockData used to track invocation counts.
  *

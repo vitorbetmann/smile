@@ -12,8 +12,8 @@
  * @note Check CommonInternalMessages.h before adding new messages.
  *
  * @author Vitor Betmann
- * @date 2025-11-03
- * @version 1.0.0
+ * @date 2026-02-17
+ * @version 1.1.0
  */
 
 
@@ -32,7 +32,7 @@
 // Functions Names
 // —————————————————————————————————————————————————————————————————————————————
 
-// State Functions
+// Scene Functions
 #define FN_CREATE_SCENE "CreateScene"
 #define FN_SCENE_EXISTS "SceneExists"
 #define FN_SET_SCENE "SetScene"
@@ -56,14 +56,14 @@
 // Warnings
 #define CAUSE_SCENE_ALREADY_EXISTS "Scene already exists"
 #define CAUSE_SCENE_NOT_FOUND "Scene not found"
-#define CAUSE_NULL_STATE_UPDATE_FN "Scene Has Null Update"
-#define CAUSE_NULL_STATE_DRAW_FN "Scene Has Null Draw"
+#define CAUSE_NULL_SCENE_UPDATE_FN "Scene Has Null Update"
+#define CAUSE_NULL_SCENE_DRAW_FN "Scene Has Null Draw"
 // Errors
-#define CAUSE_NULL_CURR_STATE "Current Scene Is Null"
+#define CAUSE_NULL_CURR_SCENE "Current Scene Is Null"
 #define CAUSE_NO_VALID_FUNCTIONS "Scene Has No Valid Functions"
-#define CAUSE_CANNOT_DELETE_CURR_STATE "Cannot Delete Current Scene"
+#define CAUSE_CANNOT_DELETE_CURR_SCENE "Cannot Delete Current Scene"
 // Fatals
-#define CAUSE_FAILED_TO_FREE_ALL_STATES "Failed to Free All Scenes"
+#define CAUSE_FAILED_TO_FREE_ALL_SCENES "Failed to Free All Scenes"
 
 
 #endif // #ifndef SMILE_SCENE_MANAGER_MESSAGES_H

@@ -42,7 +42,7 @@
 // —————————————————————————————————————————————————————————————————————————————
 
 /**
- * @brief Represents an individual state within the state machine.
+ * @brief Represents an individual scene within SceneManager.
  *
  * Each state includes optional lifecycle functions for handling entry,
  * update, drawing, and exit logic.
@@ -60,7 +60,7 @@ typedef struct {
 /**
  * @brief Maps a state name to its corresponding State structure.
  *
- * Used internally by the state machine to efficiently look up states
+ * Used internally by SceneManager to efficiently look up states
  * by name using uthash.
  *
  * @author Vitor Betmann
@@ -72,7 +72,7 @@ typedef struct {
 } smInternalSceneMap;
 
 /**
- * @brief Tracks the current state machine context.
+ * @brief Tracks the current SceneManager context.
  *
  * Contains all runtime information such as registered states, the current
  * active state, frame rate settings, and timing data used for delta time

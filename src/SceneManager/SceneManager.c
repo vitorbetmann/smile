@@ -278,7 +278,7 @@ bool smDeleteScene(const char *name)
 
     if (tracker->currScene && strcmp(name, tracker->currScene->name) == 0)
     {
-        lgInternalLogWithArg(ERROR, MODULE,CAUSE_CANNOT_DELETE_CURR_STATE, name,
+        lgInternalLogWithArg(ERROR, MODULE,CAUSE_CANNOT_DELETE_CURR_SCENE, name,
                              FN_DELETE_SCENE, CONSEQ_ABORTED);
         return false;
     }
@@ -314,14 +314,14 @@ bool smUpdate(float dt)
 
     if (!tracker->currScene)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_NULL_CURR_STATE, FN_UPDATE,
+        lgInternalLog(ERROR, MODULE, CAUSE_NULL_CURR_SCENE, FN_UPDATE,
                       CONSEQ_ABORTED);
         return false;
     }
 
     if (!tracker->currScene->update)
     {
-        lgInternalLogWithArg(WARNING, MODULE,CAUSE_NULL_STATE_UPDATE_FN,
+        lgInternalLogWithArg(WARNING, MODULE,CAUSE_NULL_SCENE_UPDATE_FN,
                              tracker->currScene->name, FN_UPDATE,
                              CONSEQ_ABORTED);
         return false;
@@ -380,14 +380,14 @@ bool smDraw(void)
 
     if (!tracker->currScene)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_NULL_CURR_STATE,FN_DRAW,
+        lgInternalLog(ERROR, MODULE, CAUSE_NULL_CURR_SCENE,FN_DRAW,
                       CONSEQ_ABORTED);
         return false;
     }
 
     if (!tracker->currScene->draw)
     {
-        lgInternalLogWithArg(WARNING, MODULE,CAUSE_NULL_STATE_DRAW_FN,
+        lgInternalLogWithArg(WARNING, MODULE,CAUSE_NULL_SCENE_DRAW_FN,
                              tracker->currScene->name, FN_DRAW,CONSEQ_ABORTED);
         return false;
     }
@@ -438,7 +438,7 @@ bool smStop(void)
 
     if (isFatal)
     {
-        lgInternalLog(FATAL, MODULE, CAUSE_FAILED_TO_FREE_ALL_STATES, FN_STOP,
+        lgInternalLog(FATAL, MODULE, CAUSE_FAILED_TO_FREE_ALL_SCENES, FN_STOP,
                       CONSEQ_ABORTED);
         return false;
     }

@@ -11,7 +11,7 @@ abstractions that keep your code lean, organized, and fully under your control.
 ## 🎮 Smile Demo
 
 <p align="center">
-  <img src="/docs/_Internal/__Assets/StateMachine/StateMachineDemo.gif" width="45%"/>
+  <img src="/docs/_Internal/__Assets/SceneManager/SceneManagerDemo.gif" width="45%"/>
   <img src="/docs/_Internal/__Assets/ParticleSystem/ParticleSystemDemo.gif" width="45%"/>
 </p>
 
@@ -23,12 +23,12 @@ abstractions that keep your code lean, organized, and fully under your control.
 ## 😊 Why Smile?
 
 Smile is a modular collection of C libraries that streamline common 2D
-game-development tasks such as `managing states`, `simulating particles`, and
+game-development tasks such as `managing scenes`, `simulating particles`, and
 `saving or loading data`. It's supported on `Windows` and `Mac` (Linux untested
 but POSIX-compliant) and built for developers who want simplicity without
 sacrificing control.
 
-You can mix and match only the modules you need (for example, using StateMachine
+You can mix and match only the modules you need (for example, using SceneManager
 without ParticleSystem) to keep your project lightweight and focused. And while
 Smile doesn’t handle rendering, input, or audio directly, it integrates
 seamlessly with libraries like [raylib](https://www.raylib.com).
@@ -132,29 +132,29 @@ can compile your game normally using cmake.
 
 Okay, now that you have cloned and built Smile, what next?
 
-Below is an example of how to use the StateMachine module. It follows a set of
+Below is an example of how to use the SceneManager module. It follows a set of
 conventions shared across modules, making it easy to learn new ones:
 
 ```c
-#include "StateMachine.h"
-#include "Menu.h"            // Define your states in other files.
+#include "SceneManager.h"
+#include "Menu.h"            // Define your scenes in other files.
 #include "LevelOne.h"
 
 int main(void)
 {
      /* Most modules have a Start function. The first 2 letter preceding 'Start'
       * serve to identify from which module that function belongs (sm for
-      * StateMachine, sl for SaveLoad, lg for Log...)  
+      * SceneManager, sl for SaveLoad, lg for Log...)  
       */
     smStart();
     
-    // Pass in the states' functions into smCreateState.
-    smCreateState("menu", menuEnter, menuUpdate, menuDraw, menuExit);
-    smCreateState("level 1", levelOneEnter, levelOneUpdate, levelOneDraw, levelOneExit);
+    // Pass in the scenes' functions into smCreateScene.
+    smCreateScene("menu", menuEnter, menuUpdate, menuDraw, menuExit);
+    smCreateScene("level 1", levelOneEnter, levelOneUpdate, levelOneDraw, levelOneExit);
     
-    smSetState("menu", nullptr); // Choose where you want to start
+    smSetScene("menu", nullptr); // Choose where you want to start
     
-    while (smIsRunning())      // Run your game until you Stop StateMachine
+    while (smIsRunning())      // Run your game until you Stop SceneManager
     { 
         float dt = smGetDt();    // Calculate the delta time since the last frame 
         smUpdate(dt);            // Update game logic 
@@ -166,7 +166,7 @@ int main(void)
 Without all the comments, this is how short your main.c file can be:
 
 ```c
-#include <StateMachine.h>
+#include <SceneManager.h>
 #include "menu.h"
 #include "levelOne.h"
 
@@ -174,10 +174,10 @@ int main(void)
 {
     smStart();
     
-    smCreateState("menu", menuEnter, menuUpdate, menuDraw, menuExit);
-    smCreateState("level 1", levelOneEnter, levelOneUpdate, levelOneDraw, levelOneExit);
+    smCreateScene("menu", menuEnter, menuUpdate, menuDraw, menuExit);
+    smCreateScene("level 1", levelOneEnter, levelOneUpdate, levelOneDraw, levelOneExit);
     
-    smSetState("menu", nullptr); 
+    smSetScene("menu", nullptr); 
     
     while (smIsRunning())
     {
@@ -187,7 +187,7 @@ int main(void)
 }
 ```
 
-Then in your states' header files you could have something like:
+Then in your scenes' header files you could have something like:
 
 ```c
 #ifndef MENU_H
@@ -205,7 +205,7 @@ And in the source files:
 
 ```c
 #include "menu.h"
-#include "StateMachine.h"
+#include "SceneManager.h"
 
 void menuEnter(void *args)
 {
@@ -216,16 +216,16 @@ void menuUpdate(float dt)
 {
     // Handle inputs and updates
 
-    // Changing states is easy after they're created:
+    // Changing scenes is easy after they're created:
     if (PlayButtonPressed())
     {
-        smSetState("level 1", nullptr);
+        smSetScene("level 1", nullptr);
     }
     
     // So is quitting the game:
     else if (QuitButtonPressed())
     {
-        smStop(); /* This calls this state's exit function and sets smIsRunning
+        smStop(); /* This calls this scene's exit function and sets smIsRunning
                    * to false, breaking the main game loop.
                    * Most modules have a Stop function as well. Therefore, the
                    * workflow of Start → Use → Stop is common, making it easy to
@@ -245,7 +245,7 @@ void menuExit(void)
 }
 ```
 
-It's as simple as that! All the rest is handled by StateMachine.
+It's as simple as that! All the rest is handled by SceneManager.
 
 And this is the overall philosophy of Smile. It handles the boilerplate in the
 background so you can focus on letting your creativity out!
@@ -253,12 +253,12 @@ background so you can focus on letting your creativity out!
 If you're interested, feel free to explore each module for detailed guides and
 examples:
 
-| Module                                                       | Description                               |
-|--------------------------------------------------------------|-------------------------------------------|
+| Module                                                        | Description                               |
+|---------------------------------------------------------------|-------------------------------------------|
 | [Log](/docs/Log)                                              | Debug code and handle fatal errors easily |
 | [ParticleSystem](/docs/ParticleSystem) (🚧 Under Development) | Simulate smoke, dust, fire, and more      |
 | [SaveLoad](/docs/SaveLoad) (🚧 Under Development)             | Quickly save and load your game           |
-| [StateMachine](/docs/StateMachine)                            | Manage states and transitions cleanly     |
+| [SceneManager](/docs/SceneManager)                            | Manage scenes and transitions cleanly     |
 
 ## 🤝 Contributing
 
@@ -288,7 +288,8 @@ full credit in the code and Git history!):
 - Writing/editing documentation
 - Making games and reporting bugs
 
-To learn more, check out the [Contributing Guide](/docs/_Internal/_Contributing).
+To learn more, check out
+the [Contributing Guide](/docs/_Internal/_Contributing).
 
 ## 🪪 License
 
@@ -297,6 +298,6 @@ details.
 
 ## ✏️ Last Modified
 
-| Last modified | Author (username)             | Description       |
-|---------------|------------------------------|-------------------|
-| Feb 10, 2026  | vitorbetmann | Update links from relative to absolute path; Update Last Modified section to include GitHub username over Discord's; |
+| Last modified | Author (username) | Description                           |
+|---------------|-------------------|---------------------------------------|
+| Feb 17, 2026  | vitorbetmann      | Renamed StateMachine to SceneManager; |

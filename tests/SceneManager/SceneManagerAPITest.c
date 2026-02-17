@@ -7,8 +7,8 @@
  * @bug No known bugs.
  *
  * @author Vitor Betmann
- * @date 2025-11-03
- * @version 1.0.0
+ * @date 2026-02-17
+ * @version 1.1.0
  */
 
 // —————————————————————————————————————————————————————————————————————————————
@@ -1004,8 +1004,8 @@ void TestStress_smSetScene_SettingStatesOftenCausesNoSkips(void)
     {
         snprintf(buf, sizeof(buf), "%d", i);
         smSetScene(buf, nullptr);
-        int stateNum = atoi(smGetCurrentSceneName());
-        assert(stateNum == counter);
+        int sceneNum = atoi(smGetCurrentSceneName());
+        assert(sceneNum == counter);
         counter++;
     }
     assert(counter == STRESS_ITERATIONS);
