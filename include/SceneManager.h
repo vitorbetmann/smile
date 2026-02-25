@@ -1,19 +1,11 @@
 /**
  * @file
- * @brief Public declarations of data types and functions for scenes
- *        module.
+ * @brief Declarations of public data types and functions for the
+ *        SceneManager module.
  *
- * Defines the public API for creating, switching, updating, drawing, and
- * deleting game scenes. Each scene encapsulates its own behavior using callback
- * functions for entry, update, drawing, and exit events.
- *
- * @see SceneManager.c
- * @see SceneManagerInternal.h
- * @see SceneManagerMessages.h
+ * @see docs/SceneManager/README.md
  *
  * @author Vitor Betmann
- * @date 2026-02-17
- * @version 1.1.0
  */
 
 
@@ -33,7 +25,6 @@
  * @author Vitor Betmann
  */
 typedef void (*smEnterFn)(void *args);
-
 
 /**
  * @brief Function pointer type for scene update callbacks.
@@ -66,27 +57,33 @@ typedef void (*smExitFn)(void);
 // Start Related
 
 /**
- * @brief Initializes scenes and prepares it for use.
+ * @brief Initializes SceneManager and prepares it for use.
  *
- * @return True if scenes started successfully, false otherwise.
+ * @return Returns true on success, false on failure.
  *
- * @note Calling this function when scenes is already started
- *       will log a warning and return false.
+ * @note Fails if: SceneManager is already running.
+ * @note Logging: warning when called while already running.
+ *
+ * @see smStop
+ * @see smIsRunning
  *
  * @author Vitor Betmann
  */
 bool smStart(void);
 
 /**
- * @brief Checks whether scenes has been initialized.
+ * @brief Checks whether SceneManager has been initialized.
  *
- * @return True if scenes has been started, false otherwise.
+ * @return Returns true when SceneManager is running, false otherwise.
+ *
+ * @see smStart
+ * @see smStop
  *
  * @author Vitor Betmann
  */
 bool smIsRunning(void);
 
-// scene Functions
+// Scene Functions
 
 /**
  * @brief Creates a new scene with the specified name and callback functions.
@@ -97,10 +94,16 @@ bool smIsRunning(void);
  * @param draw Callback executed each frame during rendering.
  * @param exit Callback executed when exiting the scene.
  *
- * @return True if the scene was created successfully, false otherwise.
+ * @return Returns true on success, false on failure.
  *
- * @note All function pointers are optional, but at least one must be provided.
- *       Attempting to create a scene that already exists will fail.
+ * @note Fails if: SceneManager is not running; `name` is null or empty;
+ *       all callbacks are null; or a scene with `name` already exists.
+ * @note Ownership: `name` is copied internally; caller retains ownership of
+ *       the input string.
+ *
+ * @see smSceneExists
+ * @see smDeleteScene
+ * @see smSetScene
  *
  * @author Vitor Betmann
  */
@@ -112,7 +115,12 @@ bool smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
  *
  * @param name Name of the scene to check.
  *
- * @return True if the scene exists, false otherwise.
+ * @return Returns true when the scene exists, false otherwise.
+ *
+ * @note Fails if: SceneManager is not running or `name` is null or empty.
+ *
+ * @see smCreateScene
+ * @see smDeleteScene
  *
  * @author Vitor Betmann
  */
@@ -124,9 +132,16 @@ bool smSceneExists(const char *name);
  * @param name Name of the scene to switch to.
  * @param args Optional arguments passed to the scene's enter function.
  *
- * @return True if the scene was successfully changed, false otherwise.
+ * @return Returns true on success, false on failure.
  *
- * @note If a scene is active, its exit function is called before switching.
+ * @note Fails if: SceneManager is not running; `name` is null or empty; or
+ *       the target scene does not exist.
+ * @note Side effects: if an active scene has an exit callback, it is called
+ *       before switching; then target scene enter callback is called.
+ * @note Ownership: `args` is borrowed for the duration of the enter callback.
+ *
+ * @see smGetCurrentSceneName
+ * @see smCreateScene
  *
  * @author Vitor Betmann
  */
@@ -135,25 +150,35 @@ bool smSetScene(const char *name, void *args);
 /**
  * @brief Retrieves the name of the currently active scene.
  *
- * @return A pointer to the name of the current scene, or nullptr if none is active.
+ * @return Returns a pointer to the current scene name, or `nullptr` if no
+ *         scene is active or SceneManager is not running.
  *
- * @note The returned string is owned by scenes. The user must not
+ * @note Ownership: the returned string is owned by SceneManager. The user must not
  *       attempt to modify or free it and should make a copy before doing so.
- *       The pointer remains valid until the scene is deleted or the scene
- *       machine is stopped.
+ *       The pointer remains valid until the scene is deleted or SceneManager
+ *       is stopped.
+ *
+ * @see smSetScene
+ * @see smDeleteScene
+ * @see smStop
  *
  * @author Vitor Betmann
  */
 const char *smGetCurrentSceneName(void);
 
 /**
- * @brief Deletes a scene by name from scenes.
+ * @brief Deletes a scene by name from SceneManager.
  *
  * @param name Name of the scene to delete.
  *
- * @return True if the scene was successfully deleted, false otherwise.
+ * @return Returns true on success, false on failure.
  *
- * @note Attempting to delete the currently active scene will fail.
+ * @note Fails if: SceneManager is not running; `name` is null or empty; the
+ *       scene does not exist; or `name` is the currently active scene.
+ *
+ * @see smCreateScene
+ * @see smSceneExists
+ * @see smGetCurrentSceneName
  *
  * @author Vitor Betmann
  */
@@ -162,7 +187,11 @@ bool smDeleteScene(const char *name);
 /**
  * @brief Retrieves the total number of registered scenes.
  *
- * @return The number of registered scenes, or -1 if scenes is not started.
+ * @return Returns the number of registered scenes, or -1 when SceneManager is
+ *         not running.
+ *
+ * @see smCreateScene
+ * @see smDeleteScene
  *
  * @author Vitor Betmann
  */
@@ -175,9 +204,14 @@ int smGetSceneCount(void);
  *
  * @param dt Delta time in seconds since the last update.
  *
- * @return True if the update function was called successfully, false otherwise.
+ * @return Returns true on success, false on failure.
  *
- * @note If the current scene has no update function, a warning is logged.
+ * @note Fails if: SceneManager is not running; no scene is active; or the
+ *       active scene has no update callback.
+ * @note Logging: warning when active scene has no update callback.
+ *
+ * @see smGetDt
+ * @see smDraw
  *
  * @author Vitor Betmann
  */
@@ -186,11 +220,15 @@ bool smUpdate(float dt);
 /**
  * @brief Calculates the delta time, in seconds, since last invoked.
  *
- * @return The time elapsed in seconds since the previous call to `smGetDt()`,
- *         or -1.0f if scenes has not been started.
+ * @return Returns the elapsed time in seconds since the previous call to
+ *         `smGetDt()`, or -1.0f when SceneManager is not running.
  *
  * @note Delta time is measured using a high-resolution monotonic clock. On the
- *       first call, it returns a duration equivalent to one frame at 60 FPS.
+ *       first call, it returns a duration equivalent to one frame at the
+ *       configured target FPS (currently 60 by default).
+ * @note Fails if: SceneManager is not running.
+ *
+ * @see smUpdate
  *
  * @author Vitor Betmann
  */
@@ -199,9 +237,13 @@ float smGetDt(void);
 /**
  * @brief Executes the draw function of the currently active scene.
  *
- * @return True if the draw function was called successfully, false otherwise.
+ * @return Returns true on success, false on failure.
  *
- * @note If the current scene has no draw function, a warning is logged.
+ * @note Fails if: SceneManager is not running; no scene is active; or the
+ *       active scene has no draw callback.
+ * @note Logging: warning when active scene has no draw callback.
+ *
+ * @see smUpdate
  *
  * @author Vitor Betmann
  */
@@ -210,17 +252,20 @@ bool smDraw(void);
 // Stop Related
 
 /**
- * @brief Stops scenes and frees all allocated scenes.
+ * @brief Stops SceneManager and frees all allocated scenes.
  *
- * @return True if scenes was successfully stopped, false otherwise.
+ * @return Returns true on success, false on failure.
  *
- * @note The exit function of the current scene is called before cleanup.
- *       After stopping, all internal data is reset. scenes must be
- *       restarted with smStart().
+ * @note Fails if: SceneManager is not running.
+ * @note Side effects: current scene exit callback is called before cleanup.
+ *       All internal data is reset after stop; restart with `smStart()`.
+ *
+ * @see smStart
+ * @see smIsRunning
  *
  * @author Vitor Betmann
  */
 bool smStop(void);
 
 
-#endif // #ifndef SMILE_SCENE_MANAGER_H
+#endif

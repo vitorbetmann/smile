@@ -6,16 +6,12 @@
  * @see SceneManagerInternal.h
  * @see SceneManagerMessages.h
  *
- * @bug No known bugs.
- *
  * @note TODO #16 [Feature] for [SceneManager] - Create a function to limit the
  *       game's FPS to a max value
  * @note TODO #27 [Feature] for [SceneManager] - Create Internal Trim Function
  *       and Integrate into SceneManager Name Validation
  *
  * @author Vitor Betmann
- * @date 2025-10-29
- * @version 1.0.0
  */
 
 
@@ -35,7 +31,7 @@
 #include "CommonInternal.h"
 #include "CommonInternalMessages.h"
 #include "TestInternal.h"
-#include "SceneManagerAPITest.h"
+#include "SceneManagerTestHooks.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————
@@ -51,9 +47,8 @@ static smInternalTracker *tracker;
 
 static bool smPrivateIsNameValid(const char *name, const char *fnName);
 
-/* This function was created to preserve API consistency because the argument
- * "name" from smCreateScene collided with the expected item "name" from tracker
- * and neither should be changed.
+/* Wrapper around uthash insertion to keep hash-key usage localized and keep
+ * smCreateScene focused on scene construction and validation.
  */
 static void smPrivateAddScene(smInternalSceneMap *mapEntry);
 
@@ -81,9 +76,10 @@ bool smStart(void)
         return false;
     }
 
-    tracker->fps = DEFAULT_FPS; /* This is just for future reference.
-                                 * For now, Smile doesn't cap the FPS.
-                                 */
+    tracker->fps = DEFAULT_FPS;
+    /* Stored target FPS used by smGetDt() first-call
+                                    * fallback. Runtime FPS capping is not implemented.
+                                    */
 
     lgInternalLog(INFO, MODULE, CAUSE_MODULE_STARTED, FN_START,
                   CONSEQ_SUCCESSFUL);
@@ -125,8 +121,8 @@ bool smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
         return false;
     }
 
-    smInternalScene *state = tsInternalMalloc(sizeof(smInternalScene));
-    if (!state)
+    smInternalScene *scene = tsInternalMalloc(sizeof(smInternalScene));
+    if (!scene)
     {
         lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,FN_CREATE_SCENE,
                       CONSEQ_ABORTED);
@@ -141,17 +137,13 @@ bool smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
                       CONSEQ_ABORTED);
         goto nameCopyError;
     }
-#ifdef _WIN32
-    strcpy_s(nameCopy, NAME_SIZE, name); // Safe version of strcpy. Non-standard
-#elif defined(__APPLE__) || defined (__linux__)
-    strcpy(nameCopy, name);
-#endif
+    memcpy(nameCopy, name, NAME_SIZE);
 
-    state->name = nameCopy;
-    state->enter = enter;
-    state->update = update;
-    state->draw = draw;
-    state->exit = exit;
+    scene->name = nameCopy;
+    scene->enter = enter;
+    scene->update = update;
+    scene->draw = draw;
+    scene->exit = exit;
 
     smInternalSceneMap *mapEntry = tsInternalMalloc(sizeof(smInternalSceneMap));
     if (!mapEntry)
@@ -160,8 +152,8 @@ bool smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
                       CONSEQ_ABORTED);
         goto mapEntryError;
     }
-    mapEntry->state = state;
-    mapEntry->name = state->name;
+    mapEntry->state = scene;
+    mapEntry->name = scene->name;
     smPrivateAddScene(mapEntry);
 
     tracker->sceneCount++;
@@ -173,7 +165,7 @@ bool smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
 mapEntryError:
     free(nameCopy);
 nameCopyError:
-    free(state);
+    free(scene);
     return false;
 }
 
@@ -214,7 +206,7 @@ bool smSetScene(const char *name, void *args)
 
     if (tracker->currScene && tracker->currScene->exit)
     {
-#ifdef SMILE_DEVELOPER
+#ifdef SMILE_DEV
         if (smTestExit)
         {
             smTestExit(smMockData);
@@ -227,7 +219,7 @@ bool smSetScene(const char *name, void *args)
 
     if (tracker->currScene && tracker->currScene->enter)
     {
-#ifdef SMILE_DEVELOPER
+#ifdef SMILE_DEV
         if (args && smTestEnterWithArgs)
         {
             smTestEnterWithArgs(smMockData, args);
@@ -341,10 +333,15 @@ float smGetDt(void)
     float dt;
     struct timespec currentTime;
 
-#ifdef SMILE_DEVELOPER
+#ifdef SMILE_DEV
     currentTime = smMockCurrTime;
 #else
-    clock_gettime(CLOCK_MONOTONIC, &currentTime);
+    if (clock_gettime(CLOCK_MONOTONIC, &currentTime) != 0)
+    {
+        lgInternalLog(ERROR, MODULE, CAUSE_CLOCK_GETTIME_FAILED, FN_GET_DT,
+                      CONSEQ_ABORTED);
+        return -1.0f;
+    }
 #endif
 
     /* On the first call, lastTime is zero-initialized, so we default to a delta
@@ -364,11 +361,6 @@ float smGetDt(void)
     tracker->lastTime = currentTime;
 
     return dt;
-}
-
-bool smSetFPS(int fps)
-{
-    return false;
 }
 
 bool smDraw(void)
@@ -407,7 +399,7 @@ bool smStop(void)
 
     if (tracker->currScene && tracker->currScene->exit)
     {
-#ifdef SMILE_DEVELOPER
+#ifdef SMILE_DEV
         if (smTestExit)
         {
             smTestExit(smMockData);

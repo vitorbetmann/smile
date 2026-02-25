@@ -2,12 +2,9 @@
  * @file
  * @brief Implementation of the SceneManager API Tests.
  *
- * @see SceneManagerAPITests.h
- *
- * @bug No known bugs.
- *
  * @author Vitor Betmann
  */
+
 
 // —————————————————————————————————————————————————————————————————————————————
 // Includes
@@ -16,12 +13,27 @@
 #include <assert.h>
 #include <math.h>
 #include <stdio.h>
+#include <string.h>
 
-#include "SceneManagerAPITest.h"
-
-#include "SceneManagerInternal.h"
 #include "SceneManager.h"
+#include "SceneManagerInternal.h"
+#include "SceneManagerTestHooks.h"
 #include "TestInternal.h"
+
+
+// —————————————————————————————————————————————————————————————————————————————
+// Defines
+// —————————————————————————————————————————————————————————————————————————————
+
+#define NS_PER_S 1000000000L
+
+#define DT_TOLERANCE 1e-6f
+#define EXPECTED_DT_NS 16667000L
+#define EXPECTED_DT_S  0.016667f
+
+#define FRAME_TIME_ITERATIONS 300
+#define IDEMPOTENT_ITERATIONS 3
+#define STRESS_ITERATIONS 1000
 
 
 // —————————————————————————————————————————————————————————————————————————————
@@ -63,6 +75,7 @@ static void onExit(MockData *data)
 {
     data->exitCount++;
 }
+
 
 // —————————————————————————————————————————————————————————————————————————————
 // variables
@@ -632,13 +645,13 @@ void Test_smSetScene_CallsNonNullEnterWithArgsOfTargetState(void)
 
     free(mockData);
     free(mockArgs);
-    smTestEnter = nullptr;
+    smTestEnterWithArgs = nullptr;
     smMockData = nullptr;
     smMockArgs = nullptr;
 
     smStop();
     tsInternalPass(
-        "Test_smSetScene_CallsEnterWithArgs");
+        "Test_smSetScene_CallsNonNullEnterWithArgsOfTargetState");
 }
 
 // -- smGetCurrentSceneName
@@ -685,9 +698,9 @@ void Test_smDeleteScene_AcceptsNonCurrentState(void)
 {
     smStart();
     smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr);
-    assert(!smDeleteScene(mock.name));
+    assert(smDeleteScene(mock.name));
     smStop();
-    tsInternalPass("Test_smDeleteScene_FailsToDeleteCurrentState");
+    tsInternalPass("Test_smDeleteScene_AcceptsNonCurrentState");
 }
 
 // -- smGetSceneCount
@@ -759,7 +772,7 @@ void Test_smUpdate_FailsWhenNullUpdate(void)
 void Test_smGetDt_UsesDefaultDtOnFirstCall(void)
 {
     smStart();
-    const float target = 1.0 / DEFAULT_FPS;
+    const float target = 1.0f / DEFAULT_FPS;
     assert(smGetDt() == target);
     smStop();
     tsInternalPass("Test_smGetDt_UsesDefaultDtOnFirstCall");
@@ -770,20 +783,20 @@ void Test_smGetDt_UpdatesDtOnConsecutiveCalls(void)
     smStart();
 
     // Arbitrary time for first smGetDt call
-    smMockCurrTime.tv_nsec = SM_GET_DT_FIRST_CALL_TIME_NS;
+    smMockCurrTime.tv_nsec = EXPECTED_DT_NS;
     smMockCurrTime.tv_sec = 0;
 
     smGetDt(); // First call uses default dt
 
     for (int i = 0; i < FRAME_TIME_ITERATIONS; i++)
     {
-        smMockCurrTime.tv_nsec += EXPECTED_DT * NANOSEC_PER_SEC;
-        if (smMockCurrTime.tv_nsec >= NANOSEC_PER_SEC)
+        smMockCurrTime.tv_nsec += EXPECTED_DT_NS;
+        if (smMockCurrTime.tv_nsec >= NS_PER_S)
         {
-            smMockCurrTime.tv_sec += smMockCurrTime.tv_nsec / NANOSEC_PER_SEC;
-            smMockCurrTime.tv_nsec %= NANOSEC_PER_SEC;
+            smMockCurrTime.tv_sec += smMockCurrTime.tv_nsec / NS_PER_S;
+            smMockCurrTime.tv_nsec %= NS_PER_S;
         }
-        assert(fabsf(smGetDt() - EXPECTED_DT) < DT_TOLERANCE);
+        assert(fabsf(smGetDt() - EXPECTED_DT_S) < DT_TOLERANCE);
     }
 
     smStop();
@@ -1105,6 +1118,8 @@ int main()
     Test_smGetCurrentSceneName_ReturnsCurrentStateName();
     puts(" • smDeleteScene");
     Test_smDeleteScene_FailsPreCreateScene();
+    Test_smDeleteScene_FailsToDeleteCurrentState();
+    Test_smDeleteScene_AcceptsNonCurrentState();
     puts(" • smGetSceneCount");
     Test_smGetSceneCount_ReturnsZeroPostStart();
     Test_smGetSceneCount_ReturnsCorrectStateCountPostCreateScene();

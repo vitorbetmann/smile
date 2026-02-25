@@ -5,8 +5,6 @@
  * @see Log.h
  * @see LogInternal.h
  *
- * @bug No known bugs.
- *
  * @note TODO #20 [Feature] for [Log] - Add file logging support for standard
  *       and fatal logs
  * @note TODO #21 [Feature] for [Log] - Add runtime and module-specific log
@@ -24,7 +22,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "include/Log.h"
+#include "Log.h"
 #include "LogInternal.h"
 
 // —————————————————————————————————————————————————————————————————————————————
@@ -205,13 +203,13 @@ static bool lgPrivateIsLevelEnabled(InternalLevel level)
     switch (level)
     {
         case INFO:
-#ifdef SMILE_LOG_INFO
+#ifdef SMILE_INFO
             return true;
 #else
             return false;
 #endif
         case WARNING:
-#ifdef SMILE_LOG_WARNING
+#ifdef SMILE_WARN
             return true;
 #else
             return false;
