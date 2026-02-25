@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/vitorbetmann/_dev/smile/build_ci_check/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

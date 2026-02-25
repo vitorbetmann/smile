@@ -53,6 +53,7 @@
 #define CAUSE_NULL_CURR_SCENE "Current Scene Is Null"
 #define CAUSE_NO_VALID_FUNCTIONS "Scene Has No Valid Functions"
 #define CAUSE_CANNOT_DELETE_CURR_SCENE "Cannot Delete Current Scene"
+#define CAUSE_CLOCK_GETTIME_FAILED "Clock Gettime Failed"
 // Fatals
 #define CAUSE_FAILED_TO_FREE_ALL_SCENES "Failed to Free All Scenes"
 

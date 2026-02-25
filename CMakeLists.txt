@@ -1,14 +1,14 @@
-# ------------------------------------------------------------------------------
-# Smile compiles in Release mode by default, with tests disabled.
-# Enable developer mode with -DSMILE_DEVELOPER=ON to build with tests and debug settings.
-# ------------------------------------------------------------------------------
+# ——————————————————————————————————————————————————————————————————————————————
+# Default: Release build and tests OFF.
+# Developer mode: tests default ON; Debug default for single-config generators.
+# ——————————————————————————————————————————————————————————————————————————————
 
 cmake_minimum_required(VERSION 3.30)
 project(Smile VERSION 1.0 LANGUAGES C)
 
-# ------------------------------------------------------------------------------
+# ——————————————————————————————————————————————————————————————————————————————
 # COMPILER CONFIGURATION
-# ------------------------------------------------------------------------------
+# ——————————————————————————————————————————————————————————————————————————————
 
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -20,144 +20,118 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_C_EXTENSIONS OFF)
 
 
-# ------------------------------------------------------------------------------
+# ——————————————————————————————————————————————————————————————————————————————
 # DEVELOPER MODE
-# ------------------------------------------------------------------------------
+# ——————————————————————————————————————————————————————————————————————————————
 
-option(SMILE_DEVELOPER "Enable Smile developer mode (debug build with tests and internal checks)" OFF)
-
-# Set defaults based on developer mode
-if (SMILE_DEVELOPER)
-    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
-    set(SMILE_BUILD_TESTS ON CACHE BOOL "Build test executables" FORCE)
+option(SMILE_DEV "Enable Smile developer mode (debug build with tests and internal checks)" OFF)
+if (SMILE_DEV)
+    set(SMILE_TESTS_DEFAULT ON)
 else ()
-    if (NOT DEFINED CMAKE_BUILD_TYPE OR "${CMAKE_BUILD_TYPE}" STREQUAL "")
+    set(SMILE_TESTS_DEFAULT OFF)
+endif ()
+option(SMILE_TESTS "Build test executables" ${SMILE_TESTS_DEFAULT})
+
+# Apply default build type only for single-config generators and only when user did not set it.
+if (SMILE_DEV)
+    # Multi-config generators (e.g., Xcode/Visual Studio) ignore CMAKE_BUILD_TYPE.
+    if (NOT CMAKE_CONFIGURATION_TYPES AND (NOT DEFINED CMAKE_BUILD_TYPE OR "${CMAKE_BUILD_TYPE}" STREQUAL ""))
+        set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
+    endif ()
+else ()
+    # Multi-config generators (e.g., Xcode/Visual Studio) ignore CMAKE_BUILD_TYPE.
+    if (NOT CMAKE_CONFIGURATION_TYPES AND (NOT DEFINED CMAKE_BUILD_TYPE OR "${CMAKE_BUILD_TYPE}" STREQUAL ""))
         set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
     endif ()
-    set(SMILE_BUILD_TESTS OFF CACHE BOOL "Build test executables" FORCE)
 endif ()
 
 
-# ------------------------------------------------------------------------------
+# ——————————————————————————————————————————————————————————————————————————————
 # BUILD THE "smile" STATIC LIBRARY
-# ------------------------------------------------------------------------------
-
-# Automatically gather all C source files in src/*/*.c and src/_Internal/*/*.c
-file(GLOB SRC_PUBLIC "src/*/*.c")
-file(GLOB SRC_INTERNAL "src/_Internal/*/*.c")
+# ——————————————————————————————————————————————————————————————————————————————
 
 set(SRC_FILES
-        ${SRC_PUBLIC}
-        ${SRC_INTERNAL}
+        src/Log/Log.c
+        src/SceneManager/SceneManager.c
+        src/_Internal/Test/TestInternal.c
+        src/_Internal/_Common/CommonInternal.c
 )
 
 add_library(smile STATIC ${SRC_FILES})
-if (SMILE_DEVELOPER)
-    target_compile_definitions(smile PRIVATE SMILE_DEVELOPER)
+if (SMILE_DEV)
+    target_compile_definitions(smile PRIVATE SMILE_DEV)
 endif ()
 
 
-# ------------------------------------------------------------------------------
+# ——————————————————————————————————————————————————————————————————————————————
 # INCLUDE DIRECTORIES (HEADERS)
-# ------------------------------------------------------------------------------
+# ——————————————————————————————————————————————————————————————————————————————
 
-# Allow includes relative to the project root
-# Example: #include <include/Log.h>, #include <src/_Internal/SceneManager/InternalState.h>, etc.
+# Expose only public API headers to consumers; keep internal include paths private.
 target_include_directories(smile
         PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}                # enables root-relative includes
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
+        PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/external
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/Log
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/SceneManager
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/_Internal/Test
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/_Internal/_Common
 )
 
-# Automatically include all directories in src that contain headers
-file(GLOB_RECURSE SRC_HEADERS CONFIGURE_DEPENDS
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/*/*.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/_Internal/*/*.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/*/*.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/_Internal/*/*.h
-)
 
-set(SRC_INCLUDE_DIRS "")
-foreach (header ${SRC_HEADERS})
-    get_filename_component(dir ${header} DIRECTORY)
-    list(APPEND SRC_INCLUDE_DIRS ${dir})
-endforeach ()
-
-# Remove duplicates
-list(REMOVE_DUPLICATES SRC_INCLUDE_DIRS)
-
-# Add them as PRIVATE include paths
-target_include_directories(smile PRIVATE ${SRC_INCLUDE_DIRS})
-
-
-# ------------------------------------------------------------------------------
+# ——————————————————————————————————————————————————————————————————————————————
 # BUILD CONFIGURATION OPTIONS
-# ------------------------------------------------------------------------------
+# ——————————————————————————————————————————————————————————————————————————————
 
-option(SMILE_LOG_WARNING "Enable runtime warning logs from Smile" ON)
-option(SMILE_LOG_INFO "Enable runtime info logs from Smile" ON)
+option(SMILE_WARN "Enable runtime warning logs from Smile" ON)
+option(SMILE_INFO "Enable runtime info logs from Smile" ON)
 
 
-# ------------------------------------------------------------------------------
+# ——————————————————————————————————————————————————————————————————————————————
 # CONDITIONAL COMPILE DEFINITIONS
-# ------------------------------------------------------------------------------
+# ——————————————————————————————————————————————————————————————————————————————
 
-# Logging settings
-if (SMILE_LOG_WARNING)
-    add_compile_definitions(SMILE_LOG_WARNING)
+if (SMILE_WARN)
+    target_compile_definitions(smile PRIVATE SMILE_WARN)
 endif ()
 
-if (SMILE_LOG_INFO)
-    add_compile_definitions(SMILE_LOG_INFO)
+if (SMILE_INFO)
+    target_compile_definitions(smile PRIVATE SMILE_INFO)
 endif ()
 
 
-# ------------------------------------------------------------------------------
+# ——————————————————————————————————————————————————————————————————————————————
 # TEST BUILD OPTION
-# ------------------------------------------------------------------------------
+# ——————————————————————————————————————————————————————————————————————————————
 
-option(SMILE_BUILD_TESTS "Build test executables" OFF)
-
-if (SMILE_BUILD_TESTS)
-    # Helper function for adding a module API test
-    function(add_smile_api_test module_name)
-        file(GLOB TEST_SRC "${CMAKE_CURRENT_SOURCE_DIR}/tests/${module_name}/*.c")
-        if (TEST_SRC)
-            set(test_target "${module_name}APITest")
-            add_executable(${test_target} ${TEST_SRC})
-            target_link_libraries(${test_target} PRIVATE smile)
-            target_include_directories(${test_target} PRIVATE
-                    ${CMAKE_CURRENT_SOURCE_DIR}
-                    $<TARGET_PROPERTY:smile,INTERFACE_INCLUDE_DIRECTORIES>
-                    $<TARGET_PROPERTY:smile,INCLUDE_DIRECTORIES>
-            )
-        else ()
-            message(WARNING "No API test source files found for module: ${module_name}")
-        endif ()
+if (SMILE_TESTS)
+    function(add_smile_test target_name source_file)
+        add_executable(${target_name} ${source_file})
+        target_link_libraries(${target_name} PRIVATE smile)
+        target_include_directories(${target_name} PRIVATE
+                # Reuse smile's include path layout so tests compile under the same header model.
+                $<TARGET_PROPERTY:smile,INTERFACE_INCLUDE_DIRECTORIES>
+                $<TARGET_PROPERTY:smile,INCLUDE_DIRECTORIES>
+        )
     endfunction()
 
-    # --------------------------
     # PUBLIC API TESTS
-    # --------------------------
-    add_smile_api_test(SaveLoad)
-    add_smile_api_test(SceneManager)
-
-    # --------------------------
-    # INTERNAL API TESTS
-    # --------------------------
-    # TODO add_smile_api_test(CommonInternal)
-    # TODO add_smile_api_test(LogInternal)
-    # TODO add_smile_api_test(TestInternal)
+    add_smile_test(SceneManagerAPITest tests/SceneManager/SceneManagerAPITest.c)
 endif ()
 
 
-# ------------------------------------------------------------------------------
-# Messages
-# ------------------------------------------------------------------------------
+# ——————————————————————————————————————————————————————————————————————————————
+# MESSAGES
+# ——————————————————————————————————————————————————————————————————————————————
 
-message(STATUS "Smile — Build type: ${CMAKE_BUILD_TYPE}")
-message(STATUS "Smile — Warning logs: ${SMILE_LOG_WARNING}")
-message(STATUS "Smile — Info logs: ${SMILE_LOG_INFO}")
-message(STATUS "Smile — Tests: ${SMILE_BUILD_TESTS}")
+if (CMAKE_CONFIGURATION_TYPES)
+    message(STATUS "Smile — Generator configs: ${CMAKE_CONFIGURATION_TYPES}  (select at build time: --config <Debug|Release|...>)")
+else ()
+    message(STATUS "Smile — Build type: ${CMAKE_BUILD_TYPE}  (override: -DCMAKE_BUILD_TYPE=<Debug|Release|RelWithDebInfo|MinSizeRel>)")
+endif ()
+
+message(STATUS "Smile — Warning logs: ${SMILE_WARN}  (override: -DSMILE_WARN=ON|OFF)")
+message(STATUS "Smile — Info logs: ${SMILE_INFO}  (override: -DSMILE_INFO=ON|OFF)")
+message(STATUS "Smile — Build Tests: ${SMILE_TESTS}  (override: -DSMILE_TESTS=ON|OFF)")

@@ -1,0 +1,32 @@
+[
+{
+  "directory": "/Users/vitorbetmann/_dev/smile/build_ci_check",
+  "command": "/usr/bin/cc -DSMILE_DEVELOPER -DSMILE_LOG_INFO -DSMILE_LOG_WARNING -I/Users/vitorbetmann/_dev/smile -I/Users/vitorbetmann/_dev/smile/include -I/Users/vitorbetmann/_dev/smile/external -I/Users/vitorbetmann/_dev/smile/src/Log -I/Users/vitorbetmann/_dev/smile/src/SceneManager -I/Users/vitorbetmann/_dev/smile/src/SceneManager/StateTemplates -I/Users/vitorbetmann/_dev/smile/src/_Internal/Test -I/Users/vitorbetmann/_dev/smile/src/_Internal/_Common -g -std=c2x -o CMakeFiles/smile.dir/src/Log/Log.c.o -c /Users/vitorbetmann/_dev/smile/src/Log/Log.c",
+  "file": "/Users/vitorbetmann/_dev/smile/src/Log/Log.c",
+  "output": "/Users/vitorbetmann/_dev/smile/build_ci_check/CMakeFiles/smile.dir/src/Log/Log.c.o"
+},
+{
+  "directory": "/Users/vitorbetmann/_dev/smile/build_ci_check",
+  "command": "/usr/bin/cc -DSMILE_DEVELOPER -DSMILE_LOG_INFO -DSMILE_LOG_WARNING -I/Users/vitorbetmann/_dev/smile -I/Users/vitorbetmann/_dev/smile/include -I/Users/vitorbetmann/_dev/smile/external -I/Users/vitorbetmann/_dev/smile/src/Log -I/Users/vitorbetmann/_dev/smile/src/SceneManager -I/Users/vitorbetmann/_dev/smile/src/SceneManager/StateTemplates -I/Users/vitorbetmann/_dev/smile/src/_Internal/Test -I/Users/vitorbetmann/_dev/smile/src/_Internal/_Common -g -std=c2x -o CMakeFiles/smile.dir/src/SceneManager/SceneManager.c.o -c /Users/vitorbetmann/_dev/smile/src/SceneManager/SceneManager.c",
+  "file": "/Users/vitorbetmann/_dev/smile/src/SceneManager/SceneManager.c",
+  "output": "/Users/vitorbetmann/_dev/smile/build_ci_check/CMakeFiles/smile.dir/src/SceneManager/SceneManager.c.o"
+},
+{
+  "directory": "/Users/vitorbetmann/_dev/smile/build_ci_check",
+  "command": "/usr/bin/cc -DSMILE_DEVELOPER -DSMILE_LOG_INFO -DSMILE_LOG_WARNING -I/Users/vitorbetmann/_dev/smile -I/Users/vitorbetmann/_dev/smile/include -I/Users/vitorbetmann/_dev/smile/external -I/Users/vitorbetmann/_dev/smile/src/Log -I/Users/vitorbetmann/_dev/smile/src/SceneManager -I/Users/vitorbetmann/_dev/smile/src/SceneManager/StateTemplates -I/Users/vitorbetmann/_dev/smile/src/_Internal/Test -I/Users/vitorbetmann/_dev/smile/src/_Internal/_Common -g -std=c2x -o CMakeFiles/smile.dir/src/_Internal/Test/TestInternal.c.o -c /Users/vitorbetmann/_dev/smile/src/_Internal/Test/TestInternal.c",
+  "file": "/Users/vitorbetmann/_dev/smile/src/_Internal/Test/TestInternal.c",
+  "output": "/Users/vitorbetmann/_dev/smile/build_ci_check/CMakeFiles/smile.dir/src/_Internal/Test/TestInternal.c.o"
+},
+{
+  "directory": "/Users/vitorbetmann/_dev/smile/build_ci_check",
+  "command": "/usr/bin/cc -DSMILE_DEVELOPER -DSMILE_LOG_INFO -DSMILE_LOG_WARNING -I/Users/vitorbetmann/_dev/smile -I/Users/vitorbetmann/_dev/smile/include -I/Users/vitorbetmann/_dev/smile/external -I/Users/vitorbetmann/_dev/smile/src/Log -I/Users/vitorbetmann/_dev/smile/src/SceneManager -I/Users/vitorbetmann/_dev/smile/src/SceneManager/StateTemplates -I/Users/vitorbetmann/_dev/smile/src/_Internal/Test -I/Users/vitorbetmann/_dev/smile/src/_Internal/_Common -g -std=c2x -o CMakeFiles/smile.dir/src/_Internal/_Common/CommonInternal.c.o -c /Users/vitorbetmann/_dev/smile/src/_Internal/_Common/CommonInternal.c",
+  "file": "/Users/vitorbetmann/_dev/smile/src/_Internal/_Common/CommonInternal.c",
+  "output": "/Users/vitorbetmann/_dev/smile/build_ci_check/CMakeFiles/smile.dir/src/_Internal/_Common/CommonInternal.c.o"
+},
+{
+  "directory": "/Users/vitorbetmann/_dev/smile/build_ci_check",
+  "command": "/usr/bin/cc -DSMILE_LOG_INFO -DSMILE_LOG_WARNING -I/Users/vitorbetmann/_dev/smile -I/Users/vitorbetmann/_dev/smile/include -I/Users/vitorbetmann/_dev/smile/external -I/Users/vitorbetmann/_dev/smile/src/Log -I/Users/vitorbetmann/_dev/smile/src/SceneManager -I/Users/vitorbetmann/_dev/smile/src/SceneManager/StateTemplates -I/Users/vitorbetmann/_dev/smile/src/_Internal/Test -I/Users/vitorbetmann/_dev/smile/src/_Internal/_Common -g -std=c2x -o CMakeFiles/SceneManagerAPITest.dir/tests/SceneManager/SceneManagerAPITest.c.o -c /Users/vitorbetmann/_dev/smile/tests/SceneManager/SceneManagerAPITest.c",
+  "file": "/Users/vitorbetmann/_dev/smile/tests/SceneManager/SceneManagerAPITest.c",
+  "output": "/Users/vitorbetmann/_dev/smile/build_ci_check/CMakeFiles/SceneManagerAPITest.dir/tests/SceneManager/SceneManagerAPITest.c.o"
+}
+]

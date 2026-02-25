@@ -71,7 +71,7 @@ cd smile
 Now you can compile it in Developer Mode:
 
 ```zsh
-cmake -S . -B build -DSMILE_DEVELOPER=ON
+cmake -S . -B build -DSMILE_DEV=ON
 cmake --build build
 ```
 
@@ -81,7 +81,7 @@ After running the commands above, you should see the following on your terminal:
 -- Smile — Build type: Debug
 -- Smile — Warning logs: ON
 -- Smile — Info logs: ON
--- Smile — Tests: ON
+-- Smile — Build Tests: ON
 ```
 
 This confirms Smile is built in developer mode.
@@ -96,7 +96,7 @@ If you want to disable them, pass the following flags when configuring your
 build with CMake:
 
  ```zsh
- cmake -S ./smile -B smile/build -DSMILE_DEVELOPER=ON -DSMILE_LOG_WARNING=OFF -DSMILE_LOG_INFO=OFF
+ cmake -S ./smile -B smile/build -DSMILE_DEV=ON -DSMILE_WARN=OFF -DSMILE_INFO=OFF
  ```
 
 This will disable all Smile **warning** and **info** logging output at build
@@ -118,4 +118,4 @@ Understand the [Structure](/docs/_Internal/_Contributing/1_Understanding_Smile/S
 
 | Last modified | Author (username)             | Description       |
 |---------------|------------------------------|-------------------|
-| Feb 10, 2026  | vitorbetmann | Update links from relative to absolute path; Update Last Modified section to include GitHub username over Discord's; Add emoji to Up Next; |
+| Feb 25, 2026  | vitorbetmann | Update Developer Setup commands/output to match current CMake flag names (`SMILE_DEV`, `SMILE_WARN`, `SMILE_INFO`, `SMILE_TESTS`). |

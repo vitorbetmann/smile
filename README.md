@@ -78,7 +78,7 @@ If you want to disable them, pass the following flags when configuring your
 build with CMake:
 
  ```zsh
- cmake -S ./smile -B smile/build -DSMILE_LOG_WARNING=OFF -DSMILE_LOG_INFO=OFF
+ cmake -S ./smile -B smile/build -DSMILE_WARN=OFF -DSMILE_INFO=OFF
  ```
 
 This will disable all Smile `warning` and `info` logging output at build

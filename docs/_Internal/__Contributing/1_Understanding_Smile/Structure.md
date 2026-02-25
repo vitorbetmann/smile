@@ -248,7 +248,6 @@ conventions.
 ├── tests
 │ ├── SceneManager  # API and tools tests for Public modules
 │ │ ├── SceneManagerAPITest.c
-│ │ ├── SceneManagerAPITest.h
 │ │ ├── SceneManagerToolTest.c
 │ │ └── SceneManagerToolTest.h
 │ └── _Internal

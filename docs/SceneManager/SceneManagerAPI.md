@@ -1,23 +1,34 @@
 # SceneManager — API 🤖
 
-The `SceneManager` module provides a simple and flexible system for defining
-and controlling game flow through independent scenes. Each scene can specify its
-own behavior using enter, update, draw, and exit callback functions.
+The `SceneManager` module manages game flow by organizing behavior into
+independent scenes. Each scene defines its own enter, update, draw, and exit
+callbacks.
+
+Module contract:
+
+- Call `smStart()` before all SceneManager APIs except `smIsRunning()`.
+- Scene names passed as `name` must be non-null and non-empty.
+
+For workflow examples see: [SceneManager Getting Started](README.md)
 
 ### 🚨 Warning! This module is not thread-safe!
 
+---
+
 ## 📋 Table of Contents
 
-- [Module Header](#module-header)
+- [Module Header](#-module-header)
 - [Data Types](#-data-types)
     - [Function Pointers](#-function-pointers)
 - [Functions](#-functions)
     - [Start Related](#-start-related)
-    - [scene Functions](#-scene-functions)
+    - [Scene Functions](#-scene-functions)
     - [Lifecycle Functions](#-lifecycle-functions)
     - [Stop Related](#-stop-related)
 
-## 😊Module Header
+---
+
+## 😊 Module Header
 
 The module’s header is `SceneManager.h`. Its full Smile path is:
 `smile/include/SceneManager.h`
@@ -27,6 +38,8 @@ The module’s header is `SceneManager.h`. Its full Smile path is:
 ```c
 #include <SceneManager.h>
 ```
+
+----
 
 ## 📦 Data Types
 
@@ -43,7 +56,7 @@ Function pointer type for scene enter callbacks.
 - Notes:
     - The enter function should handle its own resource management, such as
       allocating memory, loading assets, or performing initialization steps.
-      -If any operation fails during setup (for example, memory allocation or
+    - If any operation fails during setup (for example, memory allocation or
       file loading) the user must handle the failure within the function.
 
 ✅ Example
@@ -64,9 +77,17 @@ void mySceneEnter(void *args)
         return;
     }
 
-    myPlayerData->xPosition = ((PlayerData *)args)->xPosition;
+    if (args)
+    {
+        myPlayerData->xPosition = ((PlayerData *)args)->xPosition;
+    } else
+    {
+        myPlayerData->xPosition = 0.0f;
+    }
 }
 ```
+
+<br>
 
 | `void (*smUpdateFn)(float dt)` |
 |--------------------------------|
@@ -81,9 +102,16 @@ Function pointer type for scene update callbacks.
 ```c
 void mySceneUpdate(float dt)
 {
+    if (!myPlayerData)
+    {
+        return;
+    }
+
     myPlayerData->xPosition += 5.0f * dt;
 }
 ```
+
+<br>
 
 | `void (*smDrawFn)(void)` |
 |--------------------------|
@@ -100,6 +128,12 @@ void mySceneDraw(void)
     BeginDrawing();
     ClearBackground(BLACK);
 
+    if (!myPlayerData)
+    {
+        EndDrawing();
+        return;
+    }
+
     // Player is a red circle moving right.    
     int radius = 10;
     int yPosition = 200;
@@ -108,6 +142,8 @@ void mySceneDraw(void)
     EndDrawing();
 }
 ```
+
+<br>
 
 | `void (*smExitFn)(void)` |
 |--------------------------|
@@ -123,6 +159,10 @@ void mySceneExit(void) {
 }
 ```
 
+<br>
+
+---
+
 ## 🛠️ Functions
 
 ### — Start Related
@@ -135,8 +175,8 @@ Initializes SceneManager and prepares it for use.
 - Returns: True if SceneManager started successfully, false otherwise.
 
 - Notes:
-    - Calling this function when SceneManager is already started will log a
-      warning and return false.
+    - Fails if SceneManager is already running.
+    - Logging: warning when called while already running.
 
 ✅ Example
 
@@ -148,6 +188,8 @@ int main(void) {
     ...
 }
 ```
+
+<br>
 
 | `bool smIsRunning(void)` |
 |--------------------------|
@@ -164,9 +206,9 @@ while (smIsRunning()) {
 }
 ```
 
----
+<br>
 
-### — scene Functions
+### — Scene Functions
 
 | `bool smCreateScene(const char *name, smEnterFn enter, smUpdateFn update, smDrawFn draw, smExitFn exit)` |
 |----------------------------------------------------------------------------------------------------------|
@@ -183,8 +225,10 @@ Creates a new scene with the specified name and callback functions.
 - Returns: True if the scene was created successfully, false otherwise.
 
 - Notes:
-    - All function pointers are optional, but at least one must be provided.
-    - Attempting to create a scene that already exists will fail.
+    - Fails if: SceneManager is not running; `name` is null or empty; all
+      callbacks are null; or a scene with `name` already exists.
+    - Ownership: `name` is copied internally; caller retains ownership of the
+      input string.
 
 ✅ Example
 
@@ -236,6 +280,8 @@ int main(void)
 }
 ```
 
+<br>
+
 | `bool smSceneExists(const char *name)` |
 |----------------------------------------|
 
@@ -246,6 +292,9 @@ Checks whether a scene with the given name exists.
 
 - Returns: True if the scene exists, false otherwise.
 
+- Notes:
+    - Fails if: SceneManager is not running or `name` is null or empty.
+
 ✅ Example
 
 ```c
@@ -254,6 +303,8 @@ if (!smSceneExists("level 1"))
     smCreateScene("level 1", enter, update, draw, exit);
 }
 ```
+
+<br>
 
 | `bool smSetScene(const char *name, void *args)` |
 |-------------------------------------------------|
@@ -268,9 +319,12 @@ Sets the current active scene by name and triggers its enter function.
 - Returns: True if the scene was successfully changed, false otherwise.
 
 - Notes:
-    - If a scene is already active, its exit function is called before
-      switching.
-    - The `args` pointer may be `NULL` or `nullptr` if no data is required.
+    - Fails if: SceneManager is not running; `name` is null or empty; or the
+      target scene does not exist.
+    - Side effects: if an active scene has an exit callback, it is called
+      before switching; then target scene enter callback is called.
+    - Ownership: `args` is borrowed for the duration of the enter callback.
+    - The `args` pointer may be null if no data is required.
 
 ✅ Example
 
@@ -290,13 +344,16 @@ PlayerScore score = { 10, 50 };
 smSetScene("level 2", &score);
 ```
 
+<br>
+
 | `const char *smGetCurrentSceneName(void)` |
 |-------------------------------------------|
 
 Retrieves the name of the currently active scene.
 
-- Returns: A pointer to the name of the current scene, or nullptr if none is
-  active.
+- Returns: A pointer to the name of the current scene, or `nullptr` if no scene
+  is
+  active or SceneManager is not running.
 
 - Notes:
     - The returned string is owned by SceneManager. The user must not attempt to
@@ -309,7 +366,13 @@ Retrieves the name of the currently active scene.
 
 ```c
 const char *currScene = smGetCurrentSceneName();
+if (currScene)
+{
+    ...
+}
 ```
+
+<br>
 
 | `bool smDeleteScene(const char *name)` |
 |----------------------------------------|
@@ -322,7 +385,8 @@ Deletes a scene by name from SceneManager.
 - Returns: True if the scene was successfully deleted, false otherwise.
 
 - Notes:
-    - Attempting to delete the currently active scene will fail.
+    - Fails if: SceneManager is not running; `name` is null or empty; the scene
+      does not exist; or `name` is the currently active scene.
 
 ✅ Example
 
@@ -330,13 +394,15 @@ Deletes a scene by name from SceneManager.
 smDeleteScene("level 1");
 ```
 
+<br>
+
 | `int smGetSceneCount(void)` |
 |-----------------------------|
 
 Retrieves the total number of registered scenes.
 
-- Returns: The number of registered scenes, or `-1` if SceneManager is
-  not started.
+- Returns: The number of registered scenes, or `-1` when SceneManager is not
+  running.
 
 ✅ Example
 
@@ -345,11 +411,6 @@ int mySceneCount = smGetSceneCount();
 ```
 
 <br>
-
-For more, see [Workflow Example](README.md#-workflow-example) in
-the [SceneManager Getting Started](README.md) doc.
-
----
 
 ### — Lifecycle Functions
 
@@ -365,7 +426,9 @@ Updates the currently active scene.
   otherwise.
 
 - Notes:
-    - If the current scene has no update function, a warning is logged.
+    - Fails if: SceneManager is not running; no scene is active; or the
+      active scene has no update callback.
+    - Logging: warning when active scene has no update callback.
 
 ✅ Example
 
@@ -377,6 +440,8 @@ while (smIsRunning())
     ...
 }
 ```
+
+<br>
 
 | `float smGetDt(void)` |
 |-----------------------|
@@ -384,12 +449,13 @@ while (smIsRunning())
 Calculates and returns the delta time since the last frame update.
 
 - Returns: The time elapsed in seconds since the previous call to
-  `smGetDt()`, or `-1.0f` if SceneManager has not been started.
+  `smGetDt()`, or `-1.0f` if SceneManager is not running.
 
 - Notes:
     - Delta time is measured using a high-resolution monotonic clock. On the
-      first call, it returns a duration equivalent to one frame at 60 FPS.
-      After that, the FPS rate is treated as uncapped.
+      first call, it returns a duration equivalent to one frame at the
+      configured target FPS (currently 60 by default).
+    - Fails if: SceneManager is not running.
 
 ✅ Example
 
@@ -401,6 +467,8 @@ while (smIsRunning())
     ...
 }
 ```
+
+<br>
 
 | `bool smDraw(void)` |
 |---------------------|
@@ -411,7 +479,9 @@ Executes the draw function of the currently active scene.
   otherwise.
 
 - Notes:
-    - If the current scene has no draw function, a warning is logged.
+    - Fails if: SceneManager is not running; no scene is active; or the
+      active scene has no draw callback.
+    - Logging: warning when active scene has no draw callback.
 
 ✅ Example
 
@@ -423,7 +493,7 @@ while (smIsRunning())
 }
 ```
 
----
+<br>
 
 ### — Stop Related
 
@@ -437,6 +507,7 @@ scenes.
   otherwise.
 
 - Notes:
+    - Fails if: SceneManager is not running.
     - The exit function of the current scene is called before cleanup.
     - After stopping, all internal data is reset. SceneManager must be
       restarted with smStart().
@@ -464,13 +535,10 @@ void menuDraw(void)
 }
 ```
 
-## 🔄 Workflow Example
-
-For more, see [Workflow Example](README.md#-workflow-example) in
-the [SceneManager Getting Started](README.md) doc.
+---
 
 ## ✏️ Last Modified
 
-| Last modified | Author (username) | Description                           |
-|---------------|-------------------|---------------------------------------|
-| Feb 17, 2026  | vitorbetmann      | Renamed SceneMachine to SceneManager; |
+| Last modified | Author (username) | Description                                                     |
+|---------------|-------------------|-----------------------------------------------------------------|
+| Feb 25, 2026  | vitorbetmann      | Removed duplicate workflow section and improved example safety. |
