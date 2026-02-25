@@ -9,8 +9,6 @@
  * @note For the public API, see Log.h.
  *
  * @author Vitor Betmann
- * @date 2025-10-29
- * @version 1.0.0
  */
 
 #ifndef SMILE_LOG_INTERNAL_H

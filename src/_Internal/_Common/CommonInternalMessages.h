@@ -6,8 +6,6 @@
  * that can be reused across all Smile modules for consistent logging.
  *
  * @author Vitor Betmann
- * @date 2025-10-29
- * @version 1.0.0
  */
 
 

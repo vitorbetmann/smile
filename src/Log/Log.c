@@ -2,9 +2,8 @@
  * @file
  * @brief Implementation of the SceneManager module.
  *
- * @see SceneManager.h
- * @see SceneManagerInternal.h
- * @see SceneManagerMessages.h
+ * @see Log.h
+ * @see LogInternal.h
  *
  * @bug No known bugs.
  *
@@ -14,8 +13,6 @@
  *       filtering
  *
  * @author Vitor Betmann
- * @date 2025-10-29
- * @version 1.0.0
  */
 
 // —————————————————————————————————————————————————————————————————————————————

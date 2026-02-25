@@ -4,12 +4,12 @@
  *        CommonInternal module.
  *
  * @author Vitor Betmann
- * @date 2025-12-30
- * @version 1.0.0
  */
+
 
 #ifndef SMILE_COMMON_INTERNAL_H
 #define SMILE_COMMON_INTERNAL_H
+
 
 // —————————————————————————————————————————————————————————————————————————————
 // Data Types
@@ -43,5 +43,6 @@ typedef bool (*cmIsRunningFn)(void);
  */
 bool cmInternalIsRunning(cmIsRunningFn cmIsRunning, const char *module,
                          const char *fnName);
+
 
 #endif // #ifndef SMILE_COMMON_INTERNAL_H

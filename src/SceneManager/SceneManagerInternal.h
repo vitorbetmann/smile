@@ -1,18 +1,11 @@
 /**
  * @file
- * @brief Internal declarations of data structures and functions for the
+ * @brief Declarations of internal data types and functions for the
  *        SceneManager module.
  *
- * Defines the private types, constants, and utilities used internally by
- * SceneManager to manage states, timing, and runtime context.
- *
  * @see SceneManager.c
- * @see SceneManager.h
- * @see SceneManagerMessages.h
  *
  * @author Vitor Betmann
- * @date 2025-11-04
- * @version 1.0.0
  */
 
 
@@ -44,48 +37,48 @@
 /**
  * @brief Represents an individual scene within SceneManager.
  *
- * Each state includes optional lifecycle functions for handling entry,
+ * Each scene includes optional lifecycle functions for handling entry,
  * update, drawing, and exit logic.
  *
  * @author Vitor Betmann
  */
 typedef struct {
-  char *name;
-  smEnterFn enter;
-  smUpdateFn update;
-  smDrawFn draw;
-  smExitFn exit;
+    char *name;
+    smEnterFn enter;
+    smUpdateFn update;
+    smDrawFn draw;
+    smExitFn exit;
 } smInternalScene;
 
 /**
- * @brief Maps a state name to its corresponding State structure.
+ * @brief Maps a scene name to its corresponding scene structure.
  *
- * Used internally by SceneManager to efficiently look up states
+ * Used internally by SceneManager to efficiently look up scenes
  * by name using uthash.
  *
  * @author Vitor Betmann
  */
 typedef struct {
-  char *name;
-  smInternalScene *state;
-  UT_hash_handle hh;
+    char *name;
+    smInternalScene *state;
+    UT_hash_handle hh;
 } smInternalSceneMap;
 
 /**
  * @brief Tracks the current SceneManager context.
  *
- * Contains all runtime information such as registered states, the current
- * active state, frame rate settings, and timing data used for delta time
+ * Contains all runtime information such as registered scenes, the current
+ * active scene, frame rate settings, and timing data used for delta time
  * calculations.
  *
  * @author Vitor Betmann
  */
 typedef struct {
-  smInternalSceneMap *sceneMap;
-  const smInternalScene *currScene;
-  int sceneCount;
-  int fps;
-  struct timespec lastTime;
+    smInternalSceneMap *sceneMap;
+    const smInternalScene *currScene;
+    int sceneCount;
+    int fps;
+    struct timespec lastTime;
 } smInternalTracker;
 
 
@@ -94,22 +87,22 @@ typedef struct {
 // —————————————————————————————————————————————————————————————————————————————
 
 /**
- * @brief Retrieves a pointer to a State by name.
+ * @brief Retrieves a pointer to a scene by name.
  *
- * @param name The name of the state to look up.
+ * @param name The name of the scene to look up.
  *
- * @return Pointer to the matching State, or NULL if not found.
+ * @return Pointer to the matching scene, or NULL if not found.
  *
  * @author Vitor Betmann
  */
 const smInternalScene *smInternalGetScene(const char *name);
 
 /**
- * @brief Retrieves a pointer to a StateMap entry by name.
+ * @brief Retrieves a pointer to a scene-map entry by name.
  *
- * @param name The name of the state entry to look up.
+ * @param name The name of the scene entry to look up.
  *
- * @return Pointer to the matching StateMap entry, or NULL if not found.
+ * @return Pointer to the matching scene-map entry, or NULL if not found.
  *
  * @author Vitor Betmann
  */

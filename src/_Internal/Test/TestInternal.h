@@ -7,8 +7,6 @@
  * support controlled allocation behavior, error handling, and logging.
  *
  * @author Vitor Betmann
- * @date 2025-10-29
- * @version 1.0.0
  */
 
 #ifndef SMILE_TEST_INTERNAL_H

@@ -2,18 +2,9 @@
  * @file
  * @brief Message definitions for the SceneManager module.
  *
- * Defines the module name, function identifiers, causes, and consequences
- * used when logging from the SceneManager.
- *
  * @see SceneManager.c
- * @see SceneManager.h
- * @see SceneManagerInternal.h
- *
- * @note Check CommonInternalMessages.h before adding new messages.
  *
  * @author Vitor Betmann
- * @date 2026-02-17
- * @version 1.1.0
  */
 
 

@@ -7,8 +7,6 @@
  * @see SceneManagerAPITests.c
  *
  * @author Vitor Betmann
- * @date 2026-02-17
- * @version 1.1.0
  */
 
 #ifndef SMILE_SCENE_MANAGER_API_TESTS_H
