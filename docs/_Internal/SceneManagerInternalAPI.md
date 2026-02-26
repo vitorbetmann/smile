@@ -3,6 +3,9 @@
 `SceneManagerInternal` contains internal result codes, data structures, and
 helper functions used by the SceneManager module implementation.
 
+For public API see: [SceneManager – API](../SceneManager/SceneManagerAPI.md)
+
+
 ### 🚨 Warning! This module is not thread-safe!
 
 ---

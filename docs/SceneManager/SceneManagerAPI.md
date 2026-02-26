@@ -6,6 +6,9 @@ callbacks.
 
 For workflow examples see: [SceneManager – Getting Started](README.md)
 
+For non-public API see: [SceneManagerInternal – API](../_Internal/SceneManagerInternalAPI.md)
+
+
 ### 🚨 Warning! This module is not thread-safe!
 
 ---

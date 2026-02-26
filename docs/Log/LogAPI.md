@@ -5,6 +5,8 @@ terminal and configuring fatal error handling.
 
 For workflow examples see: [Log – Getting Started](README.md)
 
+For non-public API see: [LogInternal – API](../_Internal/LogInternalAPI.md)
+
 ### 🚨 Warning! This module is not thread-safe!
 
 ---

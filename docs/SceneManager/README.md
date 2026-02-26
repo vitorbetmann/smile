@@ -9,7 +9,7 @@ Module contract:
 - Call `smStart()` before all SceneManager APIs except `smIsRunning()`.
 - Scene names passed as `name` must be non-null and non-empty.
 
-For detailed documentation see: [SceneManager API](SceneManagerAPI.md)
+For detailed documentation see: [SceneManager – API](SceneManagerAPI.md)
 
 ### 🚨 Warning! This module is not thread-safe!
 ---
