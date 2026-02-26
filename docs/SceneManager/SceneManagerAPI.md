@@ -4,14 +4,7 @@ The `SceneManager` module manages game flow by organizing behavior into
 independent scenes. Each scene defines its own enter, update, draw, and exit
 callbacks.
 
-Module contract:
-
-- Call `smStart()` before all SceneManager APIs except `smIsRunning()`.
-- Scene names passed as `name` must be non-null and non-empty.
-- Integer-return APIs use result codes: `0` means success, negative values mean
-  failure.
-
-For workflow examples see: [SceneManager Getting Started](README.md)
+For workflow examples see: [SceneManager – Getting Started](README.md)
 
 ### 🚨 Warning! This module is not thread-safe!
 
@@ -22,7 +15,6 @@ For workflow examples see: [SceneManager Getting Started](README.md)
 - [Module Header](#-module-header)
 - [Data Types](#-data-types)
     - [Function Pointers](#-function-pointers)
-- [Result Codes](#-result-codes)
 - [Functions](#-functions)
     - [Start Related](#-start-related)
     - [Scene Functions](#-scene-functions)

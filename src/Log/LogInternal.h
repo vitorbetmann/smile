@@ -16,8 +16,37 @@
 
 
 // —————————————————————————————————————————————————————————————————————————————
+// Defines
+// —————————————————————————————————————————————————————————————————————————————
+
+#define SMILE_CYAN "\033[36m"
+#define SMILE_YELLOW "\033[33m"
+#define SMILE_RED "\033[31m"
+#define SMILE_PURPLE "\033[0;35m"
+#define SMILE_GREEN "\033[32m"
+#define SMILE_WHITE "\033[0m"
+
+#define LOG_TIME_FMT "%H:%M:%S"
+#define LOG_TIME_BUFFER_LEN 32
+
+
+// —————————————————————————————————————————————————————————————————————————————
 // Data Types
 // —————————————————————————————————————————————————————————————————————————————
+
+/**
+ * @brief Log-specific result codes.
+ *
+ * Common result codes from `cmResult` should be reused whenever applicable
+ * (for example, `CM_RESULT_OK`, `CM_RESULT_NULL_ARG`, `CM_RESULT_NOT_RUNNING`).
+ * This enum is reserved for Log failures that are not covered by Common.
+ *
+ * @author Vitor Betmann
+ */
+typedef enum {
+    LG_RESULT_WRITE_FAILED = -100,
+    LG_RESULT_TIME_FAILED = -101,
+} lgResult;
 
 /**
  * @brief LogInternal severity levels used by Smile.
@@ -51,10 +80,18 @@ typedef enum {
  * @param fnName Name of the function where the log is generated.
  * @param conseq Consequences or additional information about the event.
  *
+ * @return Returns `0` on success, or a negative error code on failure.
+ *
+ * @note Fails if: any input argument is null; time conversion/formatting
+ *       fails (`LG_RESULT_TIME_FAILED`); or write to `stderr` fails
+ *       (`LG_RESULT_WRITE_FAILED`).
+ * @note Side effects: when `level` is `FATAL`, the configured fatal handler is
+ *       invoked after attempting to log.
+ *
  * @author Vitor Betmann
  */
-void lgInternalLog(InternalLevel level, const char *module,
-                   const char *cause, const char *fnName, const char *conseq);
+int lgInternalLog(InternalLevel level, const char *module, const char *cause,
+                  const char *fnName, const char *conseq);
 
 /**
  * @brief Used by Smile modules to log info, warnings, errors, or fatal events
@@ -70,11 +107,19 @@ void lgInternalLog(InternalLevel level, const char *module,
  * @param fnName Name of the function where the log is generated.
  * @param conseq Consequences or additional information about the event.
  *
+ * @return Returns `0` on success, or a negative error code on failure.
+ *
+ * @note Fails if: any input argument is null; time conversion/formatting
+ *       fails (`LG_RESULT_TIME_FAILED`); or write to `stderr` fails
+ *       (`LG_RESULT_WRITE_FAILED`).
+ * @note Side effects: when `level` is `FATAL`, the configured fatal handler is
+ *       invoked after attempting to log.
+ *
  * @author Vitor Betmann
  */
-void lgInternalLogWithArg(InternalLevel level, const char *module,
-                          const char *cause, const char *arg,
-                          const char *fnName, const char *conseq);
+int lgInternalLogWithArg(InternalLevel level, const char *module,
+                         const char *cause, const char *arg,
+                         const char *fnName, const char *conseq);
 
 
 #endif // #ifndef SMILE_LOG_INTERNAL_H

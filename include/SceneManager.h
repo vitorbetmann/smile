@@ -49,22 +49,6 @@ typedef void (*smDrawFn)(void);
  */
 typedef void (*smExitFn)(void);
 
-/**
- * @brief Result-code contract for SceneManager APIs.
- *
- * Functions that return `int` follow this contract:
- * - `0` (`CM_RESULT_OK`) indicates success.
- * - Negative values indicate failure (`CM_RESULT_*` and `SM_RESULT_*`).
- *
- * Functions that return non-int types keep their native contract:
- * - `bool` queries (for example `smIsRunning()`, `smSceneExists()`).
- * - Data-returning APIs (for example `smGetDt()`, `smGetSceneCount()`),
- *   where negative values indicate failure when applicable.
- *
- * For the complete result-code list and per-function mapping, see
- * `docs/SceneManager/SceneManagerAPI.md`.
- */
-
 // —————————————————————————————————————————————————————————————————————————————
 // Prototypes
 // —————————————————————————————————————————————————————————————————————————————

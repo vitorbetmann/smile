@@ -1,6 +1,6 @@
 /**
  * @file
- * @brief Implementation of the SceneManager module.
+ * @brief Implementation of the Log module.
  *
  * @see Log.h
  * @see LogInternal.h
@@ -24,20 +24,8 @@
 
 #include "Log.h"
 #include "LogInternal.h"
+#include "CommonInternal.h"
 
-// —————————————————————————————————————————————————————————————————————————————
-// Defines
-// —————————————————————————————————————————————————————————————————————————————
-
-#define SMILE_CYAN "\033[36m"
-#define SMILE_YELLOW "\033[33m"
-#define SMILE_RED "\033[31m"
-#define SMILE_PURPLE "\033[0;35m"
-#define SMILE_GREEN "\033[32m"
-#define SMILE_WHITE "\033[0m"
-
-#define LOG_TIME_FMT "%H:%M:%S"
-#define LOG_TIME_BUFFER_LEN 32
 
 // —————————————————————————————————————————————————————————————————————————————
 // Prototypes
@@ -55,8 +43,8 @@
  *
  * @author Vitor Betmann
  */
-static void lgPrivateLog(InternalLevel level, const char *origin,
-                         const char *msg, ...);
+static int lgPrivateLog(InternalLevel level, const char *origin,
+                        const char *msg, ...);
 
 /**
  * @brief Outputs formatted messages.
@@ -71,8 +59,8 @@ static void lgPrivateLog(InternalLevel level, const char *origin,
  *
  * @author Vitor Betmann
  */
-static void lgPrivateLogV(InternalLevel level, const char *origin,
-                          const char *msg, va_list args);
+static int lgPrivateLogV(InternalLevel level, const char *origin,
+                         const char *msg, va_list args);
 
 /**
  * @brief Determines if logging is enabled for a given level.
@@ -110,92 +98,158 @@ static void lgPrivateFatalHandler(void);
 // Variables
 // —————————————————————————————————————————————————————————————————————————————
 
-lgFatalHandler fatalHandler = lgPrivateFatalHandler;
+static lgFatalHandler fatalHandler = lgPrivateFatalHandler;
 
 // —————————————————————————————————————————————————————————————————————————————
 // Functions - Public
 // —————————————————————————————————————————————————————————————————————————————
 
-void lgLog(const char *msg, ...)
+int lgLog(const char *msg, ...)
 {
+    if (!msg)
+    {
+        return CM_RESULT_NULL_ARG;
+    }
+
     va_list args;
     va_start(args, msg);
-    lgPrivateLogV(USER, "User", msg, args);
+    int result = lgPrivateLogV(USER, "User", msg, args);
     va_end(args);
+    return result;
 }
 
-void lgSetFatal(lgFatalHandler handler)
+int lgSetFatal(lgFatalHandler handler)
 {
     if (!handler)
     {
         fatalHandler = lgPrivateFatalHandler;
-        return;
+        return CM_RESULT_OK;
     }
 
     fatalHandler = handler;
+    return CM_RESULT_OK;
 }
 
 // —————————————————————————————————————————————————————————————————————————————
 // Functions - Internal
 // —————————————————————————————————————————————————————————————————————————————
 
-void lgInternalLog(InternalLevel level, const char *module, const char *cause,
-                   const char *fnName, const char *conseq)
+int lgInternalLog(InternalLevel level, const char *module, const char *cause,
+                  const char *fnName, const char *conseq)
 {
-    lgPrivateLog(level, module, "%s. '%s' %s.", cause, fnName, conseq);
+    if (!module || !cause || !fnName || !conseq)
+    {
+        return CM_RESULT_NULL_ARG;
+    }
+
+    return lgPrivateLog(level, module, "%s. '%s' %s.", cause, fnName, conseq);
 }
 
-void lgInternalLogWithArg(InternalLevel level, const char *module,
-                          const char *cause, const char *arg,
-                          const char *fnName, const char *conseq)
+int lgInternalLogWithArg(InternalLevel level, const char *module,
+                         const char *cause, const char *arg,
+                         const char *fnName, const char *conseq)
 {
-    lgPrivateLog(level, module, "%s: %s. '%s' %s.", cause, arg, fnName, conseq);
+    if (!module || !cause || !arg || !fnName || !conseq)
+    {
+        return CM_RESULT_NULL_ARG;
+    }
+
+    return lgPrivateLog(level, module, "%s: %s. '%s' %s.", cause, arg, fnName,
+                        conseq);
 }
 
 // —————————————————————————————————————————————————————————————————————————————
 // Functions - Private
 // —————————————————————————————————————————————————————————————————————————————
 
-static void lgPrivateLog(InternalLevel level, const char *origin,
-                         const char *msg, ...)
+static int lgPrivateLog(InternalLevel level, const char *origin,
+                        const char *msg, ...)
 {
+    if (!origin || !msg)
+    {
+        return CM_RESULT_NULL_ARG;
+    }
+
     va_list args;
     va_start(args, msg);
-    lgPrivateLogV(level, origin, msg, args);
+    int result = lgPrivateLogV(level, origin, msg, args);
     va_end(args);
+    return result;
 }
 
-void lgPrivateLogV(InternalLevel level, const char *origin, const char *msg,
-                   va_list args)
+static int lgPrivateLogV(InternalLevel level, const char *origin,
+                         const char *msg, va_list args)
 {
+    if (!origin || !msg)
+    {
+        return CM_RESULT_NULL_ARG;
+    }
+
     if (!lgPrivateIsLevelEnabled(level))
     {
-        return;
+        return CM_RESULT_OK;
     }
 
     const char *color = nullptr;
     const char *prefix = nullptr;
     lgPrivateGetColorAndPrefix(level, &color, &prefix);
 
-    const time_t EPOCH_TIME = time(nullptr);
-    struct tm localTime;
-#ifdef _WIN32
-    localtime_s(&localTime, &EPOCH_TIME);
-#else
-    localtime_r(&EPOCH_TIME, &localTime);
-#endif
-    char timeBuf[LOG_TIME_BUFFER_LEN];
-    strftime(timeBuf, sizeof(timeBuf), LOG_TIME_FMT, &localTime);
+    char timeBuf[LOG_TIME_BUFFER_LEN] = "00:00:00";
+    const time_t epochTime = time(nullptr);
+    struct tm localTime = {0};
+    bool hasLocalTime = false;
 
-    fprintf(stderr, "%s%s [Smile %s From %s] - ", color, timeBuf, prefix,
-            origin);
-    vfprintf(stderr, msg, args);
-    fprintf(stderr, "%s\n", SMILE_WHITE); // Reset color
+    if (epochTime != (time_t) -1)
+    {
+#ifdef _WIN32
+        hasLocalTime = (localtime_s(&localTime, &epochTime) == 0);
+#else
+        hasLocalTime = (localtime_r(&epochTime, &localTime) != nullptr);
+#endif
+    }
+    if (!hasLocalTime)
+    {
+        if (level == FATAL)
+        {
+            fatalHandler();
+        }
+        return LG_RESULT_TIME_FAILED;
+    }
+
+    if (strftime(timeBuf, sizeof(timeBuf), LOG_TIME_FMT, &localTime) == 0)
+    {
+        if (level == FATAL)
+        {
+            fatalHandler();
+        }
+        return LG_RESULT_TIME_FAILED;
+    }
+
+    int prefixStatus = fprintf(stderr, "%s%s [Smile %s From %s] - ", color,
+                               timeBuf, prefix, origin);
+    int messageStatus = vfprintf(stderr, msg, args);
+    int suffixStatus = fprintf(stderr, "%s\n", SMILE_WHITE); // Reset color
+    int flushStatus = 0;
+    if (level == ERROR || level == FATAL)
+    {
+        flushStatus = fflush(stderr);
+    }
+
+    if (prefixStatus < 0 || messageStatus < 0 || suffixStatus < 0 ||
+        flushStatus == EOF)
+    {
+        if (level == FATAL)
+        {
+            fatalHandler();
+        }
+        return LG_RESULT_WRITE_FAILED;
+    }
 
     if (level == FATAL)
     {
         fatalHandler();
     }
+    return CM_RESULT_OK;
 }
 
 static bool lgPrivateIsLevelEnabled(InternalLevel level)
