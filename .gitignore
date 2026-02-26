@@ -3,6 +3,9 @@
 
 # CMake build folders
 /build/
+/build-*/
+/build_*/
+/build*/
 /CMakeFiles/
 /CMakeCache.txt
 cmake_install.cmake

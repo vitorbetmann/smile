@@ -1,4 +1,0 @@
-/Users/vitorbetmann/_dev/smile/build_ci_check/CMakeFiles/smile.dir
-/Users/vitorbetmann/_dev/smile/build_ci_check/CMakeFiles/SceneManagerAPITest.dir
-/Users/vitorbetmann/_dev/smile/build_ci_check/CMakeFiles/edit_cache.dir
-/Users/vitorbetmann/_dev/smile/build_ci_check/CMakeFiles/rebuild_cache.dir
