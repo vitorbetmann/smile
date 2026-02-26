@@ -1,10 +1,7 @@
 /**
  * @file
- * @brief Internal declarations of data structures and functions for the
+ * @brief Declarations of internal data types and functions for the
  *        TestInternal module.
- *
- * Provides wrappers around malloc, calloc, realloc, and fatal conditions to
- * support controlled allocation behavior, error handling, and logging.
  *
  * @author Vitor Betmann
  */

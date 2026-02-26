@@ -19,6 +19,8 @@ logging, and in unit tests to simulate failures.
     - [Test Suites Related](#-test-suites-related)
     - [Memory Allocation Related](#-memory-allocation-related)
 
+---
+
 ## 😊Module Header
 
 The module’s header is `TestInternal.h`. Its full Smile path is:
@@ -29,6 +31,8 @@ The module’s header is `TestInternal.h`. Its full Smile path is:
 ```c
 #include "TestInternal.h"
 ```
+
+---
 
 ## 📦 Data Types
 
@@ -57,6 +61,8 @@ void Test_smStart_FailsIfCallocFails(void) {
 }
 ```
 
+---
+
 ## 🔧 Functions
 
 ### — Test Suites Related
@@ -77,6 +83,8 @@ void Test_smHasStarted_FailsPreStart(void) {
     tsInternalPass("Test_smHasStarted_FailsPreStart");
 }
 ```
+
+<br>
 
 | `bool tsInternalDisable(MemAllocFn fnName, unsigned int at)` |
 |--------------------------------------------------------------|
@@ -101,7 +109,7 @@ void Test_smStart_FailsIfCallocFails(void) {
 }
 ```
 
----
+<br>
 
 ### — Memory Allocation Related
 
@@ -126,6 +134,8 @@ if (!state) {
 }
 ```
 
+<br>
+
 | `void *tsInternalCalloc(size_t nitems, size_t size)` |
 |------------------------------------------------------|
 
@@ -148,6 +158,8 @@ if (!tracker) {
 }
 ```
 
+<br>
+
 | `void *tsInternalRealloc(void *ptr, size_t size)` |
 |---------------------------------------------------|
 
@@ -166,8 +178,10 @@ Wrapper around `realloc()` with optional failure simulation.
 // NO EXAMPLE YET
 ```
 
+---
+
 ## ✏️ Last Modified
 
-| Last modified | Author (Discord)             | Description         |
-|---------------|------------------------------|---------------------|
-| Nov 06, 2025  | Vitor Betmann (vitorbetmann) | Some minor cleanup; |
+| Last modified | Author (username) | Description   |
+|---------------|-------------------|---------------|
+| Feb 26, 2026  | vitorbetmann      | Housekeeping; |
