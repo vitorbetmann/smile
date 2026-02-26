@@ -151,7 +151,7 @@ void Test_smStop_SucceedsPostStart(void)
 {
     setup();
     teardown();
-    tsInternalPass("Test_smStop_SucceedsPostStart");
+    tsInternalPass(__func__);
 }
 
 
@@ -164,7 +164,7 @@ void Test_smStop_SucceedsPostStart(void)
 void Test_smHasStarted_FailsPreStart(void)
 {
     assert(!smIsRunning());
-    tsInternalPass("Test_smHasStarted_FailsPreStart");
+    tsInternalPass(__func__);
 }
 
 // Scene Functions
@@ -174,37 +174,37 @@ void Test_smCreateScene_FailsPreStart(void)
     assert(
         smCreateScene(nullptr, nullptr, nullptr, nullptr, nullptr) ==
         CM_RESULT_NOT_RUNNING);
-    tsInternalPass("Test_smCreateScene_FailsPreStart");
+    tsInternalPass(__func__);
 }
 
 void Test_smSceneExists_FailsPreStart(void)
 {
     assert(!smSceneExists(nullptr));
-    tsInternalPass("Test_smSceneExists_FailsPreStart");
+    tsInternalPass(__func__);
 }
 
 void Test_smSetScene_FailsPreStart(void)
 {
     assert(smSetScene(nullptr, nullptr) == CM_RESULT_NOT_RUNNING);
-    tsInternalPass("Test_smSetScene_FailsPreStart");
+    tsInternalPass(__func__);
 }
 
 void Test_smGetCurrentSceneName_FailsPreStart(void)
 {
     assert(!smGetCurrentSceneName());
-    tsInternalPass("Test_smGetCurrentSceneName_FailsPreStart");
+    tsInternalPass(__func__);
 }
 
 void Test_smDeleteScene_FailsPreStart(void)
 {
     assert(smDeleteScene(nullptr) == CM_RESULT_NOT_RUNNING);
-    tsInternalPass("Test_smDeleteScene_FailsPreStart");
+    tsInternalPass(__func__);
 }
 
 void Test_smGetSceneCount_FailsPreStart(void)
 {
     assert(smGetSceneCount() == CM_RESULT_NOT_RUNNING);
-    tsInternalPass("Test_smGetSceneCount_FailsPreStart");
+    tsInternalPass(__func__);
 }
 
 // Lifecycle Functions
@@ -212,19 +212,19 @@ void Test_smGetSceneCount_FailsPreStart(void)
 void Test_smUpdate_FailsPreStart(void)
 {
     assert(smUpdate(mockDt) == CM_RESULT_NOT_RUNNING);
-    tsInternalPass("Test_smUpdate_FailsPreStart");
+    tsInternalPass(__func__);
 }
 
 void Test_smGetDt_FailsPreStart(void)
 {
     assert(smGetDt() == (float) CM_RESULT_NOT_RUNNING);
-    tsInternalPass("Test_smGetDt_FailsPreStart");
+    tsInternalPass(__func__);
 }
 
 void Test_smDraw_FailsPreStart(void)
 {
     assert(smDraw() == CM_RESULT_NOT_RUNNING);
-    tsInternalPass("Test_smDraw_FailsPreStart");
+    tsInternalPass(__func__);
 }
 
 // Stop
@@ -232,7 +232,7 @@ void Test_smDraw_FailsPreStart(void)
 void Test_smStop_FailsPreStart(void)
 {
     assert(smStop() == CM_RESULT_NOT_RUNNING);
-    tsInternalPass("Test_smStop_FailsPreStart");
+    tsInternalPass(__func__);
 }
 
 
@@ -246,7 +246,7 @@ void Test_smStart_FailsWhenCallocFails(void)
 {
     tsInternalDisable(CALLOC, 1);
     assert(smStart() == CM_RESULT_MEM_ALLOC_FAILED);
-    tsInternalPass("Test_smStart_FailsWhenCallocFails");
+    tsInternalPass(__func__);
 }
 
 
@@ -264,7 +264,7 @@ void Test_smStart_IsIdempotentPostStart(void)
         assert(smStart() == CM_RESULT_ALREADY_RUNNING);
     }
     assert(smStop() == CM_RESULT_OK);
-    tsInternalPass("Test_smStart_IsIdempotentPostStart");
+    tsInternalPass(__func__);
 }
 
 void Test_smHasStarted_SucceedsPostStart(void)
@@ -272,7 +272,7 @@ void Test_smHasStarted_SucceedsPostStart(void)
     setup();
     assert(smIsRunning());
     teardown();
-    tsInternalPass("Test_smHasStarted_SucceedsPostStart");
+    tsInternalPass(__func__);
 }
 
 // Scene Functions
@@ -288,7 +288,7 @@ void Test_smCreateScene_AcceptsValidName(void)
         smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
         CM_RESULT_OK);
     teardown();
-    tsInternalPass("Test_smCreateScene_AcceptsValidName");
+    tsInternalPass(__func__);
 }
 
 void Test_smCreateScene_RejectsExistingName(void)
@@ -301,7 +301,7 @@ void Test_smCreateScene_RejectsExistingName(void)
         smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
         SM_RESULT_SCENE_ALREADY_EXISTS);
     teardown();
-    tsInternalPass("Test_smCreateScene_RejectsExistingName");
+    tsInternalPass(__func__);
 }
 
 void Test_smCreateScene_RejectsNullName(void)
@@ -311,7 +311,7 @@ void Test_smCreateScene_RejectsNullName(void)
         smCreateScene(nullptr, nullptr, nullptr, nullptr, nullptr) ==
         CM_RESULT_NULL_ARG);
     teardown();
-    tsInternalPass("Test_smCreateScene_RejectsNullName");
+    tsInternalPass(__func__);
 }
 
 void Test_smCreateScene_RejectsEmptyName(void)
@@ -321,7 +321,7 @@ void Test_smCreateScene_RejectsEmptyName(void)
         smCreateScene("", nullptr, nullptr, nullptr, nullptr) ==
         CM_RESULT_EMPTY_ARG);
     teardown();
-    tsInternalPass("Test_smCreateScene_RejectsEmptyName");
+    tsInternalPass(__func__);
 }
 
 // -- -- Scene Functions Related
@@ -362,7 +362,7 @@ void Test_smCreateScene_AcceptsAllValidFunctionCombinations(void)
         teardown();
     }
 
-    tsInternalPass("Test_smCreateScene_AcceptsAllValidFunctionCombinations");
+    tsInternalPass(__func__);
 }
 
 void Test_smCreateScene_RejectsValidNameAndAllNullFunctions(void)
@@ -372,7 +372,7 @@ void Test_smCreateScene_RejectsValidNameAndAllNullFunctions(void)
         smCreateScene(mock.name, nullptr, nullptr, nullptr, nullptr) ==
         SM_RESULT_NO_VALID_FUNCTIONS);
     teardown();
-    tsInternalPass("Test_smCreateScene_RejectsValidNameAndAllNullFunctions");
+    tsInternalPass(__func__);
 }
 
 void Test_smCreateScene_FailsWhenSceneAllocFails(void)
@@ -385,7 +385,7 @@ void Test_smCreateScene_FailsWhenSceneAllocFails(void)
     assert(smGetSceneCount() == 0);
     assert(!smSceneExists("malloc-scene-fail"));
     teardown();
-    tsInternalPass("Test_smCreateScene_FailsWhenSceneAllocFails");
+    tsInternalPass(__func__);
 }
 
 void Test_smCreateScene_FailsWhenNameAllocFails(void)
@@ -398,7 +398,7 @@ void Test_smCreateScene_FailsWhenNameAllocFails(void)
     assert(smGetSceneCount() == 0);
     assert(!smSceneExists("malloc-name-fail"));
     teardown();
-    tsInternalPass("Test_smCreateScene_FailsWhenNameAllocFails");
+    tsInternalPass(__func__);
 }
 
 void Test_smCreateScene_FailsWhenMapEntryAllocFails(void)
@@ -411,7 +411,7 @@ void Test_smCreateScene_FailsWhenMapEntryAllocFails(void)
     assert(smGetSceneCount() == 0);
     assert(!smSceneExists("malloc-map-entry-fail"));
     teardown();
-    tsInternalPass("Test_smCreateScene_FailsWhenMapEntryAllocFails");
+    tsInternalPass(__func__);
 }
 
 // smSceneExists
@@ -424,7 +424,7 @@ void Test_smSceneExists_AcceptsCreatedName(void)
         CM_RESULT_OK);
     assert(smSceneExists(mock.name));
     teardown();
-    tsInternalPass("Test_smSceneExists_AcceptsCreatedName");
+    tsInternalPass(__func__);
 }
 
 void Test_smSceneExists_RejectsNonCreatedName(void)
@@ -432,7 +432,7 @@ void Test_smSceneExists_RejectsNonCreatedName(void)
     setup();
     assert(!smSceneExists(mock.name));
     teardown();
-    tsInternalPass("Test_smSceneExists_RejectsNonCreatedName");
+    tsInternalPass(__func__);
 }
 
 // -- smSetScene
@@ -445,7 +445,7 @@ void Test_smSetScene_AcceptsValidSceneFromNull(void)
         CM_RESULT_OK);
     assert(smSetScene(mock.name, nullptr) == CM_RESULT_OK);
     teardown();
-    tsInternalPass("Test_smSetScene_AcceptsValidSceneFromNull");
+    tsInternalPass(__func__);
 }
 
 void Test_smSetScene_RejectsNullName(void)
@@ -453,7 +453,7 @@ void Test_smSetScene_RejectsNullName(void)
     setup();
     assert(smSetScene(nullptr, nullptr) == CM_RESULT_NULL_ARG);
     teardown();
-    tsInternalPass("Test_smSetScene_RejectsNullName");
+    tsInternalPass(__func__);
 }
 
 void Test_smSetScene_RejectsEmptyName(void)
@@ -461,7 +461,7 @@ void Test_smSetScene_RejectsEmptyName(void)
     setup();
     assert(smSetScene("", nullptr) == CM_RESULT_EMPTY_ARG);
     teardown();
-    tsInternalPass("Test_smSetScene_RejectsEmptyName");
+    tsInternalPass(__func__);
 }
 
 void Test_smSetScene_RejectsNonCreatedName(void)
@@ -469,7 +469,7 @@ void Test_smSetScene_RejectsNonCreatedName(void)
     setup();
     assert(smSetScene(mock.name, nullptr) == SM_RESULT_SCENE_NOT_FOUND);
     teardown();
-    tsInternalPass("Test_smSetScene_RejectsNonCreatedName");
+    tsInternalPass(__func__);
 }
 
 void Test_smSetScene_SucceedsChangingFromOneSceneToAnotherWithNoArgs(void)
@@ -484,8 +484,7 @@ void Test_smSetScene_SucceedsChangingFromOneSceneToAnotherWithNoArgs(void)
     assert(smSetScene(mock.name, nullptr) == CM_RESULT_OK);
     assert(smSetScene(mock2.name, nullptr) == CM_RESULT_OK);
     teardown();
-    tsInternalPass(
-        "Test_smSetScene_SucceedsChangingFromOneSceneToAnotherWithNoArgs");
+    tsInternalPass(__func__);
 }
 
 void Test_smSetScene_CallsNonNullExitOfCurrentScene(void)
@@ -505,7 +504,7 @@ void Test_smSetScene_CallsNonNullExitOfCurrentScene(void)
     assert(smMockData->exitCount == 1);
 
     teardown();
-    tsInternalPass("Test_smSetScene_CallsExitOfCurrentScene");
+    tsInternalPass(__func__);
 }
 
 void Test_smSetScene_SkipsNullExitOfCurrentScene(void)
@@ -525,7 +524,7 @@ void Test_smSetScene_SkipsNullExitOfCurrentScene(void)
     assert(smMockData->exitCount == 0);
 
     teardown();
-    tsInternalPass("Test_smSetScene_SkipsNullExitOfCurrentScene");
+    tsInternalPass(__func__);
 }
 
 void Test_smSetScene_CallsNonNullEnterOfTargetScene(void)
@@ -545,7 +544,7 @@ void Test_smSetScene_CallsNonNullEnterOfTargetScene(void)
     assert(smMockData->enterCount == 1);
 
     teardown();
-    tsInternalPass("Test_smSetScene_CallsNonNullEnterOfTargetScene");
+    tsInternalPass(__func__);
 }
 
 void Test_smSetScene_SkipsNullEnterOfTargetScene(void)
@@ -565,7 +564,7 @@ void Test_smSetScene_SkipsNullEnterOfTargetScene(void)
     assert(smMockData->enterCount == 0);
 
     teardown();
-    tsInternalPass("Test_smSetScene_SkipsNullEnterOfTargetScene");
+    tsInternalPass(__func__);
 }
 
 void Test_smSetScene_CallsNonNullExitAndNonNullEnterWhenTargetingSameScene(
@@ -585,8 +584,7 @@ void Test_smSetScene_CallsNonNullExitAndNonNullEnterWhenTargetingSameScene(
     assert(smMockData->exitCount == 1);
 
     teardown();
-    tsInternalPass(
-        "Test_smSetScene_CallsNonNullExitAndNonNullEnterWhenTargetingSameScene");
+    tsInternalPass(__func__);
 }
 
 void Test_smSetScene_CallsNonNullEnterWithArgsOfTargetScene(void)
@@ -607,7 +605,7 @@ void Test_smSetScene_CallsNonNullEnterWithArgsOfTargetScene(void)
     assert(smMockArgs->flag);
 
     teardown();
-    tsInternalPass("Test_smSetScene_CallsNonNullEnterWithArgsOfTargetScene");
+    tsInternalPass(__func__);
 }
 
 // -- smGetCurrentSceneName
@@ -617,7 +615,7 @@ void Test_smGetCurrentSceneName_FailsPreCreateScene(void)
     setup();
     assert(!smGetCurrentSceneName());
     teardown();
-    tsInternalPass("Test_smGetCurrentSceneName_FailsPreCreateScene");
+    tsInternalPass(__func__);
 }
 
 void Test_smGetCurrentSceneName_ReturnsCurrentSceneName(void)
@@ -629,7 +627,7 @@ void Test_smGetCurrentSceneName_ReturnsCurrentSceneName(void)
     assert(smSetScene(mock.name, nullptr) == CM_RESULT_OK);
     assert(strcmp(smGetCurrentSceneName(), mock.name) == 0);
     teardown();
-    tsInternalPass("Test_smGetCurrentSceneName_ReturnsCurrentSceneName");
+    tsInternalPass(__func__);
 }
 
 // -- smDeleteScene
@@ -639,7 +637,7 @@ void Test_smDeleteScene_FailsPreCreateScene(void)
     setup();
     assert(smDeleteScene(mock.name) == SM_RESULT_SCENE_NOT_FOUND);
     teardown();
-    tsInternalPass("Test_smDeleteScene_FailsPreCreateScene");
+    tsInternalPass(__func__);
 }
 
 void Test_smDeleteScene_FailsToDeleteCurrentScene(void)
@@ -651,7 +649,7 @@ void Test_smDeleteScene_FailsToDeleteCurrentScene(void)
     assert(smSetScene(mock.name, nullptr) == CM_RESULT_OK);
     assert(smDeleteScene(mock.name) == SM_RESULT_CANNOT_DELETE_CURRENT_SCENE);
     teardown();
-    tsInternalPass("Test_smDeleteScene_FailsToDeleteCurrentScene");
+    tsInternalPass(__func__);
 }
 
 void Test_smDeleteScene_AcceptsNonCurrentScene(void)
@@ -662,7 +660,7 @@ void Test_smDeleteScene_AcceptsNonCurrentScene(void)
         CM_RESULT_OK);
     assert(smDeleteScene(mock.name) == CM_RESULT_OK);
     teardown();
-    tsInternalPass("Test_smDeleteScene_AcceptsNonCurrentScene");
+    tsInternalPass(__func__);
 }
 
 void Test_smDeleteScene_RejectsEmptyName(void)
@@ -670,7 +668,7 @@ void Test_smDeleteScene_RejectsEmptyName(void)
     setup();
     assert(smDeleteScene("") == CM_RESULT_EMPTY_ARG);
     teardown();
-    tsInternalPass("Test_smDeleteScene_RejectsEmptyName");
+    tsInternalPass(__func__);
 }
 
 void Test_smDeleteScene_FailsWhenDeletingSameSceneTwice(void)
@@ -682,7 +680,7 @@ void Test_smDeleteScene_FailsWhenDeletingSameSceneTwice(void)
     assert(smDeleteScene(mock.name) == CM_RESULT_OK);
     assert(smDeleteScene(mock.name) == SM_RESULT_SCENE_NOT_FOUND);
     teardown();
-    tsInternalPass("Test_smDeleteScene_FailsWhenDeletingSameSceneTwice");
+    tsInternalPass(__func__);
 }
 
 // -- smGetSceneCount
@@ -692,7 +690,7 @@ void Test_smGetSceneCount_ReturnsZeroPostStart(void)
     setup();
     assert(smGetSceneCount() == 0);
     teardown();
-    tsInternalPass("Test_smGetSceneCount_ReturnsZeroPostStart");
+    tsInternalPass(__func__);
 }
 
 void Test_smGetSceneCount_ReturnsCorrectSceneCountPostCreateScene(void)
@@ -703,8 +701,7 @@ void Test_smGetSceneCount_ReturnsCorrectSceneCountPostCreateScene(void)
         CM_RESULT_OK);
     assert(smGetSceneCount() == 1);
     teardown();
-    tsInternalPass(
-        "Test_smGetSceneCount_ReturnsCorrectSceneCountPostCreateScene");
+    tsInternalPass(__func__);
 }
 
 void Test_smGetSceneCount_ReturnsCorrectSceneCountPostDeleteScene(void)
@@ -716,8 +713,7 @@ void Test_smGetSceneCount_ReturnsCorrectSceneCountPostDeleteScene(void)
     assert(smDeleteScene(mock.name) == CM_RESULT_OK);
     assert(smGetSceneCount() == 0);
     teardown();
-    tsInternalPass(
-        "Test_smGetSceneCount_ReturnsCorrectSceneCountPostDeleteScene");
+    tsInternalPass(__func__);
 }
 
 // Lifecycle Functions
@@ -730,7 +726,7 @@ void Test_smUpdate_FailsWhenNullCurrentScene(void)
     assert(!smGetCurrentSceneName());
     assert(smUpdate(mockDt) == SM_RESULT_NO_CURRENT_SCENE);
     teardown();
-    tsInternalPass("Test_smUpdate_FailsWhenNullCurrentScene");
+    tsInternalPass(__func__);
 }
 
 void Test_smUpdate_CallsNonNullUpdateOfCurrentScene(void)
@@ -742,7 +738,7 @@ void Test_smUpdate_CallsNonNullUpdateOfCurrentScene(void)
     assert(smSetScene(mock.name, nullptr) == CM_RESULT_OK);
     assert(smUpdate(mockDt) == CM_RESULT_OK);
     teardown();
-    tsInternalPass("Test_smUpdate_CallsNonNullUpdateOfCurrentScene");
+    tsInternalPass(__func__);
 }
 
 void Test_smUpdate_FailsWhenNullUpdate(void)
@@ -754,7 +750,7 @@ void Test_smUpdate_FailsWhenNullUpdate(void)
     assert(smSetScene(mock.name, nullptr) == CM_RESULT_OK);
     assert(smUpdate(mockDt) == SM_RESULT_NO_UPDATE_FUNCTION);
     teardown();
-    tsInternalPass("Test_smUpdate_FailsWhenNullUpdate");
+    tsInternalPass(__func__);
 }
 
 // -- smGetDt
@@ -765,7 +761,7 @@ void Test_smGetDt_UsesDefaultDtOnFirstCall(void)
     const float target = 1.0f / DEFAULT_FPS;
     assert(fabsf(smGetDt() - target) < DT_TOLERANCE);
     teardown();
-    tsInternalPass("Test_smGetDt_UsesDefaultDtOnFirstCall");
+    tsInternalPass(__func__);
 }
 
 void Test_smGetDt_UpdatesDtOnConsecutiveCalls(void)
@@ -790,7 +786,7 @@ void Test_smGetDt_UpdatesDtOnConsecutiveCalls(void)
     }
 
     teardown();
-    tsInternalPass("Test_smGetDt_UpdatesDtOnConsecutiveCalls");
+    tsInternalPass(__func__);
 }
 
 void Test_smGetDt_FailsWhenClockGettimeFails(void)
@@ -799,7 +795,7 @@ void Test_smGetDt_FailsWhenClockGettimeFails(void)
     smMockClockGettimeFails = true;
     assert(smGetDt() == (float) CM_RESULT_CLOCK_GETTIME_FAILED);
     teardown();
-    tsInternalPass("Test_smGetDt_FailsWhenClockGettimeFails");
+    tsInternalPass(__func__);
 }
 
 
@@ -811,7 +807,7 @@ void Test_smDraw_FailsWhenNullCurrentScene(void)
     assert(!smGetCurrentSceneName());
     assert(smDraw() == SM_RESULT_NO_CURRENT_SCENE);
     teardown();
-    tsInternalPass("Test_smDraw_FailsWhenNullCurrentScene");
+    tsInternalPass(__func__);
 }
 
 void Test_smDraw_CallsValidDrawFunction(void)
@@ -823,7 +819,7 @@ void Test_smDraw_CallsValidDrawFunction(void)
     assert(smSetScene(mock.name, nullptr) == CM_RESULT_OK);
     assert(smDraw() == CM_RESULT_OK);
     teardown();
-    tsInternalPass("Test_smDraw_CallsValidDrawFunction");
+    tsInternalPass(__func__);
 }
 
 void Test_smDraw_FailsWhenNullDraw(void)
@@ -835,7 +831,7 @@ void Test_smDraw_FailsWhenNullDraw(void)
     assert(smSetScene(mock.name, nullptr) == CM_RESULT_OK);
     assert(smDraw() == SM_RESULT_NO_DRAW_FUNCTION);
     teardown();
-    tsInternalPass("Test_smDraw_FailsWhenNullDraw");
+    tsInternalPass(__func__);
 }
 
 // Stop Related
@@ -854,7 +850,7 @@ void Test_smStop_CallsNonNullExitOfCurrentScene(void)
     assert(smMockData->exitCount == 1);
 
     resetHooks();
-    tsInternalPass("Test_smStop_CallsExitOfCurrentScene");
+    tsInternalPass(__func__);
 }
 
 void Test_smStop_SkipsNullExitOfCurrentScene(void)
@@ -871,7 +867,7 @@ void Test_smStop_SkipsNullExitOfCurrentScene(void)
     assert(smMockData->exitCount == 0);
 
     resetHooks();
-    tsInternalPass("Test_smStop_SkipsNullExitOfCurrentScene");
+    tsInternalPass(__func__);
 }
 
 
@@ -886,7 +882,7 @@ void Test_smHasStarted_FailsPostStop(void)
     setup();
     teardown();
     assert(!smIsRunning());
-    tsInternalPass("Test_smHasStarted_FailsPostStop");
+    tsInternalPass(__func__);
 }
 
 // Scene Functions
@@ -898,7 +894,7 @@ void Test_smCreateScene_FailsPostStop(void)
     assert(
         smCreateScene(nullptr, nullptr, nullptr, nullptr, nullptr) ==
         CM_RESULT_NOT_RUNNING);
-    tsInternalPass("Test_smCreateScene_FailsPostStop");
+    tsInternalPass(__func__);
 }
 
 void Test_smSceneExists_FailsPostStop(void)
@@ -906,7 +902,7 @@ void Test_smSceneExists_FailsPostStop(void)
     setup();
     teardown();
     assert(!smSceneExists(nullptr));
-    tsInternalPass("Test_smSceneExists_FailsPostStop");
+    tsInternalPass(__func__);
 }
 
 void Test_smSetScene_FailsPostStop(void)
@@ -914,7 +910,7 @@ void Test_smSetScene_FailsPostStop(void)
     setup();
     teardown();
     assert(smSetScene(nullptr, nullptr) == CM_RESULT_NOT_RUNNING);
-    tsInternalPass("Test_smSetScene_FailsPostStop");
+    tsInternalPass(__func__);
 }
 
 void Test_smGetCurrentSceneName_FailsPostStop(void)
@@ -922,7 +918,7 @@ void Test_smGetCurrentSceneName_FailsPostStop(void)
     setup();
     teardown();
     assert(!smGetCurrentSceneName());
-    tsInternalPass("Test_smGetCurrentSceneName_FailsPostStop");
+    tsInternalPass(__func__);
 }
 
 void Test_smDeleteScene_FailsPostStop(void)
@@ -930,7 +926,7 @@ void Test_smDeleteScene_FailsPostStop(void)
     setup();
     teardown();
     assert(smDeleteScene(nullptr) == CM_RESULT_NOT_RUNNING);
-    tsInternalPass("Test_smDeleteScene_FailsPostStop");
+    tsInternalPass(__func__);
 }
 
 void Test_smGetSceneCount_FailsPostStop(void)
@@ -938,7 +934,7 @@ void Test_smGetSceneCount_FailsPostStop(void)
     setup();
     teardown();
     assert(smGetSceneCount() == CM_RESULT_NOT_RUNNING);
-    tsInternalPass("Test_smGetSceneCount_FailsPostStop");
+    tsInternalPass(__func__);
 }
 
 // Lifecycle Functions
@@ -948,7 +944,7 @@ void Test_smUpdate_FailsPostStop(void)
     setup();
     teardown();
     assert(smUpdate(mockDt) == CM_RESULT_NOT_RUNNING);
-    tsInternalPass("Test_smUpdate_FailsPostStop");
+    tsInternalPass(__func__);
 }
 
 void Test_smDraw_FailsPostStop(void)
@@ -956,7 +952,7 @@ void Test_smDraw_FailsPostStop(void)
     setup();
     teardown();
     assert(smDraw() == CM_RESULT_NOT_RUNNING);
-    tsInternalPass("Test_smDraw_FailsPostStop");
+    tsInternalPass(__func__);
 }
 
 // Stop Related
@@ -969,7 +965,7 @@ void Test_smStop_IsIdempotentPostStop(void)
     {
         assert(smStop() == CM_RESULT_NOT_RUNNING);
     }
-    tsInternalPass("Test_smStop_IsIdempotentPostStop");
+    tsInternalPass(__func__);
 }
 
 
@@ -992,8 +988,7 @@ void TestStress_smCreateScene_CreatingMultipleScenesCausesNoSkips(void)
     }
     assert(smGetSceneCount() == STRESS_ITERATIONS);
     teardown();
-    tsInternalPass(
-        "TestStress_smCreateScene_CreatingMultipleScenesCausesNoSkips");
+    tsInternalPass(__func__);
 }
 
 void TestStress_smSetScene_SettingScenesOftenCausesNoSkips(void)
@@ -1026,7 +1021,7 @@ void TestStress_smSetScene_SettingScenesOftenCausesNoSkips(void)
     }
     assert(counter == STRESS_ITERATIONS);
     teardown();
-    tsInternalPass("TestStress_smSetScene_SettingScenesOftenCausesNoSkips");
+    tsInternalPass(__func__);
 }
 
 // Stop Related
@@ -1043,7 +1038,7 @@ void TestStress_smStop_FreeingMultipleScenesCausesNoSkips(void)
             CM_RESULT_OK);
     }
     teardown();
-    tsInternalPass("TestStress_smStop_FreeingMultipleScenesCausesNoSkips");
+    tsInternalPass(__func__);
 }
 
 

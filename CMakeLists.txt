@@ -119,6 +119,7 @@ if (SMILE_TESTS)
 
     # PUBLIC API TESTS
     add_smile_test(SceneManagerAPITest tests/SceneManager/SceneManagerAPITest.c)
+    add_smile_test(LogAPITest tests/Log/LogAPITest.c)
 endif ()
 
 
