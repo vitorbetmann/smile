@@ -49,6 +49,21 @@ typedef void (*smDrawFn)(void);
  */
 typedef void (*smExitFn)(void);
 
+/**
+ * @brief Result-code contract for SceneManager APIs.
+ *
+ * Functions that return `int` follow this contract:
+ * - `0` (`CM_RESULT_OK`) indicates success.
+ * - Negative values indicate failure (`CM_RESULT_*` and `SM_RESULT_*`).
+ *
+ * Functions that return non-int types keep their native contract:
+ * - `bool` queries (for example `smIsRunning()`, `smSceneExists()`).
+ * - Data-returning APIs (for example `smGetDt()`, `smGetSceneCount()`),
+ *   where negative values indicate failure when applicable.
+ *
+ * For the complete result-code list and per-function mapping, see
+ * `docs/SceneManager/SceneManagerAPI.md`.
+ */
 
 // —————————————————————————————————————————————————————————————————————————————
 // Prototypes
@@ -59,7 +74,7 @@ typedef void (*smExitFn)(void);
 /**
  * @brief Initializes SceneManager and prepares it for use.
  *
- * @return Returns true on success, false on failure.
+ * @return Returns `0` on success, or a negative error code on failure.
  *
  * @note Fails if: SceneManager is already running.
  * @note Logging: warning when called while already running.
@@ -69,7 +84,7 @@ typedef void (*smExitFn)(void);
  *
  * @author Vitor Betmann
  */
-bool smStart(void);
+int smStart(void);
 
 /**
  * @brief Checks whether SceneManager has been initialized.
@@ -94,7 +109,7 @@ bool smIsRunning(void);
  * @param draw Callback executed each frame during rendering.
  * @param exit Callback executed when exiting the scene.
  *
- * @return Returns true on success, false on failure.
+ * @return Returns `0` on success, or a negative error code on failure.
  *
  * @note Fails if: SceneManager is not running; `name` is null or empty;
  *       all callbacks are null; or a scene with `name` already exists.
@@ -107,8 +122,8 @@ bool smIsRunning(void);
  *
  * @author Vitor Betmann
  */
-bool smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
-                   smDrawFn draw, smExitFn exit);
+int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
+                  smDrawFn draw, smExitFn exit);
 
 /**
  * @brief Checks whether a scene with the given name exists.
@@ -117,7 +132,8 @@ bool smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
  *
  * @return Returns true when the scene exists, false otherwise.
  *
- * @note Fails if: SceneManager is not running or `name` is null or empty.
+ * @note Returns false if: SceneManager is not running or `name` is null or
+ *       empty.
  *
  * @see smCreateScene
  * @see smDeleteScene
@@ -132,7 +148,7 @@ bool smSceneExists(const char *name);
  * @param name Name of the scene to switch to.
  * @param args Optional arguments passed to the scene's enter function.
  *
- * @return Returns true on success, false on failure.
+ * @return Returns `0` on success, or a negative error code on failure.
  *
  * @note Fails if: SceneManager is not running; `name` is null or empty; or
  *       the target scene does not exist.
@@ -145,7 +161,7 @@ bool smSceneExists(const char *name);
  *
  * @author Vitor Betmann
  */
-bool smSetScene(const char *name, void *args);
+int smSetScene(const char *name, void *args);
 
 /**
  * @brief Retrieves the name of the currently active scene.
@@ -171,7 +187,7 @@ const char *smGetCurrentSceneName(void);
  *
  * @param name Name of the scene to delete.
  *
- * @return Returns true on success, false on failure.
+ * @return Returns `0` on success, or a negative error code on failure.
  *
  * @note Fails if: SceneManager is not running; `name` is null or empty; the
  *       scene does not exist; or `name` is the currently active scene.
@@ -182,13 +198,13 @@ const char *smGetCurrentSceneName(void);
  *
  * @author Vitor Betmann
  */
-bool smDeleteScene(const char *name);
+int smDeleteScene(const char *name);
 
 /**
  * @brief Retrieves the total number of registered scenes.
  *
- * @return Returns the number of registered scenes, or -1 when SceneManager is
- *         not running.
+ * @return Returns the number of registered scenes on success, or a negative
+ *         error code on failure.
  *
  * @see smCreateScene
  * @see smDeleteScene
@@ -204,7 +220,7 @@ int smGetSceneCount(void);
  *
  * @param dt Delta time in seconds since the last update.
  *
- * @return Returns true on success, false on failure.
+ * @return Returns `0` on success, or a negative error code on failure.
  *
  * @note Fails if: SceneManager is not running; no scene is active; or the
  *       active scene has no update callback.
@@ -215,18 +231,18 @@ int smGetSceneCount(void);
  *
  * @author Vitor Betmann
  */
-bool smUpdate(float dt);
+int smUpdate(float dt);
 
 /**
  * @brief Calculates the delta time, in seconds, since last invoked.
  *
  * @return Returns the elapsed time in seconds since the previous call to
- *         `smGetDt()`, or -1.0f when SceneManager is not running.
+ *         `smGetDt()`, or a negative error code (as `float`) on failure.
  *
  * @note Delta time is measured using a high-resolution monotonic clock. On the
  *       first call, it returns a duration equivalent to one frame at the
  *       configured target FPS (currently 60 by default).
- * @note Fails if: SceneManager is not running.
+ * @note Fails if: SceneManager is not running or time acquisition fails.
  *
  * @see smUpdate
  *
@@ -237,7 +253,7 @@ float smGetDt(void);
 /**
  * @brief Executes the draw function of the currently active scene.
  *
- * @return Returns true on success, false on failure.
+ * @return Returns `0` on success, or a negative error code on failure.
  *
  * @note Fails if: SceneManager is not running; no scene is active; or the
  *       active scene has no draw callback.
@@ -247,16 +263,17 @@ float smGetDt(void);
  *
  * @author Vitor Betmann
  */
-bool smDraw(void);
+int smDraw(void);
 
 // Stop Related
 
 /**
  * @brief Stops SceneManager and frees all allocated scenes.
  *
- * @return Returns true on success, false on failure.
+ * @return Returns `0` on success, or a negative error code on failure.
  *
- * @note Fails if: SceneManager is not running.
+ * @note Fails if: SceneManager is not running, or internal cleanup invariants
+ *       fail.
  * @note Side effects: current scene exit callback is called before cleanup.
  *       All internal data is reset after stop; restart with `smStart()`.
  *
@@ -265,7 +282,7 @@ bool smDraw(void);
  *
  * @author Vitor Betmann
  */
-bool smStop(void);
+int smStop(void);
 
 
 #endif

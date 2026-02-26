@@ -5,8 +5,6 @@
  * @see CommonInternal.h
  * @see CommonInternalMessages.h
  *
- * @bug No known bugs.
- *
  * @author Vitor Betmann
  */
 

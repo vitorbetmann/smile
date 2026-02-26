@@ -51,4 +51,5 @@ extern MockArgs *smMockArgs;
 extern MockData *smMockData;
 extern struct timespec smMockCurrTime;
 
+
 #endif // #ifndef SMILE_SCENE_MANAGER_TEST_HOOKS_H

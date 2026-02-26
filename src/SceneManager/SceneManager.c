@@ -45,7 +45,7 @@ static smInternalTracker *tracker;
 // Prototypes
 // —————————————————————————————————————————————————————————————————————————————
 
-static bool smPrivateIsNameValid(const char *name, const char *fnName);
+static int smPrivateIsNameValid(const char *name, const char *fnName);
 
 /* Wrapper around uthash insertion to keep hash-key usage localized and keep
  * smCreateScene focused on scene construction and validation.
@@ -59,13 +59,13 @@ static void smPrivateAddScene(smInternalSceneMap *mapEntry);
 
 // Start Related
 
-bool smStart(void)
+int smStart(void)
 {
     if (tracker)
     {
         lgInternalLog(WARNING, MODULE, CAUSE_ALREADY_RUNNING, FN_START,
                       CONSEQ_ABORTED);
-        return false;
+        return CM_RESULT_ALREADY_RUNNING;
     }
 
     tracker = tsInternalCalloc(1, sizeof(smInternalTracker));
@@ -73,7 +73,7 @@ bool smStart(void)
     {
         lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, FN_START,
                       CONSEQ_ABORTED);
-        return false;
+        return CM_RESULT_MEM_ALLOC_FAILED;
     }
 
     tracker->fps = DEFAULT_FPS;
@@ -83,7 +83,7 @@ bool smStart(void)
 
     lgInternalLog(INFO, MODULE, CAUSE_MODULE_STARTED, FN_START,
                   CONSEQ_SUCCESSFUL);
-    return true;
+    return CM_RESULT_OK;
 }
 
 bool smIsRunning(void)
@@ -93,17 +93,18 @@ bool smIsRunning(void)
 
 // State Functions
 
-bool smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
-                   smDrawFn draw, smExitFn exit)
+int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
+                  smDrawFn draw, smExitFn exit)
 {
     if (!cmInternalIsRunning(smIsRunning, MODULE, FN_CREATE_SCENE))
     {
-        return false;
+        return CM_RESULT_NOT_RUNNING;
     }
 
-    if (!smPrivateIsNameValid(name, FN_CREATE_SCENE))
+    int nameValidationResult = smPrivateIsNameValid(name, FN_CREATE_SCENE);
+    if (nameValidationResult != CM_RESULT_OK)
     {
-        return false;
+        return nameValidationResult;
     }
 
     smInternalSceneMap *entry = smInternalGetEntry(name);
@@ -111,14 +112,14 @@ bool smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
     {
         lgInternalLogWithArg(WARNING, MODULE, CAUSE_SCENE_ALREADY_EXISTS, name,
                              FN_CREATE_SCENE, CONSEQ_ABORTED);
-        return false;
+        return SM_RESULT_SCENE_ALREADY_EXISTS;
     }
 
     if (!enter && !update && !draw && !exit)
     {
         lgInternalLogWithArg(ERROR, MODULE, CAUSE_NO_VALID_FUNCTIONS, name,
                              FN_CREATE_SCENE, CONSEQ_ABORTED);
-        return false;
+        return SM_RESULT_NO_VALID_FUNCTIONS;
     }
 
     smInternalScene *scene = tsInternalMalloc(sizeof(smInternalScene));
@@ -126,7 +127,7 @@ bool smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
     {
         lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,FN_CREATE_SCENE,
                       CONSEQ_ABORTED);
-        return false;
+        return CM_RESULT_MEM_ALLOC_FAILED;
     }
 
     const size_t NAME_SIZE = strlen(name) + 1;
@@ -160,13 +161,13 @@ bool smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
 
     lgInternalLogWithArg(INFO, MODULE, CAUSE_SCENE_CREATED, name,
                          FN_CREATE_SCENE, CONSEQ_SUCCESSFUL);
-    return true;
+    return CM_RESULT_OK;
 
 mapEntryError:
     free(nameCopy);
 nameCopyError:
     free(scene);
-    return false;
+    return CM_RESULT_MEM_ALLOC_FAILED;
 }
 
 bool smSceneExists(const char *name)
@@ -176,7 +177,8 @@ bool smSceneExists(const char *name)
         return false;
     }
 
-    if (!smPrivateIsNameValid(name, FN_SCENE_EXISTS))
+    int nameValidationResult = smPrivateIsNameValid(name, FN_SCENE_EXISTS);
+    if (nameValidationResult != CM_RESULT_OK)
     {
         return false;
     }
@@ -184,16 +186,17 @@ bool smSceneExists(const char *name)
     return smInternalGetEntry(name);
 }
 
-bool smSetScene(const char *name, void *args)
+int smSetScene(const char *name, void *args)
 {
     if (!cmInternalIsRunning(smIsRunning, MODULE, FN_SET_SCENE))
     {
-        return false;
+        return CM_RESULT_NOT_RUNNING;
     }
 
-    if (!smPrivateIsNameValid(name, FN_SET_SCENE))
+    int nameValidationResult = smPrivateIsNameValid(name, FN_SET_SCENE);
+    if (nameValidationResult != CM_RESULT_OK)
     {
-        return false;
+        return nameValidationResult;
     }
 
     const smInternalScene *NEXT_STATE = smInternalGetScene(name);
@@ -201,7 +204,7 @@ bool smSetScene(const char *name, void *args)
     {
         lgInternalLogWithArg(WARNING, MODULE, CAUSE_SCENE_NOT_FOUND, name,
                              FN_SET_SCENE, CONSEQ_ABORTED);
-        return false;
+        return SM_RESULT_SCENE_NOT_FOUND;
     }
 
     if (tracker->currScene && tracker->currScene->exit)
@@ -233,7 +236,7 @@ bool smSetScene(const char *name, void *args)
 
     lgInternalLogWithArg(INFO, MODULE, CAUSE_SCENE_SET_TO, name,FN_SET_SCENE,
                          CONSEQ_SUCCESSFUL);
-    return true;
+    return CM_RESULT_OK;
 }
 
 const char *smGetCurrentSceneName(void)
@@ -250,29 +253,30 @@ int smGetSceneCount(void)
 {
     if (!cmInternalIsRunning(smIsRunning, MODULE, FN_GET_SCENE_COUNT))
     {
-        return -1;
+        return CM_RESULT_NOT_RUNNING;
     }
 
     return tracker->sceneCount;
 }
 
-bool smDeleteScene(const char *name)
+int smDeleteScene(const char *name)
 {
     if (!cmInternalIsRunning(smIsRunning, MODULE, FN_DELETE_SCENE))
     {
-        return false;
+        return CM_RESULT_NOT_RUNNING;
     }
 
-    if (!smPrivateIsNameValid(name, FN_DELETE_SCENE))
+    int nameValidationResult = smPrivateIsNameValid(name, FN_DELETE_SCENE);
+    if (nameValidationResult != CM_RESULT_OK)
     {
-        return false;
+        return nameValidationResult;
     }
 
     if (tracker->currScene && strcmp(name, tracker->currScene->name) == 0)
     {
         lgInternalLogWithArg(ERROR, MODULE,CAUSE_CANNOT_DELETE_CURR_SCENE, name,
                              FN_DELETE_SCENE, CONSEQ_ABORTED);
-        return false;
+        return SM_RESULT_CANNOT_DELETE_CURRENT_SCENE;
     }
 
     smInternalSceneMap *entry = smInternalGetEntry(name);
@@ -280,7 +284,7 @@ bool smDeleteScene(const char *name)
     {
         lgInternalLogWithArg(WARNING, MODULE, CAUSE_SCENE_NOT_FOUND, name,
                              FN_DELETE_SCENE, CONSEQ_ABORTED);
-        return false;
+        return SM_RESULT_SCENE_NOT_FOUND;
     }
 
     HASH_DEL(tracker->sceneMap, entry);
@@ -292,23 +296,23 @@ bool smDeleteScene(const char *name)
 
     lgInternalLogWithArg(INFO, MODULE, CAUSE_SCENE_DELETED, name,
                          FN_DELETE_SCENE, CONSEQ_SUCCESSFUL);
-    return true;
+    return CM_RESULT_OK;
 }
 
 // Lifecycle Functions
 
-bool smUpdate(float dt)
+int smUpdate(float dt)
 {
     if (!cmInternalIsRunning(smIsRunning, MODULE, FN_UPDATE))
     {
-        return false;
+        return CM_RESULT_NOT_RUNNING;
     }
 
     if (!tracker->currScene)
     {
         lgInternalLog(ERROR, MODULE, CAUSE_NULL_CURR_SCENE, FN_UPDATE,
                       CONSEQ_ABORTED);
-        return false;
+        return SM_RESULT_NO_CURRENT_SCENE;
     }
 
     if (!tracker->currScene->update)
@@ -316,18 +320,18 @@ bool smUpdate(float dt)
         lgInternalLogWithArg(WARNING, MODULE,CAUSE_NULL_SCENE_UPDATE_FN,
                              tracker->currScene->name, FN_UPDATE,
                              CONSEQ_ABORTED);
-        return false;
+        return SM_RESULT_NO_UPDATE_FUNCTION;
     }
 
     tracker->currScene->update(dt);
-    return true;
+    return CM_RESULT_OK;
 }
 
 float smGetDt(void)
 {
     if (!cmInternalIsRunning(smIsRunning, MODULE, FN_GET_DT))
     {
-        return -1.0f;
+        return CM_RESULT_NOT_RUNNING;
     }
 
     float dt;
@@ -340,7 +344,7 @@ float smGetDt(void)
     {
         lgInternalLog(ERROR, MODULE, CAUSE_CLOCK_GETTIME_FAILED, FN_GET_DT,
                       CONSEQ_ABORTED);
-        return -1.0f;
+        return CM_RESULT_CLOCK_GETTIME_FAILED;
     }
 #endif
 
@@ -363,38 +367,38 @@ float smGetDt(void)
     return dt;
 }
 
-bool smDraw(void)
+int smDraw(void)
 {
     if (!cmInternalIsRunning(smIsRunning, MODULE, FN_DRAW))
     {
-        return false;
+        return CM_RESULT_NOT_RUNNING;
     }
 
     if (!tracker->currScene)
     {
         lgInternalLog(ERROR, MODULE, CAUSE_NULL_CURR_SCENE,FN_DRAW,
                       CONSEQ_ABORTED);
-        return false;
+        return SM_RESULT_NO_CURRENT_SCENE;
     }
 
     if (!tracker->currScene->draw)
     {
         lgInternalLogWithArg(WARNING, MODULE,CAUSE_NULL_SCENE_DRAW_FN,
                              tracker->currScene->name, FN_DRAW,CONSEQ_ABORTED);
-        return false;
+        return SM_RESULT_NO_DRAW_FUNCTION;
     }
 
     tracker->currScene->draw();
-    return true;
+    return CM_RESULT_OK;
 }
 
 // Stop Related
 
-bool smStop(void)
+int smStop(void)
 {
     if (!cmInternalIsRunning(smIsRunning, MODULE, FN_STOP))
     {
-        return false;
+        return CM_RESULT_NOT_RUNNING;
     }
 
     if (tracker->currScene && tracker->currScene->exit)
@@ -432,12 +436,12 @@ bool smStop(void)
     {
         lgInternalLog(FATAL, MODULE, CAUSE_FAILED_TO_FREE_ALL_SCENES, FN_STOP,
                       CONSEQ_ABORTED);
-        return false;
+        return SM_RESULT_FREE_ALL_SCENES_FAILED;
     }
 
     lgInternalLog(INFO, MODULE, CAUSE_MODULE_STOPPED, FN_STOP,
                   CONSEQ_SUCCESSFUL);
-    return true;
+    return CM_RESULT_OK;
 }
 
 // —————————————————————————————————————————————————————————————————————————————
@@ -461,23 +465,23 @@ smInternalSceneMap *smInternalGetEntry(const char *name)
 // Functions - Private
 // —————————————————————————————————————————————————————————————————————————————
 
-bool smPrivateIsNameValid(const char *name, const char *fnName)
+int smPrivateIsNameValid(const char *name, const char *fnName)
 {
     if (!name)
     {
         lgInternalLogWithArg(ERROR, MODULE, CAUSE_NULL_ARG, "name", fnName,
                              CONSEQ_ABORTED);
-        return false;
+        return CM_RESULT_NULL_ARG;
     }
 
     if (strlen(name) == 0)
     {
         lgInternalLogWithArg(ERROR, MODULE, CAUSE_EMPTY_ARG, "name", fnName,
                              CONSEQ_ABORTED);
-        return false;
+        return CM_RESULT_EMPTY_ARG;
     }
 
-    return true;
+    return CM_RESULT_OK;
 }
 
 void smPrivateAddScene(smInternalSceneMap *mapEntry)

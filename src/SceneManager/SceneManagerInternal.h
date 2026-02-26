@@ -34,6 +34,17 @@
 // Data Types
 // —————————————————————————————————————————————————————————————————————————————
 
+typedef enum {
+    SM_RESULT_SCENE_ALREADY_EXISTS = -100,
+    SM_RESULT_SCENE_NOT_FOUND = -101,
+    SM_RESULT_NO_VALID_FUNCTIONS = -102,
+    SM_RESULT_CANNOT_DELETE_CURRENT_SCENE = -103,
+    SM_RESULT_NO_CURRENT_SCENE = -104,
+    SM_RESULT_NO_UPDATE_FUNCTION = -105,
+    SM_RESULT_NO_DRAW_FUNCTION = -106,
+    SM_RESULT_FREE_ALL_SCENES_FAILED = -107,
+} smResult;
+
 /**
  * @brief Represents an individual scene within SceneManager.
  *
