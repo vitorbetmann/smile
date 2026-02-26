@@ -4,8 +4,6 @@
  *
  * @see TestInternal.h
  *
- * @bug No known bugs.
- *
  * @author Vitor Betmann
  */
 

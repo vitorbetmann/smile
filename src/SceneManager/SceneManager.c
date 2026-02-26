@@ -63,7 +63,7 @@ int smStart(void)
 {
     if (tracker)
     {
-        lgInternalLog(WARNING, MODULE, CAUSE_ALREADY_RUNNING, FN_START,
+        lgInternalLog(WARNING, MODULE, CAUSE_ALREADY_RUNNING, __func__,
                       CONSEQ_ABORTED);
         return CM_RESULT_ALREADY_RUNNING;
     }
@@ -71,7 +71,7 @@ int smStart(void)
     tracker = tsInternalCalloc(1, sizeof(smInternalTracker));
     if (!tracker)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, FN_START,
+        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, __func__,
                       CONSEQ_ABORTED);
         return CM_RESULT_MEM_ALLOC_FAILED;
     }
@@ -81,7 +81,7 @@ int smStart(void)
                                     * fallback. Runtime FPS capping is not implemented.
                                     */
 
-    lgInternalLog(INFO, MODULE, CAUSE_MODULE_STARTED, FN_START,
+    lgInternalLog(INFO, MODULE, CAUSE_MODULE_STARTED, __func__,
                   CONSEQ_SUCCESSFUL);
     return CM_RESULT_OK;
 }
@@ -96,12 +96,12 @@ bool smIsRunning(void)
 int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
                   smDrawFn draw, smExitFn exit)
 {
-    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_CREATE_SCENE))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, __func__))
     {
         return CM_RESULT_NOT_RUNNING;
     }
 
-    int nameValidationResult = smPrivateIsNameValid(name, FN_CREATE_SCENE);
+    int nameValidationResult = smPrivateIsNameValid(name, __func__);
     if (nameValidationResult != CM_RESULT_OK)
     {
         return nameValidationResult;
@@ -111,21 +111,21 @@ int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
     if (entry)
     {
         lgInternalLogWithArg(WARNING, MODULE, CAUSE_SCENE_ALREADY_EXISTS, name,
-                             FN_CREATE_SCENE, CONSEQ_ABORTED);
+                             __func__, CONSEQ_ABORTED);
         return SM_RESULT_SCENE_ALREADY_EXISTS;
     }
 
     if (!enter && !update && !draw && !exit)
     {
         lgInternalLogWithArg(ERROR, MODULE, CAUSE_NO_VALID_FUNCTIONS, name,
-                             FN_CREATE_SCENE, CONSEQ_ABORTED);
+                             __func__, CONSEQ_ABORTED);
         return SM_RESULT_NO_VALID_FUNCTIONS;
     }
 
     smInternalScene *scene = tsInternalMalloc(sizeof(smInternalScene));
     if (!scene)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,FN_CREATE_SCENE,
+        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, __func__,
                       CONSEQ_ABORTED);
         return CM_RESULT_MEM_ALLOC_FAILED;
     }
@@ -134,7 +134,7 @@ int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
     char *nameCopy = tsInternalMalloc(NAME_SIZE);
     if (!nameCopy)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,FN_CREATE_SCENE,
+        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, __func__,
                       CONSEQ_ABORTED);
         goto nameCopyError;
     }
@@ -149,7 +149,7 @@ int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
     smInternalSceneMap *mapEntry = tsInternalMalloc(sizeof(smInternalSceneMap));
     if (!mapEntry)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,FN_CREATE_SCENE,
+        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, __func__,
                       CONSEQ_ABORTED);
         goto mapEntryError;
     }
@@ -160,7 +160,7 @@ int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
     tracker->sceneCount++;
 
     lgInternalLogWithArg(INFO, MODULE, CAUSE_SCENE_CREATED, name,
-                         FN_CREATE_SCENE, CONSEQ_SUCCESSFUL);
+                         __func__, CONSEQ_SUCCESSFUL);
     return CM_RESULT_OK;
 
 mapEntryError:
@@ -172,12 +172,12 @@ nameCopyError:
 
 bool smSceneExists(const char *name)
 {
-    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_SCENE_EXISTS))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, __func__))
     {
         return false;
     }
 
-    int nameValidationResult = smPrivateIsNameValid(name, FN_SCENE_EXISTS);
+    int nameValidationResult = smPrivateIsNameValid(name, __func__);
     if (nameValidationResult != CM_RESULT_OK)
     {
         return false;
@@ -188,12 +188,12 @@ bool smSceneExists(const char *name)
 
 int smSetScene(const char *name, void *args)
 {
-    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_SET_SCENE))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, __func__))
     {
         return CM_RESULT_NOT_RUNNING;
     }
 
-    int nameValidationResult = smPrivateIsNameValid(name, FN_SET_SCENE);
+    int nameValidationResult = smPrivateIsNameValid(name, __func__);
     if (nameValidationResult != CM_RESULT_OK)
     {
         return nameValidationResult;
@@ -203,7 +203,7 @@ int smSetScene(const char *name, void *args)
     if (!NEXT_STATE)
     {
         lgInternalLogWithArg(WARNING, MODULE, CAUSE_SCENE_NOT_FOUND, name,
-                             FN_SET_SCENE, CONSEQ_ABORTED);
+                             __func__, CONSEQ_ABORTED);
         return SM_RESULT_SCENE_NOT_FOUND;
     }
 
@@ -234,14 +234,14 @@ int smSetScene(const char *name, void *args)
         tracker->currScene->enter(args);
     }
 
-    lgInternalLogWithArg(INFO, MODULE, CAUSE_SCENE_SET_TO, name,FN_SET_SCENE,
+    lgInternalLogWithArg(INFO, MODULE, CAUSE_SCENE_SET_TO, name, __func__,
                          CONSEQ_SUCCESSFUL);
     return CM_RESULT_OK;
 }
 
 const char *smGetCurrentSceneName(void)
 {
-    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_GET_CURRENT_SCENE_NAME))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, __func__))
     {
         return nullptr;
     }
@@ -251,7 +251,7 @@ const char *smGetCurrentSceneName(void)
 
 int smGetSceneCount(void)
 {
-    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_GET_SCENE_COUNT))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, __func__))
     {
         return CM_RESULT_NOT_RUNNING;
     }
@@ -261,12 +261,12 @@ int smGetSceneCount(void)
 
 int smDeleteScene(const char *name)
 {
-    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_DELETE_SCENE))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, __func__))
     {
         return CM_RESULT_NOT_RUNNING;
     }
 
-    int nameValidationResult = smPrivateIsNameValid(name, FN_DELETE_SCENE);
+    int nameValidationResult = smPrivateIsNameValid(name, __func__);
     if (nameValidationResult != CM_RESULT_OK)
     {
         return nameValidationResult;
@@ -275,7 +275,7 @@ int smDeleteScene(const char *name)
     if (tracker->currScene && strcmp(name, tracker->currScene->name) == 0)
     {
         lgInternalLogWithArg(ERROR, MODULE,CAUSE_CANNOT_DELETE_CURR_SCENE, name,
-                             FN_DELETE_SCENE, CONSEQ_ABORTED);
+                             __func__, CONSEQ_ABORTED);
         return SM_RESULT_CANNOT_DELETE_CURRENT_SCENE;
     }
 
@@ -283,7 +283,7 @@ int smDeleteScene(const char *name)
     if (!entry)
     {
         lgInternalLogWithArg(WARNING, MODULE, CAUSE_SCENE_NOT_FOUND, name,
-                             FN_DELETE_SCENE, CONSEQ_ABORTED);
+                             __func__, CONSEQ_ABORTED);
         return SM_RESULT_SCENE_NOT_FOUND;
     }
 
@@ -295,7 +295,7 @@ int smDeleteScene(const char *name)
     tracker->sceneCount--;
 
     lgInternalLogWithArg(INFO, MODULE, CAUSE_SCENE_DELETED, name,
-                         FN_DELETE_SCENE, CONSEQ_SUCCESSFUL);
+                         __func__, CONSEQ_SUCCESSFUL);
     return CM_RESULT_OK;
 }
 
@@ -303,14 +303,14 @@ int smDeleteScene(const char *name)
 
 int smUpdate(float dt)
 {
-    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_UPDATE))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, __func__))
     {
         return CM_RESULT_NOT_RUNNING;
     }
 
     if (!tracker->currScene)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_NULL_CURR_SCENE, FN_UPDATE,
+        lgInternalLog(ERROR, MODULE, CAUSE_NULL_CURR_SCENE, __func__,
                       CONSEQ_ABORTED);
         return SM_RESULT_NO_CURRENT_SCENE;
     }
@@ -318,7 +318,7 @@ int smUpdate(float dt)
     if (!tracker->currScene->update)
     {
         lgInternalLogWithArg(WARNING, MODULE,CAUSE_NULL_SCENE_UPDATE_FN,
-                             tracker->currScene->name, FN_UPDATE,
+                             tracker->currScene->name, __func__,
                              CONSEQ_ABORTED);
         return SM_RESULT_NO_UPDATE_FUNCTION;
     }
@@ -329,7 +329,7 @@ int smUpdate(float dt)
 
 float smGetDt(void)
 {
-    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_GET_DT))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, __func__))
     {
         return CM_RESULT_NOT_RUNNING;
     }
@@ -340,7 +340,7 @@ float smGetDt(void)
 #ifdef SMILE_DEV
     if (smMockClockGettimeFails)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_CLOCK_GETTIME_FAILED, FN_GET_DT,
+        lgInternalLog(ERROR, MODULE, CAUSE_CLOCK_GETTIME_FAILED, __func__,
                       CONSEQ_ABORTED);
         return CM_RESULT_CLOCK_GETTIME_FAILED;
     }
@@ -348,7 +348,7 @@ float smGetDt(void)
 #else
     if (clock_gettime(CLOCK_MONOTONIC, &currentTime) != 0)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_CLOCK_GETTIME_FAILED, FN_GET_DT,
+        lgInternalLog(ERROR, MODULE, CAUSE_CLOCK_GETTIME_FAILED, __func__,
                       CONSEQ_ABORTED);
         return CM_RESULT_CLOCK_GETTIME_FAILED;
     }
@@ -375,14 +375,14 @@ float smGetDt(void)
 
 int smDraw(void)
 {
-    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_DRAW))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, __func__))
     {
         return CM_RESULT_NOT_RUNNING;
     }
 
     if (!tracker->currScene)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_NULL_CURR_SCENE,FN_DRAW,
+        lgInternalLog(ERROR, MODULE, CAUSE_NULL_CURR_SCENE, __func__,
                       CONSEQ_ABORTED);
         return SM_RESULT_NO_CURRENT_SCENE;
     }
@@ -390,7 +390,7 @@ int smDraw(void)
     if (!tracker->currScene->draw)
     {
         lgInternalLogWithArg(WARNING, MODULE,CAUSE_NULL_SCENE_DRAW_FN,
-                             tracker->currScene->name, FN_DRAW,CONSEQ_ABORTED);
+                             tracker->currScene->name, __func__,CONSEQ_ABORTED);
         return SM_RESULT_NO_DRAW_FUNCTION;
     }
 
@@ -402,7 +402,7 @@ int smDraw(void)
 
 int smStop(void)
 {
-    if (!cmInternalIsRunning(smIsRunning, MODULE, FN_STOP))
+    if (!cmInternalIsRunning(smIsRunning, MODULE, __func__))
     {
         return CM_RESULT_NOT_RUNNING;
     }
@@ -440,12 +440,12 @@ int smStop(void)
 
     if (isFatal)
     {
-        lgInternalLog(FATAL, MODULE, CAUSE_FAILED_TO_FREE_ALL_SCENES, FN_STOP,
+        lgInternalLog(FATAL, MODULE, CAUSE_FAILED_TO_FREE_ALL_SCENES, __func__,
                       CONSEQ_ABORTED);
         return SM_RESULT_FREE_ALL_SCENES_FAILED;
     }
 
-    lgInternalLog(INFO, MODULE, CAUSE_MODULE_STOPPED, FN_STOP,
+    lgInternalLog(INFO, MODULE, CAUSE_MODULE_STOPPED, __func__,
                   CONSEQ_SUCCESSFUL);
     return CM_RESULT_OK;
 }

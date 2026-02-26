@@ -34,6 +34,16 @@
 // Data Types
 // —————————————————————————————————————————————————————————————————————————————
 
+/**
+ * @brief SceneManager-specific result codes.
+ *
+ * Result code contract:
+ * - Common cross-module failures are defined in `cmResult` (for example,
+ *   `CM_RESULT_NULL_ARG`, `CM_RESULT_NOT_RUNNING`) in `CommonInternal.h`.
+ * - SceneManager-specific failures cover a `-100..-199` range.
+ *
+ * @author Vitor Betmann
+ */
 typedef enum {
     SM_RESULT_SCENE_ALREADY_EXISTS = -100,
     SM_RESULT_SCENE_NOT_FOUND = -101,

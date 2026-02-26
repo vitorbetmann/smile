@@ -15,10 +15,18 @@
 // Data Types
 // —————————————————————————————————————————————————————————————————————————————
 
+/**
+ * @brief Common result codes shared across Smile modules.
+ *
+ * Result code contract:
+ * - `CM_RESULT_OK` (`0`) indicates success.
+ * - Negative values indicate failure.
+ * - Range `-1..-99` is reserved for common cross-module failures.
+ *
+ * @author Vitor Betmann
+ */
 typedef enum {
-    // Success
     CM_RESULT_OK = 0,
-    // Common failures: -1..-99
     CM_RESULT_ALREADY_RUNNING = -1,
     CM_RESULT_NOT_RUNNING = -2,
     CM_RESULT_MEM_ALLOC_FAILED = -3,

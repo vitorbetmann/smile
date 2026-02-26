@@ -37,9 +37,10 @@
 /**
  * @brief Log-specific result codes.
  *
- * Common result codes from `cmResult` should be reused whenever applicable
- * (for example, `CM_RESULT_OK`, `CM_RESULT_NULL_ARG`, `CM_RESULT_NOT_RUNNING`).
- * This enum is reserved for Log failures that are not covered by Common.
+ * Result code contract:
+ * - Common cross-module failures are defined in `cmResult` (for example,
+ *   `CM_RESULT_NULL_ARG`, `CM_RESULT_NOT_RUNNING`) in `CommonInternal.h`.
+ * - Log-specific failures cover a `-100..-199` range.
  *
  * @author Vitor Betmann
  */

@@ -20,23 +20,6 @@
 
 
 // —————————————————————————————————————————————————————————————————————————————
-// Functions Names
-// —————————————————————————————————————————————————————————————————————————————
-
-// Scene Functions
-#define FN_CREATE_SCENE "CreateScene"
-#define FN_SCENE_EXISTS "SceneExists"
-#define FN_SET_SCENE "SetScene"
-#define FN_GET_CURRENT_SCENE_NAME "GetCurrentSceneName"
-#define FN_GET_SCENE_COUNT "GetSceneCount"
-#define FN_DELETE_SCENE "DeleteScene"
-// Lifecycle Functions
-#define FN_UPDATE "Update"
-#define FN_GET_DT "GetDt"
-#define FN_DRAW "Draw"
-
-
-// —————————————————————————————————————————————————————————————————————————————
 // Causes
 // —————————————————————————————————————————————————————————————————————————————
 
