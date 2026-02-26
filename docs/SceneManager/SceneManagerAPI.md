@@ -1,4 +1,4 @@
-# SceneManager — API 🤖
+# SceneManager — API 🎬
 
 The `SceneManager` module manages game flow by organizing behavior into
 independent scenes. Each scene defines its own enter, update, draw, and exit

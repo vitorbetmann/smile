@@ -2,9 +2,6 @@
  * @file
  * @brief Developer-mode test hooks for SceneManager.
  *
- * These declarations exist so SceneManager can expose deterministic hook points
- * for tests without depending on headers under `tests/`.
- *
  * @author Vitor Betmann
  */
 

@@ -18,10 +18,8 @@
 /**
  * @brief Common result codes shared across Smile modules.
  *
- * Result code contract:
- * - `CM_RESULT_OK` (`0`) indicates success.
- * - Negative values indicate failure.
- * - Range `-1..-99` is reserved for common cross-module failures.
+ * @note `CM_RESULT_OK` (`0`) indicates success.
+ * @note The following range is exclusive to Common failures: `-1..-99`.
  *
  * @author Vitor Betmann
  */

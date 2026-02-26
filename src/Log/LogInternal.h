@@ -1,12 +1,9 @@
 /**
  * @file
- * @brief Internal declarations of data structures and functions for the
+ * @brief Declarations of internal data types and functions for the
  *        LogInternal module.
  *
- * Defines the private types, constants, and utilities used internally by
- * Smile modules to manage logging, severity levels, and contextual log messages.
- *
- * @note For the public API, see Log.h.
+ * @see Log.c
  *
  * @author Vitor Betmann
  */
@@ -37,10 +34,9 @@
 /**
  * @brief Log-specific result codes.
  *
- * Result code contract:
- * - Common cross-module failures are defined in `cmResult` (for example,
- *   `CM_RESULT_NULL_ARG`, `CM_RESULT_NOT_RUNNING`) in `CommonInternal.h`.
- * - Log-specific failures cover a `-100..-199` range.
+ * @note Log-specific failures cover the following range: `-100..-199`.
+ *
+ * @see  src/_Internal/_Common/CommonInternal.h for common result codes
  *
  * @author Vitor Betmann
  */

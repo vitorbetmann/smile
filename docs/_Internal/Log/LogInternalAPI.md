@@ -31,6 +31,21 @@ The module’s header is `LogInternal.h`. Its full Smile path is:
 
 ### — Enums
 
+| `lgResult` |
+|------------|
+
+Log-specific result codes used when failures are not covered
+by [cmResult](../_Common/CommonInternalAPI.md#-enums).
+
+- Log-specific failures cover the following range: `-100..-199`.
+
+| Item                     | Value  | Summary                             |
+|--------------------------|--------|-------------------------------------|
+| `LG_RESULT_WRITE_FAILED` | `-100` | Logging output write/flush failed.  |
+| `LG_RESULT_TIME_FAILED`  | `-101` | Time acquisition/formatting failed. |
+
+<br>
+
 | `InternalLevel` |
 |-----------------|
 

@@ -37,10 +37,9 @@
 /**
  * @brief SceneManager-specific result codes.
  *
- * Result code contract:
- * - Common cross-module failures are defined in `cmResult` (for example,
- *   `CM_RESULT_NULL_ARG`, `CM_RESULT_NOT_RUNNING`) in `CommonInternal.h`.
- * - SceneManager-specific failures cover a `-100..-199` range.
+ * @note SceneManager-specific failures cover the following range: `-100..-199`.
+ *
+ * @see  src/_Internal/_Common/CommonInternal.h for common result codes
  *
  * @author Vitor Betmann
  */

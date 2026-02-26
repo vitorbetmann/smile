@@ -11,9 +11,12 @@ throughout all modules.
 
 - [Module Header](#module-header)
 - [Data Types](#-data-types)
+    - [Enums](#-enums)
     - [Function Pointers](#-function-pointers)
 - [Functions](#-functions)
     - [Running Related](#-running-related)
+
+--
 
 ## 😊Module Header
 
@@ -26,7 +29,30 @@ The module’s header is `CommonInternal.h`. Its full Smile path is:
 #include "CommonInternal.h"
 ```
 
+---
+
 ## 📦 Data Types
+
+### — Enums
+
+| `cmResult` |
+|------------|
+
+Common result codes shared across Smile modules.
+
+- The following range is exclusive to Common failures: `-1..-99`.
+
+| Item                             | Value | Summary                                                   |
+|----------------------------------|-------|-----------------------------------------------------------|
+| `CM_RESULT_OK`                   | `0`   | Operation completed successfully.                         |
+| `CM_RESULT_ALREADY_RUNNING`      | `-1`  | Module is already running when start/init is requested.   |
+| `CM_RESULT_NOT_RUNNING`          | `-2`  | Module is not running when an operation requires it.      |
+| `CM_RESULT_MEM_ALLOC_FAILED`     | `-3`  | Memory allocation failed.                                 |
+| `CM_RESULT_NULL_ARG`             | `-4`  | A required pointer argument is null.                      |
+| `CM_RESULT_EMPTY_ARG`            | `-5`  | A required string argument is empty.                      |
+| `CM_RESULT_CLOCK_GETTIME_FAILED` | `-6`  | System clock query failed (for example, `clock_gettime`). |
+
+<br>
 
 ### — Function Pointers
 
@@ -43,6 +69,8 @@ bool smIsRunning(void)
     return tracker;
 }
 ```
+
+---
 
 ## 🛠️ Functions
 
@@ -74,8 +102,10 @@ bool smSceneExists(const char *name)
 }
 ```
 
+---
+
 ## ✏️ Last Modified
 
-| Last modified | Author (Discord)             | Description  |
-|---------------|------------------------------|--------------|
-| Dec 30, 2025  | Vitor Betmann (vitorbetmann) | Created doc; |
+| Last modified | Author (Discord)             | Description                            |
+|---------------|------------------------------|----------------------------------------|
+| Feb 26, 2026  | Vitor Betmann (vitorbetmann) | Added `cmResult` enum and value table. |

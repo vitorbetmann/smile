@@ -2,9 +2,6 @@
  * @file
  * @brief Definitions for shared log messages.
  *
- * Defines shared function identifiers, causes, and consequences
- * that can be reused across all Smile modules for consistent logging.
- *
  * @author Vitor Betmann
  */
 
