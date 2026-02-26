@@ -338,6 +338,12 @@ float smGetDt(void)
     struct timespec currentTime;
 
 #ifdef SMILE_DEV
+    if (smMockClockGettimeFails)
+    {
+        lgInternalLog(ERROR, MODULE, CAUSE_CLOCK_GETTIME_FAILED, FN_GET_DT,
+                      CONSEQ_ABORTED);
+        return CM_RESULT_CLOCK_GETTIME_FAILED;
+    }
     currentTime = smMockCurrTime;
 #else
     if (clock_gettime(CLOCK_MONOTONIC, &currentTime) != 0)

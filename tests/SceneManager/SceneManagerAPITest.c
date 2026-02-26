@@ -27,6 +27,10 @@
 // Defines
 // —————————————————————————————————————————————————————————————————————————————
 
+#ifdef NDEBUG
+#error "SceneManagerAPITest must be compiled without NDEBUG (asserts required)."
+#endif
+
 #define NS_PER_S 1000000000L
 
 #define DT_TOLERANCE 1e-6f
@@ -92,6 +96,7 @@ static void resetHooks(void)
     smMockData = nullptr;
     smMockArgs = nullptr;
     smMockCurrTime = (struct timespec){0};
+    smMockClockGettimeFails = false;
 }
 
 static void setup(void)
@@ -135,6 +140,7 @@ smTestExitFn smTestExit;
 MockData *smMockData;
 MockArgs *smMockArgs;
 struct timespec smMockCurrTime;
+bool smMockClockGettimeFails;
 
 
 // —————————————————————————————————————————————————————————————————————————————
@@ -450,6 +456,14 @@ void Test_smSetScene_RejectsNullName(void)
     tsInternalPass("Test_smSetScene_RejectsNullName");
 }
 
+void Test_smSetScene_RejectsEmptyName(void)
+{
+    setup();
+    assert(smSetScene("", nullptr) == CM_RESULT_EMPTY_ARG);
+    teardown();
+    tsInternalPass("Test_smSetScene_RejectsEmptyName");
+}
+
 void Test_smSetScene_RejectsNonCreatedName(void)
 {
     setup();
@@ -651,6 +665,26 @@ void Test_smDeleteScene_AcceptsNonCurrentScene(void)
     tsInternalPass("Test_smDeleteScene_AcceptsNonCurrentScene");
 }
 
+void Test_smDeleteScene_RejectsEmptyName(void)
+{
+    setup();
+    assert(smDeleteScene("") == CM_RESULT_EMPTY_ARG);
+    teardown();
+    tsInternalPass("Test_smDeleteScene_RejectsEmptyName");
+}
+
+void Test_smDeleteScene_FailsWhenDeletingSameSceneTwice(void)
+{
+    setup();
+    assert(
+        smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
+        CM_RESULT_OK);
+    assert(smDeleteScene(mock.name) == CM_RESULT_OK);
+    assert(smDeleteScene(mock.name) == SM_RESULT_SCENE_NOT_FOUND);
+    teardown();
+    tsInternalPass("Test_smDeleteScene_FailsWhenDeletingSameSceneTwice");
+}
+
 // -- smGetSceneCount
 
 void Test_smGetSceneCount_ReturnsZeroPostStart(void)
@@ -757,6 +791,15 @@ void Test_smGetDt_UpdatesDtOnConsecutiveCalls(void)
 
     teardown();
     tsInternalPass("Test_smGetDt_UpdatesDtOnConsecutiveCalls");
+}
+
+void Test_smGetDt_FailsWhenClockGettimeFails(void)
+{
+    setup();
+    smMockClockGettimeFails = true;
+    assert(smGetDt() == (float) CM_RESULT_CLOCK_GETTIME_FAILED);
+    teardown();
+    tsInternalPass("Test_smGetDt_FailsWhenClockGettimeFails");
 }
 
 
@@ -1058,6 +1101,7 @@ int main()
     puts(" • smSetScene");
     Test_smSetScene_AcceptsValidSceneFromNull();
     Test_smSetScene_RejectsNullName();
+    Test_smSetScene_RejectsEmptyName();
     Test_smSetScene_RejectsNonCreatedName();
     Test_smSetScene_SucceedsChangingFromOneSceneToAnotherWithNoArgs();
     Test_smSetScene_CallsNonNullExitOfCurrentScene();
@@ -1073,6 +1117,8 @@ int main()
     Test_smDeleteScene_FailsPreCreateScene();
     Test_smDeleteScene_FailsToDeleteCurrentScene();
     Test_smDeleteScene_AcceptsNonCurrentScene();
+    Test_smDeleteScene_RejectsEmptyName();
+    Test_smDeleteScene_FailsWhenDeletingSameSceneTwice();
     puts(" • smGetSceneCount");
     Test_smGetSceneCount_ReturnsZeroPostStart();
     Test_smGetSceneCount_ReturnsCorrectSceneCountPostCreateScene();
@@ -1085,6 +1131,7 @@ int main()
     puts(" • smGetDt");
     Test_smGetDt_UsesDefaultDtOnFirstCall();
     Test_smGetDt_UpdatesDtOnConsecutiveCalls();
+    Test_smGetDt_FailsWhenClockGettimeFails();
     puts(" • smDraw");
     Test_smDraw_FailsWhenNullCurrentScene();
     Test_smDraw_CallsValidDrawFunction();
