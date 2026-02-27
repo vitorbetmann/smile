@@ -8,6 +8,7 @@ on:
 
 jobs:
   build-and-test:
+    name: Build/Test (${{ matrix.os }})
     strategy:
       fail-fast: false
       matrix:
@@ -43,6 +44,7 @@ jobs:
         run: ctest --test-dir build --output-on-failure -C Debug
 
   sanitize:
+    name: Sanitize (ubuntu-clang)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
