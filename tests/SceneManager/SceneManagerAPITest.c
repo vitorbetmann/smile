@@ -101,7 +101,7 @@ static void resetHooks(void)
 
 static void setup(void)
 {
-    assert(smStart() != CM_RESULT_OK);
+    assert(smStart() == CM_RESULT_OK);
     resetHooks();
 }
 
