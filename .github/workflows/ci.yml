@@ -1,4 +1,4 @@
-name: Smile CI
+name: CI
 
 on:
   push:
@@ -7,11 +7,22 @@ on:
     branches: [ main ]
 
 jobs:
-  baseline:
+  build-and-test:
     strategy:
+      fail-fast: false
       matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        include:
+          - os: ubuntu-latest
+            cc: gcc
+          - os: ubuntu-latest
+            cc: clang
+          - os: macos-latest
+            cc: clang
+          - os: windows-latest
+            cc: clang
+
     runs-on: ${{ matrix.os }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -20,18 +31,18 @@ jobs:
         run: |
           uname -a || true
           cmake --version
-          gcc --version || true
-          clang --version || true
+          ${{ matrix.cc }} --version || true
 
-      # System dependant config
-      - name: Configure (Windows, clang + Ninja)
+      # Config
+      - name: Configure (Windows)
         if: runner.os == 'Windows'
         run: cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER=clang -DSMILE_DEV=ON -DSMILE_INFO=OFF -DSMILE_WARN=OFF
 
       - name: Configure (Non-Windows)
         if: runner.os != 'Windows'
-        run: cmake -S . -B build -DSMILE_DEV=ON -DSMILE_INFO=OFF -DSMILE_WARN=OFF
+        run: cmake -S . -B build -DCMAKE_C_COMPILER=${{ matrix.cc }} -DSMILE_DEV=ON -DSMILE_INFO=OFF -DSMILE_WARN=OFF
 
+      # Build
       - name: Build (Windows)
         if: runner.os == 'Windows'
         run: cmake --build build
@@ -40,6 +51,6 @@ jobs:
         if: runner.os != 'Windows'
         run: cmake --build build --config Debug
 
-      # Run Smile tests
+      # Run Tests
       - name: Run tests
         run: ctest --test-dir build --output-on-failure -C Debug
