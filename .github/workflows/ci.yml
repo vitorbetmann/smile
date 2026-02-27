@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  baseline:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show tool versions
+        shell: bash
+        run: |
+          uname -a || true
+          cmake --version
+          gcc --version || true
+          clang --version || true
+      - name: Configure (Debug + tests enabled)
+        run: cmake -S . -B build -DSMILE_DEV=ON -DSMILE_INFO=OFF -DSMILE_WARN=OFF
+
+      - name: Build
+        run: cmake --build build --config Debug
