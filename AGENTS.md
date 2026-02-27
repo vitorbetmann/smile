@@ -12,8 +12,10 @@ Smile is a modular C23 static library built with CMake.
 ## Build, Test, and Development Commands
 - Configure default (Release, tests off): `cmake -S . -B build`
 - Configure developer mode (Debug defaults, tests on): `cmake -S . -B build -DSMILE_DEV=ON`
-- Build: `cmake --build build`
-- Run API test executable: `./build/SceneManagerAPITest`
+- Build (single-config generators): `cmake --build build`
+- Build (multi-config generators): `cmake --build build --config Debug`
+- Run all tests (recommended): `ctest --test-dir build --output-on-failure`
+- Run API test executable (example): `./build/SceneManagerAPITest`
 - Toggle runtime logs/tests at configure time:
   - `-DSMILE_WARN=OFF`
   - `-DSMILE_INFO=OFF`
@@ -21,7 +23,7 @@ Smile is a modular C23 static library built with CMake.
 
 ## Coding Style & Naming Conventions
 - Language standard: C23 (`CMAKE_C_STANDARD 23`).
-- Follow project conventions in `docs/_Internal/__Contributing/2_Coding_Guidelines/`.
+- Follow project conventions in `docs/_Internal/__Contributing/2_Coding_Guidelines/` (prefer linking a single primary guideline file when adding new docs).
 - Use `camelCase` for non-constant variables/functions, `SCREAMING_SNAKE_CASE` for constants/macros.
 - Use `SMILE_...` include guards in headers.
 - Keep internal linkage explicit with `static` for file-scoped symbols.

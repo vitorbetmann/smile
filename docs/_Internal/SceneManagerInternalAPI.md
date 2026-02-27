@@ -5,7 +5,6 @@ helper functions used by the SceneManager module implementation.
 
 For public API see: [SceneManager – API](../SceneManager/SceneManagerAPI.md)
 
-
 ### 🚨 Warning! This module is not thread-safe!
 
 ---
@@ -152,6 +151,6 @@ if (entry)
 
 ## ✏️ Last Modified
 
-| Last modified | Author (Discord)             | Description                                            |
-|---------------|------------------------------|--------------------------------------------------------|
-| Feb 26, 2026  | Vitor Betmann (vitorbetmann) | Created SceneManagerInternal API docs with `smResult`. |
+| Last modified | Author (username) | Description                                            |
+|---------------|-------------------|--------------------------------------------------------|
+| Feb 26, 2026  | vitorbetmann      | Created SceneManagerInternal API docs with `smResult`. |
