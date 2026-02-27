@@ -22,8 +22,19 @@ jobs:
           cmake --version
           gcc --version || true
           clang --version || true
-      - name: Configure (Debug + tests enabled)
+
+      - name: Configure (Windows, clang + Ninja)
+        if: runner.os == 'Windows'
+        run: cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER=clang -DSMILE_DEV=ON -DSMILE_INFO=OFF -DSMILE_WARN=OFF
+
+      - name: Configure (Non-Windows)
+        if: runner.os != 'Windows'
         run: cmake -S . -B build -DSMILE_DEV=ON -DSMILE_INFO=OFF -DSMILE_WARN=OFF
 
-      - name: Build
+      - name: Build (Windows)
+        if: runner.os == 'Windows'
+        run: cmake --build build
+
+      - name: Build (Non-Windows)
+        if: runner.os != 'Windows'
         run: cmake --build build --config Debug
