@@ -1,4 +1,4 @@
-name: CI
+name: Smile CI
 
 on:
   push:
@@ -11,15 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - os: ubuntu-latest
-            cc: gcc
-          - os: ubuntu-latest
-            cc: clang
-          - os: macos-latest
-            cc: clang
-          - os: windows-latest
-            cc: clang
+        os: [ubuntu-latest, macos-latest, windows-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -31,7 +23,7 @@ jobs:
         run: |
           uname -a || true
           cmake --version
-          ${{ matrix.cc }} --version || true
+          clang --version || true
 
       # Config
       - name: Configure (Windows)
@@ -40,15 +32,10 @@ jobs:
 
       - name: Configure (Non-Windows)
         if: runner.os != 'Windows'
-        run: cmake -S . -B build -DCMAKE_C_COMPILER=${{ matrix.cc }} -DSMILE_DEV=ON -DSMILE_INFO=OFF -DSMILE_WARN=OFF
+        run: cmake -S . -B build -DCMAKE_C_COMPILER=clang -DSMILE_DEV=ON -DSMILE_INFO=OFF -DSMILE_WARN=OFF
 
       # Build
-      - name: Build (Windows)
-        if: runner.os == 'Windows'
-        run: cmake --build build
-
-      - name: Build (Non-Windows)
-        if: runner.os != 'Windows'
+      - name: Build
         run: cmake --build build --config Debug
 
       # Run Tests
