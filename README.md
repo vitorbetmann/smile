@@ -300,4 +300,4 @@ details.
 
 | Last modified | Author (username) | Description                           |
 |---------------|-------------------|---------------------------------------|
-| Feb 17, 2026  | vitorbetmann      | Renamed StateMachine to SceneManager; |
+| Mar 09, 2026  | vitorbetmann      | Changed 'Low-Key' to 'Lowkey' in Smile's name; |
