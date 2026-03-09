@@ -2,7 +2,7 @@
 
 ## An open-source, modular C library for 2D game development
 
-Smile stands for `Simple Modularity Is Low-Key Elegant`, and it's a
+Smile stands for `Simple Modularity Is Lowkey Elegant`, and it's a
 lightweight collection of modules that simplifies 2D game development.
 
 Ideal for `game jams` and `rapid prototyping`, Smile provides clean
