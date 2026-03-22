@@ -3,7 +3,7 @@
 ## An open-source, modular C library for 2D game development
 
 Smile stands for `Simple Modularity Is Lowkey Elegant`, and it's a
-lightweight collection of modules that simplifies 2D game development.
+lightweight collection of modules that streamlines 2D game development.
 
 Ideal for `game jams` and `rapid prototyping`, Smile provides clean
 abstractions that keep your code lean, organized, and fully under your control.
@@ -22,16 +22,16 @@ abstractions that keep your code lean, organized, and fully under your control.
 
 ## 😊 Why Smile?
 
-Smile is a modular collection of C libraries that streamline common 2D
-game-development tasks such as `managing scenes`, `simulating particles`, and
-`saving or loading data`. It's supported on `Windows` and `Mac` (Linux untested
-but POSIX-compliant) and built for developers who want simplicity without
-sacrificing control.
+Smile is a modular collection of C libraries that reduces boilerplate for common 2D 
+game-development tasks such as `managing scenes`, `simulating particles`, and `saving/loading`. 
+It's supported on `Mac` and `Windows` (Linux untested but POSIX-compliant) and built for people 
+who value development speed without sacrificing control by having modules follow a consistent 
+`Start → Use → Stop` pattern and encapsulating memory management.
 
-You can mix and match only the modules you need (for example, using SceneManager
-without ParticleSystem) to keep your project lightweight and focused. And while
-Smile doesn’t handle rendering, input, or audio directly, it integrates
-seamlessly with libraries like [raylib](https://www.raylib.com).
+You can also mix and match only the modules you need (for example, using SceneManager 
+without ParticleSystem) to keep your project lightweight and focused. And while Smile 
+doesn't handle rendering, input, or audio directly, it integrates seamlessly with 
+libraries like [raylib](https://www.raylib.com).
 
 ## 🚀 Building Your Game
 
