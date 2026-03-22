@@ -1,12 +1,18 @@
 # Welcome to Smile 😊
 
-## An open-source, modular C library for 2D game development
+Smile (`Simple Modularity Is Lowkey Elegant`) is an open-source, dependency-free, 
+modular collection of C libraries that reduces boilerplate for common 2D game-development 
+tasks such as `managing scenes`, `simulating particles`, and `saving/loading`. 
 
-Smile stands for `Simple Modularity Is Lowkey Elegant`, and it's a
-lightweight collection of modules that streamlines 2D game development.
+Currently supported on `Mac` and `Windows` (Linux untested but POSIX-compliant), Smile is built 
+for people who value development speed without sacrificing control by having modules follow a 
+consistent `Start → Use → Stop` pattern and encapsulating memory management, making it ideal for 
+game jams and quick prototyping.
 
-Ideal for `game jams` and `rapid prototyping`, Smile provides clean
-abstractions that keep your code lean, organized, and fully under your control.
+You can also mix and match only the modules you need (for example, using SceneManager 
+without ParticleSystem) to keep your project lightweight and focused. And while Smile 
+doesn't handle rendering, input, or audio directly, it integrates seamlessly with 
+libraries like [raylib](https://www.raylib.com).
 
 ## 🎮 Smile Demo
 
@@ -19,19 +25,6 @@ abstractions that keep your code lean, organized, and fully under your control.
   <img src="/docs/_Internal/__Assets/SaveLoad/SaveLoadDemo.gif" width="45%"/>
   <img src="/docs/_Internal/__Assets/Log/LogDemo.gif" width="45%"/>
 </p>
-
-## 😊 Why Smile?
-
-Smile is a modular collection of C libraries that reduces boilerplate for common 2D 
-game-development tasks such as `managing scenes`, `simulating particles`, and `saving/loading`. 
-It's supported on `Mac` and `Windows` (Linux untested but POSIX-compliant) and built for people 
-who value development speed without sacrificing control by having modules follow a consistent 
-`Start → Use → Stop` pattern and encapsulating memory management.
-
-You can also mix and match only the modules you need (for example, using SceneManager 
-without ParticleSystem) to keep your project lightweight and focused. And while Smile 
-doesn't handle rendering, input, or audio directly, it integrates seamlessly with 
-libraries like [raylib](https://www.raylib.com).
 
 ## 🚀 Building Your Game
 
