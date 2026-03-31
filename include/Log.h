@@ -44,7 +44,7 @@ typedef void (*lgFatalHandler)(void);
  *
  * @author Vitor Betmann
  */
-int lgLog(const char* msg, ...);
+int lgLog(const char *msg, ...);
 
 /**
  * @brief Sets a custom handler to be called when a fatal event occurs.

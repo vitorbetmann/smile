@@ -65,7 +65,7 @@ typedef enum
  */
 typedef struct
 {
-    char* name;
+    char *name;
     smEnterFn enter;
     smUpdateFn update;
     smDrawFn draw;
@@ -82,8 +82,8 @@ typedef struct
  */
 typedef struct
 {
-    char* name;
-    smInternalScene* state;
+    char *name;
+    smInternalScene *state;
     UT_hash_handle hh;
 } smInternalSceneMap;
 
@@ -98,8 +98,8 @@ typedef struct
  */
 typedef struct
 {
-    smInternalSceneMap* sceneMap;
-    const smInternalScene* currScene;
+    smInternalSceneMap *sceneMap;
+    const smInternalScene *currScene;
     int sceneCount;
     int fps;
     struct timespec lastTime;
@@ -119,7 +119,7 @@ typedef struct
  *
  * @author Vitor Betmann
  */
-const smInternalScene* smInternalGetScene(const char* name);
+const smInternalScene *smInternalGetScene(const char *name);
 
 /**
  * @brief Retrieves a pointer to a scene-map entry by name.
@@ -130,7 +130,7 @@ const smInternalScene* smInternalGetScene(const char* name);
  *
  * @author Vitor Betmann
  */
-smInternalSceneMap* smInternalGetEntry(const char* name);
+smInternalSceneMap *smInternalGetEntry(const char *name);
 
 
 #endif // #ifndef SMILE_SCENE_MANAGER_INTERNAL_H
