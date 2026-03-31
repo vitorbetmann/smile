@@ -532,11 +532,3 @@ void menuDraw(void)
     // Handle rendering
 }
 ```
-
----
-
-## ✏️ Last Modified
-
-| Last modified | Author (username) | Description                                                     |
-|---------------|-------------------|-----------------------------------------------------------------|
-| Feb 26, 2026  | vitorbetmann      | Updated API docs for int result codes and added result mapping. |

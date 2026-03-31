@@ -282,11 +282,3 @@ void levelTwoDraw(void) {
 
 // level 2 has no Exit function in this example
 ```
-
----
-
-## ✏️ Last Modified
-
-| Last modified | Author (username) | Description                                                                |
-|---------------|-------------------|----------------------------------------------------------------------------|
-| Feb 25, 2026  | vitorbetmann      | Clarified callback/args example consistency and updated workflow snippets. |

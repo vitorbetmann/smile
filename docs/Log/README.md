@@ -105,9 +105,3 @@ Safety note:
 
 - `lgLog` uses `printf`-style formatting. Do not pass untrusted text directly
   as the first argument; use `lgLog("%s", externalText)` instead.
-
-## ✏️ Last Modified
-
-| Last modified | Author (Discord)             | Description                                           |
-|---------------|------------------------------|-------------------------------------------------------|
-| Feb 26, 2026  | Vitor Betmann (vitorbetmann) | Updated signatures/notes for int return-code Log API. |

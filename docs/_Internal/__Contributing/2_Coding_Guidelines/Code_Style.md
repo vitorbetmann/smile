@@ -196,7 +196,8 @@ char *name, grade;    -- Misleading! Only one is a pointer
 
 ————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-typedef enum {    -- Enums for related groups
+typedef enum    -- Enums for related groups
+{
     USER,
     INFO,
     WARNING,
@@ -1208,9 +1209,3 @@ bool smSetFPS(int fps)
 ## ➡️ Up Next
 
 [3_Documentation_Guidelines] (🚧 Under Development)
-
-## ✏️ Last Modified
-
-| Last modified | Author (username) | Description                                                                                                         |
-|---------------|-------------------|---------------------------------------------------------------------------------------------------------------------|
-| Mar 31, 2026  | vitorbetmann      | Align Formatting and Layout guidance with `.clang-format`; update related examples to match formatter-backed rules. |

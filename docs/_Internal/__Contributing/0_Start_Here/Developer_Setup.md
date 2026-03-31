@@ -109,13 +109,3 @@ time. Errors cannot be disabled.
 ## ➡️ Up Next
 
 Understand the [Structure](/docs/_Internal/_Contributing/1_Understanding_Smile/Structure.md) of Smile.
-
----
-
-<br>
-
-## ✏️ Last Modified
-
-| Last modified | Author (username)             | Description       |
-|---------------|------------------------------|-------------------|
-| Feb 25, 2026  | vitorbetmann | Update Developer Setup commands/output to match current CMake flag names (`SMILE_DEV`, `SMILE_WARN`, `SMILE_INFO`, `SMILE_TESTS`). |

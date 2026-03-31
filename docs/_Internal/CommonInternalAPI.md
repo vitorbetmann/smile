@@ -101,11 +101,3 @@ bool smSceneExists(const char *name)
     ... 
 }
 ```
-
----
-
-## ✏️ Last Modified
-
-| Last modified | Author (Discord)             | Description                            |
-|---------------|------------------------------|----------------------------------------|
-| Feb 26, 2026  | Vitor Betmann (vitorbetmann) | Added `cmResult` enum and value table. |

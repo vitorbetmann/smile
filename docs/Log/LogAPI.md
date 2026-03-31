@@ -124,11 +124,3 @@ int main()
     ... // More code
 }
 ```
-
----
-
-## ✏️ Last Modified
-
-| Last modified | Author (username) | Description                                                  |
-|---------------|-------------------|--------------------------------------------------------------|
-| Feb 26, 2026  | vitorbetmann      | Updated Log API docs for int return codes and failure notes. |
