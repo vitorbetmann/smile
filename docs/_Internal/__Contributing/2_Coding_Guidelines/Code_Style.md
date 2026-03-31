@@ -5,8 +5,15 @@ consistency, readability, maintainability, and safety across all modules.
 
 > Note:
 > Smile follows the C23 standard for all C source code and headers.  
+> 
 > All examples and conventions in this document assume C23-compatible compilers
 > Features like `nullptr` and `bool` are used accordingly.
+>
+> Smile uses `.clang-format` as the source of truth for code formatting. If this
+> document conflicts with formatting produced by `.clang-format`, follow
+> `.clang-format`. Contributors who use IDE or editor auto-formatting should
+> configure their tools to use `clang-format` with the repository's
+> `.clang-format` file.
 
 ## Table of Contents
 
@@ -28,34 +35,30 @@ consistency, readability, maintainability, and safety across all modules.
 ### — Variable Naming: General
 
 * Use `camelCase` for all non-constant variable names.
-* Avoid single-character names except for loop iterators or short
-  mathematical expressions.
-* Use descriptive names and avoid non-standard abbreviations unless common (
-  e.g., `ptr`, `buf`, `len`).
+* Avoid single-character names except for loop iterators or short mathematical expressions.
+* Use descriptive names and avoid non-standard abbreviations unless common (e.g., `ptr`, `buf`, `len`).
 * Use plural for collections unless it's a string.
-* See [Type Naming](#-type-naming) for rules on naming structs, enums, and
-  typedefs.
-* See [Constant Values](#-constant-values) for rules on naming #define and
-  constant variables.
+* See [Type Naming](#-type-naming) for rules on naming structs, enums, and typedefs.
+* See [Constant Values](#-constant-values) for rules on naming #define and constant variables.
 
 ✅ Do
 
 ```c
 int sceneCount;    -- Non-constant variables use camelCase
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 char *smileModules[4];             -- Plural for non-string collections
 char *greeting = "Hello Smile";    -- Singular for strings
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 for (int i = 0; i < max; i++)    -- Single-character name for loop iterator
 {
     ...
 }
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 float c = sqrt(pow(a, 2) + pow(b, 2));    -- Single-character name for mathematical formulas
 
@@ -68,11 +71,11 @@ int my_int = 1;    -- snake_case
 int MyInt = 1;     -- PascalCase
 int myint = 1;     -- lowercase
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 int n = 10;    -- single-letter non-loop variable
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 char *smileModule[4];               -- Misleading! Doesn't indicate a collection
 char *greetings = "Hello Smile";    -- Misleading! Indicates a collection
@@ -82,16 +85,14 @@ char *greetings = "Hello Smile";    -- Misleading! Indicates a collection
 
 ### — Variable Naming: Booleans
 
-* Boolean variables should read naturally in conditionals and use consistent
-  prefixes that indicate their boolean nature. Common names include (but
-  aren't limited to):
+* Boolean variables should read naturally in conditionals and use consistent prefixes that indicate their boolean
+  nature. Common names include (but aren't limited to):
     * `is`/`are` for states (`isVisible`, `areLightsOn`)
     * `has` for ownership or presence (`hasChildren`, `hasTexture`)
-    * `should` for conditional behavior (`shouldRender`, `shouldUpdate`)
+    * `should` for conditional behaviour (`shouldRender`, `shouldUpdate`)
     * `can` for capabilities (`canJump`, `canCastSpells`)
     * Present tense for existence checks (`fileExists`, `playerLives`)
-* See [Type Conversion](#-type-conversion) for preferred boolean and pointer
-  comparison styles.
+* See [Type Conversion](#-type-conversion) for preferred boolean and pointer comparison styles.
 
 ✅ Do
 
@@ -99,7 +100,7 @@ char *greetings = "Hello Smile";    -- Misleading! Indicates a collection
 bool isRunning = true;    -- Prefixes clearly state they're booleans
 bool canShoot = false;
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 if (isRunning && canShoot)    -- Reads naturally: "If is running and can shoot"
 {
@@ -141,8 +142,7 @@ InternalTracker *tracker;    -- Externally linked by default
 
 ### — Variable Declaration and Grouping
 
-* Declare each variable on its own line unless they represent the same logical
-  unit.
+* Declare each variable on its own line unless they represent the same logical unit.
 * Don't group unrelated variables, even if they share a type.
 * When declaring pointers:
     * Write the `*` next to the variable name, not the type.
@@ -155,7 +155,7 @@ InternalTracker *tracker;    -- Externally linked by default
 int width, height, depth;    -- Different logical units in separate lines
 int price, change;
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 char *src;    -- Pointers declared in different lines
 char *dst;
@@ -166,11 +166,11 @@ char *dst;
 ```c
 int width, height, depth, price, change;    -- Unrelated groups
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 char *src, *dst;    -- Unnecessarily verbose
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 char *name, grade;    -- Misleading! Only one is a pointer
 ```
@@ -185,8 +185,8 @@ char *name, grade;    -- Misleading! Only one is a pointer
     * Use `enum` for related groups of integer constants.
     * Use `static const` for array/struct constants private to a file.
 * All non-pointer constants must use SCREAMING_SNAKE_CASE.
-* `const *` variables may use camelCase if the data is meant to be read-only (
-  i.e., the pointer can change, but the content cannot).
+* `const *` variables may use camelCase if the data is meant to be read-only (i.e., the pointer can change, but the
+  content cannot).
 * ⚠️ Never use `#define` to create function-like macros.
 
 ✅ Do
@@ -194,7 +194,7 @@ char *name, grade;    -- Misleading! Only one is a pointer
 ```c
 #define DEFAULT_FPS 60    -- #define for primitives or strings
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 typedef enum {    -- Enums for related groups
     USER,
@@ -204,7 +204,7 @@ typedef enum {    -- Enums for related groups
     FATAL,
 } InternalLevel;
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 void myFunc(void)
 {
@@ -213,7 +213,7 @@ void myFunc(void)
     ...
 }
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 static const float IDENTITY_MATRIX[16] = {    -- static const for file-scoped array
     1, 0, 0, 0,
@@ -222,7 +222,7 @@ static const float IDENTITY_MATRIX[16] = {    -- static const for file-scoped ar
     0, 0, 0, 1
 };
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 const InternalState *currScene;    -- Pointer can change, content cannot.
 
@@ -237,7 +237,7 @@ const InternalState *const CURR_STATE;    -- Neither pointer nor content can cha
 #define LEVEL_INFO 1
 #define LEVEL_WARNING 2    
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 const int MAX_BUFFER_SIZE = 1024;    -- Wrong scope.
 
@@ -246,11 +246,11 @@ void myFunc(void)
     ...
 }
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 #define SQUARE(x) ((x) * (x))    -- Function-like macro     
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 const InternalState *CURR_STATE;    -- Misleading! Indicates pointer cannot change.
 
@@ -260,8 +260,7 @@ const InternalState *CURR_STATE;    -- Misleading! Indicates pointer cannot chan
 
 ### — Magic Numbers
 
-* Avoid magic numbers. All repeated or meaningful values should be defined as
-  constants.
+* Avoid magic numbers. All repeated or meaningful values should be defined as constants.
 * Exceptions (values that are self-explanatory or universally understood):
     * Loop iterators.
     * Return values from standard or external library functions.
@@ -277,22 +276,22 @@ for (int i = 0; i < max; i++)    -- Loop iterators
     ...
 }
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 -- Return values from functions belonging to non-Smile libraries
 
 bool isSameName = strcmp(newName,oldName) == 0
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 float c = sqrt(pow(a, 2) + pow(b, 2));    -- Mathematical formulas
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 int next = current + 1;    -- Obvious oparations
 bool isEven = num % 2 == 0;
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 int main(void)
 {
@@ -300,7 +299,7 @@ int main(void)
     return 0;
 }
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 
 -- Obvious initializations or allocations
@@ -309,7 +308,7 @@ Type myStruct = { 0 };
 
 InternalTracker *tracker = calloc(1, sizeof(InternalTracker));
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 #define DEFAULT_FPS 60    -- Meaningful or repeated values should be constants
 ```
@@ -319,7 +318,7 @@ InternalTracker *tracker = calloc(1, sizeof(InternalTracker));
 ```c
 float circumference =  2 * 3.14159f * radius;     -- Meaningful primitives should be #define'd
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 for (int i = 0; i < 10; i++)    -- Unclear! 10 is an arbitrary number
 {
@@ -332,8 +331,8 @@ for (int i = 0; i < 10; i++)    -- Unclear! 10 is an arbitrary number
 
 ### — Declaration and Usage
 
-* Always include `void` as a parameter if the function takes no arguments in
-  declarations and definitions. Omit when calling.
+* Always include `void` as a parameter if the function takes no arguments in declarations and definitions. Omit when
+  calling.
 
 ✅ Do
 
@@ -355,14 +354,12 @@ smIsRunning(void);    -- Call unnecessarily verbose
 
 ### — Naming: General
 
-* All Smile functions begin with a unique module-identifying two-letter
-  lowercase module prefix, followed by a PascalCase name. Below are two tables
-  that relate modules and their prefixes.
-* Function names should be verbs or verb phrases that describe the action.
-  Common functions names include: `Start`, `IsRunning`, `Stop`, `Get`, `Set`,
-  `Create`, `Delete`, and `Exists`.
-* Using a consistent prefix prevents naming collisions, while shared names help
-  users quickly infer a function’s purpose even in unfamiliar modules.
+* All Smile functions begin with a unique module-identifying two-letter lowercase module prefix, followed by a
+  PascalCase name. Below are two tables that relate modules and their prefixes.
+* Function names should be verbs or verb phrases that describe the action. Common functions names include: `Start`,
+  `IsRunning`, `Stop`, `Get`, `Set`, `Create`, `Delete`, and `Exists`.
+* Using a consistent prefix prevents naming collisions, while shared names help users quickly infer a function’s purpose
+  even in unfamiliar modules.
 
 | Public Module  | Prefix |
 |----------------|--------|
@@ -402,8 +399,7 @@ bool smStop(void);
     * Public: Only module prefix.
     * Internal: Add `Internal` after prefix.
     * Private: Add `Private` after prefix.
-    * Test: Add `Test` after prefix. See [4_Testing_Guidelines] (🚧 Under
-      Development) for details.
+    * Test: Add `Test` after prefix. See [4_Testing_Guidelines] (🚧 Under Development) for details.
 
 ✅ Example
 
@@ -411,17 +407,17 @@ bool smStop(void);
 -- Found in SceneManager.h
 bool smSceneExists(const char *name);
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 -- Found in SceneManager.internal.h  
 const State *smInternalGetScene(const char *name);
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 -- Found in SceneManager.c
 bool smPrivateIsNameValid(const char *name, const char *fnName);
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 -- Found in SceneManagerAPITest.h
 typedef void (*smTestExitFn)(MockData *data);
@@ -434,8 +430,7 @@ typedef void (*smTestExitFn)(MockData *data);
 
 * Function parameters should use `camelCase`.
 * Choose descriptive names that make the argument's purpose clear.
-* When appropriate, function argument order should make the signature read like
-  natural language.
+* When appropriate, function argument order should make the signature read like natural language.
 
 ✅ Example
 
@@ -443,7 +438,7 @@ typedef void (*smTestExitFn)(MockData *data);
 -- "Log (level) from (origin) with (message) using (args)"
 void lgPrivateLogV(InternalLevel level, const char *origin, const char *msg, va_list args);
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 -- "Delete state: (name)"
 bool smDeleteScene(const char *name);
@@ -461,7 +456,7 @@ bool smDeleteScene(const char *name);
 ```c
 bool smSceneExists(const char *name);    -- Implies read-only parameter
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 bool smUpdate(float dt);    -- const is unecessary because argument is copied by value
 ```
@@ -471,7 +466,7 @@ bool smUpdate(float dt);    -- const is unecessary because argument is copied by
 ```c
 bool smSceneExists(char *name);    -- Misleading! Implies the function modifies the string
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 bool smUpdate(const float dt);    -- Unnecessarily verbose
 ```
@@ -480,13 +475,10 @@ bool smUpdate(const float dt);    -- Unnecessarily verbose
 
 ### — Type Conversion
 
-* Use implicit conversion for nullptr checks in both return statements and
-  conditional expressions.
-* Use explicit comparisons for numeric and other non-pointer types to make
-  conditions unambiguous.
-* This approach maintains clarity while keeping code concise for the most common
-  cases, and helps contributors quickly identify pointers without adding
-  verbosity.
+* Use implicit conversion for nullptr checks in both return statements and conditional expressions.
+* Use explicit comparisons for numeric and other non-pointer types to make conditions unambiguous.
+* This approach maintains clarity while keeping code concise for the most common cases, and helps contributors quickly
+  identify pointers without adding verbosity.
 
 ✅ Do
 
@@ -503,7 +495,7 @@ if (tracker)
     return false;
 }
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 if (playerCount > 0)    -- Explicit comparisons for non-pointer variables 
 {
@@ -519,7 +511,7 @@ if (playerCount)    -- Misleading! Implies pointer
     ...
 }
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 bool smIsRunning(void)
 {
@@ -532,13 +524,11 @@ bool smIsRunning(void)
 ### — Flow and Structure
 
 * Skip no lines from the function signature to its first statement.
-* Handle all failure or invalid conditions first and return early. This avoids
-  deep nesting and keeps the main logic path clear.
-* Group related operations together and separate conceptual steps with a single
-  blank line.
+* Handle all failure or invalid conditions first and return early. This avoids deep nesting and keeps the main logic
+  path clear.
+* Group related operations together and separate conceptual steps with a single blank line.
 * Use wrapper test functions for memory allocation. This facilitates testing.
-* Use `Private` functions for statements that are repeated throughout multiple
-  functions.
+* Use `Private` functions for statements that are repeated throughout multiple functions.
 * Skip no lines before return statements.
 
 ✅ Example
@@ -563,7 +553,7 @@ bool smStart(void)
     return true;
 }
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 -- Use Private functions for statements that are repeated throughout multiple functions
 
@@ -588,16 +578,14 @@ bool smSceneExists(const char *name)
 ### — Return Types and Error Handling
 
 * Return `bool` for functions that:
-    * Would normally return void but require success/failure indication for
-      testing purposes (e.g., `smStart`, `slStop`).
+    * Would normally return void but require success/failure indication for testing purposes (e.g., `smStart`,
+      `slStop`).
     * Semantically represent state checks.
-* For numeric return types, use sentinel values like `-1` or `-1.0f` to indicate
-  failure.
-* For pointer return types, return `nullptr` when data is unavailable or
-  operations fail.
+* For numeric return types, use sentinel values like `-1` or `-1.0f` to indicate failure.
+* For pointer return types, return `nullptr` when data is unavailable or operations fail.
 * Return a `const` type if a certain data that belongs to Smile (not the user).
 * Log all failures through the Log module with appropriate severity levels (
-  See [InternalLog](/docs/_Internal/Log/LogInternalAPI.md) for details).
+  See [InternalLog](/docs/_Internal/LogInternalAPI.md) for details).
 * ⚠️ Always `return 0` from `main()`.
 
 ✅ Example
@@ -629,7 +617,7 @@ bool smStart(void)
     return true;
 }
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 -- Return bool for state checks
 
@@ -638,7 +626,7 @@ bool smIsRunning(void)
     return tracker;
 }
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 -- Return -1, -1.0f or -1.0 on error for numeric return types
 
@@ -652,7 +640,7 @@ int smGetSceneCount(void)
     return tracker->sceneCount;
 }
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 -- Return nullptr, if appropriate, when data is unavailable or operations fail.
 -- This func also returns a const char pointer on success, meaning it belongs to
@@ -667,7 +655,7 @@ const char *smGetCurrentSceneName(void)
     return tracker->currScene ? tracker->currScene->name : nullptr;
 }
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 int main(void)
 {
@@ -680,9 +668,8 @@ int main(void)
 
 ### — goto
 
-* Use `goto` only for cleanup paths to simplify error handling and prevent
-  memory leaks. This improves maintainability and reduces duplicated free() or
-  close() calls.
+* Use `goto` only for cleanup paths to simplify error handling and prevent memory leaks. This improves maintainability
+  and reduces duplicated free() or close() calls.
 * ⚠️ Never use goto for non-error control flow (e.g., loops or jumps).
 
 ✅ Do
@@ -740,9 +727,8 @@ start:
 
 ### — Shared Code and Messages
 
-* Use `CommonInternal.h` for shared utility functions and
-  `CommonInternalMessages.h` for shared log messages and error strings. Always
-  check these files before creating new shared resources.
+* Use `CommonInternal.h` for shared utility functions and `CommonInternalMessages.h` for shared log messages and error
+  strings. Always check these files before creating new shared resources.
 * Message definitions should have prefixes added as specifies bellow:
 
 | Section Element | Prefix  |
@@ -752,10 +738,9 @@ start:
 | Consequences    | CONSEQ_ |
 
 * The macro name should have English words separated by an underscore (`_`).
-* The macro value should be the same as the macro name after the prefix but with
-  spaces instead of underscores and following standard capitalization rules.
-    * Function names are exceptions and should be written as the function is
-      declared while omitting the module prefix.
+* The macro value should be the same as the macro name after the prefix but with spaces instead of underscores and
+  following standard capitalization rules.
+    * Function names are exceptions and should be written as the function is declared while omitting the module prefix.
 * Do not add a period at the end of the macro value.
 
 ✅ Example
@@ -789,67 +774,60 @@ bool smSetScene(const char *name, void *args)
 
 ## 📖 Formatting and Layout
 
-### — Braces
+Smile's `.clang-format` file is the source of truth for code formatting. When a
+rule in this document and the formatter disagree, follow `.clang-format`.
+Unless noted otherwise, Smile uses LLVM style as a baseline and overrides the
+rules below.
 
-* Always use braces, even for single-line conditionals or loops.
-* For functions or statements, place the opening brace one line below it, and
-  the closing
-  brace one line after the final statement aligned with the start of the
-  declaration.
-* For a `struct`, an `enum`, or after an assignment operator (`=`) place the
-  opening brace on the same line it's declared, and the closing
-  brace one line after the final item aligned with the start of the declaration.
-* Include a `struct` or `enum`'s name on the same line as the closing brace.
+### — Includes
+
+* Order include groups in this sequence:
+    * System headers: `<...>`
+    * Project headers: `"..."`
+    * Any remaining unmatched includes last
+* Keep each include category grouped together.
 
 ✅ Do
 
 ```c
-int main(void)
-{
-    ...
-    return 0;
-}
+#include <stdbool.h>
+#include <stddef.h>
 
-if (false)
-{
-    return;
-}
-
-switch (value)
-{
-    case 1:
-        ...
-}
-
-typedef enum {
-    USER,
-    INFO,
-    WARNING,
-    ERROR,
-    FATAL,
-} InternalLevel;
-
-static const float IDENTITY_MATRIX[16] = {
-    1, 0, 0, 0,
-    0, 1, 0, 0, 
-    0, 0, 1, 0,
-    0, 0, 0, 1,
-};
+#include "SceneManager.h"
+#include "SceneManagerInternal.h"
 ```
 
 ❌ Don't
 
 ```c
--- Wrong brace placement
+#include "SceneManagerInternal.h"
+#include <stdbool.h>
+#include "SceneManager.h"
+```
 
-int main(void) {
-    ...
-    return 0;
-    
+---
+
+### — Braces
+
+* Use brace-wrapping consistent with `.clang-format`:
+    * Put the opening brace on the next line for functions, control statements, `struct`s, `enum`s, `union`s, classes,
+      namespaces, and lambdas.
+    * Put `else`, `catch`, and `while` on their own line before the opening brace.
+    * Put the opening brace on the next line after a `case` label when the case body is wrapped in braces.
+* Always use braces for function and control-statement bodies.
+
+✅ Do
+
+```c
+bool smStart(void)
+{
+    if (tracker)
+    {
+        return false;
+    }
+
+    return true;
 }
-
-if (false)
-{ return ; }
 
 typedef enum
 {
@@ -857,31 +835,33 @@ typedef enum
     INFO,
     WARNING,
     ERROR,
-    FATAL 
+    FATAL,
 } InternalLevel;
 
-static const float IDENTITY_MATRIX[16] =
+switch (level)
 {
-    1, 0, 0, 0,
-    0, 1, 0, 0, 
-    0, 0, 1, 0,
-    0, 0, 0, 1,
-};
-    
-————————————————————————————————————————————————————————————————————————————————
+    case INFO:
+    {
+        return;
+    }
+    default:
+    {
+        return;
+    }
+}
+```
 
--- Inline statements
- 
-if (false) { return; }
+❌ Don't
 
-if (false) return;
+```c
+bool smStart(void) {
+    return true;
+}
 
-————————————————————————————————————————————————————————————————————————————————
-
--- Dangling statement
-
-if (false) 
-    return; 
+typedef enum {
+    USER,
+    INFO,
+} InternalLevel;
 ```
 
 ---
@@ -890,136 +870,131 @@ if (false)
 
 * Write the pointer operator (`*`) next to the variable name, not the type.
 * Leave no space between the dereference operator (`*`) and the variable.
-* Use the arrow operator (`--`) to dereference struct pointers.
-* ⚠️ Don’t use the dereference-dot pattern (`(*p).member`) or include spaces
-  around
-  the arrow.
-
-* ✅ Do
-
-```c
-int *ptr = malloc(sizeof(int));
-*ptr = 10;
-
-————————————————————————————————————————————————————————————————————————————————
-
-Player *player = &player;
-int score = player->score;
-```
-
-❌ Don't
-
-```c
-int *ptr = malloc(sizeof(int));
-* ptr = 10;    -- It should have no space between the dereference operator and the variable
-
-————————————————————————————————————————————————————————————————————————————————
-
-Player* p = &player;             -- Pointer operator should go next to the variable name
-int playerScore = (*player).score;    -- Don't use the dereference-dot pattern
-int playerId = player -> id;          -- No spaces around the arrow operator
-```
-
----
-
-### — Commas and Other Operators
-
-* Leave one space after each comma and around operators, except for the
-  pointer, dereference, and arrow operators.
-* A collection should be multi-line if it would be hard to comprehend. The
-  lines should be indented.
-* A `struct` or `enum` should always be multi-line.
-* Always include a trailing comma for any collection.
+* Use the arrow operator (`->`) for struct pointers without surrounding spaces.
 
 ✅ Do
 
 ```c
--- Collections that would be hard to comprehend as a single line should be multi-line
-static const float IDENTITY_MATRIX[16] = {
-    1, 0, 0, 0,
-    0, 1, 0, 0, 
-    0, 0, 1, 0,
-    0, 0, 0, 1,    -- Include trailing comma for multi-line collections
-};
+InternalTracker *tracker = nullptr;
+*tracker = value;
 
-————————————————————————————————————————————————————————————————————————————————
-
-typedef enum {    -- Enums are always multi-line
-    USER,
-    INFO,
-    WARNING,
-    ERROR,
-    FATAL,
-} InternalLevel;
-
-————————————————————————————————————————————————————————————————————————————————
-
-int myArray[] = { 0, 1, 2, 3, 4, };  -- Simple, short collections can be a single line long
-
-————————————————————————————————————————————————————————————————————————————————
-
-int sum = num1 + num2;    -- Include spaces around operators
+Player *player = tracker->player;
 ```
 
 ❌ Don't
 
 ```c
-int myArray[] = {0,1,2,3,4,};    -- No spaces after commas decreases readability
+InternalTracker* tracker = nullptr;
+* tracker = value;
 
-————————————————————————————————————————————————————————————————————————————————
-
--- Short, easy to grasp collection should be a single line long
-
-int myArray[] = {
-    0,
-    1,
-    2,
-}
-
-————————————————————————————————————————————————————————————————————————————————
-
-int sum=num1+num2;    -- No spaces around operators decreases readability
+int score = player -> score;
 ```
 
 ---
 
-### — Indentation
+### — Indentation and Empty Lines
 
-* Indentation occurs in increments of 4 spaces.
-* ⚠️ Never use tabs.
+* Use 4-column indentation.
+* Indent `case` bodies one level inside the case label.
+* Keep at most 2 consecutive empty lines.
 
-✅ Example
+✅ Do
 
 ```c
-while (true)
+switch (state)
 {
-    for (int i = 0; i < max; i++)
+    case STATE_RUNNING:
     {
-        ...
+        update();
+        break;
+    }
+
+    default:
+    {
+        break;
     }
 }
+```
+
+❌ Don't
+
+```c
+switch (state)
+{
+case STATE_RUNNING:
+{
+    update();
+    break;
+}
+
+
+
+default:
+    break;
+}
+```
+
+---
+
+### — Spacing
+
+* Do not put spaces inside parentheses, empty parentheses, angle brackets, or C-style cast parentheses.
+* Do not put spaces before a function call's empty parameter list.
+* Keep trailing comments unaligned; write them where they naturally fall.
+
+✅ Do
+
+```c
+bool smIsRunning(void)
+{
+    return (count > 0) && (limit < max);
+}
+
+value = (float)count;
+smStop();
+```
+
+❌ Don't
+
+```c
+bool smIsRunning( void )
+{
+    return ( count > 0 ) && ( limit < max );
+}
+
+value = ( float )count;
+smStop( );
 ```
 
 ---
 
 ### — Line Length
 
-* A line of code shouldn't extend over 80 characters.
-* For long statements (function calls, `if`, `while`, `for`, etc.), break after
-  a comma, operator, or logical boundary and align subsequent lines with the
-  first argument.
+* Keep lines within 120 columns (but aim for 80).
+* When a declaration or call exceeds the limit, let the formatter wrap it across multiple lines.
+* When a math expression wraps across multiple lines, start the continuation line with the operator.
+* Do not manually align consecutive declarations, assignments, or trailing comments; let the formatter handle wrapped
+  operand alignment.
 
 ✅ Do
 
 ```c
-bool smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
-                   smDrawFn draw, smExitFn exit);
+bool smCreateScene(const char *name, smEnterFn enterFn, smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn);
+
+double tempDt = currentTime.tv_sec - tracker->lastTime.tv_sec
+                + (currentTime.tv_nsec - tracker->lastTime.tv_nsec) / 1e9;
 ```
 
 ❌ Don't
 
 ```c
 bool smCreateScene(const char *name, smEnterFn enterFn, smUpdateFn updateFn, smDrawFn drawFn, smExitFn exitFn);
+
+double tempDt = currentTime.tv_sec - tracker->lastTime.tv_sec+ (currentTime.tv_nsec - tracker->lastTime.
+    tv_nsec) / 1e9;
+
+int   width  = 1920;
+float height = 1080.0f;
 ```
 
 ## 🃏 Miscellaneous
@@ -1031,23 +1006,26 @@ bool smCreateScene(const char *name, smEnterFn enterFn, smUpdateFn updateFn, smD
 ✅ Do
 
 ```c
-typedef struct {
+typedef struct
+{
     int x;
     int y;
 } Point;
 
-typedef struct Node {
+typedef struct Node
+{
     int data;
-    struct Node* next;
+    struct Node *next;
 } Node;
 ```
 
 ❌ Don't
 
 ```c
-struct Node {
+struct Node
+{
     int data;
-    struct Node* next;
+    struct Node *next;
 };
 ```
 
@@ -1063,11 +1041,12 @@ struct Node {
 ✅ Do
 
 ```c
-typedef struct {    -- Internal type
+typedef struct
+{    -- Internal type
     ...
 } InternalState;
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 typedef void (*smEnterFn)(void *args);    -- Public type
 ```
@@ -1077,7 +1056,7 @@ typedef void (*smEnterFn)(void *args);    -- Public type
 ```c
 typedef int Number;    -- Hides primitive type
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 typedef void (*Enter)(void*);   -- No module prefix for a public type
 ```
@@ -1086,8 +1065,7 @@ typedef void (*Enter)(void*);   -- No module prefix for a public type
 
 ### — nullptr
 
-* Use `nullptr` (C23 standard) instead of `NULL` to avoid implicit conversions
-  and ensure type safety.
+* Use `nullptr` (C23 standard) instead of `NULL` to avoid implicit conversions and ensure type safety.
 
 ✅ Do
 
@@ -1114,13 +1092,10 @@ void *myFunction(void)
 ### — Comments
 
 * Comments should explain why, not what.
-* Use `//` for short inline comments, and `/* ... */` for documentation blocks
-  or temporarily disabling code.
-* If a variable or function call’s purpose isn’t obvious, add a concise //
-  comment. If a section needs heavy commenting to be understood, refactor it
-  into a well-named function and document that instead (see
-  [3_Documentation_Guidelines] (🚧 Under Development)
-  for details).
+* Use `//` for short inline comments, and `/* ... */` for documentation blocks or temporarily disabling code.
+* If a variable or function call’s purpose isn’t obvious, add a concise // comment. If a section needs heavy commenting
+  to be understood, refactor it into a well-named function and document that instead (see [3_Documentation_Guidelines] (
+  🚧 Under Development) for details).
 
 ✅ Do
 
@@ -1133,7 +1108,7 @@ void *myFunction(void)
  */
 typedef void (*smExitFn)(void);
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 -- Comment on statements that are hard to understand at a glance
 fprintf(stderr, "%s\n", SMILE_WHITE); // Reset Log color
@@ -1145,7 +1120,7 @@ fprintf(stderr, "%s\n", SMILE_WHITE); // Reset Log color
 -- Obvious comment
 player.health = 100;  // player health set to 100
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 -- Don't use single-line style for multi-line comments or vice-versas
 // @brief Function pointer type for state exit callbacks.
@@ -1158,16 +1133,12 @@ typedef void (*smExitFn)(void);
 
 ### — TODOS
 
-* Place TODOs after a `@note` tag in the file header comment of the file they
-  affect.
-* If the TODO spans multiple lines, align all subsequent lines with the first
-  word of the first line.
+* Place TODOs after a `@note` tag in the file header comment of the file they affect.
+* If the TODO spans multiple lines, align all subsequent lines with the first word of the first line.
 * Each TODO should match its corresponding GitHub issue title.
 * Do not place TODOs in function bodies or scattered inline comments.
-* For details on overall file header structure,
-  see [3_Documentation_Guidelines] (🚧 Under Development).
-* For details on naming and creating GitHub issues,
-  see [6_Issued_And_Suggestions] (🚧 Under Development).
+* For details on overall file header structure, see [3_Documentation_Guidelines] (🚧 Under Development).
+* For details on naming and creating GitHub issues, see [6_Issued_And_Suggestions] (🚧 Under Development).
 
 ✅ Do
 
@@ -1195,7 +1166,7 @@ bool smSetFPS(int fps)
     return false;
 }
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 -- These TODO's don't follow Smile's convention
 
@@ -1203,7 +1174,7 @@ bool smSetFPS(int fps)
 // fix whitespace issue later
 // TODO check names
 
-————————————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 -- Dont' create really long TODO's
 
@@ -1238,9 +1209,8 @@ bool smSetFPS(int fps)
 
 [3_Documentation_Guidelines] (🚧 Under Development)
 
-
 ## ✏️ Last Modified
 
-| Last modified | Author (username)             | Description       |
-|---------------|------------------------------|-------------------|
-| Feb 10, 2026  | vitorbetmann | Update links from relative to absolute path; Update Last Modified section to include GitHub username over Discord's; |
+| Last modified | Author (username) | Description                                                                                                         |
+|---------------|-------------------|---------------------------------------------------------------------------------------------------------------------|
+| Mar 31, 2026  | vitorbetmann      | Align Formatting and Layout guidance with `.clang-format`; update related examples to match formatter-backed rules. |
