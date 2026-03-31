@@ -96,12 +96,14 @@ Provides module name, cause, function name, and consequences for context.
 ✅ Example
 
 ```c
-bool smPrivateHasStarted(const char *fnName) {
-    if (!smHasStarted()) {
+bool smPrivateHasStarted(const char *fnName)
+{
+    if (!smHasStarted())
+    {
         lgInternalLog(ERROR, MODULE, CAUSE_NOT_RUNNING, fnName, CONSEQ_ABORTED);
         return false;
     }
-    
+
     return true;
 }
 ```
@@ -137,20 +139,14 @@ context.
 ✅ Example
 
 ```c
-bool smPrivateIsNameValid(const char *name, const char *fnName) {
-    if (!name) {
+bool smPrivateIsNameValid(const char *name, const char *fnName)
+{
+    if (!name)
+    {
         lgInternalLogWithArg(ERROR, MODULE, CAUSE_NULL_ARG, "name", fnName, CONSEQ_ABORTED);
         return false;
     }
-    
+
     ...
 }
 ```
-
----
-
-## ✏️ Last Modified
-
-| Last modified | Author (Discord)             | Description                                        |
-|---------------|------------------------------|----------------------------------------------------|
-| Feb 26, 2026  | Vitor Betmann (vitorbetmann) | Updated enum/signatures and return-code contracts. |

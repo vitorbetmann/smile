@@ -1,17 +1,17 @@
 # Welcome to Smile 😊
 
-Smile (`Simple Modularity Is Lowkey Elegant`) is an open-source, dependency-free, 
-modular collection of C libraries that reduces boilerplate for common 2D game-development 
-tasks such as `managing scenes`, `simulating particles`, and `saving/loading`. 
+Smile (`Simple Modularity Is Lowkey Elegant`) is an open-source, dependency-free,
+modular collection of C libraries that reduces boilerplate for common 2D game-development
+tasks such as `managing scenes`, `simulating particles`, and `saving/loading`.
 
-Currently supported on `Mac` and `Windows` (Linux untested but POSIX-compliant), Smile is built 
-for people who value development speed without sacrificing control by having modules follow a 
-consistent `Start → Use → Stop` pattern and encapsulating memory management, making it ideal for 
+Currently supported on `Mac` and `Windows` (Linux untested but POSIX-compliant), Smile is built
+for people who value development speed without sacrificing control by having modules follow a
+consistent `Start → Use → Stop` pattern and encapsulating memory management, making it ideal for
 game jams and quick prototyping.
 
-You can also mix and match only the modules you need (for example, using SceneManager 
-without ParticleSystem) to keep your project lightweight and focused. And while Smile 
-doesn't handle rendering, input, or audio directly, it integrates seamlessly with 
+You can also mix and match only the modules you need (for example, using SceneManager
+without ParticleSystem) to keep your project lightweight and focused. And while Smile
+doesn't handle rendering, input, or audio directly, it integrates seamlessly with
 libraries like [raylib](https://www.raylib.com).
 
 ## 🎮 Smile Demo
@@ -288,9 +288,3 @@ the [Contributing Guide](/docs/_Internal/_Contributing).
 
 Smile is released under the MIT License. See the [LICENSE](./LICENSE) file for
 details.
-
-## ✏️ Last Modified
-
-| Last modified | Author (username) | Description                           |
-|---------------|-------------------|---------------------------------------|
-| Mar 09, 2026  | vitorbetmann      | Changed 'Low-Key' to 'Lowkey' in Smile's name; |

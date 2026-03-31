@@ -14,10 +14,9 @@
  * @author Vitor Betmann
  */
 
-
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Includes
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 #include <string.h>
 #include <time.h>
@@ -27,35 +26,32 @@
 #include "SceneManagerInternal.h"
 #include "SceneManagerMessages.h"
 
-#include "LogInternal.h"
 #include "CommonInternal.h"
 #include "CommonInternalMessages.h"
-#include "TestInternal.h"
+#include "LogInternal.h"
 #include "SceneManagerTestHooks.h"
+#include "TestInternal.h"
 
-
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Variables
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-static smInternalTracker *tracker;
+static smInternalTracker* tracker;
 
-
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Prototypes
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-static int smPrivateIsNameValid(const char *name, const char *fnName);
+static int smPrivateIsNameValid(const char* name, const char* fnName);
 
 /* Wrapper around uthash insertion to keep hash-key usage localized and keep
  * smCreateScene focused on scene construction and validation.
  */
-static void smPrivateAddScene(smInternalSceneMap *mapEntry);
+static void smPrivateAddScene(smInternalSceneMap* mapEntry);
 
-
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Functions - Public
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 // Start Related
 
@@ -63,37 +59,30 @@ int smStart(void)
 {
     if (tracker)
     {
-        lgInternalLog(WARNING, MODULE, CAUSE_ALREADY_RUNNING, __func__,
-                      CONSEQ_ABORTED);
+        lgInternalLog(WARNING, MODULE, CAUSE_ALREADY_RUNNING, __func__,CONSEQ_ABORTED);
         return CM_RESULT_ALREADY_RUNNING;
     }
 
     tracker = tsInternalCalloc(1, sizeof(smInternalTracker));
     if (!tracker)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, __func__,
-                      CONSEQ_ABORTED);
+        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, __func__,CONSEQ_ABORTED);
         return CM_RESULT_MEM_ALLOC_FAILED;
     }
 
-    tracker->fps = DEFAULT_FPS;
-    /* Stored target FPS used by smGetDt() first-call
-                                    * fallback. Runtime FPS capping is not implemented.
-                                    */
+    tracker->fps = DEFAULT_FPS; /* Stored target FPS used by smGetDt() first-call fallback.
+                                 * Runtime FPS capping is not implemented.
+                                 */
 
-    lgInternalLog(INFO, MODULE, CAUSE_MODULE_STARTED, __func__,
-                  CONSEQ_SUCCESSFUL);
+    lgInternalLog(INFO, MODULE, CAUSE_MODULE_STARTED, __func__,CONSEQ_SUCCESSFUL);
     return CM_RESULT_OK;
 }
 
-bool smIsRunning(void)
-{
-    return tracker;
-}
+bool smIsRunning(void) { return tracker; }
 
 // State Functions
 
-int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
+int smCreateScene(const char* name, smEnterFn enter, smUpdateFn update,
                   smDrawFn draw, smExitFn exit)
 {
     if (!cmInternalIsRunning(smIsRunning, MODULE, __func__))
@@ -107,35 +96,31 @@ int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
         return nameValidationResult;
     }
 
-    smInternalSceneMap *entry = smInternalGetEntry(name);
+    smInternalSceneMap* entry = smInternalGetEntry(name);
     if (entry)
     {
-        lgInternalLogWithArg(WARNING, MODULE, CAUSE_SCENE_ALREADY_EXISTS, name,
-                             __func__, CONSEQ_ABORTED);
+        lgInternalLogWithArg(WARNING, MODULE, CAUSE_SCENE_ALREADY_EXISTS, name, __func__, CONSEQ_ABORTED);
         return SM_RESULT_SCENE_ALREADY_EXISTS;
     }
 
     if (!enter && !update && !draw && !exit)
     {
-        lgInternalLogWithArg(ERROR, MODULE, CAUSE_NO_VALID_FUNCTIONS, name,
-                             __func__, CONSEQ_ABORTED);
+        lgInternalLogWithArg(ERROR, MODULE, CAUSE_NO_VALID_FUNCTIONS, name, __func__, CONSEQ_ABORTED);
         return SM_RESULT_NO_VALID_FUNCTIONS;
     }
 
-    smInternalScene *scene = tsInternalMalloc(sizeof(smInternalScene));
+    smInternalScene* scene = tsInternalMalloc(sizeof(smInternalScene));
     if (!scene)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, __func__,
-                      CONSEQ_ABORTED);
+        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, __func__,CONSEQ_ABORTED);
         return CM_RESULT_MEM_ALLOC_FAILED;
     }
 
     const size_t NAME_SIZE = strlen(name) + 1;
-    char *nameCopy = tsInternalMalloc(NAME_SIZE);
+    char* nameCopy = tsInternalMalloc(NAME_SIZE);
     if (!nameCopy)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, __func__,
-                      CONSEQ_ABORTED);
+        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, __func__,CONSEQ_ABORTED);
         goto nameCopyError;
     }
     memcpy(nameCopy, name, NAME_SIZE);
@@ -146,11 +131,10 @@ int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
     scene->draw = draw;
     scene->exit = exit;
 
-    smInternalSceneMap *mapEntry = tsInternalMalloc(sizeof(smInternalSceneMap));
+    smInternalSceneMap* mapEntry = tsInternalMalloc(sizeof(smInternalSceneMap));
     if (!mapEntry)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, __func__,
-                      CONSEQ_ABORTED);
+        lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, __func__,CONSEQ_ABORTED);
         goto mapEntryError;
     }
     mapEntry->state = scene;
@@ -159,8 +143,7 @@ int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
 
     tracker->sceneCount++;
 
-    lgInternalLogWithArg(INFO, MODULE, CAUSE_SCENE_CREATED, name,
-                         __func__, CONSEQ_SUCCESSFUL);
+    lgInternalLogWithArg(INFO, MODULE, CAUSE_SCENE_CREATED, name, __func__,CONSEQ_SUCCESSFUL);
     return CM_RESULT_OK;
 
 mapEntryError:
@@ -170,7 +153,7 @@ nameCopyError:
     return CM_RESULT_MEM_ALLOC_FAILED;
 }
 
-bool smSceneExists(const char *name)
+bool smSceneExists(const char* name)
 {
     if (!cmInternalIsRunning(smIsRunning, MODULE, __func__))
     {
@@ -186,7 +169,7 @@ bool smSceneExists(const char *name)
     return smInternalGetEntry(name);
 }
 
-int smSetScene(const char *name, void *args)
+int smSetScene(const char* name, void* args)
 {
     if (!cmInternalIsRunning(smIsRunning, MODULE, __func__))
     {
@@ -199,11 +182,10 @@ int smSetScene(const char *name, void *args)
         return nameValidationResult;
     }
 
-    const smInternalScene *NEXT_STATE = smInternalGetScene(name);
+    const smInternalScene* NEXT_STATE = smInternalGetScene(name);
     if (!NEXT_STATE)
     {
-        lgInternalLogWithArg(WARNING, MODULE, CAUSE_SCENE_NOT_FOUND, name,
-                             __func__, CONSEQ_ABORTED);
+        lgInternalLogWithArg(WARNING, MODULE, CAUSE_SCENE_NOT_FOUND, name, __func__,CONSEQ_ABORTED);
         return SM_RESULT_SCENE_NOT_FOUND;
     }
 
@@ -226,7 +208,8 @@ int smSetScene(const char *name, void *args)
         if (args && smTestEnterWithArgs)
         {
             smTestEnterWithArgs(smMockData, args);
-        } else if (smTestEnter)
+        }
+        else if (smTestEnter)
         {
             smTestEnter(smMockData);
         }
@@ -234,12 +217,11 @@ int smSetScene(const char *name, void *args)
         tracker->currScene->enter(args);
     }
 
-    lgInternalLogWithArg(INFO, MODULE, CAUSE_SCENE_SET_TO, name, __func__,
-                         CONSEQ_SUCCESSFUL);
+    lgInternalLogWithArg(INFO, MODULE, CAUSE_SCENE_SET_TO, name, __func__,CONSEQ_SUCCESSFUL);
     return CM_RESULT_OK;
 }
 
-const char *smGetCurrentSceneName(void)
+const char* smGetCurrentSceneName(void)
 {
     if (!cmInternalIsRunning(smIsRunning, MODULE, __func__))
     {
@@ -259,7 +241,7 @@ int smGetSceneCount(void)
     return tracker->sceneCount;
 }
 
-int smDeleteScene(const char *name)
+int smDeleteScene(const char* name)
 {
     if (!cmInternalIsRunning(smIsRunning, MODULE, __func__))
     {
@@ -274,16 +256,14 @@ int smDeleteScene(const char *name)
 
     if (tracker->currScene && strcmp(name, tracker->currScene->name) == 0)
     {
-        lgInternalLogWithArg(ERROR, MODULE,CAUSE_CANNOT_DELETE_CURR_SCENE, name,
-                             __func__, CONSEQ_ABORTED);
+        lgInternalLogWithArg(ERROR, MODULE, CAUSE_CANNOT_DELETE_CURR_SCENE, name, __func__, CONSEQ_ABORTED);
         return SM_RESULT_CANNOT_DELETE_CURRENT_SCENE;
     }
 
-    smInternalSceneMap *entry = smInternalGetEntry(name);
+    smInternalSceneMap* entry = smInternalGetEntry(name);
     if (!entry)
     {
-        lgInternalLogWithArg(WARNING, MODULE, CAUSE_SCENE_NOT_FOUND, name,
-                             __func__, CONSEQ_ABORTED);
+        lgInternalLogWithArg(WARNING, MODULE, CAUSE_SCENE_NOT_FOUND, name, __func__,CONSEQ_ABORTED);
         return SM_RESULT_SCENE_NOT_FOUND;
     }
 
@@ -294,8 +274,7 @@ int smDeleteScene(const char *name)
 
     tracker->sceneCount--;
 
-    lgInternalLogWithArg(INFO, MODULE, CAUSE_SCENE_DELETED, name,
-                         __func__, CONSEQ_SUCCESSFUL);
+    lgInternalLogWithArg(INFO, MODULE, CAUSE_SCENE_DELETED, name, __func__,CONSEQ_SUCCESSFUL);
     return CM_RESULT_OK;
 }
 
@@ -310,15 +289,13 @@ int smUpdate(float dt)
 
     if (!tracker->currScene)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_NULL_CURR_SCENE, __func__,
-                      CONSEQ_ABORTED);
+        lgInternalLog(ERROR, MODULE, CAUSE_NULL_CURR_SCENE, __func__,CONSEQ_ABORTED);
         return SM_RESULT_NO_CURRENT_SCENE;
     }
 
     if (!tracker->currScene->update)
     {
-        lgInternalLogWithArg(WARNING, MODULE,CAUSE_NULL_SCENE_UPDATE_FN,
-                             tracker->currScene->name, __func__,
+        lgInternalLogWithArg(WARNING, MODULE, CAUSE_NULL_SCENE_UPDATE_FN, tracker->currScene->name, __func__,
                              CONSEQ_ABORTED);
         return SM_RESULT_NO_UPDATE_FUNCTION;
     }
@@ -340,16 +317,14 @@ float smGetDt(void)
 #ifdef SMILE_DEV
     if (smMockClockGettimeFails)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_CLOCK_GETTIME_FAILED, __func__,
-                      CONSEQ_ABORTED);
+        lgInternalLog(ERROR, MODULE, CAUSE_CLOCK_GETTIME_FAILED, __func__, CONSEQ_ABORTED);
         return CM_RESULT_CLOCK_GETTIME_FAILED;
     }
     currentTime = smMockCurrTime;
 #else
     if (clock_gettime(CLOCK_MONOTONIC, &currentTime) != 0)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_CLOCK_GETTIME_FAILED, __func__,
-                      CONSEQ_ABORTED);
+        lgInternalLog(ERROR, MODULE, CAUSE_CLOCK_GETTIME_FAILED, __func__,CONSEQ_ABORTED);
         return CM_RESULT_CLOCK_GETTIME_FAILED;
     }
 #endif
@@ -360,12 +335,13 @@ float smGetDt(void)
      */
     if (tracker->lastTime.tv_sec == 0 && tracker->lastTime.tv_nsec == 0)
     {
-        dt = (float) (1.0 / tracker->fps);
-    } else
+        dt = (float)(1.0 / tracker->fps);
+    }
+    else
     {
-        double tempDt = currentTime.tv_sec - tracker->lastTime.tv_sec +
-                        (currentTime.tv_nsec - tracker->lastTime.tv_nsec) / 1e9;
-        dt = (float) tempDt;
+        double tempDt = currentTime.tv_sec - tracker->lastTime.tv_sec
+                        + (currentTime.tv_nsec - tracker->lastTime.tv_nsec) / 1e9;
+        dt = (float)tempDt;
     }
 
     tracker->lastTime = currentTime;
@@ -382,15 +358,14 @@ int smDraw(void)
 
     if (!tracker->currScene)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_NULL_CURR_SCENE, __func__,
-                      CONSEQ_ABORTED);
+        lgInternalLog(ERROR, MODULE, CAUSE_NULL_CURR_SCENE, __func__,CONSEQ_ABORTED);
         return SM_RESULT_NO_CURRENT_SCENE;
     }
 
     if (!tracker->currScene->draw)
     {
-        lgInternalLogWithArg(WARNING, MODULE,CAUSE_NULL_SCENE_DRAW_FN,
-                             tracker->currScene->name, __func__,CONSEQ_ABORTED);
+        lgInternalLogWithArg(WARNING, MODULE, CAUSE_NULL_SCENE_DRAW_FN, tracker->currScene->name, __func__,
+                             CONSEQ_ABORTED);
         return SM_RESULT_NO_DRAW_FUNCTION;
     }
 
@@ -440,57 +415,53 @@ int smStop(void)
 
     if (isFatal)
     {
-        lgInternalLog(FATAL, MODULE, CAUSE_FAILED_TO_FREE_ALL_SCENES, __func__,
-                      CONSEQ_ABORTED);
+        lgInternalLog(FATAL, MODULE, CAUSE_FAILED_TO_FREE_ALL_SCENES, __func__,CONSEQ_ABORTED);
         return SM_RESULT_FREE_ALL_SCENES_FAILED;
     }
 
-    lgInternalLog(INFO, MODULE, CAUSE_MODULE_STOPPED, __func__,
-                  CONSEQ_SUCCESSFUL);
+    lgInternalLog(INFO, MODULE, CAUSE_MODULE_STOPPED, __func__,CONSEQ_SUCCESSFUL);
     return CM_RESULT_OK;
 }
 
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Functions - Internal
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-const smInternalScene *smInternalGetScene(const char *name)
+const smInternalScene* smInternalGetScene(const char* name)
 {
-    smInternalSceneMap *entry = smInternalGetEntry(name);
+    smInternalSceneMap* entry = smInternalGetEntry(name);
     return entry ? entry->state : nullptr;
 }
 
-smInternalSceneMap *smInternalGetEntry(const char *name)
+smInternalSceneMap* smInternalGetEntry(const char* name)
 {
-    smInternalSceneMap *entry;
+    smInternalSceneMap* entry;
     HASH_FIND_STR(tracker->sceneMap, name, entry);
     return entry;
 }
 
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Functions - Private
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-int smPrivateIsNameValid(const char *name, const char *fnName)
+int smPrivateIsNameValid(const char* name, const char* fnName)
 {
     if (!name)
     {
-        lgInternalLogWithArg(ERROR, MODULE, CAUSE_NULL_ARG, "name", fnName,
-                             CONSEQ_ABORTED);
+        lgInternalLogWithArg(ERROR, MODULE, CAUSE_NULL_ARG, "name", fnName,CONSEQ_ABORTED);
         return CM_RESULT_NULL_ARG;
     }
 
     if (strlen(name) == 0)
     {
-        lgInternalLogWithArg(ERROR, MODULE, CAUSE_EMPTY_ARG, "name", fnName,
-                             CONSEQ_ABORTED);
+        lgInternalLogWithArg(ERROR, MODULE, CAUSE_EMPTY_ARG, "name", fnName,CONSEQ_ABORTED);
         return CM_RESULT_EMPTY_ARG;
     }
 
     return CM_RESULT_OK;
 }
 
-void smPrivateAddScene(smInternalSceneMap *mapEntry)
+void smPrivateAddScene(smInternalSceneMap* mapEntry)
 {
     HASH_ADD_STR(tracker->sceneMap, name, mapEntry);
 }

@@ -54,7 +54,8 @@ fail.
 ✅ Example
 
 ```c
-void Test_smStart_FailsIfCallocFails(void) {
+void Test_smStart_FailsIfCallocFails(void)
+{
     tsInternalDisable(CALLOC, 1);
     assert(!smStart());
     tsInternalPass("Test_smStart_FailsIfCallocFails");
@@ -78,7 +79,8 @@ Logs a `[PASS]` message for a successful test or operation.
 ✅ Example
 
 ```c
-void Test_smHasStarted_FailsPreStart(void) {
+void Test_smHasStarted_FailsPreStart(void)
+{
     assert(!smHasStarted());
     tsInternalPass("Test_smHasStarted_FailsPreStart");
 }
@@ -91,7 +93,7 @@ void Test_smHasStarted_FailsPreStart(void) {
 
 Temporarily disables a memory allocation function, causing it to fail at the
 specified call count. After the failure
-occurs, normal behavior resumes.
+occurs, normal behaviour resumes.
 
 - Parameters:
     - `fnName` — Allocation function to disable (`MALLOC`, `CALLOC`, `REALLOC`).
@@ -102,7 +104,8 @@ occurs, normal behavior resumes.
 ✅ Example
 
 ```c
-void Test_smStart_FailsIfCallocFails(void) {
+void Test_smStart_FailsIfCallocFails(void)
+{
     tsInternalDisable(CALLOC, 1);
     assert(!smStart());
     tsInternalPass("Test_smStart_FailsIfCallocFails");
@@ -127,7 +130,8 @@ Wrapper around `malloc()` with optional failure simulation.
 
 ```c
 State *state = tsInternalMalloc(sizeof(State));
-if (!state) {
+if (!state)
+{
     lgInternalLog(LOG_ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,
                   FN_CREATE_SCENE, CONSEQ_ABORTED);
     return false;
@@ -151,7 +155,8 @@ Wrapper around `calloc()` with optional failure simulation.
 
 ```c
 tracker = tsInternalCalloc(1, sizeof(SceneManagerTracker));
-if (!tracker) {
+if (!tracker)
+{
     lgInternalLog(LOG_ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, FN_START,
                   CONSEQ_ABORTED);
     return false;
@@ -177,11 +182,3 @@ Wrapper around `realloc()` with optional failure simulation.
 ```c
 // NO EXAMPLE YET
 ```
-
----
-
-## ✏️ Last Modified
-
-| Last modified | Author (username) | Description   |
-|---------------|-------------------|---------------|
-| Feb 26, 2026  | vitorbetmann      | Housekeeping; |
