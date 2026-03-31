@@ -37,23 +37,23 @@ typedef struct
 /**
  * @brief Hook type for enter callbacks without explicit args.
  */
-typedef void (*smTestEnterFn)(MockData* data);
+typedef void (*smTestEnterFn)(MockData *data);
 
 /**
  * @brief Hook type for enter callbacks with explicit args.
  */
-typedef void (*smTestEnterWithArgsFn)(MockData* data, MockArgs* args);
+typedef void (*smTestEnterWithArgsFn)(MockData *data, MockArgs *args);
 
 /**
  * @brief Hook type for exit callbacks.
  */
-typedef void (*smTestExitFn)(MockData* data);
+typedef void (*smTestExitFn)(MockData *data);
 
 extern smTestEnterFn smTestEnter;
 extern smTestEnterWithArgsFn smTestEnterWithArgs;
 extern smTestExitFn smTestExit;
-extern MockArgs* smMockArgs;
-extern MockData* smMockData;
+extern MockArgs *smMockArgs;
+extern MockData *smMockData;
 extern struct timespec smMockCurrTime;
 extern bool smMockClockGettimeFails;
 

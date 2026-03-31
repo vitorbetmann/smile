@@ -48,7 +48,7 @@
 
 // Mock
 
-static void mockEnter(void* args)
+static void mockEnter(void *args)
 {
     // Mock Enter
 }
@@ -70,18 +70,18 @@ static void mockExit(void)
 
 // Callbacks
 
-static void onEnter(MockData* data)
+static void onEnter(MockData *data)
 {
     data->enterCount++;
 }
 
-static void onEnterWithArgs(MockData* data, MockArgs* args)
+static void onEnterWithArgs(MockData *data, MockArgs *args)
 {
     data->enterCount++;
     args->flag = true;
 }
 
-static void onExit(MockData* data)
+static void onExit(MockData *data)
 {
     data->exitCount++;
 }
@@ -137,8 +137,8 @@ static smInternalScene mock2 = {
 smTestEnterFn smTestEnter;
 smTestEnterWithArgsFn smTestEnterWithArgs;
 smTestExitFn smTestExit;
-MockData* smMockData;
-MockArgs* smMockArgs;
+MockData *smMockData;
+MockArgs *smMockArgs;
 struct timespec smMockCurrTime;
 bool smMockClockGettimeFails;
 
@@ -1009,10 +1009,10 @@ void TestStress_smSetScene_SettingScenesOftenCausesNoSkips(void)
         snprintf(buf, sizeof(buf), "%d", i);
         assert(smSetScene(buf, nullptr) == CM_RESULT_OK);
 
-        const char* currSceneName = smGetCurrentSceneName();
+        const char *currSceneName = smGetCurrentSceneName();
         assert(currSceneName);
 
-        char* end;
+        char *end;
         long sceneNum = strtol(currSceneName, &end, 10);
         assert(end != currSceneName);
         assert(*end == '\0');
