@@ -13,9 +13,9 @@
 #define SMILE_SCENE_MANAGER_INTERNAL_H
 
 
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Includes
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 #include <time.h>
 #include <uthash.h>
@@ -23,16 +23,16 @@
 #include "SceneManager.h"
 
 
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Defines
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 #define DEFAULT_FPS 60
 
 
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Data Types
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 /**
  * @brief SceneManager-specific result codes.
@@ -43,7 +43,8 @@
  *
  * @author Vitor Betmann
  */
-typedef enum {
+typedef enum
+{
     SM_RESULT_SCENE_ALREADY_EXISTS = -100,
     SM_RESULT_SCENE_NOT_FOUND = -101,
     SM_RESULT_NO_VALID_FUNCTIONS = -102,
@@ -62,8 +63,9 @@ typedef enum {
  *
  * @author Vitor Betmann
  */
-typedef struct {
-    char *name;
+typedef struct
+{
+    char* name;
     smEnterFn enter;
     smUpdateFn update;
     smDrawFn draw;
@@ -78,9 +80,10 @@ typedef struct {
  *
  * @author Vitor Betmann
  */
-typedef struct {
-    char *name;
-    smInternalScene *state;
+typedef struct
+{
+    char* name;
+    smInternalScene* state;
     UT_hash_handle hh;
 } smInternalSceneMap;
 
@@ -93,18 +96,19 @@ typedef struct {
  *
  * @author Vitor Betmann
  */
-typedef struct {
-    smInternalSceneMap *sceneMap;
-    const smInternalScene *currScene;
+typedef struct
+{
+    smInternalSceneMap* sceneMap;
+    const smInternalScene* currScene;
     int sceneCount;
     int fps;
     struct timespec lastTime;
 } smInternalTracker;
 
 
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Prototypes
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 /**
  * @brief Retrieves a pointer to a scene by name.
@@ -115,7 +119,7 @@ typedef struct {
  *
  * @author Vitor Betmann
  */
-const smInternalScene *smInternalGetScene(const char *name);
+const smInternalScene* smInternalGetScene(const char* name);
 
 /**
  * @brief Retrieves a pointer to a scene-map entry by name.
@@ -126,7 +130,7 @@ const smInternalScene *smInternalGetScene(const char *name);
  *
  * @author Vitor Betmann
  */
-smInternalSceneMap *smInternalGetEntry(const char *name);
+smInternalSceneMap* smInternalGetEntry(const char* name);
 
 
 #endif // #ifndef SMILE_SCENE_MANAGER_INTERNAL_H

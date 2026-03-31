@@ -9,9 +9,9 @@
 #ifndef SMILE_TEST_INTERNAL_H
 #define SMILE_TEST_INTERNAL_H
 
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Data Types
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 /**
  * @brief Identifies allocation functions for failure simulation.
@@ -21,15 +21,16 @@
  *
  * @author Vitor Betmann
  */
-typedef enum {
+typedef enum
+{
     MALLOC,
     CALLOC,
     REALLOC,
 } InternalMemAllocFn;
 
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Functions - Internal
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 /**
  * @brief LogInternal a "[PASS]" message for a successful test case.
@@ -38,7 +39,7 @@ typedef enum {
  *
  * @author Vitor Betmann
  */
-void tsInternalPass(const char *fnName);
+void tsInternalPass(const char* fnName);
 
 /**
  * @brief Disable a memory allocation function for controlled failure.
@@ -65,7 +66,7 @@ bool tsInternalDisable(InternalMemAllocFn fnName, unsigned int at);
  *
  * @author Vitor Betmann
  */
-void *tsInternalMalloc(size_t size);
+void* tsInternalMalloc(size_t size);
 
 /**
  * @brief Wrapper around calloc() with optional failure simulation.
@@ -79,7 +80,7 @@ void *tsInternalMalloc(size_t size);
  *
  * @author Vitor Betmann
  */
-void *tsInternalCalloc(size_t nitems, size_t size);
+void* tsInternalCalloc(size_t nitems, size_t size);
 
 /**
  * @brief Wrapper around realloc() with optional failure simulation.
@@ -91,7 +92,7 @@ void *tsInternalCalloc(size_t nitems, size_t size);
  *
  * @author Vitor Betmann
  */
-void *tsInternalRealloc(void *ptr, size_t size);
+void* tsInternalRealloc(void* ptr, size_t size);
 
 
 #endif // #ifndef SMILE_TEST_INTERNAL_H
