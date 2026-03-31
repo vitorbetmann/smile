@@ -24,7 +24,7 @@
  *
  * @author Vitor Betmann
  */
-typedef void (*smEnterFn)(void* args);
+typedef void (*smEnterFn)(void *args);
 
 /**
  * @brief Function pointer type for scene update callbacks.
@@ -106,7 +106,7 @@ bool smIsRunning(void);
  *
  * @author Vitor Betmann
  */
-int smCreateScene(const char* name, smEnterFn enter, smUpdateFn update,
+int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
                   smDrawFn draw, smExitFn exit);
 
 /**
@@ -124,7 +124,7 @@ int smCreateScene(const char* name, smEnterFn enter, smUpdateFn update,
  *
  * @author Vitor Betmann
  */
-bool smSceneExists(const char* name);
+bool smSceneExists(const char *name);
 
 /**
  * @brief Sets the current active scene by name and triggers its enter function.
@@ -145,7 +145,7 @@ bool smSceneExists(const char* name);
  *
  * @author Vitor Betmann
  */
-int smSetScene(const char* name, void* args);
+int smSetScene(const char *name, void *args);
 
 /**
  * @brief Retrieves the name of the currently active scene.
@@ -164,7 +164,7 @@ int smSetScene(const char* name, void* args);
  *
  * @author Vitor Betmann
  */
-const char* smGetCurrentSceneName(void);
+const char *smGetCurrentSceneName(void);
 
 /**
  * @brief Deletes a scene by name from SceneManager.
@@ -182,7 +182,7 @@ const char* smGetCurrentSceneName(void);
  *
  * @author Vitor Betmann
  */
-int smDeleteScene(const char* name);
+int smDeleteScene(const char *name);
 
 /**
  * @brief Retrieves the total number of registered scenes.

@@ -34,7 +34,7 @@ static unsigned int reallocNum;
 // Functions
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-void tsInternalPass(const char* fnName)
+void tsInternalPass(const char *fnName)
 {
     printf("\t[PASS] %s\n", fnName);
 }
@@ -60,7 +60,7 @@ bool tsInternalDisable(InternalMemAllocFn fnName, unsigned int at)
     }
 }
 
-void* tsInternalMalloc(const size_t size)
+void *tsInternalMalloc(const size_t size)
 {
     mallocNum--;
     if (!canMalloc && mallocNum == 0)
@@ -71,7 +71,7 @@ void* tsInternalMalloc(const size_t size)
     return malloc(size);
 }
 
-void* tsInternalCalloc(const size_t nitems, const size_t size)
+void *tsInternalCalloc(const size_t nitems, const size_t size)
 {
     callocNum--;
     if (!canCalloc && callocNum == 0)
@@ -82,7 +82,7 @@ void* tsInternalCalloc(const size_t nitems, const size_t size)
     return calloc(nitems, size);
 }
 
-void* tsInternalRealloc(void* ptr, const size_t size)
+void *tsInternalRealloc(void *ptr, const size_t size)
 {
     reallocNum--;
     if (!canRealloc && reallocNum == 0)

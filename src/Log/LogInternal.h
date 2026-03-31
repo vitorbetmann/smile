@@ -89,8 +89,8 @@ typedef enum
  *
  * @author Vitor Betmann
  */
-int lgInternalLog(InternalLevel level, const char* module, const char* cause,
-                  const char* fnName, const char* conseq);
+int lgInternalLog(InternalLevel level, const char *module, const char *cause,
+                  const char *fnName, const char *conseq);
 
 /**
  * @brief Used by Smile modules to log info, warnings, errors, or fatal events
@@ -116,9 +116,9 @@ int lgInternalLog(InternalLevel level, const char* module, const char* cause,
  *
  * @author Vitor Betmann
  */
-int lgInternalLogWithArg(InternalLevel level, const char* module,
-                         const char* cause, const char* arg,
-                         const char* fnName, const char* conseq);
+int lgInternalLogWithArg(InternalLevel level, const char *module,
+                         const char *cause, const char *arg,
+                         const char *fnName, const char *conseq);
 
 
 #endif // #ifndef SMILE_LOG_INTERNAL_H
