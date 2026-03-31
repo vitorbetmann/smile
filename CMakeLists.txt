@@ -55,6 +55,7 @@ set(SRC_FILES
         src/SceneManager/SceneManager.c
         src/_Internal/Test/TestInternal.c
         src/_Internal/_Common/CommonInternal.c
+        src/SceneManager/tools/GenScene.c
 )
 
 add_library(smile STATIC ${SRC_FILES})
