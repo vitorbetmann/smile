@@ -5,7 +5,7 @@ modular collection of C libraries that reduces boilerplate for common 2D game-de
 tasks such as `managing scenes`, `simulating particles`, and `saving/loading`.
 
 Currently supported on `Mac` and `Windows` (Linux untested but POSIX-compliant), Smile is built
-for people who value development speed without sacrificing control by having modules follow a
+for people who value development speed without sacrificing control. Its modules follow a
 consistent `Start → Use → Stop` pattern and encapsulating memory management, making it ideal for
 game jams and quick prototyping.
 
@@ -282,9 +282,9 @@ full credit in the code and Git history!):
 - Making games and reporting bugs
 
 To learn more, check out
-the [Contributing Guide](/docs/_Internal/_Contributing).
+the [Contributing Guide](/docs/_Internal/__Contributing).
 
-## 🪪 License
+## 🪪 Licence
 
-Smile is released under the MIT License. See the [LICENSE](./LICENSE) file for
+Smile is released under the MIT Licence. See the [LICENCE](./LICENCE) file for
 details.

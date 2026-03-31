@@ -20,7 +20,7 @@ After compiling Smile, your directory should look like this:
 Smile
 ├── CMakeLists.txt
 ├── .gitignore
-├── LICENSE
+├── LICENCE
 ├── README.md
 ├── build
 ├── docs
@@ -34,7 +34,7 @@ Smile
 
 Files and directories in the project root can be grouped into two categories:
 
-- User-facing: These include files like `README.md` and `LICENSE`. They provide
+- User-facing: These include files like `README.md` and `LICENCE`. They provide
   information to users, explaining what Smile is, how to use it, and what to
   expect from the project.
 - Developer-facing: These include files such as `CMakeLists.txt` and

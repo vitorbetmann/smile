@@ -27,5 +27,6 @@
  * alias: [ -h, <calling GenScene with no args> ]
  */
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
 }
