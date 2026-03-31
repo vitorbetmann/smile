@@ -12,9 +12,9 @@
 #define SMILE_LOG_INTERNAL_H
 
 
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Defines
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 #define SMILE_CYAN "\033[36m"
 #define SMILE_YELLOW "\033[33m"
@@ -27,9 +27,9 @@
 #define LOG_TIME_BUFFER_LEN 32
 
 
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Data Types
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 /**
  * @brief Log-specific result codes.
@@ -40,7 +40,8 @@
  *
  * @author Vitor Betmann
  */
-typedef enum {
+typedef enum
+{
     LG_RESULT_WRITE_FAILED = -100,
     LG_RESULT_TIME_FAILED = -101,
 } lgResult;
@@ -53,7 +54,8 @@ typedef enum {
  *
  * @author Vitor Betmann
  */
-typedef enum {
+typedef enum
+{
     USER,
     INFO,
     WARNING,
@@ -62,9 +64,9 @@ typedef enum {
 } InternalLevel;
 
 
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Prototypes
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 /**
  * @brief Used by Smile modules to log info, warnings, errors, or fatal events.
@@ -87,8 +89,8 @@ typedef enum {
  *
  * @author Vitor Betmann
  */
-int lgInternalLog(InternalLevel level, const char *module, const char *cause,
-                  const char *fnName, const char *conseq);
+int lgInternalLog(InternalLevel level, const char* module, const char* cause,
+                  const char* fnName, const char* conseq);
 
 /**
  * @brief Used by Smile modules to log info, warnings, errors, or fatal events
@@ -114,9 +116,9 @@ int lgInternalLog(InternalLevel level, const char *module, const char *cause,
  *
  * @author Vitor Betmann
  */
-int lgInternalLogWithArg(InternalLevel level, const char *module,
-                         const char *cause, const char *arg,
-                         const char *fnName, const char *conseq);
+int lgInternalLogWithArg(InternalLevel level, const char* module,
+                         const char* cause, const char* arg,
+                         const char* fnName, const char* conseq);
 
 
 #endif // #ifndef SMILE_LOG_INTERNAL_H

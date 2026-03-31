@@ -11,9 +11,9 @@
 #define SMILE_COMMON_INTERNAL_H
 
 
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Data Types
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 /**
  * @brief Common result codes shared across Smile modules.
@@ -23,7 +23,8 @@
  *
  * @author Vitor Betmann
  */
-typedef enum {
+typedef enum
+{
     CM_RESULT_OK = 0,
     CM_RESULT_ALREADY_RUNNING = -1,
     CM_RESULT_NOT_RUNNING = -2,
@@ -43,9 +44,9 @@ typedef enum {
 typedef bool (*cmIsRunningFn)(void);
 
 
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Functions - Internal
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 /**
  * @brief Guard function that verifies that a module is running before a public
@@ -59,8 +60,8 @@ typedef bool (*cmIsRunningFn)(void);
  *
  * @author Vitor Betmann
  */
-bool cmInternalIsRunning(cmIsRunningFn cmIsRunning, const char *module,
-                         const char *fnName);
+bool cmInternalIsRunning(cmIsRunningFn cmIsRunning, const char* module,
+                         const char* fnName);
 
 
 #endif // #ifndef SMILE_COMMON_INTERNAL_H

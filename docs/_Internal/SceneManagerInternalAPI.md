@@ -146,11 +146,3 @@ if (entry)
     // Entry found
 }
 ```
-
----
-
-## ✏️ Last Modified
-
-| Last modified | Author (username) | Description                                            |
-|---------------|-------------------|--------------------------------------------------------|
-| Feb 26, 2026  | vitorbetmann      | Created SceneManagerInternal API docs with `smResult`. |

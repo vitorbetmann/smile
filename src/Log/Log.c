@@ -13,9 +13,9 @@
  * @author Vitor Betmann
  */
 
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Includes
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -27,9 +27,9 @@
 #include "CommonInternal.h"
 
 
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Prototypes
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 /**
  * @brief Outputs messages with a specific log level and origin.
@@ -43,8 +43,7 @@
  *
  * @author Vitor Betmann
  */
-static int lgPrivateLog(InternalLevel level, const char *origin,
-                        const char *msg, ...);
+static int lgPrivateLog(InternalLevel level, const char* origin, const char* msg, ...);
 
 /**
  * @brief Outputs formatted messages.
@@ -59,8 +58,7 @@ static int lgPrivateLog(InternalLevel level, const char *origin,
  *
  * @author Vitor Betmann
  */
-static int lgPrivateLogV(InternalLevel level, const char *origin,
-                         const char *msg, va_list args);
+static int lgPrivateLogV(InternalLevel level, const char* origin, const char* msg, va_list args);
 
 /**
  * @brief Determines if logging is enabled for a given level.
@@ -81,8 +79,7 @@ static bool lgPrivateIsLevelEnabled(InternalLevel level);
  *
  * @author Vitor Betmann
  */
-static void lgPrivateGetColorAndPrefix(InternalLevel level, const char **color,
-                                       const char **prefix);
+static void lgPrivateGetColorAndPrefix(InternalLevel level, const char** color, const char** prefix);
 
 /**
  * @brief Default handler for fatal log events.
@@ -94,17 +91,17 @@ static void lgPrivateGetColorAndPrefix(InternalLevel level, const char **color,
  */
 static void lgPrivateFatalHandler(void);
 
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Variables
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 static lgFatalHandler fatalHandler = lgPrivateFatalHandler;
 
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Functions - Public
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-int lgLog(const char *msg, ...)
+int lgLog(const char* msg, ...)
 {
     if (!msg)
     {
@@ -130,12 +127,11 @@ int lgSetFatal(lgFatalHandler handler)
     return CM_RESULT_OK;
 }
 
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Functions - Internal
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-int lgInternalLog(InternalLevel level, const char *module, const char *cause,
-                  const char *fnName, const char *conseq)
+int lgInternalLog(InternalLevel level, const char* module, const char* cause, const char* fnName, const char* conseq)
 {
     if (!module || !cause || !fnName || !conseq)
     {
@@ -145,9 +141,8 @@ int lgInternalLog(InternalLevel level, const char *module, const char *cause,
     return lgPrivateLog(level, module, "%s. '%s' %s.", cause, fnName, conseq);
 }
 
-int lgInternalLogWithArg(InternalLevel level, const char *module,
-                         const char *cause, const char *arg,
-                         const char *fnName, const char *conseq)
+int lgInternalLogWithArg(InternalLevel level, const char* module, const char* cause, const char* arg,
+                         const char* fnName, const char* conseq)
 {
     if (!module || !cause || !arg || !fnName || !conseq)
     {
@@ -158,18 +153,12 @@ int lgInternalLogWithArg(InternalLevel level, const char *module,
                         conseq);
 }
 
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Functions - Private
-// —————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-static int lgPrivateLog(InternalLevel level, const char *origin,
-                        const char *msg, ...)
+static int lgPrivateLog(InternalLevel level, const char* origin, const char* msg, ...)
 {
-    if (!origin || !msg)
-    {
-        return CM_RESULT_NULL_ARG;
-    }
-
     va_list args;
     va_start(args, msg);
     int result = lgPrivateLogV(level, origin, msg, args);
@@ -177,21 +166,15 @@ static int lgPrivateLog(InternalLevel level, const char *origin,
     return result;
 }
 
-static int lgPrivateLogV(InternalLevel level, const char *origin,
-                         const char *msg, va_list args)
+static int lgPrivateLogV(InternalLevel level, const char* origin, const char* msg, va_list args)
 {
-    if (!origin || !msg)
-    {
-        return CM_RESULT_NULL_ARG;
-    }
-
     if (!lgPrivateIsLevelEnabled(level))
     {
         return CM_RESULT_OK;
     }
 
-    const char *color = nullptr;
-    const char *prefix = nullptr;
+    const char* color = nullptr;
+    const char* prefix = nullptr;
     lgPrivateGetColorAndPrefix(level, &color, &prefix);
 
     char timeBuf[LOG_TIME_BUFFER_LEN] = "00:00:00";
@@ -199,7 +182,7 @@ static int lgPrivateLogV(InternalLevel level, const char *origin,
     struct tm localTime = {0};
     bool hasLocalTime = false;
 
-    if (epochTime != (time_t) -1)
+    if (epochTime != (time_t)-1)
     {
 #ifdef _WIN32
         hasLocalTime = (localtime_s(&localTime, &epochTime) == 0);
@@ -225,8 +208,7 @@ static int lgPrivateLogV(InternalLevel level, const char *origin,
         return LG_RESULT_TIME_FAILED;
     }
 
-    int prefixStatus = fprintf(stderr, "%s%s [Smile %s From %s] - ", color,
-                               timeBuf, prefix, origin);
+    int prefixStatus = fprintf(stderr, "%s%s [Smile %s From %s] - ", color, timeBuf, prefix, origin);
     int messageStatus = vfprintf(stderr, msg, args);
     int suffixStatus = fprintf(stderr, "%s\n", SMILE_WHITE); // Reset color
     int flushStatus = 0;
@@ -256,51 +238,50 @@ static bool lgPrivateIsLevelEnabled(InternalLevel level)
 {
     switch (level)
     {
-        case INFO:
+    case INFO:
 #ifdef SMILE_INFO
-            return true;
+        return true;
 #else
-            return false;
+        return false;
 #endif
-        case WARNING:
+    case WARNING:
 #ifdef SMILE_WARN
-            return true;
+        return true;
 #else
-            return false;
+        return false;
 #endif
-        default:
-            return true;
+    default:
+        return true;
     }
 }
 
-static void lgPrivateGetColorAndPrefix(InternalLevel level, const char **color,
-                                       const char **prefix)
+static void lgPrivateGetColorAndPrefix(InternalLevel level, const char** color, const char** prefix)
 {
     switch (level)
     {
-        case USER:
-            *color = SMILE_GREEN;
-            *prefix = "Log";
-            return;
-        case INFO:
-            *color = SMILE_CYAN;
-            *prefix = "Info";
-            return;
-        case WARNING:
-            *color = SMILE_YELLOW;
-            *prefix = "Warning";
-            return;
-        case ERROR:
-            *color = SMILE_RED;
-            *prefix = "Error";
-            return;
-        case FATAL:
-            *color = SMILE_PURPLE;
-            *prefix = "Fatal";
-            return;
-        default:
-            *color = SMILE_WHITE;
-            *prefix = "\"You Shouldn't Be Seeing This!\"";
+    case USER:
+        *color = SMILE_GREEN;
+        *prefix = "Log";
+        return;
+    case INFO:
+        *color = SMILE_CYAN;
+        *prefix = "Info";
+        return;
+    case WARNING:
+        *color = SMILE_YELLOW;
+        *prefix = "Warning";
+        return;
+    case ERROR:
+        *color = SMILE_RED;
+        *prefix = "Error";
+        return;
+    case FATAL:
+        *color = SMILE_PURPLE;
+        *prefix = "Fatal";
+        return;
+    default:
+        *color = SMILE_WHITE;
+        *prefix = "\"You Shouldn't Be Seeing This!\"";
     }
 }
 

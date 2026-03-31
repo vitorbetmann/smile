@@ -286,9 +286,3 @@ suffix after `<ModuleName>`.
 
 Learn the standards
 for [Code Organization](/docs/_Internal/_Contributing/2_Coding_Guidelines/Code_Organization.md).
-
-## ✏️ Last Modified
-
-| Last modified | Author (username)             | Description       |
-|---------------|------------------------------|-------------------|
-| Feb 10, 2026  | vitorbetmann | Update links from relative to absolute path; Update Last Modified section to include GitHub username over Discord's; |
