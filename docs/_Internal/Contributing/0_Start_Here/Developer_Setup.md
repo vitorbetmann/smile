@@ -19,7 +19,7 @@ development workflow:
 - 3_Documentation_Guidelines (🚧 Under Development)
 - 4_Testing_Guidelines (🚧 Under Development)
 - 5_Pull_Requesting (🚧 Under Development)
-- 6_Issued_And_Suggestions (🚧 Under Development)
+- 6_Issues_And_Suggestions (🚧 Under Development)
 
 ---
 
