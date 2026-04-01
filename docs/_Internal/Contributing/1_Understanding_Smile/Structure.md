@@ -56,9 +56,7 @@ developer-focused documentation, internal functions, and support modules.
 
 As you may have noticed, `_Internal` directories begin with an underscore (
 `_`). This is to easily sort it when directories are organized alphabetically,
-as directories of `Public` modules don't go under a specific folder. This
-pattern can also be found in `docs/_Internal` where `__Contributing` also starts
-with an underscore (`_`) and `__Assets` begins with two.
+as directories of `Public` modules don't go under a specific folder.
 
 Within directories that use this convention, anything outside `_Internal` is
 considered `Public`.
@@ -208,8 +206,8 @@ module with a `Start()` function.
 ### — docs
 
 Contains documentation for both `Public` and `Internal` API, as well as
-guidelines for contributing (under `__Contributing`). Internal also stores
-example GIFs, images, videos under `__Assets` to be used in README files.
+guidelines for contributing (under `Contributing`). Internal also stores
+example GIFs, images, videos under `Assets` to be used in README files.
 
 As opposed to `Internal` APIs, documentation for `Public` systems contains not
 only the API documentation, but also a README for that module, which provides an
@@ -233,8 +231,8 @@ documenting `Public` and `Internal` modules.
 │    ├── LogInternalAPI.md
 │    ├── SceneManagerInternalAPI.md
 │    ├── TestInternalAPI.md
-│    ├── __Contributing
-│    └── __Assets
+│    ├── Contributing/
+│    └── Assets
 ```
 
 #### EXCEPTION: The `Log` module!

@@ -17,13 +17,13 @@ libraries like [raylib](https://www.raylib.com).
 ## 🎮 Smile Demo
 
 <p align="center">
-  <img src="/docs/_Internal/__Assets/SceneManager/SceneManagerDemo.gif" width="45%"/>
-  <img src="/docs/_Internal/__Assets/ParticleSystem/ParticleSystemDemo.gif" width="45%"/>
+  <img src="/docs/_Internal/Assets/SceneManager/SceneManagerDemo.gif" width="45%"/>
+  <img src="/docs/_Internal/Assets/ParticleSystem/ParticleSystemDemo.gif" width="45%"/>
 </p>
 
 <p align="center">
-  <img src="/docs/_Internal/__Assets/SaveLoad/SaveLoadDemo.gif" width="45%"/>
-  <img src="/docs/_Internal/__Assets/Log/LogDemo.gif" width="45%"/>
+  <img src="/docs/_Internal/Assets/SaveLoad/SaveLoadDemo.gif" width="45%"/>
+  <img src="/docs/_Internal/Assets/Log/LogDemo.gif" width="45%"/>
 </p>
 
 ## 🚀 Building Your Game
@@ -65,7 +65,7 @@ A typical project structure might look like this:
 By default, Smile compiles with runtime `warning` and `info` logs enabled.
 Below is an example of how they would appear in your terminal:
 
-![Example of Smile's Logs](/docs/_Internal/__Assets/_SmileREADME/LogExample.png)
+![Example of Smile's Logs](/docs/_Internal/Assets/_SmileREADME/LogExample.png)
 
 If you want to disable them, pass the following flags when configuring your
 build with CMake:
@@ -282,7 +282,7 @@ full credit in the code and Git history!):
 - Making games and reporting bugs
 
 To learn more, check out
-the [Contributing Guide](/docs/_Internal/__Contributing).
+the [Contributing Guide](/docs/_Internal/Contributing).
 
 ## 🪪 Licence
 

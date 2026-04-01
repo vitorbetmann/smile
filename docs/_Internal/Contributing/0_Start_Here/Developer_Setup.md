@@ -101,7 +101,7 @@ This confirms Smile is built in developer mode.
 By default, Smile compiles with runtime **warning** and **info** logs enabled.
 Below is an example of how they would appear in your terminal:
 
-![Example of Smile's Logs](../../__Assets/_SmileREADME/LogExample.png)
+![Example of Smile's Logs](../../Assets/_SmileREADME/LogExample.png)
 
 If you want to disable them, pass the following flags when configuring your
 build with CMake:
