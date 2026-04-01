@@ -2,7 +2,7 @@
 
 ## Thank you for your interest in contributing to Smile!
 
-This series of documents in the `_Contributing` directory will guide you through
+This series of documents in the `Contributing` directory will guide you through
 everything you need to know to work effectively within the project.
 
 The document you’re reading introduces Smile’s Developer Mode and helps you set
