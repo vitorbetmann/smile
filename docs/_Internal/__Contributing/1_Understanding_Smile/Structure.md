@@ -8,13 +8,13 @@
     - [include](#-include)
     - [src](#-src)
     - [docs](#-docs)
-    - [test](#-tests)
+    - [tests](#-tests)
     - [tools](#-tools)
 - [Up Next](#-up-next)
 
 ## 🌳 Smile's Project Root Directory
 
-After compiling Smile, your directory should look like this:
+After compiling Smile, your directory should look similar to this:
 
 ```zsh
 Smile
@@ -27,8 +27,7 @@ Smile
 ├── external
 ├── include
 ├── src
-├── tests
-└── tools
+└── tests
 
 ```
 
@@ -51,13 +50,13 @@ components, referred to as `Public` and `Internal`.
 `Public` encompasses all resources intended for non-developer users, including
 guides, API documentation, and header files.
 
-Within directories such as `docs`, `src`, and `test`, `_Internal` hold
+Within directories such as `docs`, `src`, and `tests`, `_Internal` hold
 developer-focused documentation, internal functions, and tools.
 
 As you may have noticed, `_Internal` directories begin with and underscore (
 `_`). This is to easily sort it when directories are organized alphabetically,
 as directories of `Public` modules don't go under a specific folder. This
-pattern can also be found in `docs/_Internal` where `_Contributing` also starts
+pattern can also be found in `docs/_Internal` where `__Contributing` also starts
 with an underscore (`_`) and `__Assets` begins with two.
 
 Anything outside `_Internal` is considered `Public`.
@@ -138,27 +137,31 @@ Only contains header files for public modules.
 
 ### — src
 
-Each module in Smile typically has three key files aside from its `Public`
-header:
+Aside from the module's `Public` header, new `Public` modules in Smile are expected to include four key files:
 
-1. `<ModuleName>.c` – Implements the module’s public and internal functions.
+1. `<ModuleName>.c` – Implements the module's public and internal functions.
 2. `<ModuleName>Internal.h` – Contains internal helper functions that are
    necessary for the module to work but are not part of the public API.
 3. `<ModuleName>Messages.h` – Contains all messages related to warnings, errors,
    or other notifications for that module.
+4. `<ModuleName>TestHooks.h` – Exposes test-only hooks needed to validate
+   internal behavior without making those details part of the public API.
 
 ✅ Example
 
 ```zsh
 SceneManager
-├── SceneManager.c          # Implements `create_state`, `set_state`, etc.
+├── SceneManager.c          # Implements `smCreateScene`, `smSetScene`, etc.
 │
-├── SceneManagerInternal.h  # Functions like `get_state` or `find_state` which
-│                           # manipulate internal structures (e.g., the state
-│                           # table) not exposed to users.
+├── SceneManagerInternal.h  # Functions like `smInternalGetScene` or
+│                           # `smInternalGetEntry` which manipulate internal
+│                           # structures (e.g., the scene map) not exposed to
+│                           # users.
 │
 ├── SceneManagerMessages.h  # Contains messages like `"Scene already exists"`
-                            # used in logging.
+│                           # used in logging.
+│
+└── SceneManagerTestHooks.h # Exposes test-only hooks for API-level tests.
 ```
 
 This separation ensures:
@@ -166,12 +169,16 @@ This separation ensures:
 - Public headers define the stable API for users.
 - Internal headers provide the tools developers need to implement the module.
 - Messages are centralized and reusable.
+- Test hooks support deterministic tests without expanding the public API.
 
 #### EXCEPTION: The `Log` module!
 
-- The `Log` module contains both a `Public` and an `Internal` API, however,
-  since both utilize the same base code, and to prevent the creation of multiple
-  files and directories, its directory is stored as `Public`.
+- The `Log` module intentionally does not follow the standard layout of other modules. 
+  It serves both as Smile's internal logger for warnings and errors,
+  and as a user-facing debugging log API.
+- Since both use cases share the same underlying implementation, `Log` is kept
+  in a single `Public` directory instead of being split into separate `Public`
+  and `Internal` module layouts.
 
 ✅ Example
 
@@ -195,7 +202,7 @@ module with a `Start()` function.
 ### — docs
 
 Contains documentation for both `Public` and `Internal` API, as well as
-guidelines for contributing (under `_Contributing`). Internal also stores
+guidelines for contributing (under `__Contributing`). Internal also stores
 example gifs, images, videos under `__Assets` to be used in README files.
 
 As opposed to `Internal` APIs, documentation of `Public` systems contain not
@@ -209,12 +216,18 @@ documenting `Public` and `Internal` modules.
 
 ```zsh
 ├── docs
-│├── Log  # Documentation of Public modules
+│├── Log
+││   ├── LogAPI.md          # Public API documentation
+││   └── README.md          # Public module overview and workflow example
 │├── SceneManager
+││   ├── README.md
+││   └── SceneManagerAPI.md
 │└── _Internal
-│    ├── Log  # Documentation of Internal modules
-│    ├── Test
-│    ├── _Contributing
+│    ├── CommonInternalAPI.md
+│    ├── LogInternalAPI.md
+│    ├── SceneManagerInternalAPI.md
+│    ├── TestInternalAPI.md
+│    ├── __Contributing
 │    └── __Assets
 ```
 
@@ -226,49 +239,48 @@ documenting `Public` and `Internal` modules.
 
 ```zsh
 ├── docs
-│ ├── Log  # Log's Public API
-│ ├── SceneManager
+│ ├── Log
+│ │   ├── LogAPI.md         # Log's Public API
+│ │   └── README.md
 │ └── _Internal
-│     ├── Log  # Log's Internal API
+│     └── LogInternalAPI.md # Log's Internal API
 ```
 
 ---
 
 ### — tests
 
-Contains source and header files for testing a module's API and tools. Test
-files for APIs end in `APITest` and for tools end in `ToolTest`.
+Contains source files for testing a module's public API. Test files for APIs
+end in `APITest`.
 
-File and directory nomenclature follow standard `Public` and `Internal`
-conventions.
+Tests are currently organized only for `Public` modules, with one directory per
+module under `tests/`.
 
 ✅ Example
 
 ```zsh
 ├── tests
-│ ├── SceneManager  # API and tools tests for Public modules
-│ │ ├── SceneManagerAPITest.c
-│ │ ├── SceneManagerToolTest.c
-│ │ └── SceneManagerToolTest.h
-│ └── _Internal
-│     ├── Test  # API and tools tests for Internal modules
-│     │   ├── TestInternalAPITest.c
-│     │   └── TestInternalAPITest.h
+│ ├── Log
+│ │   └── LogAPITest.c
+│ └── SceneManager
+│     └── SceneManagerAPITest.c
 ```
 
 ---
 
 ### — tools
 
-Contains the implementation of both `Public` and `Internal` tools that can be
-called straight from the command line, reducing repetitive tasks for both users
-and developers. For example, SceneManager could have a tool to automate the
-creation of State files (.c and .h) by generating boilerplate code for common
-functions
+`tools/` is planned, but is not currently part of the repository.
 
-The directory structure mirrors [src](#-src). Files and directories follow the
-`Public` and `Internal` naming conventions, except they include the `Tool`
-suffix after `<ModuleName>`.
+When added, it will contain the implementation of both `Public` and `Internal`
+tools that can be called straight from the command line, reducing repetitive
+tasks for both users and developers. For example, SceneManager could have a
+tool to automate the creation of Scene files (.c and .h) by generating
+boilerplate code for common functions.
+
+The planned directory structure mirrors [src](#-src). Files and directories
+will follow the `Public` and `Internal` naming conventions, except they include
+the `Tool` suffix after `<ModuleName>`.
 
 ```zsh
 ├── tools
@@ -285,4 +297,4 @@ suffix after `<ModuleName>`.
 ## ➡️ Up Next
 
 Learn the standards
-for [Code Organization](/docs/_Internal/_Contributing/2_Coding_Guidelines/Code_Organization.md).
+for [Code Organization](../2_Coding_Guidelines/Code_Organization.md).
