@@ -14,7 +14,7 @@
 
 ## 🌳 Smile's Project Root Directory
 
-After compiling Smile, your directory should look similar to this:
+At the project root, you'll find a structure similar to this:
 
 ```zsh
 Smile
@@ -50,16 +50,22 @@ components, referred to as `Public` and `Internal`.
 `Public` encompasses all resources intended for non-developer users, including
 guides, API documentation, and header files.
 
-Within directories such as `docs`, `src`, and `tests`, `_Internal` hold
-developer-focused documentation, internal functions, and tools.
+This distinction is applied as a naming convention within module-oriented
+directories such as `docs` and `src`. In those directories, `_Internal` holds
+developer-focused documentation, internal functions, and support modules.
 
-As you may have noticed, `_Internal` directories begin with and underscore (
+As you may have noticed, `_Internal` directories begin with an underscore (
 `_`). This is to easily sort it when directories are organized alphabetically,
 as directories of `Public` modules don't go under a specific folder. This
 pattern can also be found in `docs/_Internal` where `__Contributing` also starts
 with an underscore (`_`) and `__Assets` begins with two.
 
-Anything outside `_Internal` is considered `Public`.
+Within directories that use this convention, anything outside `_Internal` is
+considered `Public`.
+
+Not every developer-facing directory uses the `_Internal` prefix. For example,
+`tests/` is only intended for developers, but it is organized separately
+because test code is optional and is not part of Smile's public API surface.
 
 ## 👶 Naming
 
@@ -145,7 +151,7 @@ Aside from the module's `Public` header, new `Public` modules in Smile are expec
 3. `<ModuleName>Messages.h` – Contains all messages related to warnings, errors,
    or other notifications for that module.
 4. `<ModuleName>TestHooks.h` – Exposes test-only hooks needed to validate
-   internal behavior without making those details part of the public API.
+   internal behaviour without making those details part of the public API.
 
 ✅ Example
 
@@ -173,7 +179,7 @@ This separation ensures:
 
 #### EXCEPTION: The `Log` module!
 
-- The `Log` module intentionally does not follow the standard layout of other modules. 
+- The `Log` module intentionally does not follow the standard layout of other modules.
   It serves both as Smile's internal logger for warnings and errors,
   and as a user-facing debugging log API.
 - Since both use cases share the same underlying implementation, `Log` is kept
@@ -192,7 +198,7 @@ This separation ensures:
 ```
 
 Under `src/_Internal` you'll also find the `_Common` module. This contains code
-and messages that can be shared through multiple modules. For example, since
+and messages that can be shared across multiple modules. For example, since
 most modules have a `Start()` function, the message `"Module Started"` is
 defined in `CommonInternalMessages` instead of being defined in every single
 module with a `Start()` function.
@@ -203,9 +209,9 @@ module with a `Start()` function.
 
 Contains documentation for both `Public` and `Internal` API, as well as
 guidelines for contributing (under `__Contributing`). Internal also stores
-example gifs, images, videos under `__Assets` to be used in README files.
+example GIFs, images, videos under `__Assets` to be used in README files.
 
-As opposed to `Internal` APIs, documentation of `Public` systems contain not
+As opposed to `Internal` APIs, documentation for `Public` systems contains not
 only the API documentation, but also a README for that module, which provides an
 overview of the module and a workflow example.
 
