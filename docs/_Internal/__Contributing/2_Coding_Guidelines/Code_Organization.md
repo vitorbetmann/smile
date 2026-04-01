@@ -61,9 +61,9 @@ code-related files.
 | 5             | Data Types (e.g., enums, structs, typedefs) | Data Types           |
 | 6             | Variables                                   | Variables            |
 | 7             | Function Prototypes                         | Prototypes           |
-| 8             | Public Functions                            | Functions — Public   |
-| 9             | Internal Functions                          | Functions — Internal |
-| 10            | Private Functions                           | Functions — Private  |
+| 8             | Public Functions                            | Functions - Public   |
+| 9             | Internal Functions                          | Functions - Internal |
+| 10            | Private Functions                           | Functions - Private  |
 | 11            | Code Entry Point (i.e. main function)       | Main                 |
 
 * Sections that might not be relevant to a certain file should be omitted.
@@ -152,9 +152,10 @@ bool smSceneExists(const char *name);
 #include "SceneManagerInternal.h"
 #include "SceneManagerMessages.h"
 
+#include "CommonInternal.h"
 #include "CommonInternalMessages.h"
 #include "LogInternal.h"
-#include "SceneManagerAPITest.h"
+#include "SceneManagerTestHooks.h"
 #include "TestInternal.h"
 ```
 
@@ -308,4 +309,5 @@ See [SceneManager.h](/include/SceneManager.h).
 
 ## Up Next
 
-Learn the standards for [Code_Style](/docs/_Internal/_Contributing/2_Coding_Guidelines/Code_Style.md).
+Learn the standards for [Code Style](Code_Style.md).
+
