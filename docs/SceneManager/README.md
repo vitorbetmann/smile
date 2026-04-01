@@ -27,7 +27,7 @@ For detailed documentation see: [SceneManager – API](SceneManagerAPI.md)
 ## 👀 Visual Example
 
 <p align="center">
-  <img src="../../docs/_Internal/__Assets/SceneManager/SceneManagerDemo.gif" width="90%" alt="Scene Manager example"/>
+  <img src="../../docs/_Internal/Assets/SceneManager/SceneManagerDemo.gif" width="90%" alt="Scene Manager example"/>
 </p>
 
 ---

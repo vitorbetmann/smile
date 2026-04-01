@@ -17,13 +17,13 @@ libraries like [raylib](https://www.raylib.com).
 ## 🎮 Smile Demo
 
 <p align="center">
-  <img src="/docs/_Internal/__Assets/SceneManager/SceneManagerDemo.gif" width="45%"/>
-  <img src="/docs/_Internal/__Assets/ParticleSystem/ParticleSystemDemo.gif" width="45%"/>
+  <img src="/docs/_Internal/Assets/SceneManager/SceneManagerDemo.gif" width="45%"/>
+  <img src="/docs/_Internal/Assets/ParticleSystem/ParticleSystemDemo.gif" width="45%"/>
 </p>
 
 <p align="center">
-  <img src="/docs/_Internal/__Assets/SaveLoad/SaveLoadDemo.gif" width="45%"/>
-  <img src="/docs/_Internal/__Assets/Log/LogDemo.gif" width="45%"/>
+  <img src="/docs/_Internal/Assets/SaveLoad/SaveLoadDemo.gif" width="45%"/>
+  <img src="/docs/_Internal/Assets/Log/LogDemo.gif" width="45%"/>
 </p>
 
 ## 🚀 Building Your Game
@@ -65,7 +65,7 @@ A typical project structure might look like this:
 By default, Smile compiles with runtime `warning` and `info` logs enabled.
 Below is an example of how they would appear in your terminal:
 
-![Example of Smile's Logs](/docs/_Internal/__Assets/_SmileREADME/LogExample.png)
+![Example of Smile's Logs](/docs/_Internal/Assets/_SmileREADME/LogExample.png)
 
 If you want to disable them, pass the following flags when configuring your
 build with CMake:
@@ -246,12 +246,12 @@ background so you can focus on letting your creativity out!
 If you're interested, feel free to explore each module for detailed guides and
 examples:
 
-| Module                                                        | Description                               |
-|---------------------------------------------------------------|-------------------------------------------|
-| [Log](/docs/Log)                                              | Debug code and handle fatal errors easily |
-| [ParticleSystem](/docs/ParticleSystem) (🚧 Under Development) | Simulate smoke, dust, fire, and more      |
-| [SaveLoad](/docs/SaveLoad) (🚧 Under Development)             | Quickly save and load your game           |
-| [SceneManager](/docs/SceneManager)                            | Manage scenes and transitions cleanly     |
+| Module                                | Description                               |
+|---------------------------------------|-------------------------------------------|
+| [Log](/docs/Log)                      | Debug code and handle fatal errors easily |
+| ParticleSystem (🚧 Under Development) | Simulate smoke, dust, fire, and more      |
+| SaveLoad (🚧 Under Development)       | Quickly save and load your game           |
+| [SceneManager](/docs/SceneManager)    | Manage scenes and transitions cleanly     |
 
 ## 🤝 Contributing
 
@@ -282,9 +282,9 @@ full credit in the code and Git history!):
 - Making games and reporting bugs
 
 To learn more, check out
-the [Contributing Guide](/docs/_Internal/_Contributing).
+the [Contributing Guide](/docs/_Internal/Contributing).
 
-## 🪪 License
+## 🪪 Licence
 
-Smile is released under the MIT License. See the [LICENSE](./LICENSE) file for
+Smile is released under the MIT Licence. See the [LICENCE](LICENCE) file for
 details.

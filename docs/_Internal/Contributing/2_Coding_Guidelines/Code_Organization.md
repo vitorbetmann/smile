@@ -61,14 +61,14 @@ code-related files.
 | 5             | Data Types (e.g., enums, structs, typedefs) | Data Types           |
 | 6             | Variables                                   | Variables            |
 | 7             | Function Prototypes                         | Prototypes           |
-| 8             | Public Functions                            | Functions — Public   |
-| 9             | Internal Functions                          | Functions — Internal |
-| 10            | Private Functions                           | Functions — Private  |
+| 8             | Public Functions                            | Functions - Public   |
+| 9             | Internal Functions                          | Functions - Internal |
+| 10            | Private Functions                           | Functions - Private  |
 | 11            | Code Entry Point (i.e. main function)       | Main                 |
 
 * Sections that might not be relevant to a certain file should be omitted.
 * See [Message Files](#-message-files) for its particular case.
-* See [3_Documentation_Guidelines] (🚧 Under Development) for details on writing
+* See 3_Documentation_Guidelines (🚧 Under Development) for details on writing
   File Description Blocks.
 
 ✅ Example
@@ -152,9 +152,10 @@ bool smSceneExists(const char *name);
 #include "SceneManagerInternal.h"
 #include "SceneManagerMessages.h"
 
+#include "CommonInternal.h"
 #include "CommonInternalMessages.h"
 #include "LogInternal.h"
-#include "SceneManagerAPITest.h"
+#include "SceneManagerTestHooks.h"
 #include "TestInternal.h"
 ```
 
@@ -205,7 +206,7 @@ bool smSceneExists(const char *name);
 * All headers must have `include guards`.
 * Should never include variables (see Smile's Golden Rule
   in [Code_Style](Code_Style.md)).
-* See [4_Testing_Guidelines] (🚧 Under Development) for details on implementing a
+* See 4_Testing_Guidelines (🚧 Under Development) for details on implementing a
   test header file.
 
 ### — Public Headers
@@ -213,7 +214,7 @@ bool smSceneExists(const char *name);
 * Contains declarations of functions and data types of user-facing APIs.
 * See [Code_Style](Code_Style.md) for details on naming and declaring functions
   and data types.
-* See [3_Documentation_Guidelines] (🚧 Under Development) for details on
+* See 3_Documentation_Guidelines (🚧 Under Development) for details on
   documenting.
 
 ✅ Example
@@ -238,7 +239,7 @@ See [SceneManager.h](/include/SceneManager.h).
   a module's source file, it would grow unnecessarily large and complex.
 * See [Code_Style](Code_Style.md) for details on naming and declaring Internal
   functions and data types.
-* See [3_Documentation_Guidelines] (🚧 Under Development) for details on
+* See 3_Documentation_Guidelines (🚧 Under Development) for details on
   documenting.
 
 ✅ Example
@@ -299,7 +300,7 @@ See [SceneManager.h](/include/SceneManager.h).
     * File-scoped functions are known as Private.
 * See [Code_Style](Code_Style.md) for more details on file-scoped variables and
   Private Functions.
-* See [4_Testing_Guidelines] (🚧 Under Development) for details on implementing a
+* See 4_Testing_Guidelines (🚧 Under Development) for details on implementing a
   test source file.
 
 ✅ Example
@@ -308,4 +309,5 @@ See [SceneManager.h](/include/SceneManager.h).
 
 ## Up Next
 
-Learn the standards for [Code_Style](/docs/_Internal/_Contributing/2_Coding_Guidelines/Code_Style.md).
+Learn the standards for [Code Style](Code_Style.md).
+
