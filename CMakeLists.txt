@@ -55,7 +55,7 @@ set(SRC_FILES
         src/SceneManager/SceneManager.c
         src/_Internal/Test/TestInternal.c
         src/_Internal/_Common/CommonInternal.c
-        src/SceneManager/tools/GenScene.c
+        tools/GenScene.c
 )
 
 add_library(smile STATIC ${SRC_FILES})
@@ -122,8 +122,8 @@ if (SMILE_TESTS)
     endfunction()
 
     # PUBLIC API TESTS
-    add_smile_test(SceneManagerAPITest tests/SceneManager/SceneManagerAPITest.c)
-    add_smile_test(LogAPITest tests/Log/LogAPITest.c)
+    add_smile_test(SceneManagerAPITest tests/SceneManagerAPITest.c)
+    add_smile_test(LogAPITest tests/LogAPITest.c)
 endif ()
 
 
