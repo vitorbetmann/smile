@@ -39,7 +39,7 @@ consistency, readability, maintainability, and safety across all modules.
 * Use descriptive names and avoid non-standard abbreviations unless common (e.g., `ptr`, `buf`, `len`).
 * Use plural for collections unless it's a string.
 * See [Type Naming](#-type-naming) for rules on naming structs, enums, and typedefs.
-* See [Constant Values](#-constant-values) for rules on naming #define and constant variables.
+* See [Constant Values](#-constant-values) for rules on naming constants.
 
 ✅ Do
 
@@ -155,23 +155,47 @@ char *name, salary; // Misleading: only one is a pointer
 
 ---
 
+### — Variable Qualifiers: Pointers
+
+* Use pointer qualifiers to clearly communicate whether the pointer, the pointed-to data, or both are immutable.
+* Use `camelCase` for ordinary read-only pointer variables.
+* Use `SCREAMING_SNAKE_CASE` only when the variable itself is a named constant.
+
+✅ Do
+
+```c
+const InternalState *currScene; // Pointer can change, content cannot.
+
+InternalState *const currentScene = &scene; // Pointer cannot change, content can.
+
+const InternalState *const DEFAULT_SCENE = &scene; // Neither pointer nor content can change.
+```
+
+❌ Don't
+
+```c
+const InternalState *CURR_SCENE; // Misleading: suggests the variable itself is a named constant
+```
+
+---
+
 ### — Constant Values
 
-* Smile prefers `const` for local constants inside functions only. This avoids excessive `const` qualifiers throughout
-  the codebase and keeps local typed constants easy to identify.
-* For file- or module-scoped constants:
-    * Smile prefers `#define` for primitive values and strings.
-    * Use `enum` for related groups of integer constants.
-    * Use `static const` for array/struct constants private to a file.
-* All non-pointer constants must use SCREAMING_SNAKE_CASE.
-* `const *` variables may use camelCase if the data is meant to be read-only (i.e., the pointer can change, but the
-  content cannot).
+* Prefer named constants over unexplained repeated literals.
+* Use local `const` values inside functions sparingly. Avoid filling function bodies with many one-off `const`
+  declarations unless they clearly improve readability.
+* For simple module-local compile-time constants that help keep a large implementation file tighter, use `#define` in
+  `[ModuleName]Internal.h`.
+* Use `enum` for related groups of integer constants.
+* Use `static const` for typed immutable data private to a single source file, such as arrays, structs, and lookup
+  tables.
+* Named constants should use `SCREAMING_SNAKE_CASE`.
 * ⚠️ Never use `#define` to create function-like macros.
 
 ✅ Do
 
 ```c
-#define DEFAULT_FPS 60 // #define for primitives or strings
+#define DEFAULT_FPS 60 // Simple module-local compile-time constant in an internal header
 
 typedef enum // Enums for related groups
 {
@@ -184,7 +208,7 @@ typedef enum // Enums for related groups
 
 void myFunc(void)
 {
-    const int MAX_BUFFER_SIZE = 1024; // const inside a function
+    const int MAX_BUFFER_SIZE = 1024; // Use local const sparingly when it improves readability
     char buffer[MAX_BUFFER_SIZE];
     ...
 }
@@ -196,10 +220,6 @@ static const float IDENTITY_MATRIX[16] = { // static const for file-scoped array
     0, 0, 0, 1
 };
 
-const InternalState *currScene; // Pointer can change, content cannot.
-
-const InternalState *const CURR_STATE; // Neither pointer nor content can change.
-
 ```
 
 ❌ Don't
@@ -209,16 +229,15 @@ const InternalState *const CURR_STATE; // Neither pointer nor content can change
 #define LEVEL_INFO 1
 #define LEVEL_WARNING 2
 
-const int MAX_BUFFER_SIZE = 1024; // Smile prefers #define for file-scoped primitive constants
-
 void myFunc(void)
 {
+    const int WIDTH = 800;
+    const int HEIGHT = 600;
+    const int FPS = 60; // Too many local one-off constants add noise
     ...
 }
 
 #define SQUARE(x) ((x) * (x)) // Function-like macro
-
-const InternalState *CURR_STATE; // Misleading: indicates pointer cannot change
 
 ```
 
@@ -303,7 +322,7 @@ smIsRunning(void); // Call unnecessarily verbose
 
 * All Smile functions begin with a unique module-identifying two-letter lowercase module prefix, followed by a
   PascalCase name. Below are two tables that relate modules and their prefixes.
-* Function names should be verbs or verb phrases that describe the action. Common functions names include: `Start`,
+* Function names should be verbs or verb phrases that describe the action. Common function names include: `Start`,
   `IsRunning`, `Stop`, `Get`, `Set`, `Create`, `Delete`, and `Exists`.
 * Using a consistent prefix prevents naming collisions, while shared names help users quickly infer a function’s purpose
   even in unfamiliar modules.
@@ -342,11 +361,14 @@ bool smStop(void);
 
 ### — Naming: Access Levels
 
-* For different access levels, include the following after the prefix:
-    * Public: Only module prefix.
-    * Internal: Add `Internal` after prefix.
-    * Private: Add `Private` after prefix and declare the function `static`.
-    * Test: Add `Test` after prefix. See 4_Testing_Guidelines (🚧 Under Development) for details.
+* Smile distinguishes between module-private internals and shared internal utilities:
+    * Public: Only module prefix. Declare these in public headers under `include/`.
+    * Module-Private Internal: Add `Internal` after the prefix. Declare these in `[ModuleName]Internal.h` and use them
+      only within that module's implementation and tightly related private tests.
+    * Shared Internal: Shared helpers under `_Internal` (for example, `_Common`) may also use `Internal` after the
+      prefix when they are reused across modules or internal tools.
+    * Private: Add `Private` after the prefix and declare the function `static`.
+    * Test: Add `Test` after the prefix. See 4_Testing_Guidelines (🚧 Under Development) for details.
 
 ✅ Example
 
@@ -354,11 +376,14 @@ bool smStop(void);
 // Found in SceneManager.h
 bool smSceneExists(const char *name);
 
-// Found in SceneManager.internal.h
-const State *smInternalGetScene(const char *name);
+// Found in SceneManagerInternal.h
+const smInternalScene *smInternalGetScene(const char *name);
+
+// Found in CommonInternal.h
+bool cmInternalIsRunning(bool (*isRunning)(void), const char *module, const char *fnName);
 
 // Found in SceneManager.c
-bool smPrivateIsNameValid(const char *name, const char *fnName);
+static int smPrivateIsNameValid(const char *name, const char *fnName);
 
 // Found in SceneManagerAPITest.h
 typedef void (*smTestExitFn)(MockData *data);
@@ -410,10 +435,10 @@ bool smUpdate(const float dt); // Unnecessarily verbose
 
 ### — Type Conversion
 
-* Use implicit conversion for pointer and `bool` checks in both return statements and conditional expressions.
+* Prefer implicit conversion for pointer and `bool` checks in return statements and simple conditional expressions.
 * Use explicit comparisons for numeric non-boolean types to make conditions unambiguous.
 * This approach maintains clarity while keeping code concise for the most common cases, and helps contributors quickly
-  identify pointers without adding verbosity.
+  identify pointers without adding verbosity. Use explicit pointer comparisons when they materially improve clarity.
 
 ✅ Do
 
@@ -451,7 +476,7 @@ if (playerCount) // Numeric non-boolean variables should use explicit comparison
 
 bool smIsRunning(void)
 {
-    return tracker != nullptr; // Unnecessarily verbose
+    return tracker != nullptr; // Usually unnecessary for simple pointer checks
 }
 
 if (isRunning == true) // Unnecessarily verbose for bool values
@@ -519,8 +544,8 @@ bool smSceneExists(const char *name)
 * Use shared or module-specific negative result codes for failure cases.
 * For pointer return types, return `nullptr` when data is unavailable or operations fail.
 * Return a `const` type when the returned data belongs to Smile rather than the user.
-* Log all failures through the Log module with appropriate severity levels (
-  See [InternalLog](../LogInternalAPI.md) for details).
+* Log all failures through the Log module with appropriate severity levels. See [InternalLog](../../LogInternalAPI.md)
+  for details.
 * Return `0` from `main()` on success.
 * Return a non-zero exit status when the program fails.
 
@@ -660,8 +685,10 @@ start:
 
 ### — Shared Code and Messages
 
+* Keep module-private declarations in `[ModuleName]Internal.h`.
 * Use `CommonInternal.h` for shared utility functions and `CommonInternalMessages.h` for shared log messages and error
-  strings. Always check these files before creating new shared resources.
+  strings used across multiple modules or internal tools. Always check these files before creating new shared
+  resources.
 * Message definitions should have prefixes added as specified below:
 
 | Section Element | Prefix  |
@@ -741,9 +768,8 @@ rules below.
 ### — Braces
 
 * Use brace-wrapping consistent with `.clang-format`:
-    * Put the opening brace on the next line for functions, control statements, `struct`s, `enum`s, `union`s, classes,
-      namespaces, and lambdas.
-    * Put `else`, `catch`, and `while` on their own line before the opening brace.
+    * Put the opening brace on the next line for functions, control statements, `struct`s, `enum`s, and `union`s.
+    * Put `else` and `while` on their own line before the opening brace.
     * Put the opening brace on the next line after a `case` label when the case body is wrapped in braces.
 * Always use braces for function and control-statement bodies.
 
@@ -966,7 +992,7 @@ struct Node
 
 * Use `PascalCase` for all `struct`, `enum`, and `typedef` names.
 * All public types must include the module prefix as part of their name.
-* Prefix internal-only types with `Internal`.
+* Prefix internal-only types with the module prefix followed by `Internal`.
 * ⚠️ Never typedef primitive types.
 
 ✅ Do
@@ -975,7 +1001,7 @@ struct Node
 typedef struct
 { // Internal type
     ...
-} InternalState;
+} smInternalState;
 
 typedef void (*smEnterFn)(void *args); // Public type
 ```
@@ -1018,90 +1044,38 @@ void *myFunction(void)
 
 ### — Comments
 
-* Comments should explain why, not what.
-* Use `//` for short inline comments, and `/* ... */` for documentation blocks or temporarily disabling code.
+* Comments should be inline (if short) or placed before what they comment.
+* Use `//` for short inline comments, and `/* ... */` for multi-line comments.
+* In multi-line block comments, align the leading `*` on continuation lines and put closing `*/` on its own line.
 * If a variable or function call’s purpose isn’t obvious, add a concise // comment. If a section needs heavy commenting
   to be understood, refactor it into a well-named function and document that instead (see
   3_Documentation_Guidelines (🚧 Under Development) for details).
+* For file headers, API documentation blocks, and documentation tags, follow
+  3_Documentation_Guidelines (🚧 Under Development).
 
 ✅ Do
 
 ```c
-// Document typedefs, functions, structs, enums
-/**
- * @brief Function pointer type for state exit callbacks.
- *
- * @author Vitor Betmann
- */
-typedef void (*smExitFn)(void);
-
 // Comment on statements that are hard to understand at a glance
-fprintf(stderr, "%s\n", SMILE_WHITE); // Reset Log color
-```
+fprintf(stderr, "%s\n", SMILE_WHITE); // Reset Log colour (short inline) 
 
-❌ Don't
-
-```c
-// Obvious comment
-player.health = 100; // Player health set to 100
-
-// Don't use single-line style for multi-line comments or vice versa
-// @brief Function pointer type for state exit callbacks.
-// 
-// @author Vitor Betmann
-typedef void (*smExitFn)(void);
-```
-
----
-
-### — TODOS
-
-* Place TODOs after a `@note` tag in the file header comment of the file they affect.
-* If the TODO spans multiple lines, align all subsequent lines with the first word of the first line.
-* Each TODO should match its corresponding GitHub issue title.
-* Do not place TODOs in function bodies or scattered inline comments.
-* For details on overall file header structure, see 3_Documentation_Guidelines (🚧 Under Development).
-* For details on naming and creating GitHub issues, see 6_Issues_And_Suggestions (🚧 Under Development).
-
-✅ Do
-
-```c
-/**
- * @file
- * @brief Implementation of the SceneManager module.
- * ...
- *
- * @note TODO #16 [Feature] for [SceneManager] - Create a function to limit the
- *       game's FPS to a max value
- * @note TODO #27 [Feature] for [SceneManager] - Create Internal Trim Function
- *       and Integrate into SceneManager Name Validation
- *
- * ...
+/* Explain a multi-line workaround
+ * or temporary limitation when needed.
  */
-```
-
-❌ Don't
-
-```c
-bool smSetFPS(int fps)
+if (clock_gettime(CLOCK_MONOTONIC, &currTime) == -1)
 {
-    // TODO: implement this
-    return false;
+    ...
 }
+```
 
-// These TODOs don't follow Smile's convention
+❌ Don't
 
-// todo: fix this
-// fix whitespace issue later
-// TODO check names
+```c
+tracker->fps = DEFAULT_FPS; // Assign default FPS to tracker (obvious comment)
 
-// Don't create really long TODOs
-
-/*
- * @note TODO #42 this function is broken because of the complex memory allocation
- *       logic that needs to be refactored to avoid leaks when the initialization
- *       fails, see the following stack trace...
- */
+/* Misaligned continuation lines
+* make block comments harder to scan.
+*/
 ```
 
 ---
@@ -1109,7 +1083,7 @@ bool smSetFPS(int fps)
 ### — Preprocessor Rules
 
 * Use `#ifdef` for single condition checks.
-* Use the `defined()` function for multiple condition checks.
+* Use the `defined(...)` operator for multiple condition checks.
 * Always include a matching #endif with a trailing comment naming the condition.
 * Don’t indent preprocessor directives. They should start at column 0.
 * Keep a single space between the directive and the condition.
