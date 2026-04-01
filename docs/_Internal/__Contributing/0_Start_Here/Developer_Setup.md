@@ -16,10 +16,10 @@ development workflow:
 - [2_Coding_Guidelines](../2_Coding_Guidelines)
     - [Code_Organization](../2_Coding_Guidelines/Code_Organization.md)
     - [Code_Style](../2_Coding_Guidelines/Code_Style.md)
-- [3_Documentation_Guidelines] (🚧 Under Development)
-- [4_Testing_Guidelines] (🚧 Under Development)
-- [5_Pull_Requesting] (🚧 Under Development)
-- [6_Issued_And_Suggestions] (🚧 Under Development)
+- 3_Documentation_Guidelines (🚧 Under Development)
+- 4_Testing_Guidelines (🚧 Under Development)
+- 5_Pull_Requesting (🚧 Under Development)
+- 6_Issued_And_Suggestions (🚧 Under Development)
 
 ---
 

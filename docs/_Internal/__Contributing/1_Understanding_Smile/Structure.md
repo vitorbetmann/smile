@@ -20,7 +20,7 @@ At the project root, you'll find a structure similar to this:
 Smile
 ├── CMakeLists.txt
 ├── .gitignore
-├── LICENSE
+├── LICENCE
 ├── README.md
 ├── build
 ├── docs
@@ -33,7 +33,7 @@ Smile
 
 Files and directories in the project root can be grouped into two categories:
 
-- User-facing: These include files like `README.md` and `LICENSE`. They provide
+- User-facing: These include files like `README.md` and `LICENCE`. They provide
   information to users, explaining what Smile is, how to use it, and what to
   expect from the project.
 - Developer-facing: These include files such as `CMakeLists.txt` and
@@ -215,7 +215,7 @@ As opposed to `Internal` APIs, documentation for `Public` systems contains not
 only the API documentation, but also a README for that module, which provides an
 overview of the module and a workflow example.
 
-See [3_Documentation_Guidelines] (🚧 Under Development) for more details on
+See 3_Documentation_Guidelines (🚧 Under Development) for more details on
 documenting `Public` and `Internal` modules.
 
 ✅ Example

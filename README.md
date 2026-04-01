@@ -246,12 +246,12 @@ background so you can focus on letting your creativity out!
 If you're interested, feel free to explore each module for detailed guides and
 examples:
 
-| Module                                                        | Description                               |
-|---------------------------------------------------------------|-------------------------------------------|
-| [Log](/docs/Log)                                              | Debug code and handle fatal errors easily |
-| [ParticleSystem](/docs/ParticleSystem) (🚧 Under Development) | Simulate smoke, dust, fire, and more      |
-| [SaveLoad](/docs/SaveLoad) (🚧 Under Development)             | Quickly save and load your game           |
-| [SceneManager](/docs/SceneManager)                            | Manage scenes and transitions cleanly     |
+| Module                                | Description                               |
+|---------------------------------------|-------------------------------------------|
+| [Log](/docs/Log)                      | Debug code and handle fatal errors easily |
+| ParticleSystem (🚧 Under Development) | Simulate smoke, dust, fire, and more      |
+| SaveLoad (🚧 Under Development)       | Quickly save and load your game           |
+| [SceneManager](/docs/SceneManager)    | Manage scenes and transitions cleanly     |
 
 ## 🤝 Contributing
 
@@ -282,9 +282,9 @@ full credit in the code and Git history!):
 - Making games and reporting bugs
 
 To learn more, check out
-the [Contributing Guide](/docs/_Internal/_Contributing).
+the [Contributing Guide](/docs/_Internal/__Contributing).
 
-## 🪪 License
+## 🪪 Licence
 
-Smile is released under the MIT License. See the [LICENSE](./LICENSE) file for
+Smile is released under the MIT Licence. See the [LICENCE](LICENCE) file for
 details.

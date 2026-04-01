@@ -346,7 +346,7 @@ bool smStop(void);
     * Public: Only module prefix.
     * Internal: Add `Internal` after prefix.
     * Private: Add `Private` after prefix and declare the function `static`.
-    * Test: Add `Test` after prefix. See [4_Testing_Guidelines](🚧 Under Development) for details.
+    * Test: Add `Test` after prefix. See 4_Testing_Guidelines (🚧 Under Development) for details.
 
 ✅ Example
 
@@ -1022,7 +1022,7 @@ void *myFunction(void)
 * Use `//` for short inline comments, and `/* ... */` for documentation blocks or temporarily disabling code.
 * If a variable or function call’s purpose isn’t obvious, add a concise // comment. If a section needs heavy commenting
   to be understood, refactor it into a well-named function and document that instead (see
-  [3_Documentation_Guidelines](🚧 Under Development) for details).
+  3_Documentation_Guidelines (🚧 Under Development) for details).
 
 ✅ Do
 
@@ -1060,8 +1060,8 @@ typedef void (*smExitFn)(void);
 * If the TODO spans multiple lines, align all subsequent lines with the first word of the first line.
 * Each TODO should match its corresponding GitHub issue title.
 * Do not place TODOs in function bodies or scattered inline comments.
-* For details on overall file header structure, see [3_Documentation_Guidelines](🚧 Under Development).
-* For details on naming and creating GitHub issues, see [6_Issues_And_Suggestions](🚧 Under Development).
+* For details on overall file header structure, see 3_Documentation_Guidelines (🚧 Under Development).
+* For details on naming and creating GitHub issues, see 6_Issues_And_Suggestions (🚧 Under Development).
 
 ✅ Do
 
@@ -1126,4 +1126,4 @@ bool smSetFPS(int fps)
 
 ## ➡️ Up Next
 
-[3_Documentation_Guidelines] (🚧 Under Development)
+3_Documentation_Guidelines (🚧 Under Development)
