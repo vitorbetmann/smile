@@ -210,7 +210,7 @@ static int lgPrivateLogV(InternalLevel level, const char *origin, const char *ms
 
     int prefixStatus = fprintf(stderr, "%s%s [Smile %s From %s] - ", color, timeBuf, prefix, origin);
     int messageStatus = vfprintf(stderr, msg, args);
-    int suffixStatus = fprintf(stderr, "%s\n", SMILE_WHITE); // Reset color
+    int suffixStatus = fprintf(stderr, "%s\n", SMILE_WHITE); // Reset colour
     int flushStatus = 0;
     if (level == ERROR || level == FATAL)
     {
