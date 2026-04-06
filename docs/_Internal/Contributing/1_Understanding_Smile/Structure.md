@@ -67,7 +67,7 @@ because test code is optional and is not part of Smile's public API surface.
 
 ## 👶 Naming
 
-`Public` files, `Public` directories, and directories under an `_Internal`
+`Public` files and directories, and directories under an `_Internal`
 directory, are named after the module they represent. Message files follow the
 pattern `<ModuleName>Messages.h`.
 
