@@ -33,3 +33,7 @@ compile_commands.json.cache/
 
 # Jetbrains
 .idea
+
+# AI Agent Instructions
+AGENTS.md
+CURSOR.md
