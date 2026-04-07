@@ -281,8 +281,7 @@ full credit in the code and Git history!):
 - Writing/editing documentation
 - Making games and reporting bugs
 
-To learn more, check out
-the [Contributing Guide](/docs/_Internal/Contributing).
+To learn more, check out the [Contributing Guide](/docs/CONTRIBUTING.md).
 
 ## 🪪 Licence
 
