@@ -60,8 +60,7 @@ typedef bool (*cmIsRunningFn)(void);
  *
  * @author Vitor Betmann
  */
-bool cmInternalIsRunning(cmIsRunningFn cmIsRunning, const char *module,
-                         const char *fnName);
+bool cmInternalIsRunning(cmIsRunningFn cmIsRunning, const char *module, const char *fnName);
 
 
 #endif // #ifndef SMILE_COMMON_INTERNAL_H
