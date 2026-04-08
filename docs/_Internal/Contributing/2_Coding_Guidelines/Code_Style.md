@@ -1095,7 +1095,7 @@ tracker->fps = DEFAULT_FPS; // Assign default FPS to tracker (obvious comment)
     ...
 #elif defined(__APPLE__) || defined(__linux__)
     ...
-#endif // _WIN32 || __APPLE__ || __linux__
+#endif
 ```
 
 ## ➡️ Up Next

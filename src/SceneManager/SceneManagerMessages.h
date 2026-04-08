@@ -41,4 +41,4 @@
 #define CAUSE_FAILED_TO_FREE_ALL_SCENES "Failed to Free All Scenes"
 
 
-#endif // #ifndef SMILE_SCENE_MANAGER_MESSAGES_H
+#endif

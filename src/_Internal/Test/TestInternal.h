@@ -95,4 +95,4 @@ void *tsInternalCalloc(size_t nitems, size_t size);
 void *tsInternalRealloc(void *ptr, size_t size);
 
 
-#endif // #ifndef SMILE_TEST_INTERNAL_H
+#endif

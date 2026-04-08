@@ -178,7 +178,7 @@ bool smSceneExists(const char *name);
 ...
 
 
-#endif // #ifndef SMILE_SCENE_MANAGER_H
+#endif
 ```
 
 ---

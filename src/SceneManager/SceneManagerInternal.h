@@ -133,4 +133,4 @@ const smInternalScene *smInternalGetScene(const char *name);
 smInternalSceneMap *smInternalGetEntry(const char *name);
 
 
-#endif // #ifndef SMILE_SCENE_MANAGER_INTERNAL_H
+#endif
