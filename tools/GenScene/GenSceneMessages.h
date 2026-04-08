@@ -16,7 +16,7 @@
 // Tool Name
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-#define TOOL "GEN_SCENE"
+#define ORIGIN "GenScene"
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -24,15 +24,11 @@
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 // Infos
+#define CAUSE_FILES_CREATED "Source And Header Files Created"
 // Warnings
 // Errors
+#define CAUSE_SOURCE_FILE_ALREADY_EXISTS "Source File Already Exists"
+#define CAUSE_HEADER_FILE_ALREADY_EXISTS "Header File Already Exists"
 // Fatals
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-// Consequences
-// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-
-// Success
-// Failure
-
-#endif // #ifndef SMILE_GEN_SCENE_MESSAGES_H
+#endif

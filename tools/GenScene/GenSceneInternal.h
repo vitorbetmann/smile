@@ -35,10 +35,10 @@ typedef struct
     char *srcPath;
     char *includePath;
 
-    bool NO_ENTER;
-    bool NO_UPDATE;
-    bool NO_DRAW;
-    bool NO_EXIT;
+    bool noEnter;
+    bool noUpdate;
+    bool noDraw;
+    bool noExit;
 } gsInternalArgs;
 
 
@@ -47,4 +47,4 @@ typedef struct
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 
-#endif // #ifndef SMILE_GEN_SCENE_INTERNAL_H
+#endif

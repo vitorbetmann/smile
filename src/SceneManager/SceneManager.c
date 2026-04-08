@@ -42,7 +42,7 @@ static smInternalTracker *tracker;
 // Prototypes
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-static int smPrivateIsNameValid(const char *name, const char *fnName);
+static int smPrivateIsValidName(const char *name, const char *fnName);
 
 /* Wrapper around uthash insertion to keep hash-key usage localized and keep
  * smCreateScene focused on scene construction and validation.
@@ -90,7 +90,7 @@ int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
         return CM_RESULT_NOT_RUNNING;
     }
 
-    int nameValidationResult = smPrivateIsNameValid(name, __func__);
+    int nameValidationResult = smPrivateIsValidName(name, __func__);
     if (nameValidationResult != CM_RESULT_OK)
     {
         return nameValidationResult;
@@ -160,7 +160,7 @@ bool smSceneExists(const char *name)
         return false;
     }
 
-    int nameValidationResult = smPrivateIsNameValid(name, __func__);
+    int nameValidationResult = smPrivateIsValidName(name, __func__);
     if (nameValidationResult != CM_RESULT_OK)
     {
         return false;
@@ -176,7 +176,7 @@ int smSetScene(const char *name, void *args)
         return CM_RESULT_NOT_RUNNING;
     }
 
-    int nameValidationResult = smPrivateIsNameValid(name, __func__);
+    int nameValidationResult = smPrivateIsValidName(name, __func__);
     if (nameValidationResult != CM_RESULT_OK)
     {
         return nameValidationResult;
@@ -248,7 +248,7 @@ int smDeleteScene(const char *name)
         return CM_RESULT_NOT_RUNNING;
     }
 
-    int nameValidationResult = smPrivateIsNameValid(name, __func__);
+    int nameValidationResult = smPrivateIsValidName(name, __func__);
     if (nameValidationResult != CM_RESULT_OK)
     {
         return nameValidationResult;
@@ -444,7 +444,7 @@ smInternalSceneMap *smInternalGetEntry(const char *name)
 // Functions - Private
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-int smPrivateIsNameValid(const char *name, const char *fnName)
+int smPrivateIsValidName(const char *name, const char *fnName)
 {
     if (!name)
     {

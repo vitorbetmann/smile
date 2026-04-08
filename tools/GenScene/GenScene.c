@@ -14,10 +14,13 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <sys/syslimits.h>
 
 #include "CommonInternal.h"
+#include "CommonInternalMessages.h"
 #include "GenSceneInternal.h"
 #include "GenSceneMessages.h"
+#include "LogInternal.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -84,19 +87,19 @@ int main(int argc, char *argv[])
     {
         if (strcmp(argv[i], "--no-enter") == 0 || strcmp(argv[i], "-ne") == 0)
         {
-            args.NO_ENTER = true;
+            args.noEnter = true;
         }
         else if (strcmp(argv[i], "--no-update") == 0 || strcmp(argv[i], "-nu") == 0)
         {
-            args.NO_UPDATE = true;
+            args.noUpdate = true;
         }
         else if (strcmp(argv[i], "--no-draw") == 0 || strcmp(argv[i], "-nd") == 0)
         {
-            args.NO_DRAW = true;
+            args.noDraw = true;
         }
         else if (strcmp(argv[i], "--no-exit") == 0 || strcmp(argv[i], "-nx") == 0)
         {
-            args.NO_EXIT = true;
+            args.noExit = true;
         }
         else if (strcmp(argv[i], "--source-in") == 0 || strcmp(argv[i], "-src") == 0)
         {
@@ -149,27 +152,28 @@ int main(int argc, char *argv[])
     // The code below doesn't work on Windows atm
     // Need to sanitize input and make is system agnostic
     // Handling system specific path should be Common's job
-    char srcBuf[CM_PATH_MAX];
-    cmInternalPathJoin(srcBuf, sizeof(srcBuf), args.srcPath, args.sceneName);
+    char srcBuf[PATH_MAX];
+    snprintf(srcBuf, sizeof(srcBuf), "%s/%s.c", args.srcPath, args.sceneName);
     if (cmInternalFileExists(srcBuf))
     {
-        // ask if they wish to overwrite the file with the template
-        // if not allowed, exit
+        lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_SOURCE_FILE_ALREADY_EXISTS, argv[1], __func__, CONSEQ_ABORTED);
+        return 1;
     }
 
-    char includeBuf[CM_PATH_MAX];
-    cmInternalPathJoin(includeBuf, sizeof(includeBuf), args.includePath, args.sceneName);
+    char includeBuf[PATH_MAX];
+    snprintf(srcBuf, sizeof(srcBuf), "%s/%s.h", args.includePath, args.sceneName);
     if (cmInternalFileExists(includeBuf))
     {
-        // ask if they wish to overwrite the file with the template
-        // if not allowed, exit
+        lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_SOURCE_FILE_ALREADY_EXISTS, argv[1], __func__, CONSEQ_ABORTED);
+        return 1;
     }
 
 
     /*
      * create the files in the correct directories and write files according to specifications
      */
+    lgInternalLog(INFO, ORIGIN, CAUSE_FILES_CREATED, ORIGIN, CONSEQ_SUCCESSFUL);
+
 
     return 0;
-
 }

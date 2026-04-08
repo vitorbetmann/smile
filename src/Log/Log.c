@@ -131,25 +131,25 @@ int lgSetFatal(lgFatalHandler handler)
 // Functions - Internal
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-int lgInternalLog(lgInternalLevel level, const char *module, const char *cause, const char *fnName, const char *conseq)
+int lgInternalLog(lgInternalLevel level, const char *origin, const char *cause, const char *fnName, const char *conseq)
 {
-    if (!module || !cause || !fnName || !conseq)
+    if (!origin || !cause || !fnName || !conseq)
     {
         return CM_RESULT_NULL_ARG;
     }
 
-    return lgPrivateLog(level, module, "%s. '%s' %s.", cause, fnName, conseq);
+    return lgPrivateLog(level, origin, "%s. '%s' %s.", cause, fnName, conseq);
 }
 
-int lgInternalLogWithArg(lgInternalLevel level, const char *module, const char *cause, const char *arg,
+int lgInternalLogWithArg(lgInternalLevel level, const char *origin, const char *cause, const char *arg,
                          const char *fnName, const char *conseq)
 {
-    if (!module || !cause || !arg || !fnName || !conseq)
+    if (!origin || !cause || !arg || !fnName || !conseq)
     {
         return CM_RESULT_NULL_ARG;
     }
 
-    return lgPrivateLog(level, module, "%s: %s. '%s' %s.", cause, arg, fnName,
+    return lgPrivateLog(level, origin, "%s: %s. '%s' %s.", cause, arg, fnName,
                         conseq);
 }
 

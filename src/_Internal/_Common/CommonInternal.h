@@ -26,14 +26,6 @@
 // Defines
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-#if defined(_WIN32)
-#include <windows.h>
-#define CM_PATH_MAX MAX_PATH
-#else
-#include <limits.h>
-#define CM_PATH_MAX PATH_MAX
-#endif
-
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Data Types
@@ -94,6 +86,6 @@ bool cmInternalFileExists(const char *path);
 
 int cmInternalCreateFile(const char *path);
 
-int cmInternalPathJoin(char *buf, size_t bufSize, const char *dir, const char *file);
+int cmInternalJoinPath(char *buf, size_t bufSize, const char *dir, const char *file);
 
-#endif // #ifndef SMILE_COMMON_INTERNAL_H
+#endif

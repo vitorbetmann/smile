@@ -1,8 +1,8 @@
 /**
  * @file
- * @brief Message definitions for the <tool name> module.
+ * @brief Message definitions for the <module/tool name> module.
  *
- * @see <tool name>.c
+ * @see <module/tool name>.c
  *
  * @author <author>
  */
@@ -13,10 +13,10 @@
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-// Tool Name
+// Module/Tool Name
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-#define TOOL <tool name>
+#define ORIGIN <module/tool name>
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -35,4 +35,4 @@
 // Success
 // Failure
 
-#endif // #ifndef <header guard>
+#endif

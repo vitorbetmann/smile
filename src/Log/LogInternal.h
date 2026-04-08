@@ -71,10 +71,10 @@ typedef enum
 /**
  * @brief Used by Smile modules to log info, warnings, errors, or fatal events.
  *
- * Provides module name, cause, function name, and consequences for context.
+ * Provides module or tool name, cause, function name, and consequences for context.
  *
  * @param level Severity level of the log (LOG_INFO, LOG_WARNING, etc.).
- * @param module Name of the module generating the log.
+ * @param origin Name of the module or tool generating the log.
  * @param cause Description of the cause of the log event.
  * @param fnName Name of the function where the log is generated.
  * @param conseq Consequences or additional information about the event.
@@ -89,7 +89,7 @@ typedef enum
  *
  * @author Vitor Betmann
  */
-int lgInternalLog(lgInternalLevel level, const char *module, const char *cause,
+int lgInternalLog(lgInternalLevel level, const char *origin, const char *cause,
                   const char *fnName, const char *conseq);
 
 /**
@@ -100,7 +100,7 @@ int lgInternalLog(lgInternalLevel level, const char *module, const char *cause,
  * additional context.
  *
  * @param level Severity level of the log (LOG_WARNING, LOG_ERROR, etc.).
- * @param module Name of the module generating the log.
+ * @param origin Name of the module generating the log.
  * @param cause Description of the cause of the log event.
  * @param arg Additional context argument relevant to the log event.
  * @param fnName Name of the function where the log is generated.
@@ -116,9 +116,9 @@ int lgInternalLog(lgInternalLevel level, const char *module, const char *cause,
  *
  * @author Vitor Betmann
  */
-int lgInternalLogWithArg(lgInternalLevel level, const char *module,
+int lgInternalLogWithArg(lgInternalLevel level, const char *origin,
                          const char *cause, const char *arg,
                          const char *fnName, const char *conseq);
 
 
-#endif // #ifndef SMILE_LOG_INTERNAL_H
+#endif

@@ -55,7 +55,6 @@ set(SRC_FILES
         src/SceneManager/SceneManager.c
         src/_Internal/Test/TestInternal.c
         src/_Internal/_Common/CommonInternal.c
-        tools/GenScene/GenScene.c
 )
 
 add_library(smile STATIC ${SRC_FILES})
@@ -79,6 +78,19 @@ target_include_directories(smile
         ${CMAKE_CURRENT_SOURCE_DIR}/src/SceneManager
         ${CMAKE_CURRENT_SOURCE_DIR}/src/_Internal/Test
         ${CMAKE_CURRENT_SOURCE_DIR}/src/_Internal/_Common
+)
+
+
+# ——————————————————————————————————————————————————————————————————————————————
+# TOOLS
+# ——————————————————————————————————————————————————————————————————————————————
+
+add_executable(GenScene tools/GenScene/GenScene.c)
+target_link_libraries(GenScene PRIVATE smile)
+target_include_directories(GenScene PRIVATE
+        $<TARGET_PROPERTY:smile,INTERFACE_INCLUDE_DIRECTORIES>
+        $<TARGET_PROPERTY:smile,INCLUDE_DIRECTORIES>
+        ${CMAKE_CURRENT_SOURCE_DIR}/tools/GenScene
 )
 
 

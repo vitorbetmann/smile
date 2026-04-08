@@ -36,5 +36,4 @@
 #define CONSEQ_ABORTED  "Aborted"
 
 
-#endif // #ifndef SMILE_COMMON_INTERNAL_MESSAGES_H
-
+#endif
