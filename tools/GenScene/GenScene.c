@@ -1,36 +1,21 @@
-//
-// Created by Vitor Betmann on 2026-03-31.
-//
-
-/*
- * GenScene is a cli tool to generate scenes
+/**
+ * @file
+ * @brief Implementation of the GenScene tool.
  *
- * users should run build/GenState and pass in flags to automatically create boilerplate scene source and header files
- * ex: `smile/build/GenScene menu` should create src and header files for a scene called menu under the `src` or
- * `source` and the `include` directories respectively
+ * @see GenSceneInternal.h
+ * @see GenSceneMessages.h
  *
- * optional flags are:
- * --no-[funcName]: which creates template files without a given function
- *   funcName options: [ enter, update, draw, exit ]
- *   alias: [ ne, nu, nd, nx ]
- *
- * ex: smile/build/GenScene menu --no-enter -nx
- *
- * --[filetype]-in: which creates the source or header file inside a specific directory, overriding the default `src`
- * and `include`. This flag requires an additional argument
- * filetype options: [ source, header ]
- * alias: [ src, hdr]
- *
- * ex: smile/build/GenScene menu --source-in . -hdr my_header_files
- *
- * --help: brings up the help menu
- * alias: [ -h, <calling GenScene with no args> ]
+ * @author Vitor Betmann
  */
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Includes
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+#include <stdio.h>
+#include <string.h>
+
+#include "CommonInternal.h"
 #include "GenSceneInternal.h"
 #include "GenSceneMessages.h"
 
@@ -71,32 +56,120 @@
 
 int main(int argc, char *argv[])
 {
-    /*
-     * if argc == 1, show help menu
-     */
+    if (argc == 1)
+    {
+        // print usage
+        return 1;
+    }
+
+    if (strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0)
+    {
+        // print help menu
+        return 0;
+    }
+
+    if (argv[1][0] == '-')
+    {
+        // error: first argument must be the scene name
+        // print usage
+        return 1;
+    }
 
     gsInternalArgs args = {0};
 
-    /*
-     * while we haven't gone through all the args,
-     * keep parsing them and populating args
-     *
-     * if -h or --help is argv[1], show help menu
-     */
+    // Remember to sanitize argv[1]
+    args.sceneName = argv[1];
 
-    /*
-     * if srcDirPath and headerDirPath are null, set them to the default
-     * check that they exist
-     * if they don't ask to create the directories,
-     * if not allowed, exit program
-     */
+    for (int i = 2; i < argc; i++)
+    {
+        if (strcmp(argv[i], "--no-enter") == 0 || strcmp(argv[i], "-ne") == 0)
+        {
+            args.NO_ENTER = true;
+        }
+        else if (strcmp(argv[i], "--no-update") == 0 || strcmp(argv[i], "-nu") == 0)
+        {
+            args.NO_UPDATE = true;
+        }
+        else if (strcmp(argv[i], "--no-draw") == 0 || strcmp(argv[i], "-nd") == 0)
+        {
+            args.NO_DRAW = true;
+        }
+        else if (strcmp(argv[i], "--no-exit") == 0 || strcmp(argv[i], "-nx") == 0)
+        {
+            args.NO_EXIT = true;
+        }
+        else if (strcmp(argv[i], "--source-in") == 0 || strcmp(argv[i], "-src") == 0)
+        {
+            if (i + 1 >= argc)
+            {
+                // error: --source-in requires a path argument
+                return 1;
+            }
+            args.srcPath = argv[++i];
+        }
+        else if (strcmp(argv[i], "--header-in") == 0 || strcmp(argv[i], "-hdr") == 0)
+        {
+            if (i + 1 >= argc)
+            {
+                // error: --header-in requires a path argument
+                return 1;
+            }
+            args.includePath = argv[++i];
+        }
+        else
+        {
+            // print usage
+            return 1;
+        }
+    }
 
-    /*
-     * if a source/header of the same name already exists, ask to overwrite
-     * if not allowed, exit program
-     */
+    // if srcPath and includePath are null, set them to the default
+    if (!args.includePath)
+    {
+        args.includePath = DEFAULT_INCLUDE_DIR;
+    }
+    if (!args.srcPath)
+    {
+        args.srcPath = DEFAULT_SRC_DIR;
+    }
+
+    // Check they exist
+    if (!cmInternalDirExists(args.includePath))
+    {
+        // ask if they wish to create a dir with the given name
+        // if not allowed, exit
+    }
+    if (!cmInternalDirExists(args.srcPath))
+    {
+        // ask if they wish to create a dir with the given name
+        // if not allowed, exit
+    }
+
+
+    // The code below doesn't work on Windows atm
+    // Need to sanitize input and make is system agnostic
+    // Handling system specific path should be Common's job
+    char srcBuf[CM_PATH_MAX];
+    cmInternalPathJoin(srcBuf, sizeof(srcBuf), args.srcPath, args.sceneName);
+    if (cmInternalFileExists(srcBuf))
+    {
+        // ask if they wish to overwrite the file with the template
+        // if not allowed, exit
+    }
+
+    char includeBuf[CM_PATH_MAX];
+    cmInternalPathJoin(includeBuf, sizeof(includeBuf), args.includePath, args.sceneName);
+    if (cmInternalFileExists(includeBuf))
+    {
+        // ask if they wish to overwrite the file with the template
+        // if not allowed, exit
+    }
+
 
     /*
      * create the files in the correct directories and write files according to specifications
      */
+
+    return 0;
+
 }

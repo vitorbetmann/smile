@@ -3,12 +3,36 @@
  * @brief Internal declarations of data structures and functions for the
  *        CommonInternal module.
  *
+ * @note TODO #XX [Function] for [CommonInternal] - Create a func to sanitize path input
+ * @note TODO #XX [Function] for [CommonInternal] - Add cmInternalPathJoin(buf,
+ * bufSize, dir, file) for cross-platform path joining (CM_PATH_MAX, correct separator)
+ *
  * @author Vitor Betmann
  */
 
 
 #ifndef SMILE_COMMON_INTERNAL_H
 #define SMILE_COMMON_INTERNAL_H
+
+
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+// Includes
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+
+#include <stddef.h>
+
+
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+// Defines
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+
+#if defined(_WIN32)
+#include <windows.h>
+#define CM_PATH_MAX MAX_PATH
+#else
+#include <limits.h>
+#define CM_PATH_MAX PATH_MAX
+#endif
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -62,5 +86,14 @@ typedef bool (*cmIsRunningFn)(void);
  */
 bool cmInternalIsRunning(cmIsRunningFn cmIsRunning, const char *module, const char *fnName);
 
+bool cmInternalDirExists(const char *path);
+
+int cmInternalCreateDir(const char *path);
+
+bool cmInternalFileExists(const char *path);
+
+int cmInternalCreateFile(const char *path);
+
+int cmInternalPathJoin(char *buf, size_t bufSize, const char *dir, const char *file);
 
 #endif // #ifndef SMILE_COMMON_INTERNAL_H

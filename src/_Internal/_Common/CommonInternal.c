@@ -33,3 +33,21 @@ bool cmInternalIsRunning(cmIsRunningFn cmIsRunning, const char *module, const ch
 
     return true;
 }
+
+bool cmInternalDirExists(const char *path)
+{
+}
+
+int cmInternalCreateDir(const char *path)
+{
+    // should it create dirs recursively?
+}
+
+bool cmInternalFileExists(const char *path)
+{
+}
+
+int cmInternalCreateFile(const char *path)
+{
+    // should create dirs in case the path has '/'?
+}

@@ -21,6 +21,10 @@
 // Defines
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+#define DEFAULT_SRC_DIR "src"
+#define DEFAULT_INCLUDE_DIR "include"
+
+
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Data Types
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -28,8 +32,8 @@
 typedef struct
 {
     char *sceneName;
-    char *srcDirPath;
-    char *headerDirPath;
+    char *srcPath;
+    char *includePath;
 
     bool NO_ENTER;
     bool NO_UPDATE;
@@ -43,4 +47,4 @@ typedef struct
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 
-#endif // #ifndef SMILE_SCENE_MANAGER_INTERNAL_H
+#endif // #ifndef SMILE_GEN_SCENE_INTERNAL_H
