@@ -1,0 +1,8 @@
+# Build output
+build/
+build-strict/
+build_ci_check/
+cmake-build-debug/
+
+# Third-party bundled dependency
+external/
