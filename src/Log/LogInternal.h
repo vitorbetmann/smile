@@ -44,7 +44,7 @@ typedef enum
 {
     LG_RESULT_WRITE_FAILED = -100,
     LG_RESULT_TIME_FAILED = -101,
-} lgResult;
+} lgInternalResult;
 
 /**
  * @brief LogInternal severity levels used by Smile.
@@ -61,7 +61,7 @@ typedef enum
     WARNING,
     ERROR,
     FATAL,
-} InternalLevel;
+} lgInternalLevel;
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -89,7 +89,7 @@ typedef enum
  *
  * @author Vitor Betmann
  */
-int lgInternalLog(InternalLevel level, const char *module, const char *cause,
+int lgInternalLog(lgInternalLevel level, const char *module, const char *cause,
                   const char *fnName, const char *conseq);
 
 /**
@@ -116,7 +116,7 @@ int lgInternalLog(InternalLevel level, const char *module, const char *cause,
  *
  * @author Vitor Betmann
  */
-int lgInternalLogWithArg(InternalLevel level, const char *module,
+int lgInternalLogWithArg(lgInternalLevel level, const char *module,
                          const char *cause, const char *arg,
                          const char *fnName, const char *conseq);
 

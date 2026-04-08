@@ -32,7 +32,7 @@ typedef enum
     CM_RESULT_NULL_ARG = -4,
     CM_RESULT_EMPTY_ARG = -5,
     CM_RESULT_CLOCK_GETTIME_FAILED = -6,
-} cmResult;
+} cmInternalResult;
 
 /**
  * @brief Function pointer used to check whether a module is currently running.

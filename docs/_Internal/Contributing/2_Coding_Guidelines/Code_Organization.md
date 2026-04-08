@@ -255,14 +255,13 @@ See [SceneManager.h](/include/SceneManager.h).
 * Sections in message files should have the following order and be named
   accordingly. Elements in certain sections should also be prefixed.
 
-| Section Order | Section Element        | Section Name    | Prefix  |
-|---------------|------------------------|-----------------|---------|
-| 1             | File Description Block | [Not Named]     | [N/A]   |
-| 2             | Include Guard          | [Not Named]     | [N/A]   |
-| 3             | Module Name            | Module Name     | [N/A]   |
-| 4             | Functions Names        | Functions Names | FN_     |
-| 5             | Causes                 | Causes          | CAUSE_  |
-| 6             | Consequences           | Consequences    | CONSEQ_ |
+| Section Order | Section Element        | Section Name | Prefix  |
+|---------------|------------------------|--------------|---------|
+| 1             | File Description Block | [Not Named]  | [N/A]   |
+| 2             | Include Guard          | [Not Named]  | [N/A]   |
+| 3             | Module Name            | Module Name  | [N/A]   |
+| 4             | Causes                 | Causes       | CAUSE_  |
+| 5             | Consequences           | Consequences | CONSEQ_ |
 
 * The definition of the module's name should be called `MODULE`.
 * Subsections for causes should follow the order below.
