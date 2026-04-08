@@ -58,4 +58,4 @@ extern struct timespec smMockCurrTime;
 extern bool smMockClockGettimeFails;
 
 
-#endif // #ifndef SMILE_SCENE_MANAGER_TEST_HOOKS_H
+#endif
