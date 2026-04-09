@@ -92,6 +92,7 @@ target_include_directories(GenScene PRIVATE
         $<TARGET_PROPERTY:smile,INCLUDE_DIRECTORIES>
         ${CMAKE_CURRENT_SOURCE_DIR}/tools/GenScene
 )
+install(TARGETS GenScene RUNTIME DESTINATION bin)
 
 
 # ——————————————————————————————————————————————————————————————————————————————
@@ -113,7 +114,6 @@ endif ()
 if (SMILE_INFO)
     target_compile_definitions(smile PRIVATE SMILE_INFO)
 endif ()
-
 
 # ——————————————————————————————————————————————————————————————————————————————
 # TEST BUILD OPTION

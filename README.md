@@ -1,18 +1,20 @@
 # Welcome to Smile 😊
 
-Smile (`Simple Modularity Is Lowkey Elegant`) is an open-source, dependency-free,
-modular collection of C libraries that reduces boilerplate for common 2D game-development
-tasks such as `managing scenes`, `simulating particles`, and `saving/loading`.
+Smile (`Simple Modularity Is Lowkey Elegant`) is an open-source,
+dependency-free, modular collection of C libraries that reduces boilerplate for
+common 2D game-development tasks such as `managing scenes`,
+`simulating particles`, and `saving/loading`.
 
-Currently supported on `Mac` and `Windows` (Linux untested but POSIX-compliant), Smile is built
-for people who value development speed without sacrificing control. Its modules follow a
-consistent `Start → Use → Stop` pattern and encapsulating memory management, making it ideal for
-game jams and quick prototyping.
+Currently supported on `Mac` and `Windows` (Linux untested but POSIX-compliant),
+Smile is built for people who value development speed without sacrificing
+control. Its modules follow a consistent `Start → Use → Stop` pattern and
+encapsulate memory management, making it ideal for game jams and quick
+prototyping.
 
-You can also mix and match only the modules you need (for example, using SceneManager
-without ParticleSystem) to keep your project lightweight and focused. And while Smile
-doesn't handle rendering, input, or audio directly, it integrates seamlessly with
-libraries like [raylib](https://www.raylib.com).
+You can also mix and match only the modules you need (for example, using
+SceneManager without ParticleSystem) to keep your project lightweight and
+focused. And while Smile doesn't handle rendering, input, or audio directly, it
+integrates seamlessly with libraries like [raylib](https://www.raylib.com).
 
 ## 🎮 Smile Demo
 
@@ -47,6 +49,7 @@ git clone https://github.com/vitorbetmann/smile.git
 
 cmake -S smile -B smile/build
 cmake --build smile/build
+cmake --install smile/build # Optional step to access Smile tools from cwd
 ```
 
 Smile builds as a static library (libsmile.a on Mac/Linux, smile.lib on
@@ -65,7 +68,7 @@ A typical project structure might look like this:
 By default, Smile compiles with runtime `warning` and `info` logs enabled.
 Below is an example of how they would appear in your terminal:
 
-![Example of Smile's Logs](/docs/_Internal/Assets/_SmileREADME/LogExample.png)
+![Example of Smile's Logs](/docs/_Internal/Assets/_README/LogExample.png)
 
 If you want to disable them, pass the following flags when configuring your
 build with CMake:
@@ -129,7 +132,7 @@ Below is an example of how to use the SceneManager module. It follows a set of
 conventions shared across modules, making it easy to learn new ones:
 
 ```c
-#include "SceneManager.h"
+#include <SceneManager.h>
 #include "Menu.h"            // Define your scenes in other files.
 #include "LevelOne.h"
 
@@ -180,36 +183,80 @@ int main(void)
 }
 ```
 
-Then in your scenes' header files you could have something like:
+You can then use Smile's [GenScene](/docs/tools/GenScene.md) tool to instantly
+create template source and header files which will be put in `src/` and
+`include/` directories.
+
+Using this tool is as easy as:
+
+```zsh
+GenScene menu
+# Or "smile/build/GenScene menu" if you didn't run "cmake --install"
+```
+
+Your header file should look something like:
 
 ```c
 #ifndef MENU_H
 #define MENU_H
 
+
 void menuEnter(void *args);
+
 void menuUpdate(float dt);
+
 void menuDraw(void);
+
 void menuExit(void);
+
 
 #endif
 ```
 
-And in the source files:
+And the source file:
 
 ```c
+#include <SceneManager.h>
 #include "menu.h"
-#include "SceneManager.h"
 
 void menuEnter(void *args)
 {
-    // Handle initialization
+    // TODO
+}
+
+void menuUpdate(float dt)
+{
+    // TODO
+}
+
+void menuDraw(void)
+{
+    // TODO
+}
+
+void menuExit(void)
+{
+    // TODO
+}
+```
+
+From there, fill in your logic. Here's an example of what a menu scene might
+look like:
+
+```c
+#include <SceneManager.h>
+#include "menu.h"
+
+void menuEnter(void *args)
+{
+    // Custom init
 }
 
 void menuUpdate(float dt)
 {
     // Handle inputs and updates
 
-    // Changing scenes is easy after they're created:
+    // Changing scenes is easy:
     if (PlayButtonPressed())
     {
         smSetScene("level 1", nullptr);
@@ -218,23 +265,18 @@ void menuUpdate(float dt)
     // So is quitting the game:
     else if (QuitButtonPressed())
     {
-        smStop(); /* This calls this scene's exit function and sets smIsRunning
-                   * to false, breaking the main game loop.
-                   * Most modules have a Stop function as well. Therefore, the
-                   * workflow of Start → Use → Stop is common, making it easy to
-                   * pick up and learn other modules.
-                   */
+        smStop(); //This breaks the main game loop, safely exiting the game
     }
 }
 
 void menuDraw(void)
 {
-    // Handle rendering
+    // Custom rendering
 }
 
 void menuExit(void)
 {
-    // Handle cleanup
+    // Custom cleanup
 }
 ```
 
@@ -243,8 +285,8 @@ It's as simple as that! All the rest is handled by SceneManager.
 And this is the overall philosophy of Smile. It handles the boilerplate in the
 background so you can focus on letting your creativity out!
 
-If you're interested, feel free to explore each module for detailed guides and
-examples:
+If you're interested, feel free to explore the modules and tools for detailed
+guides and examples:
 
 | Module                                | Description                               |
 |---------------------------------------|-------------------------------------------|
@@ -252,6 +294,10 @@ examples:
 | ParticleSystem (🚧 Under Development) | Simulate smoke, dust, fire, and more      |
 | SaveLoad (🚧 Under Development)       | Quickly save and load your game           |
 | [SceneManager](/docs/SceneManager)    | Manage scenes and transitions cleanly     |
+
+| Tool                                | Description                                     |
+|-------------------------------------|-------------------------------------------------|
+| [GenScene](/docs/tools/GenScene.md) | Create scene template files (source and header) |
 
 ## 🤝 Contributing
 
