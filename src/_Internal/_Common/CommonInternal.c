@@ -10,14 +10,17 @@
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-// Include
+// Includes
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+#include <ctype.h>
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
+#ifdef _WIN32
+#include <direct.h>
+#endif
 #include <sys/stat.h>
-#include <sys/syslimits.h>
 
 #include "CommonInternal.h"
 #include "CommonInternalMessages.h"
@@ -26,12 +29,20 @@
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+// Defines
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+
+#define CM_PATH_MAX 256
+
+
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Functions
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 // Start Related
 
-bool cmInternalIsRunning(cmIsRunningFn cmIsRunning, const char *module, const char *fnName)
+bool cmInternalIsRunning(cmIsRunningFn cmIsRunning, const char *module,
+                         const char *fnName)
 {
     if (!cmIsRunning())
     {
@@ -46,25 +57,41 @@ bool cmInternalIsRunning(cmIsRunningFn cmIsRunning, const char *module, const ch
 
 bool cmInternalDirExists(const char *path)
 {
+#ifdef _WIN32
+    struct _stat sb;
+    return (_stat(path, &sb) == 0 && (sb.st_mode & _S_IFDIR));
+#else
     struct stat sb;
     return (stat(path, &sb) == 0 && S_ISDIR(sb.st_mode));
+#endif
 }
 
 int cmInternalCreateDir(const char *path)
 {
     if (!path)
+    {
         return CM_RESULT_NULL_ARG;
+    }
     if (!path[0])
+    {
         return CM_RESULT_EMPTY_ARG;
+    }
 
+#ifdef _WIN32
+    if (path[0] == '/' || path[0] == '\\' || (isalpha((unsigned char)path[0]) && path[1] == ':'))
+    {
+        return CM_RESULT_INVALID_PATH;
+    }
+#else
     if (path[0] == '/')
     {
         return CM_RESULT_INVALID_PATH;
     }
+#endif
 
-    char tmp[PATH_MAX];
-    size_t len = strnlen(path, PATH_MAX);
-    if (len >= PATH_MAX)
+    char tmp[CM_PATH_MAX];
+    size_t len = strnlen(path, CM_PATH_MAX);
+    if (len >= CM_PATH_MAX)
     {
         return CM_RESULT_INVALID_PATH;
     }
@@ -74,7 +101,11 @@ int cmInternalCreateDir(const char *path)
     char *seg = tmp;
     for (char *p = tmp; ; p++)
     {
+#ifdef _WIN32
+        if (*p == '/' || *p == '\\' || *p == '\0')
+#else
         if (*p == '/' || *p == '\0')
+#endif
         {
             char saved = *p;
             *p = '\0';
@@ -84,7 +115,9 @@ int cmInternalCreateDir(const char *path)
             }
             *p = saved;
             if (saved == '\0')
+            {
                 break;
+            }
             seg = p + 1;
         }
     }
@@ -92,18 +125,31 @@ int cmInternalCreateDir(const char *path)
     // Recursively create intermediate directories
     for (char *p = tmp + 1; *p; p++)
     {
-        if (*p == '/')
+        if (*p == '/'
+#ifdef _WIN32
+            || *p == '\\'
+#endif
+        )
         {
+            char sep = *p;
             *p = '\0';
+#ifdef _WIN32
+            if (_mkdir(tmp) == -1 && errno != EEXIST)
+#else
             if (mkdir(tmp, 0755) == -1 && errno != EEXIST)
+#endif
             {
                 return -1;
             }
-            *p = '/';
+            *p = sep;
         }
     }
 
+#ifdef _WIN32
+    if (_mkdir(tmp) == -1 && errno != EEXIST)
+#else
     if (mkdir(tmp, 0755) == -1 && errno != EEXIST)
+#endif
     {
         return -1;
     }

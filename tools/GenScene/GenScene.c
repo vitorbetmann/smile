@@ -14,7 +14,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <sys/syslimits.h>
 
 #include "CommonInternal.h"
 #include "CommonInternalMessages.h"
@@ -110,7 +109,7 @@ int main(int argc, char *argv[])
         {
             if (i + 1 >= argc)
             {
-                lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_FLAG_REQUIRES_PATH_ARG, argv[i], __func__, CONSEQ_ABORTED);
+                lgInternalLogWithArg(ERROR, ORIGIN,CAUSE_FLAG_REQUIRES_PATH_ARG, argv[i], __func__, CONSEQ_ABORTED);
                 return 1;
             }
             args.srcPath = argv[++i];
@@ -119,7 +118,7 @@ int main(int argc, char *argv[])
         {
             if (i + 1 >= argc)
             {
-                lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_FLAG_REQUIRES_PATH_ARG, argv[i], __func__, CONSEQ_ABORTED);
+                lgInternalLogWithArg(ERROR, ORIGIN,CAUSE_FLAG_REQUIRES_PATH_ARG, argv[i], __func__, CONSEQ_ABORTED);
                 return 1;
             }
             args.includePath = argv[++i];
@@ -165,7 +164,7 @@ int main(int argc, char *argv[])
     // Need to sanitize input and make is system agnostic
     // Handling system specific path should be Common's job
     // But have it work on macOS for now, upgrade later
-    // char srcBuf[PATH_MAX];
+    // char srcBuf[CM_PATH_MAX];
     // snprintf(srcBuf, sizeof(srcBuf), "%s/%s.c", args.srcPath, args.sceneName);
     // if (cmInternalFileExists(srcBuf))
     // {
@@ -176,7 +175,7 @@ int main(int argc, char *argv[])
     //     // }
     // }
     //
-    // char includeBuf[PATH_MAX];
+    // char includeBuf[CM_PATH_MAX];
     // snprintf(includeBuf, sizeof(includeBuf), "%s/%s.h", args.includePath, args.sceneName);
     // if (cmInternalFileExists(includeBuf))
     // {
@@ -195,7 +194,7 @@ int main(int argc, char *argv[])
         {
             lgInternalLogWithArg(FATAL, ORIGIN, CAUSE_FAIL_TO_CREATE_DIR, args.srcPath, __func__, CONSEQ_ABORTED);
         }
-        lgInternalLogWithArg(INFO, ORIGIN, CAUSE_DIR_CREATED, args.srcPath, ORIGIN, CONSEQ_SUCCESSFUL);
+        lgInternalLogWithArg(INFO, ORIGIN, CAUSE_DIR_CREATED, args.srcPath,ORIGIN, CONSEQ_SUCCESSFUL);
     }
     if (createIncludeDir)
     {
@@ -203,7 +202,7 @@ int main(int argc, char *argv[])
         {
             lgInternalLogWithArg(FATAL, ORIGIN, CAUSE_FAIL_TO_CREATE_DIR, args.includePath, __func__, CONSEQ_ABORTED);
         }
-        lgInternalLogWithArg(INFO, ORIGIN, CAUSE_DIR_CREATED, args.includePath, ORIGIN, CONSEQ_SUCCESSFUL);
+        lgInternalLogWithArg(INFO, ORIGIN, CAUSE_DIR_CREATED, args.includePath,ORIGIN, CONSEQ_SUCCESSFUL);
     }
 
     // create files in directories
