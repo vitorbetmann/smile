@@ -4,8 +4,9 @@
  *        CommonInternal module.
  *
  * @note TODO #XX [Function] for [CommonInternal] - Create a func to sanitize path input
- * @note TODO #XX [Function] for [CommonInternal] - Add cmInternalPathJoin(buf,
- * bufSize, dir, file) for cross-platform path joining (CM_PATH_MAX, correct separator)
+ *                                                  int cmInternalSanitizeName(char *buf, size_t size, const char *name);
+ * @note TODO #XX [Function] for [CommonInternal] - Add cmInternalPathJoin(buf, bufSize, dir, file) for cross-platform
+ *                                                  path joining (CM_PATH_MAX, correct separator)
  *
  * @author Vitor Betmann
  */
@@ -48,6 +49,7 @@ typedef enum
     CM_RESULT_NULL_ARG = -4,
     CM_RESULT_EMPTY_ARG = -5,
     CM_RESULT_CLOCK_GETTIME_FAILED = -6,
+    CM_RESULT_INVALID_PATH = -7,
 } cmInternalResult;
 
 /**
@@ -64,6 +66,8 @@ typedef bool (*cmIsRunningFn)(void);
 // Functions - Internal
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+// Start Related
+
 /**
  * @brief Guard function that verifies that a module is running before a public
  *        API continues, logging an error if it is not.
@@ -78,14 +82,15 @@ typedef bool (*cmIsRunningFn)(void);
  */
 bool cmInternalIsRunning(cmIsRunningFn cmIsRunning, const char *module, const char *fnName);
 
+// Filesystem
+
 bool cmInternalDirExists(const char *path);
 
 int cmInternalCreateDir(const char *path);
 
-bool cmInternalFileExists(const char *path);
+bool cmInternalFileExists(const char *filename);
 
-int cmInternalCreateFile(const char *path);
+// int cmInternalCreateFile(const char *path);
 
-int cmInternalJoinPath(char *buf, size_t bufSize, const char *dir, const char *file);
 
 #endif

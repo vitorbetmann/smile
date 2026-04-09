@@ -46,5 +46,6 @@ typedef struct
 // Prototypes
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+bool gsInternalYesNoPrompt(const char *prompt);
 
 #endif

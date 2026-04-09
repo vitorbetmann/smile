@@ -24,6 +24,9 @@
 #define CAUSE_NOT_RUNNING  "Module Not Running"
 #define CAUSE_NULL_ARG  "Null Argument"
 #define CAUSE_EMPTY_ARG  "Empty Argument"
+#define CAUSE_INVALID_PATH "Invalid Path"
+// Fatals
+#define CAUSE_FAIL_TO_CREATE_DIR "Failed To Create Directory"
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
