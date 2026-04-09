@@ -39,8 +39,8 @@ static const char *HELP =
     "  -nu, --no-update           Omit the update callback\n"
     "  -nd, --no-draw             Omit the draw callback\n"
     "  -nx, --no-exit             Omit the exit callback\n"
-    "  -si, --source-in <path>    Output .c file to <path> (default: src/)\n"
-    "  -hi, --header-in <path>    Output .h file to <path> (default: include/)\n"
+    "  -si, --source-in <dir>     Output .c file to this directory (default: src/)\n"
+    "  -hi, --header-in <dir>     Output .h file to this directory (default: include/)\n"
     "  -h,  --help                Show this message\n"
     "\n"
     "  Paths must be relative (no leading '/') and may not contain '..' segments.\n";

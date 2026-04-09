@@ -3,8 +3,6 @@
  * @brief Internal declarations of data structures and functions for the
  *        CommonInternal module.
  *
- * @note TODO #XX [Function] for [CommonInternal] - Create a func to sanitize path input
- *                                                  int cmInternalSanitizeName(char *buf, size_t size, const char *name);
  * @note TODO #XX [Function] for [CommonInternal] - Add cmInternalPathJoin(buf, bufSize, dir, file) for cross-platform
  *                                                  path joining (CM_PATH_MAX, correct separator)
  *

@@ -3,6 +3,9 @@
  * @brief Declarations of internal data types and functions for the
  *        GenScene tool.
  *
+ * @note TODO #XX [Function] for [CommonInternal] - Create a func to sanitize name input
+ *                                                  int cmInternalSanitizeName(char *buf, size_t size, const char *name);
+ *
  * @see GenScene.c
  *
  * @author Vitor Betmann
