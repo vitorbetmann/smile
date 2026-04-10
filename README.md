@@ -1,9 +1,8 @@
 # Welcome to Smile 😊
 
-Smile (`Simple Modularity Is Lowkey Elegant`) is an open-source,
-dependency-free, modular collection of C libraries that reduces boilerplate for
-common 2D game-development tasks such as `managing scenes`,
-`simulating particles`, and `saving/loading`.
+Smile (`Simple Modularity Is Lowkey Elegant`) is an open-source, dependency-free C library, containing modules and tools
+that reduce boilerplate for common 2D game-development tasks such as `managing scenes`, `simulating particles`, and
+`saving/loading`.
 
 Currently supported on `Mac` and `Windows` (Linux untested but POSIX-compliant),
 Smile is built for people who value development speed without sacrificing
@@ -19,13 +18,13 @@ integrates seamlessly with libraries like [raylib](https://www.raylib.com).
 ## 🎮 Smile Demo
 
 <p align="center">
-  <img src="/docs/_Internal/Assets/SceneManager/SceneManagerDemo.gif" width="45%"/>
-  <img src="/docs/_Internal/Assets/ParticleSystem/ParticleSystemDemo.gif" width="45%"/>
+  <img src="/docs/_Internal/Assets/SceneManager/SceneManagerDemo.gif" width="45%" alt="gif of scene manager working"/>
+  <img src="/docs/_Internal/Assets/ParticleSystem/ParticleSystemDemo.gif" width="45%" alt="gif of particle system module working"/>
 </p>
 
 <p align="center">
-  <img src="/docs/_Internal/Assets/SaveLoad/SaveLoadDemo.gif" width="45%"/>
-  <img src="/docs/_Internal/Assets/Log/LogDemo.gif" width="45%"/>
+  <img src="/docs/_Internal/Assets/SaveLoad/SaveLoadDemo.gif" width="45%" alt="gif of save load working"/>
+  <img src="/docs/_Internal/Assets/Log/LogDemo.gif" width="45%" alt="gif of log working"/>
 </p>
 
 ## 🚀 Building Your Game
