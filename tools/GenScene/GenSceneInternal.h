@@ -38,6 +38,7 @@ typedef struct
     char *srcPath;
     char *includePath;
 
+    bool addSection;
     bool noEnter;
     bool noUpdate;
     bool noDraw;

@@ -34,16 +34,19 @@ static const char *HELP =
     "Usage: GenScene <SceneName> [options]\n"
     "\n"
     "Options:\n"
-    "  -s,  --sections            Adds smile-style section headers for code organization\n"
+    "  -h,  --help                Show this message (only works as first flag)\n"
+    "\n"
+    "  -as, --add-sections        Adds smile-style section headers for code organization\n"
+    "\n"
     "  -ne, --no-enter            Omit the enter callback\n"
     "  -nu, --no-update           Omit the update callback\n"
     "  -nd, --no-draw             Omit the draw callback\n"
     "  -nx, --no-exit             Omit the exit callback\n"
-    "  -si, --source-in <dir>     Output .c file to this directory (default: src/)\n"
-    "  -hi, --header-in <dir>     Output .h file to this directory (default: include/)\n"
-    "  -h,  --help                Show this message\n"
     "\n"
-    "  Paths must be relative (no leading '/') and may not contain '..' segments.\n";
+    "  -si, --source-in <dir>     Outputs the .c file to <dir> (default: src/)\n"
+    "  -hi, --header-in <dir>     Outputs the .h file to <dir> (default: include/)\n"
+    "\n"
+    "  Note: <dir> is resolved relative to the current working directory, may not contain '..' segments, and must not exceed 256 characters.\n";
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -90,7 +93,11 @@ int main(int argc, char *argv[])
 
     for (int i = 2; i < argc; i++)
     {
-        if (strcmp(argv[i], "--no-enter") == 0 || strcmp(argv[i], "-ne") == 0)
+        if (strcmp(argv[i], "--section") == 0 || strcmp(argv[i], "-s") == 0)
+        {
+            args.addSection = true;
+        }
+        else if (strcmp(argv[i], "--no-enter") == 0 || strcmp(argv[i], "-ne") == 0)
         {
             args.noEnter = true;
         }

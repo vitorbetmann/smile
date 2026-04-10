@@ -26,16 +26,16 @@ GenScene <SceneName> [options]
 
 ## ⚙️ Options
 
-| Flag                     | Description                                                                                                                                                    |
-|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `-ne, --no-enter`        | Omits the enter callback from the generated files.                                                                                                             |
-| `-nu, --no-update`       | Omits the update callback from the generated files.                                                                                                            |
-| `-nd, --no-draw`         | Omits the draw callback from the generated files.                                                                                                              |
-| `-nx, --no-exit`         | Omits the exit callback from the generated files.                                                                                                              |
+| Flag                     | Description                                                                                                                                                                                                                       |
+|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `-h, --help`             | Prints usage information and exits. Only works as first flag.                                                                                                                                                                     |
+| `-as, --add-sections`    | Adds Smile-style section headers to the generated files for code organization.                                                                                                                                                    |
+| `-ne, --no-enter`        | Omits the enter callback from the generated files.                                                                                                                                                                                |
+| `-nu, --no-update`       | Omits the update callback from the generated files.                                                                                                                                                                               |
+| `-nd, --no-draw`         | Omits the draw callback from the generated files.                                                                                                                                                                                 |
+| `-nx, --no-exit`         | Omits the exit callback from the generated files.                                                                                                                                                                                 |
 | `-si, --source-in <dir>` | Outputs the `.c` file to `dir`, resolved relative to the current working directory. Defaults to `src/`. `dir` may not contain `..` segments and must not exceed 256 characters. Prompts to create `dir` if it does not exist.     |
 | `-hi, --header-in <dir>` | Outputs the `.h` file to `dir`, resolved relative to the current working directory. Defaults to `include/`. `dir` may not contain `..` segments and must not exceed 256 characters. Prompts to create `dir` if it does not exist. |
-| `-s, --sections`         | Adds Smile-style section headers to the generated files for code organization.                                                                                 |
-| `-h, --help`             | Prints usage information and exits.                                                                                                                            |
 
 ---
 
