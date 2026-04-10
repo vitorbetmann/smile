@@ -86,6 +86,8 @@ bool cmInternalIsRunning(cmIsRunningFn cmIsRunning, const char *module, const ch
 
 bool cmInternalDirExists(const char *path);
 
+int cmInternalValidatePath(const char *path);
+
 int cmInternalCreateDir(const char *path);
 
 bool cmInternalFileExists(const char *filename);

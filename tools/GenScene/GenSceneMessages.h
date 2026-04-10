@@ -23,11 +23,10 @@
 // Causes
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-// Infos
-#define CAUSE_FILES_CREATED "Source And Header Files Created"
 // Fatals
 #define CAUSE_NO_CALLBACKS "Scene Has No Callbacks"
 #define CAUSE_FLAG_REQUIRES_PATH_ARG "Flag Requires Path Argument"
+#define CAUSE_INVALID_FLAG "Invalid Flag"
 
 
 #endif

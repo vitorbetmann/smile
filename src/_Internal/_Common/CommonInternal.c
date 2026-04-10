@@ -66,7 +66,8 @@ bool cmInternalDirExists(const char *path)
 #endif
 }
 
-int cmInternalCreateDir(const char *path)
+
+int cmInternalValidatePath(const char *path)
 {
     if (!path)
     {
@@ -89,15 +90,15 @@ int cmInternalCreateDir(const char *path)
     }
 #endif
 
-    char tmp[CM_PATH_MAX];
-    size_t len = strnlen(path, CM_PATH_MAX);
-    if (len >= CM_PATH_MAX)
+    if (strnlen(path, CM_PATH_MAX) >= CM_PATH_MAX)
     {
         return CM_RESULT_INVALID_PATH;
     }
-    memcpy(tmp, path, len + 1);
 
     // Reject any bare ".." segment to prevent escaping cwd
+    char tmp[CM_PATH_MAX];
+    size_t len = strnlen(path, CM_PATH_MAX);
+    memcpy(tmp, path, len + 1);
     char *seg = tmp;
     for (char *p = tmp; ; p++)
     {
@@ -121,6 +122,22 @@ int cmInternalCreateDir(const char *path)
             seg = p + 1;
         }
     }
+
+    return CM_RESULT_OK;
+}
+
+
+int cmInternalCreateDir(const char *path)
+{
+    int result = cmInternalValidatePath(path);
+    if (result != CM_RESULT_OK)
+    {
+        return result;
+    }
+
+    char tmp[CM_PATH_MAX];
+    size_t len = strnlen(path, CM_PATH_MAX);
+    memcpy(tmp, path, len + 1);
 
     // Recursively create intermediate directories
     for (char *p = tmp + 1; *p; p++)

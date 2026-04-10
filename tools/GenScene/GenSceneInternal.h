@@ -17,6 +17,9 @@
 // Includes
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+#include <stdio.h>
+
+
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Defines
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -24,6 +27,7 @@
 #define DEFAULT_SRC_DIR     "src"
 #define DEFAULT_INCLUDE_DIR "include"
 #define GS_NAME_MAX         64
+#define GS_SECTION_DIV      "// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————"
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -43,6 +47,8 @@ typedef struct
     bool noExit;
 } gsInternalArgs;
 
+typedef bool (*gsPromptFn)(const char *prompt);
+
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Prototypes
@@ -51,6 +57,14 @@ typedef struct
 bool gsInternalYesNoPrompt(const char *prompt);
 
 void gsInternalFatalHandler(void);
+
+void gsInternalWriteHeader(FILE *f, const gsInternalArgs *args);
+
+void gsInternalWriteSrc(FILE *f, const gsInternalArgs *args);
+
+int gsInternalRun(int argc, char *argv[]);
+
+void gsSetPrompt(gsPromptFn fn);
 
 
 #endif
