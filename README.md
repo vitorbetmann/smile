@@ -49,7 +49,7 @@ git clone https://github.com/vitorbetmann/smile.git
 
 cmake -S smile -B smile/build
 cmake --build smile/build
-cmake --install smile/build # Optional step to access Smile tools from cwd
+sudo cmake --install smile/build # Optional step to access Smile tools from cwd. Skip `sudo` on Windows
 ```
 
 Smile builds as a static library (libsmile.a on Mac/Linux, smile.lib on
@@ -295,9 +295,9 @@ guides and examples:
 | SaveLoad (🚧 Under Development)       | Quickly save and load your game           |
 | [SceneManager](/docs/SceneManager)    | Manage scenes and transitions cleanly     |
 
-| Tool                                | Description                                     |
-|-------------------------------------|-------------------------------------------------|
-| [GenScene](/docs/tools/GenScene.md) | Create scene template files (source and header) |
+| Tool                                | Description                                                                    |
+|-------------------------------------|--------------------------------------------------------------------------------|
+| [GenScene](/docs/tools/GenScene.md) | Generates boilerplate scene source and header files for use with SceneManager. |
 
 ## 🤝 Contributing
 

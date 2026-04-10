@@ -34,6 +34,7 @@ static const char *HELP =
     "Usage: GenScene <SceneName> [options]\n"
     "\n"
     "Options:\n"
+    "  -s,  --sections            Adds smile-style section headers for code organization\n"
     "  -ne, --no-enter            Omit the enter callback\n"
     "  -nu, --no-update           Omit the update callback\n"
     "  -nd, --no-draw             Omit the draw callback\n"
