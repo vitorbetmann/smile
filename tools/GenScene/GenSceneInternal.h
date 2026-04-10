@@ -3,9 +3,6 @@
  * @brief Declarations of internal data types and functions for the
  *        GenScene tool.
  *
- * @note TODO #XX [Function] for [CommonInternal] - Create a func to sanitize name input
- *                                                  int cmInternalSanitizeName(char *buf, size_t size, const char *name);
- *
  * @see GenScene.c
  *
  * @author Vitor Betmann
@@ -24,8 +21,9 @@
 // Defines
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-#define DEFAULT_SRC_DIR "src"
+#define DEFAULT_SRC_DIR     "src"
 #define DEFAULT_INCLUDE_DIR "include"
+#define GS_NAME_MAX         64
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -51,5 +49,8 @@ typedef struct
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 bool gsInternalYesNoPrompt(const char *prompt);
+
+void gsInternalFatalHandler(void);
+
 
 #endif

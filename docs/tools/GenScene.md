@@ -26,16 +26,22 @@ GenScene <SceneName> [options]
 
 ## ⚙️ Options
 
-| Flag                     | Description                                                                                                                                                                                                                       |
-|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `-h, --help`             | Prints usage information and exits. Only works as first flag.                                                                                                                                                                     |
-| `-as, --add-sections`    | Adds Smile-style section headers to the generated files for code organization.                                                                                                                                                    |
-| `-ne, --no-enter`        | Omits the enter callback from the generated files.                                                                                                                                                                                |
-| `-nu, --no-update`       | Omits the update callback from the generated files.                                                                                                                                                                               |
-| `-nd, --no-draw`         | Omits the draw callback from the generated files.                                                                                                                                                                                 |
-| `-nx, --no-exit`         | Omits the exit callback from the generated files.                                                                                                                                                                                 |
-| `-si, --source-in <dir>` | Outputs the `.c` file to `dir`, resolved relative to the current working directory. Defaults to `src/`. `dir` may not contain `..` segments and must not exceed 256 characters. Prompts to create `dir` if it does not exist.     |
-| `-hi, --header-in <dir>` | Outputs the `.h` file to `dir`, resolved relative to the current working directory. Defaults to `include/`. `dir` may not contain `..` segments and must not exceed 256 characters. Prompts to create `dir` if it does not exist. |
+| Flag                     | Description                                                                                         |
+|--------------------------|-----------------------------------------------------------------------------------------------------|
+| `-h, --help`             | Prints usage information and exits. Only works as first flag.                                       |
+| `-as, --add-sections`    | Adds Smile-style section headers to the generated files for code organization.                      |
+| `-ne, --no-enter`        | Omits the enter callback from the generated files.                                                  |
+| `-nu, --no-update`       | Omits the update callback from the generated files.                                                 |
+| `-nd, --no-draw`         | Omits the draw callback from the generated files.                                                   |
+| `-nx, --no-exit`         | Omits the exit callback from the generated files.                                                   |
+| `-si, --source-in <dir>` | Outputs the .c file to `<dir>` (default: src/). Prompts to create `<dir>` if it does not exist.     |
+| `-hi, --header-in <dir>` | Outputs the .h file to `<dir>` (default: include/). Prompts to create `<dir>` if it does not exist. |
+
+- Note: Scene must have at least 1 callback
+- Note: `<SceneName>` must start with a letter or underscore, contain only letters, digits, underscores, or spaces (
+  spaces become '_'), and must not exceed 64 characters
+- Note: `<dir>` is resolved relative to the current working directory, may not contain '..' segments
+- Note: Neither path (i.e., `<dir>/<SceneName>.c` or `<dir>/<SceneName>.c`) must exceed 256 characters
 
 ---
 
@@ -139,7 +145,7 @@ void Level1Draw(void)
 Generate a scene with Smile-style section headers and no draw callback:
 
 ```
-GenScene HUD --sections --no-draw
+GenScene HUD --add-sections --no-draw
 ```
 
 Result — `include/HUD.h`:

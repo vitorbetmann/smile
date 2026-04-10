@@ -25,20 +25,9 @@
 
 // Infos
 #define CAUSE_FILES_CREATED "Source And Header Files Created"
-#define CAUSE_DIR_CREATED "Directory Created"
-// Warnings
-// Errors
-#define CAUSE_FILE_ALREADY_EXISTS "File Already Exists"
-#define CAUSE_DIR_DOES_NOT_EXIST "Directory Does Not Exist"
-#define CAUSE_FLAG_REQUIRES_PATH_ARG "Flag Requires Path Argument"
 // Fatals
+#define CAUSE_NO_CALLBACKS "Scene Has No Callbacks"
+#define CAUSE_FLAG_REQUIRES_PATH_ARG "Flag Requires Path Argument"
 
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-// Consequences
-// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-
-// Stop
-#define CONSEQ_STOPPED "Stopped"
 
 #endif

@@ -25,6 +25,7 @@
 // Defines
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+#define CM_PATH_MAX 256
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Data Types
@@ -48,6 +49,7 @@ typedef enum
     CM_RESULT_EMPTY_ARG = -5,
     CM_RESULT_CLOCK_GETTIME_FAILED = -6,
     CM_RESULT_INVALID_PATH = -7,
+    CM_RESULT_INVALID_NAME = -8,
 } cmInternalResult;
 
 /**
@@ -87,6 +89,8 @@ bool cmInternalDirExists(const char *path);
 int cmInternalCreateDir(const char *path);
 
 bool cmInternalFileExists(const char *filename);
+
+int cmInternalSanitizeName(char *buf, size_t bufSize, const char *name);
 
 // int cmInternalCreateFile(const char *path);
 

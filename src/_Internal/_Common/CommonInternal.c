@@ -13,6 +13,7 @@
 // Includes
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+#include <ctype.h>
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
@@ -165,6 +166,75 @@ bool cmInternalFileExists(const char *filename)
         return true;
     }
     return false;
+}
+
+int cmInternalSanitizeName(char *buf, size_t bufSize, const char *name)
+{
+    if (!buf || !name)
+    {
+        return CM_RESULT_NULL_ARG;
+    }
+    if (!name[0])
+    {
+        return CM_RESULT_EMPTY_ARG;
+    }
+
+    const char *src = name;
+
+    while (*src && isspace((unsigned char)*src))
+    {
+        src++;
+    }
+
+    if (!*src)
+    {
+        return CM_RESULT_EMPTY_ARG;
+    }
+
+    if (!isalpha((unsigned char)*src) && *src != '_')
+    {
+        return CM_RESULT_INVALID_NAME;
+    }
+
+    size_t out = 0;
+
+    while (*src)
+    {
+        if (isspace((unsigned char)*src))
+        {
+            while (*src && isspace((unsigned char)*src))
+            {
+                src++;
+            }
+
+            if (!*src)
+            {
+                break;
+            }
+
+            if (out + 1 >= bufSize)
+            {
+                return CM_RESULT_INVALID_NAME;
+            }
+            buf[out++] = '_';
+        }
+        else if (isalnum((unsigned char)*src) || *src == '_')
+        {
+            if (out + 1 >= bufSize)
+            {
+                return CM_RESULT_INVALID_NAME;
+            }
+            buf[out++] = *src;
+            src++;
+        }
+        else
+        {
+            return CM_RESULT_INVALID_NAME;
+        }
+    }
+
+    buf[out] = '\0';
+    return CM_RESULT_OK;
 }
 
 // int cmInternalCreateFile(const char *path)
