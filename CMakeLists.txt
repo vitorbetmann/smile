@@ -136,6 +136,17 @@ if (SMILE_TESTS)
     # PUBLIC API TESTS
     add_smile_test(SceneManagerAPITest tests/SceneManagerAPITest.c)
     add_smile_test(LogAPITest tests/LogAPITest.c)
+
+    # TOOL TESTS
+    add_executable(GenSceneToolTest tests/GenSceneToolTest.c tools/GenScene/GenScene.c)
+    target_compile_definitions(GenSceneToolTest PRIVATE GS_TESTING)
+    target_link_libraries(GenSceneToolTest PRIVATE smile)
+    target_include_directories(GenSceneToolTest PRIVATE
+            $<TARGET_PROPERTY:smile,INTERFACE_INCLUDE_DIRECTORIES>
+            $<TARGET_PROPERTY:smile,INCLUDE_DIRECTORIES>
+            ${CMAKE_CURRENT_SOURCE_DIR}/tools/GenScene
+    )
+    add_test(NAME GenSceneToolTest COMMAND GenSceneToolTest)
 endif ()
 
 

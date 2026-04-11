@@ -13,6 +13,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#ifdef _WIN32
+#include <direct.h>
+#else
+#include <sys/stat.h>
+#endif
 
 #include "TestInternal.h"
 
@@ -24,10 +29,14 @@
 static bool canMalloc = true;
 static bool canCalloc = true;
 static bool canRealloc = true;
+static bool canFopen = true;
+static bool canMkdir = true;
 
 static unsigned int mallocNum;
 static unsigned int callocNum;
 static unsigned int reallocNum;
+static unsigned int fopenNum;
+static unsigned int mkdirNum;
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -39,7 +48,7 @@ void tsInternalPass(const char *fnName)
     printf("\t[PASS] %s\n", fnName);
 }
 
-bool tsInternalDisable(InternalMemAllocFn fnName, unsigned int at)
+bool tsInternalDisable(InternalSysFn fnName, unsigned int at)
 {
     switch (fnName)
     {
@@ -54,6 +63,14 @@ bool tsInternalDisable(InternalMemAllocFn fnName, unsigned int at)
     case REALLOC:
         canRealloc = false;
         reallocNum = at;
+        return true;
+    case FOPEN:
+        canFopen = false;
+        fopenNum = at;
+        return true;
+    case MKDIR:
+        canMkdir = false;
+        mkdirNum = at;
         return true;
     default:
         return false;
@@ -91,4 +108,30 @@ void *tsInternalRealloc(void *ptr, const size_t size)
         return nullptr;
     }
     return realloc(ptr, size);
+}
+
+FILE *tsInternalFopen(const char *path, const char *mode)
+{
+    fopenNum--;
+    if (!canFopen && fopenNum == 0)
+    {
+        canFopen = true;
+        return nullptr;
+    }
+    return fopen(path, mode);
+}
+
+int tsInternalMkdir(const char *path)
+{
+    mkdirNum--;
+    if (!canMkdir && mkdirNum == 0)
+    {
+        canMkdir = true;
+        return -1;
+    }
+#ifdef _WIN32
+    return _mkdir(path);
+#else
+    return mkdir(path, 0755);
+#endif
 }

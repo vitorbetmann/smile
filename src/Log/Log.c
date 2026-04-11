@@ -120,7 +120,6 @@ int lgSetFatal(lgFatalHandler handler)
     if (!handler)
     {
         fatalHandler = lgPrivateFatalHandler;
-        return CM_RESULT_OK;
     }
 
     fatalHandler = handler;

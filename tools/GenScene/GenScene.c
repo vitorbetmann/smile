@@ -23,11 +23,16 @@
 #include "GenSceneMessages.h"
 #include "Log.h"
 #include "LogInternal.h"
+#include "TestInternal.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Variables
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+
+#ifdef GS_TESTING
+gsPromptFn gsTestPrompt = nullptr;
+#endif
 
 static const char *USAGE =
     "Usage: GenScene <SceneName> [options]\n"
@@ -59,6 +64,7 @@ static const char *HELP =
 // Prototypes
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+bool gsPrivatePrompt(const char *prompt);
 bool gsPrivateYesNoPrompt(const char *prompt);
 void gsPrivateWriteSrc(FILE *f, const gsInternalArgs *args);
 void gsPrivateWriteHeader(FILE *f, const gsInternalArgs *args);
@@ -147,6 +153,17 @@ void gsInternalFatalHandler(void)
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Functions - Private
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+
+bool gsPrivatePrompt(const char *prompt)
+{
+#ifdef GS_TESTING
+    if (gsTestPrompt)
+    {
+        return gsTestPrompt(prompt);
+    }
+#endif
+    return gsPrivateYesNoPrompt(prompt);
+}
 
 bool gsPrivateYesNoPrompt(const char *prompt)
 {
@@ -344,7 +361,7 @@ int gsInternalRun(int argc, char *argv[])
         lgInternalLogWithArg(WARNING, ORIGIN, CAUSE_DIR_DOES_NOT_EXIST, args.srcPath, ORIGIN, CONSEQ_PAUSED);
         char buf[512];
         snprintf(buf, sizeof(buf), "Create directory: '%s'?", args.srcPath);
-        if (!gsPrivateYesNoPrompt(buf))
+        if (!gsPrivatePrompt(buf))
         {
             lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_DIR_DOES_NOT_EXIST, args.srcPath, ORIGIN, CONSEQ_ABORTED);
             return GS_RESULT_USER_ABORTED;
@@ -356,7 +373,7 @@ int gsInternalRun(int argc, char *argv[])
         lgInternalLogWithArg(WARNING, ORIGIN, CAUSE_DIR_DOES_NOT_EXIST, args.includePath, ORIGIN, CONSEQ_PAUSED);
         char buf[512];
         snprintf(buf, sizeof(buf), "Create directory: '%s'?", args.includePath);
-        if (!gsPrivateYesNoPrompt(buf))
+        if (!gsPrivatePrompt(buf))
         {
             lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_DIR_DOES_NOT_EXIST, args.includePath, ORIGIN, CONSEQ_ABORTED);
             return GS_RESULT_USER_ABORTED;
@@ -374,7 +391,7 @@ int gsInternalRun(int argc, char *argv[])
         lgInternalLogWithArg(WARNING, ORIGIN, CAUSE_FILE_ALREADY_EXISTS, srcBuf, ORIGIN, CONSEQ_PAUSED);
         char buf[2 * CM_PATH_MAX];
         snprintf(buf, sizeof(buf), "Overwrite '%s'? (this may be irreversible)", srcBuf);
-        if (!gsPrivateYesNoPrompt(buf))
+        if (!gsPrivatePrompt(buf))
         {
             lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_FILE_ALREADY_EXISTS, args.srcPath, ORIGIN, CONSEQ_ABORTED);
             return GS_RESULT_USER_ABORTED;
@@ -388,7 +405,7 @@ int gsInternalRun(int argc, char *argv[])
         lgInternalLogWithArg(WARNING, ORIGIN, CAUSE_FILE_ALREADY_EXISTS, includeBuf, ORIGIN, CONSEQ_PAUSED);
         char buf[2 * CM_PATH_MAX];
         snprintf(buf, sizeof(buf), "Overwrite '%s'? (this may be irreversible)", includeBuf);
-        if (!gsPrivateYesNoPrompt(buf))
+        if (!gsPrivatePrompt(buf))
         {
             lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_FILE_ALREADY_EXISTS, includeBuf, ORIGIN, CONSEQ_ABORTED);
             return GS_RESULT_USER_ABORTED;
@@ -416,7 +433,7 @@ int gsInternalRun(int argc, char *argv[])
         lgInternalLogWithArg(INFO, ORIGIN, CAUSE_DIR_CREATED, args.includePath, ORIGIN, CONSEQ_SUCCESSFUL);
     }
 
-    FILE *srcFile = fopen(srcBuf, "w");
+    FILE *srcFile = tsInternalFopen(srcBuf, "w");
     if (!srcFile)
     {
         lgInternalLogWithArg(FATAL, ORIGIN, CAUSE_FAIL_TO_CREATE_FILE, srcBuf, ORIGIN, CONSEQ_ABORTED);
@@ -426,7 +443,7 @@ int gsInternalRun(int argc, char *argv[])
     fclose(srcFile);
     lgInternalLogWithArg(INFO, ORIGIN, CAUSE_FILE_CREATED, srcBuf, ORIGIN, CONSEQ_SUCCESSFUL);
 
-    FILE *includeFile = fopen(includeBuf, "w");
+    FILE *includeFile = tsInternalFopen(includeBuf, "w");
     if (!includeFile)
     {
         lgInternalLogWithArg(FATAL, ORIGIN, CAUSE_FAIL_TO_CREATE_FILE, includeBuf, ORIGIN, CONSEQ_ABORTED);

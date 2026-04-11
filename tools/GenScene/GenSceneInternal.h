@@ -76,4 +76,9 @@ void gsInternalFatalHandler(void);
 
 int gsInternalRun(int argc, char *argv[]);
 
+#ifdef GS_TESTING
+extern gsPromptFn gsTestPrompt;
+#endif
+
+
 #endif

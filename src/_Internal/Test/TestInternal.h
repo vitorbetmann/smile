@@ -10,14 +10,21 @@
 #define SMILE_TEST_INTERNAL_H
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+// Includes
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+
+#include <stdio.h>
+
+
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Data Types
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 /**
- * @brief Identifies allocation functions for failure simulation.
+ * @brief Identifies system functions for failure simulation.
  *
- * Used with tsInternalDisable to specify which type of allocation
- * should be forced to fail.
+ * Used with tsInternalDisable to specify which function should be
+ * forced to fail on a given call count.
  *
  * @author Vitor Betmann
  */
@@ -26,7 +33,9 @@ typedef enum
     MALLOC,
     CALLOC,
     REALLOC,
-} InternalMemAllocFn;
+    FOPEN,
+    MKDIR,
+} InternalSysFn;
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Functions - Internal
@@ -42,18 +51,18 @@ typedef enum
 void tsInternalPass(const char *fnName);
 
 /**
- * @brief Disable a memory allocation function for controlled failure.
+ * @brief Disable a system function for controlled failure simulation.
  *
- * Forces the specified allocation function to fail on the given call count.
+ * Forces the specified function to fail on the given call count.
  *
- * @param fnName Which allocation function to disable (MALLOC, CALLOC, REALLOC).
+ * @param fnName Which function to disable (MALLOC, CALLOC, REALLOC, FOPEN, MKDIR).
  * @param at Call count at which failure should occur.
  *
  * @return true if successfully disabled, false if an invalid function type is given
  *
  * @author Vitor Betmann
  */
-bool tsInternalDisable(InternalMemAllocFn fnName, unsigned int at);
+bool tsInternalDisable(InternalSysFn fnName, unsigned int at);
 
 /**
  * @brief Wrapper around malloc() with optional failure simulation.
@@ -93,6 +102,33 @@ void *tsInternalCalloc(size_t nitems, size_t size);
  * @author Vitor Betmann
  */
 void *tsInternalRealloc(void *ptr, size_t size);
+
+/**
+ * @brief Wrapper around fopen() with optional failure simulation.
+ *
+ * Use tsInternalDisable(FOPEN, n) to force the nth fopen call to return nullptr.
+ *
+ * @param path Path of the file to open.
+ * @param mode Mode string passed to fopen.
+ *
+ * @return FILE pointer, or nullptr if failure is simulated.
+ *
+ * @author Vitor Betmann
+ */
+FILE *tsInternalFopen(const char *path, const char *mode);
+
+/**
+ * @brief Wrapper around mkdir() with optional failure simulation.
+ *
+ * Use tsInternalDisable(MKDIR, n) to force the nth mkdir call to return -1.
+ *
+ * @param path Path of the directory to create.
+ *
+ * @return 0 on success, -1 on failure (real or simulated).
+ *
+ * @author Vitor Betmann
+ */
+int tsInternalMkdir(const char *path);
 
 
 #endif

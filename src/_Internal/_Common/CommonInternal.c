@@ -26,6 +26,7 @@
 #include "CommonInternalMessages.h"
 
 #include "LogInternal.h"
+#include "TestInternal.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -150,11 +151,7 @@ int cmInternalCreateDir(const char *path)
         {
             char sep = *p;
             *p = '\0';
-#ifdef _WIN32
-            if (_mkdir(tmp) == -1 && errno != EEXIST)
-#else
-            if (mkdir(tmp, 0755) == -1 && errno != EEXIST)
-#endif
+            if (tsInternalMkdir(tmp) == -1 && errno != EEXIST)
             {
                 return CM_RESULT_FAIL_TO_CREATE_DIR;
             }
@@ -162,11 +159,7 @@ int cmInternalCreateDir(const char *path)
         }
     }
 
-#ifdef _WIN32
-    if (_mkdir(tmp) == -1 && errno != EEXIST)
-#else
-    if (mkdir(tmp, 0755) == -1 && errno != EEXIST)
-#endif
+    if (tsInternalMkdir(tmp) == -1 && errno != EEXIST)
     {
         return CM_RESULT_FAIL_TO_CREATE_DIR;
     }
