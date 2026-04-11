@@ -56,22 +56,99 @@ static const char *HELP =
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-// Variables
+// Prototypes
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-static gsPromptFn gsCurrentPrompt = gsInternalYesNoPrompt;
+bool gsPrivateYesNoPrompt(const char *prompt);
+void gsPrivateWriteSrc(FILE *f, const gsInternalArgs *args);
+void gsPrivateWriteHeader(FILE *f, const gsInternalArgs *args);
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Functions - Internal
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-void gsSetPrompt(gsPromptFn fn)
+int gsInternalSanitizeName(char *buf, size_t bufSize, const char *name)
 {
-    gsCurrentPrompt = fn ? fn : gsInternalYesNoPrompt;
+    if (!buf || !name)
+    {
+        return CM_RESULT_NULL_ARG;
+    }
+    if (!name[0])
+    {
+        return CM_RESULT_EMPTY_ARG;
+    }
+
+    const char *src = name;
+
+    while (*src && isspace((unsigned char)*src))
+    {
+        src++;
+    }
+
+    if (!*src)
+    {
+        return CM_RESULT_EMPTY_ARG;
+    }
+
+    if (!isalpha((unsigned char)*src) && *src != '_')
+    {
+        return CM_RESULT_INVALID_NAME;
+    }
+
+    size_t out = 0;
+    bool capitalizeNext = false;
+
+    while (*src)
+    {
+        if (isspace((unsigned char)*src))
+        {
+            while (*src && isspace((unsigned char)*src))
+            {
+                src++;
+            }
+
+            if (!*src)
+            {
+                break;
+            }
+
+            capitalizeNext = true;
+        }
+        else if (isalnum((unsigned char)*src) || *src == '_')
+        {
+            if (out + 1 >= bufSize)
+            {
+                return CM_RESULT_INVALID_NAME;
+            }
+            buf[out++] = capitalizeNext ? (char)toupper((unsigned char)*src) : *src;
+            capitalizeNext = false;
+            src++;
+        }
+        else
+        {
+            return CM_RESULT_INVALID_NAME;
+        }
+    }
+
+    buf[out] = '\0';
+    return CM_RESULT_OK;
 }
 
-bool gsInternalYesNoPrompt(const char *prompt)
+void gsInternalFatalHandler(void)
+{
+    printf("%s", USAGE);
+#ifndef GS_TESTING
+    exit(1);
+#endif
+}
+
+
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+// Functions - Private
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+
+bool gsPrivateYesNoPrompt(const char *prompt)
 {
     printf("%s (Y = ok | N = quit): ", prompt);
     char answer;
@@ -79,12 +156,34 @@ bool gsInternalYesNoPrompt(const char *prompt)
     return answer == 'Y' || answer == 'y';
 }
 
-void gsInternalFatalHandler(void)
+void gsInternaWriteSrc(FILE *f, const gsInternalArgs *args)
 {
-    printf("%s", USAGE);
+    if (args->addSection)
+    {
+        fprintf(f, GS_SECTION_DIV "\n// Includes\n" GS_SECTION_DIV "\n");
+        fprintf(f, "\n#include <SceneManager.h>\n\n#include \"%s.h\"\n", args->sceneName);
+        fprintf(f, "\n\n" GS_SECTION_DIV "\n// Defines\n" GS_SECTION_DIV "\n");
+        fprintf(f, "\n\n" GS_SECTION_DIV "\n// Data Types\n" GS_SECTION_DIV "\n");
+        fprintf(f, "\n\n" GS_SECTION_DIV "\n// Prototypes\n" GS_SECTION_DIV "\n");
+        fprintf(f, "\n\n" GS_SECTION_DIV "\n// Variables\n" GS_SECTION_DIV "\n");
+        fprintf(f, "\n\n" GS_SECTION_DIV "\n// Functions\n" GS_SECTION_DIV "\n");
+    }
+    else
+    {
+        fprintf(f, "#include <SceneManager.h>\n\n#include \"%s.h\"\n", args->sceneName);
+    }
+
+    if (!args->noEnter)
+        fprintf(f, "\nvoid %sEnter(void *args)\n{\n    // TODO\n}\n", args->sceneName);
+    if (!args->noUpdate)
+        fprintf(f, "\nvoid %sUpdate(float dt)\n{\n    // TODO\n}\n", args->sceneName);
+    if (!args->noDraw)
+        fprintf(f, "\nvoid %sDraw(void)\n{\n    // TODO\n}\n", args->sceneName);
+    if (!args->noExit)
+        fprintf(f, "\nvoid %sExit(void)\n{\n    // TODO\n}\n", args->sceneName);
 }
 
-void gsInternalWriteHeader(FILE *f, const gsInternalArgs *args)
+void gsPrivateWriteHeader(FILE *f, const gsInternalArgs *args)
 {
     char upperName[GS_NAME_MAX + 1];
     size_t len = strlen(args->sceneName);
@@ -122,43 +221,16 @@ void gsInternalWriteHeader(FILE *f, const gsInternalArgs *args)
     fprintf(f, "\n\n#endif\n");
 }
 
-void gsInternalWriteSrc(FILE *f, const gsInternalArgs *args)
-{
-    if (args->addSection)
-    {
-        fprintf(f, GS_SECTION_DIV "\n// Includes\n" GS_SECTION_DIV "\n");
-        fprintf(f, "\n#include <SceneManager.h>\n\n#include \"%s.h\"\n", args->sceneName);
-        fprintf(f, "\n\n" GS_SECTION_DIV "\n// Defines\n" GS_SECTION_DIV "\n");
-        fprintf(f, "\n\n" GS_SECTION_DIV "\n// Data Types\n" GS_SECTION_DIV "\n");
-        fprintf(f, "\n\n" GS_SECTION_DIV "\n// Prototypes\n" GS_SECTION_DIV "\n");
-        fprintf(f, "\n\n" GS_SECTION_DIV "\n// Variables\n" GS_SECTION_DIV "\n");
-        fprintf(f, "\n\n" GS_SECTION_DIV "\n// Functions\n" GS_SECTION_DIV "\n");
-    }
-    else
-    {
-        fprintf(f, "#include <SceneManager.h>\n\n#include \"%s.h\"\n", args->sceneName);
-    }
-
-    if (!args->noEnter)
-        fprintf(f, "\nvoid %sEnter(void *args)\n{\n    // TODO\n}\n", args->sceneName);
-    if (!args->noUpdate)
-        fprintf(f, "\nvoid %sUpdate(float dt)\n{\n    // TODO\n}\n", args->sceneName);
-    if (!args->noDraw)
-        fprintf(f, "\nvoid %sDraw(void)\n{\n    // TODO\n}\n", args->sceneName);
-    if (!args->noExit)
-        fprintf(f, "\nvoid %sExit(void)\n{\n    // TODO\n}\n", args->sceneName);
-}
-
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-// Main
+// Functions - Main
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-int gsRun(int argc, char *argv[])
+int gsInternalRun(int argc, char *argv[])
 {
     if (argc == 1)
     {
-        lgInternalLog(FATAL, ORIGIN, CAUSE_EMPTY_ARG, ORIGIN, CONSEQ_ABORTED);
+        lgInternalLog(ERROR, ORIGIN, CAUSE_EMPTY_ARG, ORIGIN, CONSEQ_ABORTED);
         return CM_RESULT_EMPTY_ARG;
     }
 
@@ -170,14 +242,14 @@ int gsRun(int argc, char *argv[])
 
     if (argv[1][0] == '-' || strlen(argv[1]) > GS_NAME_MAX)
     {
-        lgInternalLogWithArg(FATAL, ORIGIN, CAUSE_INVALID_NAME, argv[1], ORIGIN, CONSEQ_ABORTED);
+        lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_INVALID_NAME, argv[1], ORIGIN, CONSEQ_ABORTED);
         return CM_RESULT_INVALID_NAME;
     }
 
     char sanitizedName[GS_NAME_MAX];
-    if (cmInternalSanitizeName(sanitizedName, GS_NAME_MAX, argv[1]) != CM_RESULT_OK)
+    if (gsInternalSanitizeName(sanitizedName, GS_NAME_MAX, argv[1]) != CM_RESULT_OK)
     {
-        lgInternalLogWithArg(FATAL, ORIGIN, CAUSE_INVALID_NAME, argv[1], ORIGIN, CONSEQ_ABORTED);
+        lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_INVALID_NAME, argv[1], ORIGIN, CONSEQ_ABORTED);
         return CM_RESULT_INVALID_NAME;
     }
 
@@ -212,12 +284,12 @@ int gsRun(int argc, char *argv[])
         {
             if (i + 1 >= argc)
             {
-                lgInternalLogWithArg(FATAL, ORIGIN, CAUSE_FLAG_REQUIRES_PATH_ARG, argv[i], ORIGIN, CONSEQ_ABORTED);
+                lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_FLAG_REQUIRES_PATH_ARG, argv[i], ORIGIN, CONSEQ_ABORTED);
                 return CM_RESULT_EMPTY_ARG;
             }
             if (cmInternalValidatePath(argv[i + 1]) != CM_RESULT_OK)
             {
-                lgInternalLogWithArg(FATAL, ORIGIN, CAUSE_INVALID_PATH, argv[i + 1], ORIGIN, CONSEQ_ABORTED);
+                lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_INVALID_PATH, argv[i + 1], ORIGIN, CONSEQ_ABORTED);
                 return CM_RESULT_INVALID_PATH;
             }
             args.srcPath = argv[++i];
@@ -226,26 +298,26 @@ int gsRun(int argc, char *argv[])
         {
             if (i + 1 >= argc)
             {
-                lgInternalLogWithArg(FATAL, ORIGIN, CAUSE_FLAG_REQUIRES_PATH_ARG, argv[i], ORIGIN, CONSEQ_ABORTED);
+                lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_FLAG_REQUIRES_PATH_ARG, argv[i], ORIGIN, CONSEQ_ABORTED);
                 return CM_RESULT_EMPTY_ARG;
             }
             if (cmInternalValidatePath(argv[i + 1]) != CM_RESULT_OK)
             {
-                lgInternalLogWithArg(FATAL, ORIGIN, CAUSE_INVALID_PATH, argv[i + 1], ORIGIN, CONSEQ_ABORTED);
+                lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_INVALID_PATH, argv[i + 1], ORIGIN, CONSEQ_ABORTED);
                 return CM_RESULT_INVALID_PATH;
             }
             args.includePath = argv[++i];
         }
         else
         {
-            lgInternalLogWithArg(FATAL, ORIGIN, CAUSE_INVALID_FLAG, argv[i], ORIGIN, CONSEQ_ABORTED);
+            lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_INVALID_FLAG, argv[i], ORIGIN, CONSEQ_ABORTED);
             return GS_RESULT_INVALID_FLAG;
         }
     }
 
     if (args.noEnter && args.noDraw && args.noUpdate && args.noExit)
     {
-        lgInternalLog(FATAL, ORIGIN, CAUSE_NO_CALLBACKS, ORIGIN, CONSEQ_ABORTED);
+        lgInternalLog(ERROR, ORIGIN, CAUSE_NO_CALLBACKS, ORIGIN, CONSEQ_ABORTED);
         return GS_RESULT_NO_CALLBACKS;
     }
 
@@ -267,25 +339,27 @@ int gsRun(int argc, char *argv[])
     }
 
     // Check if they exist
-    if (!cmInternalDirExists(args.includePath))
-    {
-        lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_DIR_DOES_NOT_EXIST, args.includePath, ORIGIN, CONSEQ_PAUSED);
-        if (!gsCurrentPrompt("Create directory?"))
-        {
-            lgInternalLogWithArg(FATAL, ORIGIN, CAUSE_DIR_DOES_NOT_EXIST, args.includePath, ORIGIN, CONSEQ_ABORTED);
-            return GS_RESULT_USER_ABORTED;
-        }
-        createIncludeDir = true;
-    }
     if (!cmInternalDirExists(args.srcPath))
     {
-        lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_DIR_DOES_NOT_EXIST, args.srcPath, ORIGIN, CONSEQ_PAUSED);
-        if (!gsCurrentPrompt("Create directory?"))
+        lgInternalLogWithArg(WARNING, ORIGIN, CAUSE_DIR_DOES_NOT_EXIST, args.srcPath, ORIGIN, CONSEQ_PAUSED);
+        // TODO add args.srcPath to message below
+        if (!gsPrivateYesNoPrompt("Create directory?"))
         {
-            lgInternalLogWithArg(FATAL, ORIGIN, CAUSE_DIR_DOES_NOT_EXIST, args.srcPath, ORIGIN, CONSEQ_ABORTED);
+            lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_DIR_DOES_NOT_EXIST, args.srcPath, ORIGIN, CONSEQ_ABORTED);
             return GS_RESULT_USER_ABORTED;
         }
         createSrcDir = true;
+    }
+    if (!cmInternalDirExists(args.includePath))
+    {
+        lgInternalLogWithArg(WARNING, ORIGIN, CAUSE_DIR_DOES_NOT_EXIST, args.includePath, ORIGIN, CONSEQ_PAUSED);
+        // TODO add args.includePath to message below
+        if (!gsPrivateYesNoPrompt("Create directory?"))
+        {
+            lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_DIR_DOES_NOT_EXIST, args.includePath, ORIGIN, CONSEQ_ABORTED);
+            return GS_RESULT_USER_ABORTED;
+        }
+        createIncludeDir = true;
     }
 
     // The code below doesn't work on Windows atm
@@ -295,10 +369,11 @@ int gsRun(int argc, char *argv[])
     snprintf(srcBuf, sizeof(srcBuf), "%s/%s.c", args.srcPath, args.sceneName);
     if (cmInternalFileExists(srcBuf))
     {
-        lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_FILE_ALREADY_EXISTS, srcBuf, ORIGIN, CONSEQ_PAUSED);
-        if (!gsCurrentPrompt("Overwrite it? (this may be irreversible)"))
+        lgInternalLogWithArg(WARNING, ORIGIN, CAUSE_FILE_ALREADY_EXISTS, srcBuf, ORIGIN, CONSEQ_PAUSED);
+        // TODO add srcBuf to message below
+        if (!gsPrivateYesNoPrompt("Overwrite it? (this may be irreversible)"))
         {
-            lgInternalLogWithArg(FATAL, ORIGIN, CAUSE_FILE_ALREADY_EXISTS, args.srcPath, ORIGIN, CONSEQ_ABORTED);
+            lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_FILE_ALREADY_EXISTS, args.srcPath, ORIGIN, CONSEQ_ABORTED);
             return GS_RESULT_USER_ABORTED;
         }
     }
@@ -307,10 +382,11 @@ int gsRun(int argc, char *argv[])
     snprintf(includeBuf, sizeof(includeBuf), "%s/%s.h", args.includePath, args.sceneName);
     if (cmInternalFileExists(includeBuf))
     {
-        lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_FILE_ALREADY_EXISTS, includeBuf, ORIGIN, CONSEQ_PAUSED);
-        if (!gsCurrentPrompt("Overwrite it? (this may be irreversible)"))
+        lgInternalLogWithArg(WARNING, ORIGIN, CAUSE_FILE_ALREADY_EXISTS, includeBuf, ORIGIN, CONSEQ_PAUSED);
+        // TODO add includeBuf to message below
+        if (!gsPrivateYesNoPrompt("Overwrite it? (this may be irreversible)"))
         {
-            lgInternalLogWithArg(FATAL, ORIGIN, CAUSE_FILE_ALREADY_EXISTS, includeBuf, ORIGIN, CONSEQ_ABORTED);
+            lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_FILE_ALREADY_EXISTS, includeBuf, ORIGIN, CONSEQ_ABORTED);
             return GS_RESULT_USER_ABORTED;
         }
     }
@@ -342,7 +418,7 @@ int gsRun(int argc, char *argv[])
         lgInternalLogWithArg(FATAL, ORIGIN, CAUSE_FAIL_TO_CREATE_FILE, srcBuf, ORIGIN, CONSEQ_ABORTED);
         return CM_RESULT_FAIL_TO_CREATE_FILE;
     }
-    gsInternalWriteSrc(srcFile, &args);
+    gsInternaWriteSrc(srcFile, &args);
     fclose(srcFile);
     lgInternalLogWithArg(INFO, ORIGIN, CAUSE_FILE_CREATED, srcBuf, ORIGIN, CONSEQ_SUCCESSFUL);
 
@@ -352,18 +428,17 @@ int gsRun(int argc, char *argv[])
         lgInternalLogWithArg(FATAL, ORIGIN, CAUSE_FAIL_TO_CREATE_FILE, includeBuf, ORIGIN, CONSEQ_ABORTED);
         return CM_RESULT_FAIL_TO_CREATE_FILE;
     }
-    gsInternalWriteHeader(includeFile, &args);
+    gsPrivateWriteHeader(includeFile, &args);
     fclose(includeFile);
 
     lgInternalLogWithArg(INFO, ORIGIN, CAUSE_FILE_CREATED, includeBuf, ORIGIN, CONSEQ_SUCCESSFUL);
     return CM_RESULT_OK;
 }
 
-
 #ifndef GS_TESTING
 int main(int argc, char *argv[])
 {
     lgSetFatal(gsInternalFatalHandler);
-    return gsRun(argc, argv) == CM_RESULT_OK ? 0 : 1;
+    return gsInternalRun(argc, argv) == CM_RESULT_OK ? 0 : 1;
 }
 #endif

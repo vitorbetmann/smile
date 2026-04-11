@@ -70,17 +70,10 @@ typedef bool (*gsPromptFn)(const char *prompt);
 // Prototypes
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-bool gsInternalYesNoPrompt(const char *prompt);
+int gsInternalSanitizeName(char *buf, size_t bufSize, const char *name);
 
 void gsInternalFatalHandler(void);
 
-void gsInternalWriteHeader(FILE *f, const gsInternalArgs *args);
-
-void gsInternalWriteSrc(FILE *f, const gsInternalArgs *args);
-
-int gsRun(int argc, char *argv[]);
-
-void gsSetPrompt(gsPromptFn fn);
-
+int gsInternalRun(int argc, char *argv[]);
 
 #endif

@@ -96,8 +96,6 @@ int cmInternalCreateDir(const char *path);
 
 bool cmInternalFileExists(const char *filename);
 
-int cmInternalSanitizeName(char *buf, size_t bufSize, const char *name);
-
 int cmInternalDeleteFile(const char *path);
 
 // int cmInternalCreateFile(const char *path);
