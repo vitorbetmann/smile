@@ -162,6 +162,7 @@ Without all the comments, this is how short your main.c file can be:
 
 ```c
 #include <SceneManager.h>
+
 #include "menu.h"
 #include "levelOne.h"
 
@@ -216,6 +217,7 @@ And the source file:
 
 ```c
 #include <SceneManager.h>
+
 #include "menu.h"
 
 void menuEnter(void *args)
@@ -244,6 +246,7 @@ look like:
 
 ```c
 #include <SceneManager.h>
+
 #include "menu.h"
 
 void menuEnter(void *args)

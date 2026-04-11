@@ -156,7 +156,7 @@ int cmInternalCreateDir(const char *path)
             if (mkdir(tmp, 0755) == -1 && errno != EEXIST)
 #endif
             {
-                return -1;
+                return CM_RESULT_FAIL_TO_CREATE_DIR;
             }
             *p = sep;
         }
@@ -168,7 +168,7 @@ int cmInternalCreateDir(const char *path)
     if (mkdir(tmp, 0755) == -1 && errno != EEXIST)
 #endif
     {
-        return -1;
+        return CM_RESULT_FAIL_TO_CREATE_DIR;
     }
 
     return CM_RESULT_OK;
@@ -214,6 +214,7 @@ int cmInternalSanitizeName(char *buf, size_t bufSize, const char *name)
     }
 
     size_t out = 0;
+    bool capitalizeNext = false;
 
     while (*src)
     {
@@ -229,11 +230,7 @@ int cmInternalSanitizeName(char *buf, size_t bufSize, const char *name)
                 break;
             }
 
-            if (out + 1 >= bufSize)
-            {
-                return CM_RESULT_INVALID_NAME;
-            }
-            buf[out++] = '_';
+            capitalizeNext = true;
         }
         else if (isalnum((unsigned char)*src) || *src == '_')
         {
@@ -241,7 +238,8 @@ int cmInternalSanitizeName(char *buf, size_t bufSize, const char *name)
             {
                 return CM_RESULT_INVALID_NAME;
             }
-            buf[out++] = *src;
+            buf[out++] = capitalizeNext ? (char)toupper((unsigned char)*src) : *src;
+            capitalizeNext = false;
             src++;
         }
         else
@@ -251,6 +249,27 @@ int cmInternalSanitizeName(char *buf, size_t bufSize, const char *name)
     }
 
     buf[out] = '\0';
+    return CM_RESULT_OK;
+}
+
+int cmInternalDeleteFile(const char *path)
+{
+    int result = cmInternalValidatePath(path);
+    if (result != CM_RESULT_OK)
+    {
+        return result;
+    }
+
+    if (!cmInternalFileExists(path))
+    {
+        return CM_RESULT_FILE_NOT_FOUND;
+    }
+
+    if (remove(path) != 0)
+    {
+        return CM_RESULT_FAIL_TO_DELETE_FILE;
+    }
+
     return CM_RESULT_OK;
 }
 

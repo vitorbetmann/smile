@@ -37,11 +37,12 @@ GenScene <SceneName> [options]
 | `-si, --source-in <dir>` | Outputs the .c file to `<dir>` (default: src/). Prompts to create `<dir>` if it does not exist.     |
 | `-hi, --header-in <dir>` | Outputs the .h file to `<dir>` (default: include/). Prompts to create `<dir>` if it does not exist. |
 
-- Note: Scene must have at least 1 callback
+- Note: The scene must have at least 1 callback
 - Note: `<SceneName>` must start with a letter or underscore, contain only letters, digits, underscores, or spaces (
-  spaces become '_'), and must not exceed 64 characters
+  spaces capitalize the next character and trailing/leading whitespace is ignored), and must not exceed 64 characters.
+  To pass a name with spaces, wrap it in quotes: `GenScene "Level 1"` → `Level1.c` / `Level1.h`
 - Note: `<dir>` is resolved relative to the current working directory, may not contain '..' segments
-- Note: Neither path (i.e., `<dir>/<SceneName>.c` or `<dir>/<SceneName>.c`) must exceed 256 characters
+- Note: Neither path (i.e., `<dir>/<SceneName>.c` or `<dir>/<SceneName>.h`) must exceed 256 characters
 
 ---
 
@@ -76,6 +77,7 @@ Result — `src/Menu.c`:
 
 ```c
 #include <SceneManager.h>
+
 #include "Menu.h"
 
 void MenuEnter(void *args)
@@ -101,40 +103,41 @@ void MenuExit(void)
 
 <br>
 
-Generate a scene without enter and exit callbacks, outputting to custom
+Generate a scene with spaces in the name, without enter and exit callbacks, outputting to custom
 directories:
 
 ```
-GenScene Level1 --no-enter --no-exit --source-in src/scenes --header-in include/scenes
+GenScene "Main Menu" --no-enter --no-exit --source-in src/scenes --header-in include/scenes
 ```
 
-Result — `include/scenes/Level1.h`:
+Result — `include/scenes/MainMenu.h`:
 
 ```c
-#ifndef LEVEL1_H
-#define LEVEL1_H
+#ifndef MAINMENU_H
+#define MAINMENU_H
 
 
-void Level1Update(float dt);
+void MainMenuUpdate(float dt);
 
-void Level1Draw(void);
+void MainMenuDraw(void);
 
 
 #endif
 ```
 
-Result — `src/scenes/Level1.c`:
+Result — `src/scenes/MainMenu.c`:
 
 ```c
 #include <SceneManager.h>
-#include "Level1.h"
 
-void Level1Update(float dt)
+#include "MainMenu.h"
+
+void MainMenuUpdate(float dt)
 {
     // TODO
 }
 
-void Level1Draw(void)
+void MainMenuDraw(void)
 {
     // TODO
 }
@@ -197,6 +200,7 @@ Result — `src/HUD.c`:
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 #include <SceneManager.h>
+
 #include "HUD.h"
 
 

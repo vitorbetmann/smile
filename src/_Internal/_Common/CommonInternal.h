@@ -50,6 +50,10 @@ typedef enum
     CM_RESULT_CLOCK_GETTIME_FAILED = -6,
     CM_RESULT_INVALID_PATH = -7,
     CM_RESULT_INVALID_NAME = -8,
+    CM_RESULT_FILE_NOT_FOUND = -9,
+    CM_RESULT_FAIL_TO_CREATE_DIR = -10,
+    CM_RESULT_FAIL_TO_DELETE_FILE = -11,
+    CM_RESULT_FAIL_TO_CREATE_FILE = -12,
 } cmInternalResult;
 
 /**
@@ -93,6 +97,8 @@ int cmInternalCreateDir(const char *path);
 bool cmInternalFileExists(const char *filename);
 
 int cmInternalSanitizeName(char *buf, size_t bufSize, const char *name);
+
+int cmInternalDeleteFile(const char *path);
 
 // int cmInternalCreateFile(const char *path);
 
