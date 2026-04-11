@@ -342,8 +342,9 @@ int gsInternalRun(int argc, char *argv[])
     if (!cmInternalDirExists(args.srcPath))
     {
         lgInternalLogWithArg(WARNING, ORIGIN, CAUSE_DIR_DOES_NOT_EXIST, args.srcPath, ORIGIN, CONSEQ_PAUSED);
-        // TODO add args.srcPath to message below
-        if (!gsPrivateYesNoPrompt("Create directory?"))
+        char buf[512];
+        snprintf(buf, sizeof(buf), "Create directory: '%s'?", args.srcPath);
+        if (!gsPrivateYesNoPrompt(buf))
         {
             lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_DIR_DOES_NOT_EXIST, args.srcPath, ORIGIN, CONSEQ_ABORTED);
             return GS_RESULT_USER_ABORTED;
@@ -353,8 +354,9 @@ int gsInternalRun(int argc, char *argv[])
     if (!cmInternalDirExists(args.includePath))
     {
         lgInternalLogWithArg(WARNING, ORIGIN, CAUSE_DIR_DOES_NOT_EXIST, args.includePath, ORIGIN, CONSEQ_PAUSED);
-        // TODO add args.includePath to message below
-        if (!gsPrivateYesNoPrompt("Create directory?"))
+        char buf[512];
+        snprintf(buf, sizeof(buf), "Create directory: '%s'?", args.includePath);
+        if (!gsPrivateYesNoPrompt(buf))
         {
             lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_DIR_DOES_NOT_EXIST, args.includePath, ORIGIN, CONSEQ_ABORTED);
             return GS_RESULT_USER_ABORTED;
@@ -370,8 +372,9 @@ int gsInternalRun(int argc, char *argv[])
     if (cmInternalFileExists(srcBuf))
     {
         lgInternalLogWithArg(WARNING, ORIGIN, CAUSE_FILE_ALREADY_EXISTS, srcBuf, ORIGIN, CONSEQ_PAUSED);
-        // TODO add srcBuf to message below
-        if (!gsPrivateYesNoPrompt("Overwrite it? (this may be irreversible)"))
+        char buf[2 * CM_PATH_MAX];
+        snprintf(buf, sizeof(buf), "Overwrite '%s'? (this may be irreversible)", srcBuf);
+        if (!gsPrivateYesNoPrompt(buf))
         {
             lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_FILE_ALREADY_EXISTS, args.srcPath, ORIGIN, CONSEQ_ABORTED);
             return GS_RESULT_USER_ABORTED;
@@ -383,8 +386,9 @@ int gsInternalRun(int argc, char *argv[])
     if (cmInternalFileExists(includeBuf))
     {
         lgInternalLogWithArg(WARNING, ORIGIN, CAUSE_FILE_ALREADY_EXISTS, includeBuf, ORIGIN, CONSEQ_PAUSED);
-        // TODO add includeBuf to message below
-        if (!gsPrivateYesNoPrompt("Overwrite it? (this may be irreversible)"))
+        char buf[2 * CM_PATH_MAX];
+        snprintf(buf, sizeof(buf), "Overwrite '%s'? (this may be irreversible)", includeBuf);
+        if (!gsPrivateYesNoPrompt(buf))
         {
             lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_FILE_ALREADY_EXISTS, includeBuf, ORIGIN, CONSEQ_ABORTED);
             return GS_RESULT_USER_ABORTED;
