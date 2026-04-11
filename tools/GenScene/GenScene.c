@@ -173,7 +173,7 @@ bool gsPrivateYesNoPrompt(const char *prompt)
     return answer == 'Y' || answer == 'y';
 }
 
-void gsInternaWriteSrc(FILE *f, const gsInternalArgs *args)
+void gsPrivateWriteSrc(FILE *f, const gsInternalArgs *args)
 {
     if (args->addSection)
     {
@@ -439,7 +439,7 @@ int gsInternalRun(int argc, char *argv[])
         lgInternalLogWithArg(FATAL, ORIGIN, CAUSE_FAIL_TO_CREATE_FILE, srcBuf, ORIGIN, CONSEQ_ABORTED);
         return CM_RESULT_FAIL_TO_CREATE_FILE;
     }
-    gsInternaWriteSrc(srcFile, &args);
+    gsPrivateWriteSrc(srcFile, &args);
     fclose(srcFile);
     lgInternalLogWithArg(INFO, ORIGIN, CAUSE_FILE_CREATED, srcBuf, ORIGIN, CONSEQ_SUCCESSFUL);
 
