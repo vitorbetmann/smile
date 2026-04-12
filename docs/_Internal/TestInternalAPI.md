@@ -99,7 +99,7 @@ call count. After the failure occurs, normal behaviour resumes.
     - `fnName` — Function to disable (`MALLOC`, `CALLOC`, `REALLOC`, `FOPEN`, `MKDIR`).
     - `at` — Call count at which failure occurs.
 - Returns: `true` if successfully disabled, `false` if an invalid function
-  type is given.
+  type is given or if `at` is `0`.
 
 ✅ Example
 
@@ -109,6 +109,32 @@ void Test_smStart_FailsIfCallocFails(void)
     tsInternalDisable(CALLOC, 1);
     assert(!smStart());
     tsInternalPass("Test_smStart_FailsIfCallocFails");
+}
+```
+
+<br>
+
+| `void tsInternalReset(void)` |
+|------------------------------|
+
+Resets all failure simulation state to its defaults — no failures scheduled,
+all system function wrappers pass through normally. Call this at the start of
+any test that uses `tsInternalDisable` to guarantee a clean slate, regardless
+of what a previous test may have left behind.
+
+> **Note:** `tsInternalDisable` already auto-resets when the simulated failure
+> fires, so `tsInternalReset` is only necessary as a defensive guard at the
+> top of each test that schedules a failure.
+
+✅ Example
+
+```c
+void Test_smStart_FailsIfCallocFails(void)
+{
+    tsInternalReset();
+    tsInternalDisable(CALLOC, 1);
+    assert(!smStart());
+    tsInternalPass(__func__);
 }
 ```
 
@@ -220,4 +246,32 @@ Wrapper around `mkdir()` with optional failure simulation.
 tsInternalDisable(MKDIR, 1);
 assert(gsInternalRun(argc, argv) == CM_RESULT_FAIL_TO_CREATE_DIR);
 tsInternalPass("Test_gsInternalRun_FailsIfMkdirFails");
+```
+
+<br>
+
+| `char *tsInternalMkdtemp(char *tmpl)` |
+|---------------------------------------|
+
+Portable wrapper around `mkdtemp()`. Creates a unique temporary directory by
+replacing the trailing `"XXXXXX"` in `tmpl` with a unique suffix, then creating
+the directory. On POSIX, delegates to `mkdtemp`; on Windows, uses `_mktemp` +
+`_mkdir`.
+
+- Parameters:
+    - `tmpl` — Template string ending in `"XXXXXX"`, modified in-place.
+- Returns: Pointer to `tmpl` on success, `nullptr` on failure.
+
+> **Note:** `tsInternalMkdtemp` calls the platform's directory creation
+> primitive directly and does **not** go through `tsInternalMkdir`.
+> `tsInternalDisable(MKDIR, n)` has no effect on temp directory creation.
+> This is intentional — temp dirs are test infrastructure, not code under
+> test, so failure simulation should not interfere with them.
+
+✅ Example
+
+```c
+char dir[] = "gstest_src_XXXXXX";
+assert(tsInternalMkdtemp(dir) != nullptr);
+// dir is now e.g. "gstest_src_a01234" and the directory exists
 ```

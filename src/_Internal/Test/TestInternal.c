@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #ifdef _WIN32
 #include <direct.h>
+#include <io.h>
 #else
 #include <sys/stat.h>
 #endif
@@ -50,6 +51,8 @@ void tsInternalPass(const char *fnName)
 
 bool tsInternalDisable(InternalSysFn fnName, unsigned int at)
 {
+    if (at == 0)
+        return false;
     switch (fnName)
     {
     case MALLOC:
@@ -133,5 +136,33 @@ int tsInternalMkdir(const char *path)
     return _mkdir(path);
 #else
     return mkdir(path, 0755);
+#endif
+}
+
+void tsInternalReset(void)
+{
+    canMalloc = true;
+    canCalloc = true;
+    canRealloc = true;
+    canFopen = true;
+    canMkdir = true;
+
+    mallocNum = 0;
+    callocNum = 0;
+    reallocNum = 0;
+    fopenNum = 0;
+    mkdirNum = 0;
+}
+
+char *tsInternalMkdtemp(char *tmpl)
+{
+#ifdef _WIN32
+    if (_mktemp(tmpl) == nullptr)
+        return nullptr;
+    if (_mkdir(tmpl) != 0)
+        return nullptr;
+    return tmpl;
+#else
+    return mkdtemp(tmpl);
 #endif
 }

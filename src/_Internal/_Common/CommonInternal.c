@@ -19,6 +19,8 @@
 #include <string.h>
 #ifdef _WIN32
 #include <direct.h>
+#else
+#include <unistd.h>
 #endif
 #include <sys/stat.h>
 
@@ -27,13 +29,6 @@
 
 #include "LogInternal.h"
 #include "TestInternal.h"
-
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-// Defines
-// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-
-#define CM_PATH_MAX 256
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -47,7 +42,7 @@ bool cmInternalIsRunning(cmIsRunningFn cmIsRunning, const char *module,
 {
     if (!cmIsRunning())
     {
-        lgInternalLog(ERROR, module, CAUSE_NOT_RUNNING, fnName,CONSEQ_ABORTED);
+        lgInternalLog(ERROR, module, CAUSE_NOT_RUNNING, fnName, CONSEQ_ABORTED);
         return false;
     }
 
@@ -60,7 +55,7 @@ bool cmInternalDirExists(const char *path)
 {
 #ifdef _WIN32
     struct _stat sb;
-    return (_stat(path, &sb) == 0 && (sb.st_mode & _S_IFDIR));
+    return _stat(path, &sb) == 0 && sb.st_mode & _S_IFDIR;
 #else
     struct stat sb;
     return (stat(path, &sb) == 0 && S_ISDIR(sb.st_mode));
@@ -91,14 +86,14 @@ int cmInternalValidatePath(const char *path)
     }
 #endif
 
-    if (strnlen(path, CM_PATH_MAX) >= CM_PATH_MAX)
+    size_t len = strnlen(path, CM_PATH_MAX);
+    if (len >= CM_PATH_MAX)
     {
         return CM_RESULT_INVALID_PATH;
     }
 
     // Reject any bare ".." segment to prevent escaping cwd
     char tmp[CM_PATH_MAX];
-    size_t len = strnlen(path, CM_PATH_MAX);
     memcpy(tmp, path, len + 1);
     char *seg = tmp;
     for (char *p = tmp; ; p++)
@@ -199,6 +194,27 @@ int cmInternalDeleteFile(const char *path)
     return CM_RESULT_OK;
 }
 
-// int cmInternalCreateFile(const char *path)
-// {
-// }
+int cmInternalDeleteDir(const char *path)
+{
+    int result = cmInternalValidatePath(path);
+    if (result != CM_RESULT_OK)
+    {
+        return result;
+    }
+
+    if (!cmInternalDirExists(path))
+    {
+        return CM_RESULT_DIR_NOT_FOUND;
+    }
+
+#ifdef _WIN32
+    if (_rmdir(path) != 0)
+#else
+    if (rmdir(path) != 0)
+#endif
+    {
+        return CM_RESULT_FAIL_TO_DELETE_DIR;
+    }
+
+    return CM_RESULT_OK;
+}

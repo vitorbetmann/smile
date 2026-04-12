@@ -14,7 +14,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "CommonInternal.h"
 #include "GenSceneInternal.h"
@@ -264,8 +263,8 @@ void Test_gsInternalRun_SucceedsAndCreatesBothFiles(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
     char incDir[] = "gstest_inc_XXXXXX";
-    assert(mkdtemp(srcDir) != nullptr);
-    assert(mkdtemp(incDir) != nullptr);
+    assert(tsInternalMkdtemp(srcDir) != nullptr);
+    assert(tsInternalMkdtemp(incDir) != nullptr);
 
     char *argv[] = {"GenScene", "TestScene", "-si", srcDir, "-hi", incDir};
     assert(gsInternalRun(6, argv) == CM_RESULT_OK);
@@ -280,8 +279,8 @@ void Test_gsInternalRun_SucceedsAndCreatesBothFiles(void)
 
     remove(srcPath);
     remove(incPath);
-    rmdir(srcDir);
-    rmdir(incDir);
+    cmInternalDeleteDir(srcDir);
+    cmInternalDeleteDir(incDir);
     tsInternalPass(__func__);
 }
 
@@ -289,8 +288,8 @@ void Test_gsInternalRun_GeneratedSrcContainsAllCallbacks(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
     char incDir[] = "gstest_inc_XXXXXX";
-    assert(mkdtemp(srcDir) != nullptr);
-    assert(mkdtemp(incDir) != nullptr);
+    assert(tsInternalMkdtemp(srcDir) != nullptr);
+    assert(tsInternalMkdtemp(incDir) != nullptr);
 
     char *argv[] = {"GenScene", "TestScene", "-si", srcDir, "-hi", incDir};
     assert(gsInternalRun(6, argv) == CM_RESULT_OK);
@@ -307,8 +306,8 @@ void Test_gsInternalRun_GeneratedSrcContainsAllCallbacks(void)
 
     remove(srcPath);
     remove(incPath);
-    rmdir(srcDir);
-    rmdir(incDir);
+    cmInternalDeleteDir(srcDir);
+    cmInternalDeleteDir(incDir);
     tsInternalPass(__func__);
 }
 
@@ -316,8 +315,8 @@ void Test_gsInternalRun_GeneratedSrcOmitsDisabledCallbacks(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
     char incDir[] = "gstest_inc_XXXXXX";
-    assert(mkdtemp(srcDir) != nullptr);
-    assert(mkdtemp(incDir) != nullptr);
+    assert(tsInternalMkdtemp(srcDir) != nullptr);
+    assert(tsInternalMkdtemp(incDir) != nullptr);
 
     char *argv[] = {"GenScene", "TestScene", "-ne", "-si", srcDir, "-hi", incDir};
     assert(gsInternalRun(7, argv) == CM_RESULT_OK);
@@ -334,8 +333,8 @@ void Test_gsInternalRun_GeneratedSrcOmitsDisabledCallbacks(void)
 
     remove(srcPath);
     remove(incPath);
-    rmdir(srcDir);
-    rmdir(incDir);
+    cmInternalDeleteDir(srcDir);
+    cmInternalDeleteDir(incDir);
     tsInternalPass(__func__);
 }
 
@@ -343,17 +342,18 @@ void Test_gsInternalRun_FailsWhenSrcFileCannotBeCreated(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
     char incDir[] = "gstest_inc_XXXXXX";
-    assert(mkdtemp(srcDir) != nullptr);
-    assert(mkdtemp(incDir) != nullptr);
+    assert(tsInternalMkdtemp(srcDir) != nullptr);
+    assert(tsInternalMkdtemp(incDir) != nullptr);
 
+    tsInternalReset();
     assert(lgSetFatal(gsInternalFatalHandler) == CM_RESULT_OK);
     tsInternalDisable(FOPEN, 1);
     char *argv[] = {"GenScene", "TestScene", "-si", srcDir, "-hi", incDir};
     int result = gsInternalRun(6, argv);
     assert(lgSetFatal(nullptr) == CM_RESULT_OK);
 
-    rmdir(srcDir);
-    rmdir(incDir);
+    cmInternalDeleteDir(srcDir);
+    cmInternalDeleteDir(incDir);
     assert(result == CM_RESULT_FAIL_TO_CREATE_FILE);
     tsInternalPass(__func__);
 }
@@ -362,9 +362,10 @@ void Test_gsInternalRun_FailsWhenIncFileCannotBeCreated(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
     char incDir[] = "gstest_inc_XXXXXX";
-    assert(mkdtemp(srcDir) != nullptr);
-    assert(mkdtemp(incDir) != nullptr);
+    assert(tsInternalMkdtemp(srcDir) != nullptr);
+    assert(tsInternalMkdtemp(incDir) != nullptr);
 
+    tsInternalReset();
     assert(lgSetFatal(gsInternalFatalHandler) == CM_RESULT_OK);
     tsInternalDisable(FOPEN, 2);
     char *argv[] = {"GenScene", "TestScene", "-si", srcDir, "-hi", incDir};
@@ -374,14 +375,15 @@ void Test_gsInternalRun_FailsWhenIncFileCannotBeCreated(void)
     char srcPath[CM_PATH_MAX];
     snprintf(srcPath, sizeof(srcPath), "%s/TestScene.c", srcDir);
     remove(srcPath);
-    rmdir(srcDir);
-    rmdir(incDir);
+    cmInternalDeleteDir(srcDir);
+    cmInternalDeleteDir(incDir);
     assert(result == CM_RESULT_FAIL_TO_CREATE_FILE);
     tsInternalPass(__func__);
 }
 
 void Test_gsInternalRun_FailsWhenSrcDirCannotBeCreated(void)
 {
+    tsInternalReset();
     assert(lgSetFatal(gsInternalFatalHandler) == CM_RESULT_OK);
     gsTestUserConfirms = true;
     tsInternalDisable(MKDIR, 1);
@@ -396,8 +398,9 @@ void Test_gsInternalRun_FailsWhenSrcDirCannotBeCreated(void)
 void Test_gsInternalRun_FailsWhenIncDirCannotBeCreated(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
-    assert(mkdtemp(srcDir) != nullptr);
+    assert(tsInternalMkdtemp(srcDir) != nullptr);
 
+    tsInternalReset();
     assert(lgSetFatal(gsInternalFatalHandler) == CM_RESULT_OK);
     gsTestUserConfirms = true;
     tsInternalDisable(MKDIR, 1);
@@ -406,7 +409,7 @@ void Test_gsInternalRun_FailsWhenIncDirCannotBeCreated(void)
     gsTestUserConfirms = false;
     assert(lgSetFatal(nullptr) == CM_RESULT_OK);
 
-    rmdir(srcDir);
+    cmInternalDeleteDir(srcDir);
     assert(result == CM_RESULT_FAIL_TO_CREATE_DIR);
     tsInternalPass(__func__);
 }
@@ -415,8 +418,8 @@ void Test_gsInternalRun_GeneratedHeaderHasCorrectIncludeGuard(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
     char incDir[] = "gstest_inc_XXXXXX";
-    assert(mkdtemp(srcDir) != nullptr);
-    assert(mkdtemp(incDir) != nullptr);
+    assert(tsInternalMkdtemp(srcDir) != nullptr);
+    assert(tsInternalMkdtemp(incDir) != nullptr);
 
     char *argv[] = {"GenScene", "TestScene", "-si", srcDir, "-hi", incDir};
     assert(gsInternalRun(6, argv) == CM_RESULT_OK);
@@ -432,8 +435,8 @@ void Test_gsInternalRun_GeneratedHeaderHasCorrectIncludeGuard(void)
 
     remove(srcPath);
     remove(incPath);
-    rmdir(srcDir);
-    rmdir(incDir);
+    cmInternalDeleteDir(srcDir);
+    cmInternalDeleteDir(incDir);
     tsInternalPass(__func__);
 }
 
@@ -454,12 +457,12 @@ void Test_gsInternalRun_AbortsWhenUserDeclinesCreateSrcDir(void)
 void Test_gsInternalRun_AbortsWhenUserDeclinesCreateIncDir(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
-    assert(mkdtemp(srcDir) != nullptr);
+    assert(tsInternalMkdtemp(srcDir) != nullptr);
 
     char *argv[] = {"GenScene", "TestScene", "-si", srcDir, "-hi", "gstest_nonexistent_inc"};
     int result = gsInternalRun(6, argv);
 
-    rmdir(srcDir);
+    cmInternalDeleteDir(srcDir);
     assert(result == GS_RESULT_USER_ABORTED);
     tsInternalPass(__func__);
 }
@@ -468,8 +471,8 @@ void Test_gsInternalRun_AbortsWhenUserDeclinesOverwriteSrcFile(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
     char incDir[] = "gstest_inc_XXXXXX";
-    assert(mkdtemp(srcDir) != nullptr);
-    assert(mkdtemp(incDir) != nullptr);
+    assert(tsInternalMkdtemp(srcDir) != nullptr);
+    assert(tsInternalMkdtemp(incDir) != nullptr);
 
     char srcPath[CM_PATH_MAX];
     snprintf(srcPath, sizeof(srcPath), "%s/TestScene.c", srcDir);
@@ -481,8 +484,8 @@ void Test_gsInternalRun_AbortsWhenUserDeclinesOverwriteSrcFile(void)
     int result = gsInternalRun(6, argv);
 
     remove(srcPath);
-    rmdir(srcDir);
-    rmdir(incDir);
+    cmInternalDeleteDir(srcDir);
+    cmInternalDeleteDir(incDir);
     assert(result == GS_RESULT_USER_ABORTED);
     tsInternalPass(__func__);
 }
@@ -491,8 +494,8 @@ void Test_gsInternalRun_AbortsWhenUserDeclinesOverwriteIncFile(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
     char incDir[] = "gstest_inc_XXXXXX";
-    assert(mkdtemp(srcDir) != nullptr);
-    assert(mkdtemp(incDir) != nullptr);
+    assert(tsInternalMkdtemp(srcDir) != nullptr);
+    assert(tsInternalMkdtemp(incDir) != nullptr);
 
     char incPath[CM_PATH_MAX];
     snprintf(incPath, sizeof(incPath), "%s/TestScene.h", incDir);
@@ -504,8 +507,8 @@ void Test_gsInternalRun_AbortsWhenUserDeclinesOverwriteIncFile(void)
     int result = gsInternalRun(6, argv);
 
     remove(incPath);
-    rmdir(srcDir);
-    rmdir(incDir);
+    cmInternalDeleteDir(srcDir);
+    cmInternalDeleteDir(incDir);
     assert(result == GS_RESULT_USER_ABORTED);
     tsInternalPass(__func__);
 }
@@ -514,8 +517,8 @@ void Test_gsInternalRun_SucceedsWhenUserAcceptsOverwrite(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
     char incDir[] = "gstest_inc_XXXXXX";
-    assert(mkdtemp(srcDir) != nullptr);
-    assert(mkdtemp(incDir) != nullptr);
+    assert(tsInternalMkdtemp(srcDir) != nullptr);
+    assert(tsInternalMkdtemp(incDir) != nullptr);
 
     char srcPath[CM_PATH_MAX];
     char incPath[CM_PATH_MAX];
@@ -535,8 +538,8 @@ void Test_gsInternalRun_SucceedsWhenUserAcceptsOverwrite(void)
 
     remove(srcPath);
     remove(incPath);
-    rmdir(srcDir);
-    rmdir(incDir);
+    cmInternalDeleteDir(srcDir);
+    cmInternalDeleteDir(incDir);
     assert(result == CM_RESULT_OK);
     tsInternalPass(__func__);
 }
@@ -545,8 +548,8 @@ void Test_gsInternalRun_GeneratedSrcHasSectionsWithFlag(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
     char incDir[] = "gstest_inc_XXXXXX";
-    assert(mkdtemp(srcDir) != nullptr);
-    assert(mkdtemp(incDir) != nullptr);
+    assert(tsInternalMkdtemp(srcDir) != nullptr);
+    assert(tsInternalMkdtemp(incDir) != nullptr);
 
     char srcPath[CM_PATH_MAX];
     char incPath[CM_PATH_MAX];
@@ -559,8 +562,8 @@ void Test_gsInternalRun_GeneratedSrcHasSectionsWithFlag(void)
     bool hasSections = fileContains(srcPath, GS_SECTION_DIV);
     remove(srcPath);
     remove(incPath);
-    rmdir(srcDir);
-    rmdir(incDir);
+    cmInternalDeleteDir(srcDir);
+    cmInternalDeleteDir(incDir);
 
     assert(result == CM_RESULT_OK);
     assert(hasSections);
@@ -571,8 +574,8 @@ void Test_gsInternalRun_GeneratedSrcHasNoSectionsWithoutFlag(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
     char incDir[] = "gstest_inc_XXXXXX";
-    assert(mkdtemp(srcDir) != nullptr);
-    assert(mkdtemp(incDir) != nullptr);
+    assert(tsInternalMkdtemp(srcDir) != nullptr);
+    assert(tsInternalMkdtemp(incDir) != nullptr);
 
     char srcPath[CM_PATH_MAX];
     char incPath[CM_PATH_MAX];
@@ -585,8 +588,8 @@ void Test_gsInternalRun_GeneratedSrcHasNoSectionsWithoutFlag(void)
     bool noSections = !fileContains(srcPath, GS_SECTION_DIV);
     remove(srcPath);
     remove(incPath);
-    rmdir(srcDir);
-    rmdir(incDir);
+    cmInternalDeleteDir(srcDir);
+    cmInternalDeleteDir(incDir);
 
     assert(result == CM_RESULT_OK);
     assert(noSections);

@@ -42,7 +42,7 @@ typedef enum
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 /**
- * @brief LogInternal a "[PASS]" message for a successful test case.
+ * @brief Log a "[PASS]" message for a successful test case.
  *
  * @param fnName Name of the test function that passed.
  *
@@ -94,6 +94,8 @@ void *tsInternalCalloc(size_t nitems, size_t size);
 /**
  * @brief Wrapper around realloc() with optional failure simulation.
  *
+ * Use tsInternalDisable(REALLOC, n) to force the nth realloc call to return nullptr.
+ *
  * @param ptr Pointer to a memory block to be reallocated.
  * @param size Number of bytes to allocate.
  *
@@ -129,6 +131,31 @@ FILE *tsInternalFopen(const char *path, const char *mode);
  * @author Vitor Betmann
  */
 int tsInternalMkdir(const char *path);
+
+/**
+ * @brief Portable wrapper around mkdtemp().
+ *
+ * Creates a unique temporary directory by replacing the trailing "XXXXXX" in
+ * @p tmpl with a unique suffix, then creating the directory. On Windows,
+ * uses _mktemp + _mkdir; on POSIX, delegates to mkdtemp.
+ *
+ * @param tmpl Template string ending in "XXXXXX", modified in-place.
+ *
+ * @return Pointer to @p tmpl on success, nullptr on failure.
+ *
+ * @author Vitor Betmann
+ */
+char *tsInternalMkdtemp(char *tmpl);
+
+/**
+ * @brief Reset all failure simulation state to its default (no failures scheduled).
+ *
+ * Call this at the start of any test that uses tsInternalDisable to guarantee a
+ * clean slate, regardless of what a previous test may have left behind.
+ *
+ * @author Vitor Betmann
+ */
+void tsInternalReset(void);
 
 
 #endif
