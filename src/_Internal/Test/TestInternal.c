@@ -11,6 +11,10 @@
 // Include
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+#ifndef _WIN32
+#define _POSIX_C_SOURCE 200809L
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef _WIN32
@@ -18,7 +22,6 @@
 #include <io.h>
 #else
 #include <sys/stat.h>
-#include <unistd.h>
 #endif
 
 #include "TestInternal.h"
