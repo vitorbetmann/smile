@@ -7,31 +7,9 @@ header files for use with Smile's SceneManager module.
 
 ## 📋 Table of Contents
 
-- [Installation](#-installation)
 - [Synopsis](#-usage)
 - [Options](#-options)
 - [Examples](#-examples)
-
----
-
-## 🔧 Installation
-
-`GenScene` is built alongside Smile. To make it accessible from anywhere, install it after building:
-
-```bash
-# Mac/Linux:
-sudo cmake --install smile/build
-
-# Windows (run from an admin terminal):
-cmake --install smile/build
-
-# Windows (no admin needed — installs to your home directory):
-cmake --install smile/build --prefix "$HOME/smile-tools"
-```
-
-If using `--prefix`, add the resulting `bin/` directory to your `PATH`.
-
-If you skip installation, run the tool directly: `smile/build/GenScene <SceneName>`
 
 ---
 
@@ -43,6 +21,7 @@ GenScene <SceneName> [options]
 
 - `SceneName` — Name of the scene to generate. Used as the base name for the
   output files (e.g. `Menu` produces `Menu.c` and `Menu.h`).
+- If you skipped installation, refer to the tools [README](../README.md)
 
 ---
 
