@@ -43,7 +43,7 @@
  *
  * @author Vitor Betmann
  */
-static int lgPrivateLog(InternalLevel level, const char *origin, const char *msg, ...);
+static int lgPrivateLog(lgInternalLevel level, const char *origin, const char *msg, ...);
 
 /**
  * @brief Outputs formatted messages.
@@ -58,7 +58,7 @@ static int lgPrivateLog(InternalLevel level, const char *origin, const char *msg
  *
  * @author Vitor Betmann
  */
-static int lgPrivateLogV(InternalLevel level, const char *origin, const char *msg, va_list args);
+static int lgPrivateLogV(lgInternalLevel level, const char *origin, const char *msg, va_list args);
 
 /**
  * @brief Determines if logging is enabled for a given level.
@@ -68,7 +68,7 @@ static int lgPrivateLogV(InternalLevel level, const char *origin, const char *ms
  *
  * @author Vitor Betmann
  */
-static bool lgPrivateIsLevelEnabled(InternalLevel level);
+static bool lgPrivateIsLevelEnabled(lgInternalLevel level);
 
 /**
  * @brief Determines the color and prefix for a given log level.
@@ -79,7 +79,7 @@ static bool lgPrivateIsLevelEnabled(InternalLevel level);
  *
  * @author Vitor Betmann
  */
-static void lgPrivateGetColorAndPrefix(InternalLevel level, const char **color, const char **prefix);
+static void lgPrivateGetColorAndPrefix(lgInternalLevel level, const char **color, const char **prefix);
 
 /**
  * @brief Default handler for fatal log events.
@@ -120,7 +120,6 @@ int lgSetFatal(lgFatalHandler handler)
     if (!handler)
     {
         fatalHandler = lgPrivateFatalHandler;
-        return CM_RESULT_OK;
     }
 
     fatalHandler = handler;
@@ -131,25 +130,25 @@ int lgSetFatal(lgFatalHandler handler)
 // Functions - Internal
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-int lgInternalLog(InternalLevel level, const char *module, const char *cause, const char *fnName, const char *conseq)
+int lgInternalLog(lgInternalLevel level, const char *origin, const char *cause, const char *fnName, const char *conseq)
 {
-    if (!module || !cause || !fnName || !conseq)
+    if (!origin || !cause || !fnName || !conseq)
     {
         return CM_RESULT_NULL_ARG;
     }
 
-    return lgPrivateLog(level, module, "%s. '%s' %s.", cause, fnName, conseq);
+    return lgPrivateLog(level, origin, "%s. '%s' %s.", cause, fnName, conseq);
 }
 
-int lgInternalLogWithArg(InternalLevel level, const char *module, const char *cause, const char *arg,
+int lgInternalLogWithArg(lgInternalLevel level, const char *origin, const char *cause, const char *arg,
                          const char *fnName, const char *conseq)
 {
-    if (!module || !cause || !arg || !fnName || !conseq)
+    if (!origin || !cause || !arg || !fnName || !conseq)
     {
         return CM_RESULT_NULL_ARG;
     }
 
-    return lgPrivateLog(level, module, "%s: %s. '%s' %s.", cause, arg, fnName,
+    return lgPrivateLog(level, origin, "%s: %s. '%s' %s.", cause, arg, fnName,
                         conseq);
 }
 
@@ -157,7 +156,7 @@ int lgInternalLogWithArg(InternalLevel level, const char *module, const char *ca
 // Functions - Private
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-static int lgPrivateLog(InternalLevel level, const char *origin, const char *msg, ...)
+static int lgPrivateLog(lgInternalLevel level, const char *origin, const char *msg, ...)
 {
     va_list args;
     va_start(args, msg);
@@ -166,7 +165,7 @@ static int lgPrivateLog(InternalLevel level, const char *origin, const char *msg
     return result;
 }
 
-static int lgPrivateLogV(InternalLevel level, const char *origin, const char *msg, va_list args)
+static int lgPrivateLogV(lgInternalLevel level, const char *origin, const char *msg, va_list args)
 {
     if (!lgPrivateIsLevelEnabled(level))
     {
@@ -185,7 +184,7 @@ static int lgPrivateLogV(InternalLevel level, const char *origin, const char *ms
     if (epochTime != (time_t)-1)
     {
 #ifdef _WIN32
-        hasLocalTime = (localtime_s(&localTime, &epochTime) == 0);
+        hasLocalTime = localtime_s(&localTime, &epochTime) == 0;
 #else
         hasLocalTime = (localtime_r(&epochTime, &localTime) != nullptr);
 #endif
@@ -234,7 +233,7 @@ static int lgPrivateLogV(InternalLevel level, const char *origin, const char *ms
     return CM_RESULT_OK;
 }
 
-static bool lgPrivateIsLevelEnabled(InternalLevel level)
+static bool lgPrivateIsLevelEnabled(lgInternalLevel level)
 {
     switch (level)
     {
@@ -255,7 +254,7 @@ static bool lgPrivateIsLevelEnabled(InternalLevel level)
     }
 }
 
-static void lgPrivateGetColorAndPrefix(InternalLevel level, const char **color, const char **prefix)
+static void lgPrivateGetColorAndPrefix(lgInternalLevel level, const char **color, const char **prefix)
 {
     switch (level)
     {

@@ -62,6 +62,11 @@ if (SMILE_DEV)
     target_compile_definitions(smile PRIVATE SMILE_DEV)
 endif ()
 
+# Expose POSIX/BSD extensions (e.g. mkdtemp) in strict -std=c23 mode.
+if (NOT WIN32)
+    target_compile_definitions(smile PRIVATE _DEFAULT_SOURCE _DARWIN_C_SOURCE)
+endif ()
+
 
 # ——————————————————————————————————————————————————————————————————————————————
 # INCLUDE DIRECTORIES (HEADERS)
@@ -79,6 +84,20 @@ target_include_directories(smile
         ${CMAKE_CURRENT_SOURCE_DIR}/src/_Internal/Test
         ${CMAKE_CURRENT_SOURCE_DIR}/src/_Internal/_Common
 )
+
+
+# ——————————————————————————————————————————————————————————————————————————————
+# TOOLS
+# ——————————————————————————————————————————————————————————————————————————————
+
+add_executable(GenScene tools/GenScene/GenScene.c)
+target_link_libraries(GenScene PRIVATE smile)
+target_include_directories(GenScene PRIVATE
+        $<TARGET_PROPERTY:smile,INTERFACE_INCLUDE_DIRECTORIES>
+        $<TARGET_PROPERTY:smile,INCLUDE_DIRECTORIES>
+        ${CMAKE_CURRENT_SOURCE_DIR}/tools/GenScene
+)
+install(TARGETS GenScene RUNTIME DESTINATION bin)
 
 
 # ——————————————————————————————————————————————————————————————————————————————
@@ -101,7 +120,6 @@ if (SMILE_INFO)
     target_compile_definitions(smile PRIVATE SMILE_INFO)
 endif ()
 
-
 # ——————————————————————————————————————————————————————————————————————————————
 # TEST BUILD OPTION
 # ——————————————————————————————————————————————————————————————————————————————
@@ -121,8 +139,19 @@ if (SMILE_TESTS)
     endfunction()
 
     # PUBLIC API TESTS
-    add_smile_test(SceneManagerAPITest tests/SceneManager/SceneManagerAPITest.c)
-    add_smile_test(LogAPITest tests/Log/LogAPITest.c)
+    add_smile_test(SceneManagerAPITest tests/SceneManagerAPITest.c)
+    add_smile_test(LogAPITest tests/LogAPITest.c)
+
+    # TOOL TESTS
+    add_executable(GenSceneToolTest tests/GenSceneToolTest.c tools/GenScene/GenScene.c)
+    target_compile_definitions(GenSceneToolTest PRIVATE GS_TESTING)
+    target_link_libraries(GenSceneToolTest PRIVATE smile)
+    target_include_directories(GenSceneToolTest PRIVATE
+            $<TARGET_PROPERTY:smile,INTERFACE_INCLUDE_DIRECTORIES>
+            $<TARGET_PROPERTY:smile,INCLUDE_DIRECTORIES>
+            ${CMAKE_CURRENT_SOURCE_DIR}/tools/GenScene
+    )
+    add_test(NAME GenSceneToolTest COMMAND GenSceneToolTest)
 endif ()
 
 

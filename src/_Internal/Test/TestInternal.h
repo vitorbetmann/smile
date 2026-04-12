@@ -10,14 +10,21 @@
 #define SMILE_TEST_INTERNAL_H
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+// Includes
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+
+#include <stdio.h>
+
+
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Data Types
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 /**
- * @brief Identifies allocation functions for failure simulation.
+ * @brief Identifies system functions for failure simulation.
  *
- * Used with tsInternalDisable to specify which type of allocation
- * should be forced to fail.
+ * Used with tsInternalDisable to specify which function should be
+ * forced to fail on a given call count.
  *
  * @author Vitor Betmann
  */
@@ -26,14 +33,16 @@ typedef enum
     MALLOC,
     CALLOC,
     REALLOC,
-} InternalMemAllocFn;
+    FOPEN,
+    MKDIR,
+} InternalSysFn;
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Functions - Internal
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 /**
- * @brief LogInternal a "[PASS]" message for a successful test case.
+ * @brief Log a "[PASS]" message for a successful test case.
  *
  * @param fnName Name of the test function that passed.
  *
@@ -42,18 +51,18 @@ typedef enum
 void tsInternalPass(const char *fnName);
 
 /**
- * @brief Disable a memory allocation function for controlled failure.
+ * @brief Disable a system function for controlled failure simulation.
  *
- * Forces the specified allocation function to fail on the given call count.
+ * Forces the specified function to fail on the given call count.
  *
- * @param fnName Which allocation function to disable (MALLOC, CALLOC, REALLOC).
+ * @param fnName Which function to disable (MALLOC, CALLOC, REALLOC, FOPEN, MKDIR).
  * @param at Call count at which failure should occur.
  *
  * @return true if successfully disabled, false if an invalid function type is given
  *
  * @author Vitor Betmann
  */
-bool tsInternalDisable(InternalMemAllocFn fnName, unsigned int at);
+bool tsInternalDisable(InternalSysFn fnName, unsigned int at);
 
 /**
  * @brief Wrapper around malloc() with optional failure simulation.
@@ -85,6 +94,8 @@ void *tsInternalCalloc(size_t nitems, size_t size);
 /**
  * @brief Wrapper around realloc() with optional failure simulation.
  *
+ * Use tsInternalDisable(REALLOC, n) to force the nth realloc call to return nullptr.
+ *
  * @param ptr Pointer to a memory block to be reallocated.
  * @param size Number of bytes to allocate.
  *
@@ -94,5 +105,57 @@ void *tsInternalCalloc(size_t nitems, size_t size);
  */
 void *tsInternalRealloc(void *ptr, size_t size);
 
+/**
+ * @brief Wrapper around fopen() with optional failure simulation.
+ *
+ * Use tsInternalDisable(FOPEN, n) to force the nth fopen call to return nullptr.
+ *
+ * @param path Path of the file to open.
+ * @param mode Mode string passed to fopen.
+ *
+ * @return FILE pointer, or nullptr if failure is simulated.
+ *
+ * @author Vitor Betmann
+ */
+FILE *tsInternalFopen(const char *path, const char *mode);
 
-#endif // #ifndef SMILE_TEST_INTERNAL_H
+/**
+ * @brief Wrapper around mkdir() with optional failure simulation.
+ *
+ * Use tsInternalDisable(MKDIR, n) to force the nth mkdir call to return -1.
+ *
+ * @param path Path of the directory to create.
+ *
+ * @return 0 on success, -1 on failure (real or simulated).
+ *
+ * @author Vitor Betmann
+ */
+int tsInternalMkdir(const char *path);
+
+/**
+ * @brief Portable wrapper around mkdtemp().
+ *
+ * Creates a unique temporary directory by replacing the trailing "XXXXXX" in
+ * @p tmpl with a unique suffix, then creating the directory. On Windows,
+ * uses _mktemp + _mkdir; on POSIX, delegates to mkdtemp.
+ *
+ * @param tmpl Template string ending in "XXXXXX", modified in-place.
+ *
+ * @return Pointer to @p tmpl on success, nullptr on failure.
+ *
+ * @author Vitor Betmann
+ */
+char *tsInternalMkdtemp(char *tmpl);
+
+/**
+ * @brief Reset all failure simulation state to its default (no failures scheduled).
+ *
+ * Call this at the start of any test that uses tsInternalDisable to guarantee a
+ * clean slate, regardless of what a previous test may have left behind.
+ *
+ * @author Vitor Betmann
+ */
+void tsInternalReset(void);
+
+
+#endif

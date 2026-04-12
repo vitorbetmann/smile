@@ -17,11 +17,6 @@ Makefile
 /.ninja_log
 /.ninja_deps
 
-# Compiled test binaries
-/tests/*.out
-/tests/*_tests
-/tests/*Test*
-
 # macOS system files
 .DS_Store
 
@@ -33,3 +28,6 @@ compile_commands.json.cache/
 
 # Jetbrains
 .idea
+
+# AI related
+.claude/

@@ -63,4 +63,4 @@ int lgLog(const char *msg, ...);
 int lgSetFatal(lgFatalHandler handler);
 
 
-#endif // #ifndef SMILE_LOG_H
+#endif

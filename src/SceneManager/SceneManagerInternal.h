@@ -53,7 +53,7 @@ typedef enum
     SM_RESULT_NO_UPDATE_FUNCTION = -105,
     SM_RESULT_NO_DRAW_FUNCTION = -106,
     SM_RESULT_FREE_ALL_SCENES_FAILED = -107,
-} smResult;
+} smInternalResult;
 
 /**
  * @brief Represents an individual scene within SceneManager.
@@ -133,4 +133,4 @@ const smInternalScene *smInternalGetScene(const char *name);
 smInternalSceneMap *smInternalGetEntry(const char *name);
 
 
-#endif // #ifndef SMILE_SCENE_MANAGER_INTERNAL_H
+#endif

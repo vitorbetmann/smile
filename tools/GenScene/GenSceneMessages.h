@@ -1,61 +1,32 @@
 /**
  * @file
- * @brief Developer-mode test hooks for SceneManager.
+ * @brief Message definitions for the GenScene tool.
+ *
+ * @see GenScene.c
  *
  * @author Vitor Betmann
  */
 
-#ifndef SMILE_SCENE_MANAGER_TEST_HOOKS_H
-#define SMILE_SCENE_MANAGER_TEST_HOOKS_H
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-// Includes
-// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-#include <time.h>
+#ifndef SMILE_GEN_SCENE_MESSAGES_H
+#define SMILE_GEN_SCENE_MESSAGES_H
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-// Data Types
+// Tool Name
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-/**
- * @brief Stores counters and mock scene data used during test execution.
- */
-typedef struct
-{
-    int enterCount;
-    int exitCount;
-} MockData;
 
-/**
- * @brief Represents a simple mock argument structure passed to scene functions.
- */
-typedef struct
-{
-    bool flag;
-} MockArgs;
+#define ORIGIN "GenScene"
 
-/**
- * @brief Hook type for enter callbacks without explicit args.
- */
-typedef void (*smTestEnterFn)(MockData *data);
 
-/**
- * @brief Hook type for enter callbacks with explicit args.
- */
-typedef void (*smTestEnterWithArgsFn)(MockData *data, MockArgs *args);
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+// Causes
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-/**
- * @brief Hook type for exit callbacks.
- */
-typedef void (*smTestExitFn)(MockData *data);
-
-extern smTestEnterFn smTestEnter;
-extern smTestEnterWithArgsFn smTestEnterWithArgs;
-extern smTestExitFn smTestExit;
-extern MockArgs *smMockArgs;
-extern MockData *smMockData;
-extern struct timespec smMockCurrTime;
-extern bool smMockClockGettimeFails;
+// Fatals
+#define CAUSE_NO_CALLBACKS "Scene Has No Callbacks"
+#define CAUSE_FLAG_REQUIRES_PATH_ARG "Flag Requires Path Argument"
+#define CAUSE_INVALID_FLAG "Invalid Flag"
 
 
 #endif
