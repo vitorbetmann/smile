@@ -56,8 +56,6 @@ Optional: install Smile tools so they're accessible from anywhere.
 sudo cmake --install smile/build
 # Windows (run from an admin terminal):
 cmake --install smile/build
-# Windows (skip admin privileges and install to your home directory):
-cmake --install smile/build --prefix "$HOME/smile-tools"
 ```
 
 Smile builds as a static library (libsmile.a on Mac/Linux, smile.lib on
