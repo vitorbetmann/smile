@@ -1,25 +1,25 @@
 # Smile Tools 🛠️
 
 Smile ships a set of CLI tools alongside the library to automate repetitive
-development tasks — things like generating boilerplate files — so you can stay
-focused on your game logic.
+development tasks so you can stay focused on your game logic.
 
 ---
 
-## ⚙️ Getting Started
+## ⚙️ Installing
 
-To call Smile tools from your project root, install them first:
+To make them accessible from anywhere, run the `--install` command after building:
 
-```zsh
-cmake --install smile/build          # Windows
-sudo cmake --install smile/build     # Mac / Linux
+```bash
+# Mac/Linux:
+sudo cmake --install smile/build
+
+# Windows (run from an admin terminal):
+cmake --install smile/build
 ```
 
-If you'd rather skip the installation step, you can run any tool directly by path:
+After installation, you're able to call the tool directly by its name: `<ToolName> <Args>`
 
-```zsh
-smile/build/<ToolName> <args>
-```
+If you skip installation, run them from your project's root: `smile/build/<ToolName> <Args>`
 
 ---
 
