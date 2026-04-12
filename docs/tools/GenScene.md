@@ -7,7 +7,7 @@ header files for use with Smile's SceneManager module.
 
 ## 📋 Table of Contents
 
-- [Synopsis](#-usage)
+- [Usage](#-usage)
 - [Options](#-options)
 - [Examples](#-examples)
 
