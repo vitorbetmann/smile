@@ -62,6 +62,11 @@ if (SMILE_DEV)
     target_compile_definitions(smile PRIVATE SMILE_DEV)
 endif ()
 
+# Expose POSIX/BSD extensions (e.g. mkdtemp) in strict -std=c23 mode.
+if (NOT WIN32)
+    target_compile_definitions(smile PRIVATE _DEFAULT_SOURCE _DARWIN_C_SOURCE)
+endif ()
+
 
 # ——————————————————————————————————————————————————————————————————————————————
 # INCLUDE DIRECTORIES (HEADERS)
