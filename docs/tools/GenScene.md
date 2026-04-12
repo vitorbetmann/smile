@@ -21,7 +21,7 @@ GenScene <SceneName> [options]
 
 - `SceneName` — Name of the scene to generate. Used as the base name for the
   output files (e.g. `Menu` produces `Menu.c` and `Menu.h`).
-- If you skipped installation, refer to the tools [README](../README.md)
+- If you skipped installation, refer to the tools [README](README.md).
 
 ---
 
