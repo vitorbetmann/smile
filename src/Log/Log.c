@@ -184,7 +184,7 @@ static int lgPrivateLogV(lgInternalLevel level, const char *origin, const char *
     if (epochTime != (time_t)-1)
     {
 #ifdef _WIN32
-        hasLocalTime = (localtime_s(&localTime, &epochTime) == 0);
+        hasLocalTime = localtime_s(&localTime, &epochTime) == 0;
 #else
         hasLocalTime = (localtime_r(&epochTime, &localTime) != nullptr);
 #endif
