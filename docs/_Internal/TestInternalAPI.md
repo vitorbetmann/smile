@@ -17,7 +17,7 @@ logging, and in unit tests to simulate failures.
     - [Enums](#-enums)
 - [Functions](#-functions)
     - [Test Suites Related](#-test-suites-related)
-    - [Memory Allocation Related](#-memory-allocation-related)
+    - [Allocation and I/O Related](#-allocation-and-io-related)
 
 ---
 
@@ -38,18 +38,19 @@ The module’s header is `TestInternal.h`. Its full Smile path is:
 
 ### — Enums
 
-| `MemAllocFn` |
-|--------------|
+| `InternalSysFn` |
+|-----------------|
 
-Identifies allocation functions for failure simulation. Used
-with `tsInternalDisable` to specify which type of allocation should be forced to
-fail.
+Identifies system functions for failure simulation. Used with `tsInternalDisable`
+to specify which function should be forced to fail on a given call count.
 
 | Item      | Simulates |
 |-----------|-----------|
 | `MALLOC`  | malloc()  |
 | `CALLOC`  | calloc()  |
 | `REALLOC` | realloc() |
+| `FOPEN`   | fopen()   |
+| `MKDIR`   | mkdir()   |
 
 ✅ Example
 
@@ -88,15 +89,14 @@ void Test_smHasStarted_FailsPreStart(void)
 
 <br>
 
-| `bool tsInternalDisable(MemAllocFn fnName, unsigned int at)` |
-|--------------------------------------------------------------|
+| `bool tsInternalDisable(InternalSysFn fnName, unsigned int at)` |
+|-----------------------------------------------------------------|
 
-Temporarily disables a memory allocation function, causing it to fail at the
-specified call count. After the failure
-occurs, normal behaviour resumes.
+Temporarily disables a system function, causing it to fail at the specified
+call count. After the failure occurs, normal behaviour resumes.
 
 - Parameters:
-    - `fnName` — Allocation function to disable (`MALLOC`, `CALLOC`, `REALLOC`).
+    - `fnName` — Function to disable (`MALLOC`, `CALLOC`, `REALLOC`, `FOPEN`, `MKDIR`).
     - `at` — Call count at which failure occurs.
 - Returns: `true` if successfully disabled, `false` if an invalid function
   type is given.
@@ -114,7 +114,7 @@ void Test_smStart_FailsIfCallocFails(void)
 
 <br>
 
-### — Memory Allocation Related
+### — Allocation and I/O Related
 
 | `void *tsInternalMalloc(size_t size)` |
 |---------------------------------------|
@@ -181,4 +181,43 @@ Wrapper around `realloc()` with optional failure simulation.
 
 ```c
 // NO EXAMPLE YET
+```
+
+<br>
+
+| `FILE *tsInternalFopen(const char *path, const char *mode)` |
+|-------------------------------------------------------------|
+
+Wrapper around `fopen()` with optional failure simulation.
+
+- Parameters:
+    - `path` — Path of the file to open.
+    - `mode` — Mode string passed to `fopen`.
+- Returns: `FILE` pointer, or `nullptr` if failure is simulated.
+
+✅ Example
+
+```c
+tsInternalDisable(FOPEN, 1);
+assert(gsInternalRun(argc, argv) == CM_RESULT_FAIL_TO_CREATE_FILE);
+tsInternalPass("Test_gsInternalRun_FailsIfFopenFails");
+```
+
+<br>
+
+| `int tsInternalMkdir(const char *path)` |
+|-----------------------------------------|
+
+Wrapper around `mkdir()` with optional failure simulation.
+
+- Parameters:
+    - `path` — Path of the directory to create.
+- Returns: `0` on success, `-1` on failure (real or simulated).
+
+✅ Example
+
+```c
+tsInternalDisable(MKDIR, 1);
+assert(gsInternalRun(argc, argv) == CM_RESULT_FAIL_TO_CREATE_DIR);
+tsInternalPass("Test_gsInternalRun_FailsIfMkdirFails");
 ```

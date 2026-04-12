@@ -186,7 +186,7 @@ Current module prefixes:
 - Message files should define the module name as `MODULE`.
 - In `Causes`, subsections should follow the order `Infos`, `Warnings`,
   `Errors`, `Fatals`.
-- In `Consequences`, subsections should follow the order `Success`, `Failure`.
+- In `Consequences`, subsections should follow the order `Success`, `Failure`, `Pause`.
 - Check `CommonInternalMessages.h` before adding new module-specific messages so
   shared messages are reused consistently.
 

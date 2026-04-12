@@ -88,14 +88,80 @@ bool cmInternalIsRunning(cmIsRunningFn cmIsRunning, const char *module, const ch
 
 // Filesystem
 
+/**
+ * @brief Checks whether a directory exists at the given path.
+ *
+ * @param path The directory path to check.
+ *
+ * @return `true` if a directory exists at @p path, `false` otherwise.
+ *
+ * @author Vitor Betmann
+ */
 bool cmInternalDirExists(const char *path);
 
+/**
+ * @brief Validates that a path is safe and within acceptable bounds.
+ *
+ * Rejects absolute paths, paths exceeding `CM_PATH_MAX`, and paths containing
+ * bare `..` segments to prevent directory traversal.
+ *
+ * @param path The path string to validate.
+ *
+ * @return `CM_RESULT_OK` on success, or a negative error code on failure.
+ *
+ * @note Fails if: @p path is NULL (`CM_RESULT_NULL_ARG`); @p path is empty
+ *       (`CM_RESULT_EMPTY_ARG`); or the path is absolute, exceeds `CM_PATH_MAX`
+ *       characters, or contains a bare `..` segment (`CM_RESULT_INVALID_PATH`).
+ *
+ * @author Vitor Betmann
+ */
 int cmInternalValidatePath(const char *path);
 
+/**
+ * @brief Recursively creates a directory and all necessary parent directories.
+ *
+ * Validates the path via `cmInternalValidatePath`, then creates each missing
+ * path segment in order. Treats an already-existing directory as success.
+ *
+ * @param path Relative path of the directory to create.
+ *
+ * @return `CM_RESULT_OK` on success, or a negative error code on failure.
+ *
+ * @note Fails if: the path is invalid (see `cmInternalValidatePath`); or a
+ *       directory segment cannot be created (`CM_RESULT_FAIL_TO_CREATE_DIR`).
+ *
+ * @author Vitor Betmann
+ */
 int cmInternalCreateDir(const char *path);
 
+/**
+ * @brief Checks whether a file exists and is readable at the given path.
+ *
+ * @param filename The file path to check.
+ *
+ * @return `true` if the file exists and can be opened for reading,
+ *         `false` otherwise.
+ *
+ * @author Vitor Betmann
+ */
 bool cmInternalFileExists(const char *filename);
 
+/**
+ * @brief Deletes a file at the specified path.
+ *
+ * Validates the path, confirms the file exists, then removes it.
+ *
+ * @param path Relative path of the file to delete.
+ *
+ * @return `CM_RESULT_OK` on success, or a negative error code on failure.
+ *
+ * @note Fails if: the path is invalid (see `cmInternalValidatePath`); the file
+ *       does not exist (`CM_RESULT_FILE_NOT_FOUND`); or deletion fails
+ *       (`CM_RESULT_FAIL_TO_DELETE_FILE`).
+ * @note Side effects: permanently removes the file from the filesystem.
+ *
+ * @author Vitor Betmann
+ */
 int cmInternalDeleteFile(const char *path);
 
 // int cmInternalCreateFile(const char *path);
