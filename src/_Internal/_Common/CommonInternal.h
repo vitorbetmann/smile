@@ -54,6 +54,8 @@ typedef enum
     CM_RESULT_FAIL_TO_CREATE_DIR = -10,
     CM_RESULT_FAIL_TO_DELETE_FILE = -11,
     CM_RESULT_FAIL_TO_CREATE_FILE = -12,
+    CM_RESULT_DIR_NOT_FOUND = -13,
+    CM_RESULT_FAIL_TO_DELETE_DIR = -14,
 } cmInternalResult;
 
 /**
@@ -164,7 +166,24 @@ bool cmInternalFileExists(const char *filename);
  */
 int cmInternalDeleteFile(const char *path);
 
-// int cmInternalCreateFile(const char *path);
+/**
+ * @brief Deletes an empty directory at the specified path.
+ *
+ * Validates the path, confirms the directory exists, then removes it.
+ *
+ * @param path Relative path of the directory to delete.
+ *
+ * @return `CM_RESULT_OK` on success, or a negative error code on failure.
+ *
+ * @note Fails if: the path is invalid (see `cmInternalValidatePath`); the
+ *       directory does not exist (`CM_RESULT_DIR_NOT_FOUND`); or deletion fails
+ *       (`CM_RESULT_FAIL_TO_DELETE_DIR`).
+ * @note The directory must be empty; non-empty directories will fail.
+ * @note Side effects: permanently removes the directory from the filesystem.
+ *
+ * @author Vitor Betmann
+ */
+int cmInternalDeleteDir(const char *path);
 
 
 #endif

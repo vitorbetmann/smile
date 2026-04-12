@@ -20,6 +20,7 @@
 #define CAUSE_FILE_CREATED "File Created"
 #define CAUSE_FILE_DELETED "File Deleted"
 #define CAUSE_DIR_CREATED "Directory Created"
+#define CAUSE_DIR_DELETED "Directory Deleted"
 // Warnings
 #define CAUSE_ALREADY_RUNNING  "Module Already Running"
 // Errors
@@ -35,6 +36,7 @@
 #define CAUSE_FAIL_TO_CREATE_FILE "Failed To Create File"
 #define CAUSE_FAIL_TO_CREATE_DIR "Failed To Create Directory"
 #define CAUSE_FAIL_TO_DELETE_FILE "Failed To Delete File"
+#define CAUSE_FAIL_TO_DELETE_DIR "Failed To Delete Directory"
 // Errors or Fatals
 #define CAUSE_FILE_DOES_NOT_EXIST "File Does Not Exist"
 #define CAUSE_DIR_DOES_NOT_EXIST "Directory Does Not Exist"

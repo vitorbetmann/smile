@@ -43,21 +43,23 @@ Common result codes shared across Smile modules.
 
 - The following range is exclusive to Common failures: `-1..-99`.
 
-| Item                             | Value  | Summary                                                   |
-|----------------------------------|--------|-----------------------------------------------------------|
-| `CM_RESULT_OK`                   | `0`    | Operation completed successfully.                         |
-| `CM_RESULT_ALREADY_RUNNING`      | `-1`   | Module is already running when start/init is requested.   |
-| `CM_RESULT_NOT_RUNNING`          | `-2`   | Module is not running when an operation requires it.      |
-| `CM_RESULT_MEM_ALLOC_FAILED`     | `-3`   | Memory allocation failed.                                 |
-| `CM_RESULT_NULL_ARG`             | `-4`   | A required pointer argument is null.                      |
-| `CM_RESULT_EMPTY_ARG`            | `-5`   | A required string argument is empty.                      |
-| `CM_RESULT_CLOCK_GETTIME_FAILED` | `-6`   | System clock query failed (for example, `clock_gettime`). |
-| `CM_RESULT_INVALID_PATH`         | `-7`   | Path is absolute, too long, or contains `..` segments.    |
-| `CM_RESULT_INVALID_NAME`         | `-8`   | Name contains invalid characters or exceeds the limit.    |
-| `CM_RESULT_FILE_NOT_FOUND`       | `-9`   | File does not exist at the specified path.                 |
-| `CM_RESULT_FAIL_TO_CREATE_DIR`   | `-10`  | Directory creation failed.                                 |
-| `CM_RESULT_FAIL_TO_DELETE_FILE`  | `-11`  | File exists but could not be deleted.                      |
-| `CM_RESULT_FAIL_TO_CREATE_FILE`  | `-12`  | File could not be created or written.                      |
+| Item                             | Value | Summary                                                   |
+|----------------------------------|-------|-----------------------------------------------------------|
+| `CM_RESULT_OK`                   | `0`   | Operation completed successfully.                         |
+| `CM_RESULT_ALREADY_RUNNING`      | `-1`  | Module is already running when start/init is requested.   |
+| `CM_RESULT_NOT_RUNNING`          | `-2`  | Module is not running when an operation requires it.      |
+| `CM_RESULT_MEM_ALLOC_FAILED`     | `-3`  | Memory allocation failed.                                 |
+| `CM_RESULT_NULL_ARG`             | `-4`  | A required pointer argument is null.                      |
+| `CM_RESULT_EMPTY_ARG`            | `-5`  | A required string argument is empty.                      |
+| `CM_RESULT_CLOCK_GETTIME_FAILED` | `-6`  | System clock query failed (for example, `clock_gettime`). |
+| `CM_RESULT_INVALID_PATH`         | `-7`  | Path is absolute, too long, or contains `..` segments.    |
+| `CM_RESULT_INVALID_NAME`         | `-8`  | Name contains invalid characters or exceeds the limit.    |
+| `CM_RESULT_FILE_NOT_FOUND`       | `-9`  | File does not exist at the specified path.                |
+| `CM_RESULT_FAIL_TO_CREATE_DIR`   | `-10` | Directory creation failed.                                |
+| `CM_RESULT_FAIL_TO_DELETE_FILE`  | `-11` | File exists but could not be deleted.                     |
+| `CM_RESULT_FAIL_TO_CREATE_FILE`  | `-12` | File could not be created or written.                     |
+| `CM_RESULT_DIR_NOT_FOUND`        | `-13` | Directory does not exist at the specified path.           |
+| `CM_RESULT_FAIL_TO_DELETE_DIR`   | `-14` | Directory exists but could not be deleted.                |
 
 <br>
 
@@ -185,3 +187,21 @@ exists, then removes it.
     - Fails with `CM_RESULT_FILE_NOT_FOUND` if the file does not exist.
     - Fails with `CM_RESULT_FAIL_TO_DELETE_FILE` if deletion fails.
     - Side effects: permanently removes the file from the filesystem.
+
+<br>
+
+| `int cmInternalDeleteDir(const char *path)` |
+|---------------------------------------------|
+
+Deletes an empty directory at the specified path. Validates the path, confirms
+the directory exists, then removes it.
+
+- Parameters:
+    - `path` — Relative path of the directory to delete.
+- Returns: `CM_RESULT_OK` on success, or a negative error code on failure.
+- Notes:
+    - Fails with any code returned by `cmInternalValidatePath`.
+    - Fails with `CM_RESULT_DIR_NOT_FOUND` if the directory does not exist.
+    - Fails with `CM_RESULT_FAIL_TO_DELETE_DIR` if deletion fails.
+    - The directory must be empty; non-empty directories will fail.
+    - Side effects: permanently removes the directory from the filesystem.
