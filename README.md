@@ -48,7 +48,10 @@ git clone https://github.com/vitorbetmann/smile.git
 
 cmake -S smile -B smile/build
 cmake --build smile/build
+```
+
 # Optional: install Smile tools so they're accessible from anywhere.
+```zsh
 # Mac/Linux:
 sudo cmake --install smile/build
 # Windows (run from an admin terminal):
