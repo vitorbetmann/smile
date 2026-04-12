@@ -13,10 +13,6 @@
 // Includes
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-#ifndef _WIN32
-#define _XOPEN_SOURCE 700
-#endif
-
 #include <ctype.h>
 #include <errno.h>
 #include <stdio.h>
