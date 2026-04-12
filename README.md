@@ -50,13 +50,13 @@ cmake -S smile -B smile/build
 cmake --build smile/build
 ```
 
-# Optional: install Smile tools so they're accessible from anywhere.
+Optional: install Smile tools so they're accessible from anywhere.
 ```zsh
 # Mac/Linux:
 sudo cmake --install smile/build
 # Windows (run from an admin terminal):
 cmake --install smile/build
-# Windows (no admin needed — installs to your home directory):
+# Windows (skip admin privileges and install to your home directory):
 cmake --install smile/build --prefix "$HOME/smile-tools"
 ```
 
