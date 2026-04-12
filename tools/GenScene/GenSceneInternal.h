@@ -63,8 +63,6 @@ typedef struct
     bool noExit;
 } gsInternalArgs;
 
-typedef bool (*gsPromptFn)(const char *prompt);
-
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Prototypes
@@ -77,7 +75,7 @@ void gsInternalFatalHandler(void);
 int gsInternalRun(int argc, char *argv[]);
 
 #ifdef GS_TESTING
-extern gsPromptFn gsTestPrompt;
+extern bool gsTestUserConfirms;
 #endif
 
 

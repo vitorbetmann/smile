@@ -31,7 +31,7 @@
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 #ifdef GS_TESTING
-gsPromptFn gsTestPrompt = nullptr;
+bool gsTestUserConfirms = false;
 #endif
 
 static const char *USAGE =
@@ -157,10 +157,8 @@ void gsInternalFatalHandler(void)
 bool gsPrivatePrompt(const char *prompt)
 {
 #ifdef GS_TESTING
-    if (gsTestPrompt)
-    {
-        return gsTestPrompt(prompt);
-    }
+    (void)prompt;
+    return gsTestUserConfirms;
 #endif
     return gsPrivateYesNoPrompt(prompt);
 }
