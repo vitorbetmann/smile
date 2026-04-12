@@ -48,7 +48,13 @@ git clone https://github.com/vitorbetmann/smile.git
 
 cmake -S smile -B smile/build
 cmake --build smile/build
-sudo cmake --install smile/build # Optional step to access Smile tools from cwd. Skip `sudo` on Windows
+# Optional: install Smile tools so they're accessible from anywhere.
+# Mac/Linux:
+sudo cmake --install smile/build
+# Windows (run from an admin terminal):
+cmake --install smile/build
+# Windows (no admin needed — installs to your home directory):
+cmake --install smile/build --prefix "$HOME/smile-tools"
 ```
 
 Smile builds as a static library (libsmile.a on Mac/Linux, smile.lib on
