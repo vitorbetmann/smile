@@ -65,8 +65,11 @@ static const char *HELP =
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 bool gsPrivatePrompt(const char *prompt);
+
 bool gsPrivateYesNoPrompt(const char *prompt);
+
 void gsPrivateWriteSrc(FILE *f, const gsInternalArgs *args);
+
 void gsPrivateWriteHeader(FILE *f, const gsInternalArgs *args);
 
 
@@ -379,9 +382,7 @@ int gsInternalRun(int argc, char *argv[])
         createIncludeDir = true;
     }
 
-    // The code below doesn't work on Windows atm
     // Handling system specific path should be Common's job
-    // But have it work on macOS for now, upgrade later
     char srcBuf[CM_PATH_MAX];
     snprintf(srcBuf, sizeof(srcBuf), "%s/%s.c", args.srcPath, args.sceneName);
     if (cmInternalFileExists(srcBuf))
