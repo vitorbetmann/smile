@@ -54,7 +54,7 @@ set(SRC_FILES
         src/Log/Log.c
         src/SceneManager/SceneManager.c
         src/internal/Test/TestInternal.c
-        src/internal/_Common/CommonInternal.c
+        src/internal/Common/CommonInternal.c
 )
 
 add_library(smile STATIC ${SRC_FILES})
@@ -82,7 +82,7 @@ target_include_directories(smile
         ${CMAKE_CURRENT_SOURCE_DIR}/src/Log
         ${CMAKE_CURRENT_SOURCE_DIR}/src/SceneManager
         ${CMAKE_CURRENT_SOURCE_DIR}/src/internal/Test
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/internal/_Common
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/internal/Common
 )
 
 

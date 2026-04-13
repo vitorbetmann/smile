@@ -151,8 +151,6 @@ Public Smile modules commonly include these files:
 #### The `Common` module
 
 - The common module contains code and messages shared across multiple modules.
-- Its directory is named `_Common` to keep that shared internal code grouped
-  and easy to find.
 
 #### `docs/`
 

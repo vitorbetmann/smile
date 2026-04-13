@@ -39,7 +39,7 @@
  *
  * @note GenScene-specific failures cover the following range: `-100..-199`.
  *
- * @see  src/internal/_Common/CommonInternal.h for common result codes
+ * @see  src/internal/Common/CommonInternal.h for common result codes
  *
  * @author Vitor Betmann
  */

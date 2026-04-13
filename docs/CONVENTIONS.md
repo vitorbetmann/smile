@@ -68,7 +68,7 @@ Current module prefixes:
 | ParticleSystem | `ps`   |
 | SaveLoad       | `sl`   |
 | SceneManager   | `sm`   |
-| _Common        | `cm`   |
+| Common         | `cm`   |
 | Test           | `ts`   |
 
 ## Variables and State
@@ -205,6 +205,4 @@ Current module prefixes:
 - Public and module-specific source/header files typically use module-style
   names such as `SceneManager.h`, `SceneManagerInternal.h`, and
   `SceneManagerAPITest.c`.
-- Shared internal directories and some support paths may use underscore-based
-  names such as `internal` and `_Common`.
 - Avoid spaces and special characters in new file and directory names.

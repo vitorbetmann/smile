@@ -45,7 +45,7 @@ include/<Module>.h              ← Public API (only thing consumers see)
 src/<Module>/<Module>.c         ← Implementation
 src/<Module>/<Module>Internal.h ← Module-private structs/declarations
 src/<Module>/<Module>Messages.h ← Log/error message macros
-src/_Internal/_Common/          ← Shared utilities across all modules (cm prefix)
+src/_Internal/Common/          ← Shared utilities across all modules (cm prefix)
 src/_Internal/Test/             ← Test allocation interception utilities (ts prefix)
 external/uthash.h               ← Bundled hash table (no other external deps)
 tests/<Module>APITest.c         ← Public API tests (also include internal headers)
