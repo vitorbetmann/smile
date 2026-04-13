@@ -66,10 +66,10 @@ cmake --build build
 You should see output similar to the following:
 
 ```zsh
--- Smile - Build type: Debug  (override: -DCMAKE_BUILD_TYPE=<Debug|Release|RelWithDebInfo|MinSizeRel>)
--- Smile - Warning logs: ON  (override: -DSMILE_WARN=ON|OFF)
--- Smile - Info logs: ON  (override: -DSMILE_INFO=ON|OFF)
--- Smile - Build Tests: ON  (override: -DSMILE_TESTS=ON|OFF)
+-- Smile — Build type: Debug  (override: -DCMAKE_BUILD_TYPE=<Debug|Release|RelWithDebInfo|MinSizeRel>)
+-- Smile — Warning logs: ON  (override: -DSMILE_WARN=ON|OFF)
+-- Smile — Info logs: ON  (override: -DSMILE_INFO=ON|OFF)
+-- Smile — Build Tests: ON  (override: -DSMILE_TESTS=ON|OFF)
 ```
 
 This confirms Smile is built in developer mode.
@@ -146,7 +146,7 @@ Public Smile modules commonly include these files:
    module but not exposed as public API.
 3. `<ModuleName>Messages.h` - Defines module-specific log and error messages.
 4. `<ModuleName>TestHooks.h` - Exposes test-only hooks needed to validate
-   internal behavior without making those details part of the public API.
+   internal behaviour without making those details part of the public API.
 
 > Note: the `Log` module is the current exception — it does not define a
 > `LogTestHooks.h`, because its public API already exposes everything tests need.
@@ -162,15 +162,27 @@ Public Smile modules commonly include these files:
 
 - The common module contains code and messages shared across multiple modules.
 
+#### The `Test` module
+
+- The `Test` module lives entirely under `src/internal/Test/` and is not part
+  of Smile's public API.
+- It provides allocation-interception wrappers that tests use to validate
+  internal behaviour such as memory-allocation failure paths.
+- Modules that need test-controllable allocations should call the `Test`
+  wrappers instead of the standard allocators directly.
+
 #### `docs/`
 
 The `docs/` directory contains documentation for both public and internal APIs,
-as well as `CONTRIBUTING.md` (this file) and
-[CONVENTIONS.md](CONVENTIONS.md). `internal` also stores GIFs, images, and
-videos under `Assets` for use in README files.
+as well as `CONTRIBUTING.md` (this file) and [CONVENTIONS.md](CONVENTIONS.md).
 
-Unlike internal API docs, public-module documentation usually includes both API
-reference material and a README with an overview and workflow example.
+Public modules and tools have their own directories that typically include both API reference
+material and a README with an overview and workflow example.
+
+Internal APIs are documented directly under `docs/internal/` in files such as
+`CommonAPI.md`, `LogInternalAPI.md`, `SceneManagerInternalAPI.md`, and
+`TestAPI.md`. `docs/internal/` also stores GIFs, images, and videos under
+`Assets/` for use in README files.
 
 ---
 

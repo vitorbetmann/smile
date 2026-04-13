@@ -74,12 +74,12 @@ Represents a scene and its lifecycle callbacks.
 | `smInternalSceneMap` |
 |----------------------|
 
-Hash map entry that associates a scene name with its internal scene state.
+Hash map entry that associates a scene name with its internal scene.
 
 | Field   | Type                | Summary                           |
 |---------|---------------------|-----------------------------------|
 | `name`  | `char *`            | Hash key / scene name.            |
-| `state` | `smInternalScene *` | Pointer to scene state.           |
+| `scene` | `smInternalScene *` | Pointer to scene.                 |
 | `hh`    | `UT_hash_handle`    | uthash handle for map operations. |
 
 <br>

@@ -82,7 +82,7 @@ typedef struct
 typedef struct
 {
     char *name;
-    smInternalScene *state;
+    smInternalScene *scene;
     UT_hash_handle hh;
 } smInternalSceneMap;
 

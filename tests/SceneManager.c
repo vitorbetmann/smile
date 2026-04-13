@@ -761,7 +761,7 @@ void Test_smUpdate_FailsWhenNullUpdate(void)
 void Test_smGetDt_UsesDefaultDtOnFirstCall(void)
 {
     setup();
-    const float target = 1.0f / DEFAULT_FPS;
+    float target = 1.0f / DEFAULT_FPS;
     assert(fabsf(smGetDt() - target) < DT_TOLERANCE);
     teardown();
     tsPass(__func__);

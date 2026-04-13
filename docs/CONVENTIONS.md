@@ -132,8 +132,7 @@ Current module prefixes:
   `Common.h`.
 - All headers must use include guards.
 - Smile include guards begin with `SMILE_` and use underscores between words.
-- Leave 2 blank lines before the closing `#endif` of an include guard and
-  always comment what it closes.
+- Leave 2 blank lines before the closing `#endif` of an include guard.
 - Source files must include everything they directly use. Do not rely on
   transitive includes or implied dependencies.
 - Include statements should use only the file name, never an absolute or

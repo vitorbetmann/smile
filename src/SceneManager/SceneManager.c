@@ -81,7 +81,7 @@ int smStart(void)
 
 bool smIsRunning(void) { return tracker; }
 
-// State Functions
+// Scene Functions
 
 int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
                   smDrawFn draw, smExitFn exit)
@@ -138,7 +138,7 @@ int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
         lgInternalLog(ERROR, MODULE, CSE_MEM_ALLOC_FAIL, __func__,CSQ_ABORT);
         goto mapEntryError;
     }
-    mapEntry->state = scene;
+    mapEntry->scene = scene;
     mapEntry->name = scene->name;
     smPrivateAddScene(mapEntry);
 
@@ -183,8 +183,8 @@ int smSetScene(const char *name, void *args)
         return nameValidationResult;
     }
 
-    const smInternalScene *NEXT_STATE = smInternalGetScene(name);
-    if (!NEXT_STATE)
+    const smInternalScene *NEXT_SCENE = smInternalGetScene(name);
+    if (!NEXT_SCENE)
     {
         lgInternalLogWithArg(WARN, MODULE, CSE_SCENE_NOT_FOUND, name, __func__,CSQ_ABORT);
         return RES_SCENE_NOT_FOUND;
@@ -201,7 +201,7 @@ int smSetScene(const char *name, void *args)
         tracker->currScene->exit();
     }
 
-    tracker->currScene = NEXT_STATE;
+    tracker->currScene = NEXT_SCENE;
 
     if (tracker->currScene && tracker->currScene->enter)
     {
@@ -269,8 +269,8 @@ int smDeleteScene(const char *name)
     }
 
     HASH_DEL(tracker->sceneMap, entry);
-    free(entry->state->name);
-    free(entry->state);
+    free(entry->scene->name);
+    free(entry->scene);
     free(entry);
 
     tracker->sceneCount--;
@@ -399,8 +399,8 @@ int smStop(void)
     HASH_ITER(hh, tracker->sceneMap, el, tmp)
     {
         HASH_DEL(tracker->sceneMap, el);
-        free(el->state->name);
-        free(el->state);
+        free(el->scene->name);
+        free(el->scene);
         free(el);
         tracker->sceneCount--;
     }
@@ -431,7 +431,7 @@ int smStop(void)
 const smInternalScene *smInternalGetScene(const char *name)
 {
     smInternalSceneMap *entry = smInternalGetEntry(name);
-    return entry ? entry->state : nullptr;
+    return entry ? entry->scene : nullptr;
 }
 
 smInternalSceneMap *smInternalGetEntry(const char *name)
