@@ -81,7 +81,6 @@ target_include_directories(smile
         ${CMAKE_CURRENT_SOURCE_DIR}/external
         ${CMAKE_CURRENT_SOURCE_DIR}/src/Log
         ${CMAKE_CURRENT_SOURCE_DIR}/src/SceneManager
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/tools/GenScene
         ${CMAKE_CURRENT_SOURCE_DIR}/src/
 )
 
@@ -95,7 +94,7 @@ target_link_libraries(GenScene PRIVATE smile)
 target_include_directories(GenScene PRIVATE
         $<TARGET_PROPERTY:smile,INTERFACE_INCLUDE_DIRECTORIES>
         $<TARGET_PROPERTY:smile,INCLUDE_DIRECTORIES>
-        src/tools/GenScene
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/tools/GenScene
 )
 install(TARGETS GenScene RUNTIME DESTINATION bin)
 

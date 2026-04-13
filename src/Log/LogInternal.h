@@ -75,9 +75,9 @@ typedef enum
  *
  * @param level Severity level of the log (INFO, WARN, etc.).
  * @param origin Name of the module or tool generating the log.
- * @param cause Description of the cause of the log event.
+ * @param cse Description of the cause of the log event.
  * @param fnName Name of the function where the log is generated.
- * @param conseq Consequences or additional information about the event.
+ * @param csq Consequences or additional information about the event.
  *
  * @return Returns `0` on success, or a negative error code on failure.
  *
@@ -89,7 +89,7 @@ typedef enum
  *
  * @author Vitor Betmann
  */
-int lgInternalLog(lgInternalLevel level, const char *origin, const char *cause, const char *fnName, const char *conseq);
+int lgInternalLog(lgInternalLevel level, const char *origin, const char *cse, const char *fnName, const char *csq);
 
 /**
  * @brief Used by Smile modules to log info, warnings, errors, or fatal events

@@ -132,14 +132,14 @@ int lgSetFatal(lgFatalHandler handler)
 // Functions - Internal
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-int lgInternalLog(lgInternalLevel level, const char *origin, const char *cause, const char *fnName, const char *conseq)
+int lgInternalLog(lgInternalLevel level, const char *origin, const char *cse, const char *fnName, const char *csq)
 {
-    if (!origin || !cause || !fnName || !conseq)
+    if (!origin || !cse || !fnName || !csq)
     {
         return RES_NULL_ARG;
     }
 
-    return lgPrivateLog(level, origin, "%s. '%s' %s.", cause, fnName, conseq);
+    return lgPrivateLog(level, origin, "%s. '%s' %s.", cse, fnName, csq);
 }
 
 int lgInternalLogWithArg(lgInternalLevel lvl, const char *origin, const char *cause, const char *arg,
