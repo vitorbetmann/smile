@@ -53,31 +53,31 @@ static void mockFatalHandler(void)
 
 void Test_lgLog_SucceedsWithValidMessage(void)
 {
-    assert(lgLog("Hello, %s!", "Smile") == CM_RESULT_OK);
+    assert(lgLog("Hello, %s!", "Smile") == RES_OK);
     tsPass(__func__);
 }
 
 void Test_lgLog_FailsWithNullMessage(void)
 {
-    assert(lgLog(nullptr) == CM_RESULT_NULL_ARG);
+    assert(lgLog(nullptr) == RES_NULL_ARG);
     tsPass(__func__);
 }
 
 void Test_lgSetFatal_SucceedsWithNullHandler(void)
 {
-    assert(lgSetFatal(nullptr) == CM_RESULT_OK);
+    assert(lgSetFatal(nullptr) == RES_OK);
     tsPass(__func__);
 }
 
 void Test_lgInternalLog_FatalInvokesCustomHandler(void)
 {
     fatalHandlerCount = 0;
-    assert(lgSetFatal(mockFatalHandler) == CM_RESULT_OK);
+    assert(lgSetFatal(mockFatalHandler) == RES_OK);
     assert(
         lgInternalLog(FATAL, "LogAPITest", "Fatal path exercised", __func__,
-            "for verification") == CM_RESULT_OK);
+            "for verification") == RES_OK);
     assert(fatalHandlerCount == 1);
-    assert(lgSetFatal(nullptr) == CM_RESULT_OK);
+    assert(lgSetFatal(nullptr) == RES_OK);
     tsPass(__func__);
 }
 
@@ -85,7 +85,7 @@ void Test_lgInternalLog_InfoReturnsSuccess(void)
 {
     assert(
         lgInternalLog(INFO, "LogAPITest", "Info path exercised", __func__,
-            "for verification") == CM_RESULT_OK);
+            "for verification") == RES_OK);
     tsPass(__func__);
 }
 
@@ -93,7 +93,7 @@ void Test_lgInternalLog_WarningReturnsSuccess(void)
 {
     assert(
         lgInternalLog(WARNING, "LogAPITest", "Warning path exercised",
-            __func__, "for verification") == CM_RESULT_OK);
+            __func__, "for verification") == RES_OK);
     tsPass(__func__);
 }
 

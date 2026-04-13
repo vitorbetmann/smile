@@ -107,7 +107,7 @@ int lgLog(const char *msg, ...)
 {
     if (!msg)
     {
-        return CM_RESULT_NULL_ARG;
+        return RES_NULL_ARG;
     }
 
     va_list args;
@@ -125,7 +125,7 @@ int lgSetFatal(lgFatalHandler handler)
     }
 
     fatalHandler = handler;
-    return CM_RESULT_OK;
+    return RES_OK;
 }
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -136,7 +136,7 @@ int lgInternalLog(lgInternalLevel level, const char *origin, const char *cause, 
 {
     if (!origin || !cause || !fnName || !conseq)
     {
-        return CM_RESULT_NULL_ARG;
+        return RES_NULL_ARG;
     }
 
     return lgPrivateLog(level, origin, "%s. '%s' %s.", cause, fnName, conseq);
@@ -147,7 +147,7 @@ int lgInternalLogWithArg(lgInternalLevel level, const char *origin, const char *
 {
     if (!origin || !cause || !arg || !fnName || !conseq)
     {
-        return CM_RESULT_NULL_ARG;
+        return RES_NULL_ARG;
     }
 
     return lgPrivateLog(level, origin, "%s: %s. '%s' %s.", cause, arg, fnName,
@@ -171,7 +171,7 @@ static int lgPrivateLogV(lgInternalLevel level, const char *origin, const char *
 {
     if (!lgPrivateIsLevelEnabled(level))
     {
-        return CM_RESULT_OK;
+        return RES_OK;
     }
 
     const char *color = nullptr;
@@ -197,7 +197,7 @@ static int lgPrivateLogV(lgInternalLevel level, const char *origin, const char *
         {
             fatalHandler();
         }
-        return LG_RESULT_TIME_FAILED;
+        return RES_TIME_FAIL;
     }
 
     if (strftime(timeBuf, sizeof(timeBuf), LOG_TIME_FMT, &localTime) == 0)
@@ -206,7 +206,7 @@ static int lgPrivateLogV(lgInternalLevel level, const char *origin, const char *
         {
             fatalHandler();
         }
-        return LG_RESULT_TIME_FAILED;
+        return RES_TIME_FAIL;
     }
 
     int prefixStatus = fprintf(stderr, "%s%s [Smile %s From %s] - ", color, timeBuf, prefix, origin);
@@ -225,14 +225,14 @@ static int lgPrivateLogV(lgInternalLevel level, const char *origin, const char *
         {
             fatalHandler();
         }
-        return LG_RESULT_WRITE_FAILED;
+        return RES_WRITE_FAIL;
     }
 
     if (level == FATAL)
     {
         fatalHandler();
     }
-    return CM_RESULT_OK;
+    return RES_OK;
 }
 
 static bool lgPrivateIsLevelEnabled(lgInternalLevel level)

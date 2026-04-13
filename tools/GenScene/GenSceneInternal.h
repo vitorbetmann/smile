@@ -45,9 +45,9 @@
  */
 typedef enum
 {
-    GS_RESULT_INVALID_FLAG = -100,
-    GS_RESULT_NO_CALLBACKS = -101,
-    GS_RESULT_USER_ABORTED = -102,
+    RES_INVALID_FLAG = -100,
+    RES_NO_CALLBACKS = -101,
+    RES_USER_ABORT = -102,
 } gsInternalResult;
 
 /**

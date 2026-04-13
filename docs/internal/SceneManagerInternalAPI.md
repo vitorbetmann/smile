@@ -37,7 +37,7 @@ The module’s header is `SceneManagerInternal.h`. Its full Smile path is:
 |------------|
 
 SceneManager-specific result codes used when failures are not covered
-by [cmResult](CommonInternalAPI.md#-enums).
+by [cmResult](CommonAPI.md#-enums).
 
 - SceneManager-specific failures cover the following range: `-100..-199`.
 

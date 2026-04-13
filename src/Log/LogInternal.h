@@ -42,8 +42,8 @@
  */
 typedef enum
 {
-    LG_RESULT_WRITE_FAILED = -100,
-    LG_RESULT_TIME_FAILED = -101,
+    RES_WRITE_FAIL = -100,
+    RES_TIME_FAIL = -101,
 } lgInternalResult;
 
 /**

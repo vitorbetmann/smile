@@ -35,7 +35,7 @@ The module’s header is `LogInternal.h`. Its full Smile path is:
 |------------|
 
 Log-specific result codes used when failures are not covered
-by [cmResult](CommonInternalAPI.md#-enums).
+by [cmResult](CommonAPI.md#-enums).
 
 - Log-specific failures cover the following range: `-100..-199`.
 
