@@ -22,7 +22,7 @@ throughout all modules.
 ## 😊Module Header
 
 The module’s header is `CommonInternal.h`. Its full Smile path is:
-`src/_Internal/Common/CommonInternal.h`
+`src/internal/Common/CommonInternal.h`
 
 ✅ Example
 

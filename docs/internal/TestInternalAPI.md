@@ -24,7 +24,7 @@ logging, and in unit tests to simulate failures.
 ## 😊Module Header
 
 The module’s header is `TestInternal.h`. Its full Smile path is:
-`src/_Internal/Test/TestInternal.h`
+`src/internal/Test/TestInternal.h`
 
 ✅ Example
 

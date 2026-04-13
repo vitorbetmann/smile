@@ -111,13 +111,12 @@ Smile
 
 - Smile separates user-facing and developer-facing components into `Public` and
   `Internal`.
-- In the `docs/` and `src/` directories, `_Internal` holds developer-focused
+- In the `docs/` and `src/` directories, `internal` holds developer-focused
   documentation, functions, and modules.
 - The current `tests/` directory contains public API tests such as
   `LogAPITest.c` and `SceneManagerAPITest.c`.
 - Public modules and tools do not live under a dedicated `Public` directory.
-- `_Internal` directories begin with an underscore (`_`) so they sort clearly.
-- Within directories that use this convention, anything outside `_Internal` is
+- Within directories that use this convention, anything outside `internal` is
   considered public.
 
 ### Directory Breakdown
@@ -159,7 +158,7 @@ Public Smile modules commonly include these files:
 
 The `docs/` directory contains documentation for both public and internal APIs,
 as well as `CONTRIBUTING.md` (this file) and
-[CONVENTIONS.md](CONVENTIONS.md). `_Internal` also stores GIFs, images, and
+[CONVENTIONS.md](CONVENTIONS.md). `internal` also stores GIFs, images, and
 videos under `Assets` for use in README files.
 
 Unlike internal API docs, public-module documentation usually includes both API

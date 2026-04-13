@@ -122,7 +122,7 @@ Current module prefixes:
 
 - Public declarations belong in headers under `include/`.
 - Module-private internal declarations belong in `[ModuleName]Internal.h`.
-- Shared internal utilities belong under `_Internal`, typically in files such as
+- Shared internal utilities belong under `internal`, typically in files such as
   `CommonInternal.h`.
 - All headers must use include guards.
 - Smile include guards begin with `SMILE_` and use underscores between words.
@@ -206,5 +206,5 @@ Current module prefixes:
   names such as `SceneManager.h`, `SceneManagerInternal.h`, and
   `SceneManagerAPITest.c`.
 - Shared internal directories and some support paths may use underscore-based
-  names such as `_Internal` and `_Common`.
+  names such as `internal` and `_Common`.
 - Avoid spaces and special characters in new file and directory names.
