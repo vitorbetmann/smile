@@ -28,8 +28,8 @@
 #include "Common.h"
 #include "CommonMessages.h"
 // Support
+#include "internal/Test/Test.h"
 #include "LogInternal.h"
-#include "Test.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -189,7 +189,7 @@ int cmDeleteFile(const char *path)
 
     if (remove(path) != 0)
     {
-        return RES_DELETE_FILE_FAIL;
+        return RES_DEL_FILE_FAIL;
     }
 
     return RES_OK;
@@ -214,7 +214,7 @@ int cmDeleteDir(const char *path)
     if (rmdir(path) != 0)
 #endif
     {
-        return RES_DELETE_DIR_FAIL;
+        return RES_DEL_DIR_FAIL;
     }
 
     return RES_OK;

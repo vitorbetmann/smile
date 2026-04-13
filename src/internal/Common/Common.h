@@ -7,8 +7,8 @@
  */
 
 
-#ifndef SMILE_COMMON_INTERNAL_H
-#define SMILE_COMMON_INTERNAL_H
+#ifndef SMILE_COMMON_H
+#define SMILE_COMMON_H
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Defines
@@ -23,7 +23,7 @@
 /**
  * @brief Common result codes shared across Smile modules.
  *
- * @note `CM_RESULT_OK` (`0`) indicates success.
+ * @note `RES_OK` (`0`) indicates success.
  * @note The following range is exclusive to Common failures: `-1..-99`.
  *
  * @author Vitor Betmann
@@ -41,10 +41,10 @@ typedef enum
     RES_INVALID_ARG = -8,
     RES_FILE_NOT_FOUND = -9,
     RES_CREATE_DIR_FAIL = -10,
-    RES_DELETE_FILE_FAIL = -11,
+    RES_DEL_FILE_FAIL = -11,
     RES_CREATE_FILE_FAIL = -12,
     RES_DIR_NOT_FOUND = -13,
-    RES_DELETE_DIR_FAIL = -14,
+    RES_DEL_DIR_FAIL = -14,
 } cmResult;
 
 /**
@@ -98,11 +98,11 @@ bool cmDirExists(const char *path);
  *
  * @param path The path string to validate.
  *
- * @return `CM_RESULT_OK` on success, or a negative error code on failure.
+ * @return `RES_OK` on success, or a negative error code on failure.
  *
- * @note Fails if: @p path is NULL (`CM_RESULT_NULL_ARG`); @p path is empty
- *       (`CM_RESULT_EMPTY_ARG`); or the path is absolute, exceeds `CM_PATH_MAX`
- *       characters, or contains a bare `..` segment (`CM_RESULT_INVALID_PATH`).
+ * @note Fails if: @p path is NULL (`RES_NULL_ARG`); @p path is empty
+ *       (`RES_EMPTY_ARG`); or the path is absolute, exceeds `CM_PATH_MAX`
+ *       characters, or contains a bare `..` segment (`RES_INVALID_PATH`).
  *
  * @author Vitor Betmann
  */
@@ -116,10 +116,10 @@ int cmValidatePath(const char *path);
  *
  * @param path Relative path of the directory to create.
  *
- * @return `CM_RESULT_OK` on success, or a negative error code on failure.
+ * @return `RES_OK` on success, or a negative error code on failure.
  *
- * @note Fails if: the path is invalid (see `cmInternalValidatePath`); or a
- *       directory segment cannot be created (`CM_RESULT_FAIL_TO_CREATE_DIR`).
+ * @note Fails if: the path is invalid (see `cmValidatePath`); or a
+ *       directory segment cannot be created (`RES_CREATE_DIR_FAIL`).
  *
  * @author Vitor Betmann
  */
@@ -144,11 +144,11 @@ bool cmFileExists(const char *filename);
  *
  * @param path Relative path of the file to delete.
  *
- * @return `CM_RESULT_OK` on success, or a negative error code on failure.
+ * @return `RES_OK` on success, or a negative error code on failure.
  *
- * @note Fails if: the path is invalid (see `cmInternalValidatePath`); the file
- *       does not exist (`CM_RESULT_FILE_NOT_FOUND`); or deletion fails
- *       (`CM_RESULT_FAIL_TO_DELETE_FILE`).
+ * @note Fails if: the path is invalid (see `cmValidatePath`); the file
+ *       does not exist (`RES_FILE_NOT_FOUND`); or deletion fails
+ *       (`RES_DEL_FILE_FAIL`).
  * @note Side effects: permanently removes the file from the filesystem.
  *
  * @author Vitor Betmann
@@ -162,11 +162,11 @@ int cmDeleteFile(const char *path);
  *
  * @param path Relative path of the directory to delete.
  *
- * @return `CM_RESULT_OK` on success, or a negative error code on failure.
+ * @return `RES_OK` on success, or a negative error code on failure.
  *
- * @note Fails if: the path is invalid (see `cmInternalValidatePath`); the
- *       directory does not exist (`CM_RESULT_DIR_NOT_FOUND`); or deletion fails
- *       (`CM_RESULT_FAIL_TO_DELETE_DIR`).
+ * @note Fails if: the path is invalid (see `cmValidatePath`); the
+ *       directory does not exist (`RES_DIR_NOT_FOUND`); or deletion fails
+ *       (`RES_DEL_DIR_FAIL`).
  * @note The directory must be empty; non-empty directories will fail.
  * @note Side effects: permanently removes the directory from the filesystem.
  *

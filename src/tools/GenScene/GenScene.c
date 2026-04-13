@@ -17,13 +17,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "Common.h"
-#include "CommonMessages.h"
+#include "internal/Common/Common.h"
+#include "internal/Common/CommonMessages.h"
 #include "GenSceneInternal.h"
 #include "GenSceneMessages.h"
 #include "Log.h"
 #include "LogInternal.h"
-#include "Test.h"
+#include "internal/Test/Test.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -302,7 +302,7 @@ int gsInternalRun(int argc, char *argv[])
         {
             if (i + 1 >= argc)
             {
-                lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_FLAG_REQUIRES_PATH_ARG, argv[i], ORIGIN, CSQ_ABORT);
+                lgInternalLogWithArg(ERROR, ORIGIN, CSE_FLAG_REQ_PATH_ARG, argv[i], ORIGIN, CSQ_ABORT);
                 return RES_EMPTY_ARG;
             }
             if (cmValidatePath(argv[i + 1]) != RES_OK)
@@ -316,7 +316,7 @@ int gsInternalRun(int argc, char *argv[])
         {
             if (i + 1 >= argc)
             {
-                lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_FLAG_REQUIRES_PATH_ARG, argv[i], ORIGIN, CSQ_ABORT);
+                lgInternalLogWithArg(ERROR, ORIGIN, CSE_FLAG_REQ_PATH_ARG, argv[i], ORIGIN, CSQ_ABORT);
                 return RES_EMPTY_ARG;
             }
             if (cmValidatePath(argv[i + 1]) != RES_OK)
@@ -328,14 +328,14 @@ int gsInternalRun(int argc, char *argv[])
         }
         else
         {
-            lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_INVALID_FLAG, argv[i], ORIGIN, CSQ_ABORT);
+            lgInternalLogWithArg(ERROR, ORIGIN, CSE_INVALID_FLAG, argv[i], ORIGIN, CSQ_ABORT);
             return RES_INVALID_FLAG;
         }
     }
 
     if (args.noEnter && args.noDraw && args.noUpdate && args.noExit)
     {
-        lgInternalLog(ERROR, ORIGIN, CAUSE_NO_CALLBACKS, ORIGIN, CSQ_ABORT);
+        lgInternalLog(ERROR, ORIGIN, CSE_NO_CALLBACKS, ORIGIN, CSQ_ABORT);
         return RES_NO_CALLBACKS;
     }
 
@@ -359,7 +359,7 @@ int gsInternalRun(int argc, char *argv[])
     // Check if they exist
     if (!cmDirExists(args.srcPath))
     {
-        lgInternalLogWithArg(WARNING, ORIGIN, CSE_DIR_NOT_EXISTS, args.srcPath, ORIGIN, CSQ_PAUSE);
+        lgInternalLogWithArg(WARN, ORIGIN, CSE_DIR_NOT_EXISTS, args.srcPath, ORIGIN, CSQ_PAUSE);
         char buf[512];
         snprintf(buf, sizeof(buf), "Create directory: '%s'?", args.srcPath);
         if (!gsPrivatePrompt(buf))
@@ -371,7 +371,7 @@ int gsInternalRun(int argc, char *argv[])
     }
     if (!cmDirExists(args.includePath))
     {
-        lgInternalLogWithArg(WARNING, ORIGIN, CSE_DIR_NOT_EXISTS, args.includePath, ORIGIN, CSQ_PAUSE);
+        lgInternalLogWithArg(WARN, ORIGIN, CSE_DIR_NOT_EXISTS, args.includePath, ORIGIN, CSQ_PAUSE);
         char buf[512];
         snprintf(buf, sizeof(buf), "Create directory: '%s'?", args.includePath);
         if (!gsPrivatePrompt(buf))
@@ -387,7 +387,7 @@ int gsInternalRun(int argc, char *argv[])
     snprintf(srcBuf, sizeof(srcBuf), "%s/%s.c", args.srcPath, args.sceneName);
     if (cmFileExists(srcBuf))
     {
-        lgInternalLogWithArg(WARNING, ORIGIN, CSE_FILE_ALREADY_EXISTS, srcBuf, ORIGIN, CSQ_PAUSE);
+        lgInternalLogWithArg(WARN, ORIGIN, CSE_FILE_ALREADY_EXISTS, srcBuf, ORIGIN, CSQ_PAUSE);
         char buf[2 * CM_PATH_MAX];
         snprintf(buf, sizeof(buf), "Overwrite '%s'? (this may be irreversible)", srcBuf);
         if (!gsPrivatePrompt(buf))
@@ -401,7 +401,7 @@ int gsInternalRun(int argc, char *argv[])
     snprintf(includeBuf, sizeof(includeBuf), "%s/%s.h", args.includePath, args.sceneName);
     if (cmFileExists(includeBuf))
     {
-        lgInternalLogWithArg(WARNING, ORIGIN, CSE_FILE_ALREADY_EXISTS, includeBuf, ORIGIN, CSQ_PAUSE);
+        lgInternalLogWithArg(WARN, ORIGIN, CSE_FILE_ALREADY_EXISTS, includeBuf, ORIGIN, CSQ_PAUSE);
         char buf[2 * CM_PATH_MAX];
         snprintf(buf, sizeof(buf), "Overwrite '%s'? (this may be irreversible)", includeBuf);
         if (!gsPrivatePrompt(buf))

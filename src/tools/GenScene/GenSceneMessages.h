@@ -24,9 +24,9 @@
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 // Fatals
-#define CAUSE_NO_CALLBACKS "Scene Has No Callbacks"
-#define CAUSE_FLAG_REQUIRES_PATH_ARG "Flag Requires Path Argument"
-#define CAUSE_INVALID_FLAG "Invalid Flag"
+#define CSE_NO_CALLBACKS "Scene Has No Callbacks"
+#define CSE_FLAG_REQ_PATH_ARG "Flag Requires Path Argument"
+#define CSE_INVALID_FLAG "Invalid Flag"
 
 
 #endif

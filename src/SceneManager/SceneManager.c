@@ -26,12 +26,12 @@
 #include "SceneManager.h"
 #include "SceneManagerInternal.h"
 #include "SceneManagerMessages.h"
-// Support
-#include "Common.h"
-#include "CommonMessages.h"
-#include "LogInternal.h"
 #include "SceneManagerTestHooks.h"
-#include "Test.h"
+// Support
+#include "internal/Common/Common.h"
+#include "internal/Common/CommonMessages.h"
+#include "internal/Test/Test.h"
+#include "LogInternal.h"
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Variables
@@ -60,7 +60,7 @@ int smStart(void)
 {
     if (tracker)
     {
-        lgInternalLog(WARNING, MODULE, CSE_ALREADY_RUNNING, __func__,CSQ_ABORT);
+        lgInternalLog(WARN, MODULE, CSE_ALREADY_RUNNING, __func__,CSQ_ABORT);
         return RES_ALREADY_RUNNING;
     }
 
@@ -100,13 +100,13 @@ int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
     smInternalSceneMap *entry = smInternalGetEntry(name);
     if (entry)
     {
-        lgInternalLogWithArg(WARNING, MODULE, CAUSE_SCENE_ALREADY_EXISTS, name, __func__, CSQ_ABORT);
+        lgInternalLogWithArg(WARN, MODULE, CSE_SCENE_ALREADY_EXISTS, name, __func__, CSQ_ABORT);
         return RES_SCENE_ALREADY_EXISTS;
     }
 
     if (!enter && !update && !draw && !exit)
     {
-        lgInternalLogWithArg(ERROR, MODULE, CAUSE_NO_VALID_FUNCTIONS, name, __func__, CSQ_ABORT);
+        lgInternalLogWithArg(ERROR, MODULE, CSE_NO_VALID_FUNCTIONS, name, __func__, CSQ_ABORT);
         return RES_NO_VALID_FUNCS;
     }
 
@@ -144,7 +144,7 @@ int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
 
     tracker->sceneCount++;
 
-    lgInternalLogWithArg(INFO, MODULE, CAUSE_SCENE_CREATED, name, __func__,CSQ_SUCCESS);
+    lgInternalLogWithArg(INFO, MODULE, CSE_SCENE_CREATED, name, __func__,CSQ_SUCCESS);
     return RES_OK;
 
 mapEntryError:
@@ -186,7 +186,7 @@ int smSetScene(const char *name, void *args)
     const smInternalScene *NEXT_STATE = smInternalGetScene(name);
     if (!NEXT_STATE)
     {
-        lgInternalLogWithArg(WARNING, MODULE, CAUSE_SCENE_NOT_FOUND, name, __func__,CSQ_ABORT);
+        lgInternalLogWithArg(WARN, MODULE, CSE_SCENE_NOT_FOUND, name, __func__,CSQ_ABORT);
         return RES_SCENE_NOT_FOUND;
     }
 
@@ -218,7 +218,7 @@ int smSetScene(const char *name, void *args)
         tracker->currScene->enter(args);
     }
 
-    lgInternalLogWithArg(INFO, MODULE, CAUSE_SCENE_SET_TO, name, __func__,CSQ_SUCCESS);
+    lgInternalLogWithArg(INFO, MODULE, CSE_SCENE_SET_TO, name, __func__,CSQ_SUCCESS);
     return RES_OK;
 }
 
@@ -257,14 +257,14 @@ int smDeleteScene(const char *name)
 
     if (tracker->currScene && strcmp(name, tracker->currScene->name) == 0)
     {
-        lgInternalLogWithArg(ERROR, MODULE, CAUSE_CANNOT_DELETE_CURR_SCENE, name, __func__, CSQ_ABORT);
-        return RES_CANNOT_DEL_CURR_SCENE;
+        lgInternalLogWithArg(ERROR, MODULE, CSE_CANT_DEL_CURR_SCENE, name, __func__, CSQ_ABORT);
+        return RES_CANT_DEL_CURR_SCENE;
     }
 
     smInternalSceneMap *entry = smInternalGetEntry(name);
     if (!entry)
     {
-        lgInternalLogWithArg(WARNING, MODULE, CAUSE_SCENE_NOT_FOUND, name, __func__,CSQ_ABORT);
+        lgInternalLogWithArg(WARN, MODULE, CSE_SCENE_NOT_FOUND, name, __func__,CSQ_ABORT);
         return RES_SCENE_NOT_FOUND;
     }
 
@@ -275,7 +275,7 @@ int smDeleteScene(const char *name)
 
     tracker->sceneCount--;
 
-    lgInternalLogWithArg(INFO, MODULE, CAUSE_SCENE_DELETED, name, __func__,CSQ_SUCCESS);
+    lgInternalLogWithArg(INFO, MODULE, CSE_SCENE_DELETED, name, __func__,CSQ_SUCCESS);
     return RES_OK;
 }
 
@@ -290,13 +290,13 @@ int smUpdate(float dt)
 
     if (!tracker->currScene)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_NULL_CURR_SCENE, __func__,CSQ_ABORT);
+        lgInternalLog(ERROR, MODULE, CSE_NULL_CURR_SCENE, __func__,CSQ_ABORT);
         return RES_NO_CURR_SCENE;
     }
 
     if (!tracker->currScene->update)
     {
-        lgInternalLogWithArg(WARNING, MODULE, CAUSE_NULL_SCENE_UPDATE_FN, tracker->currScene->name, __func__,
+        lgInternalLogWithArg(WARN, MODULE, CSE_NULL_SCENE_UPDATE_FN, tracker->currScene->name, __func__,
                              CSQ_ABORT);
         return RES_NO_UPDATE_FUNC;
     }
@@ -318,14 +318,14 @@ float smGetDt(void)
 #ifdef SMILE_DEV
     if (smMockClockGettimeFails)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_CLOCK_GETTIME_FAILED, __func__, CSQ_ABORT);
+        lgInternalLog(ERROR, MODULE, CSE_CLOCK_GETTIME_FAILED, __func__, CSQ_ABORT);
         return RES_CLOCK_GETTIME_FAIL;
     }
     currentTime = smMockCurrTime;
 #else
     if (clock_gettime(CLOCK_MONOTONIC, &currentTime) != 0)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_CLOCK_GETTIME_FAILED, __func__,CSQ_ABORT);
+        lgInternalLog(ERROR, MODULE, CSE_CLOCK_GETTIME_FAILED, __func__,CSQ_ABORT);
         return RES_CLOCK_GETTIME_FAIL;
     }
 #endif
@@ -359,13 +359,13 @@ int smDraw(void)
 
     if (!tracker->currScene)
     {
-        lgInternalLog(ERROR, MODULE, CAUSE_NULL_CURR_SCENE, __func__,CSQ_ABORT);
+        lgInternalLog(ERROR, MODULE, CSE_NULL_CURR_SCENE, __func__,CSQ_ABORT);
         return RES_NO_CURR_SCENE;
     }
 
     if (!tracker->currScene->draw)
     {
-        lgInternalLogWithArg(WARNING, MODULE, CAUSE_NULL_SCENE_DRAW_FN, tracker->currScene->name, __func__,
+        lgInternalLogWithArg(WARN, MODULE, CSE_NULL_SCENE_DRAW_FN, tracker->currScene->name, __func__,
                              CSQ_ABORT);
         return RES_NO_DRAW_FUNC;
     }
@@ -416,7 +416,7 @@ int smStop(void)
 
     if (isFatal)
     {
-        lgInternalLog(FATAL, MODULE, CAUSE_FAILED_TO_FREE_ALL_SCENES, __func__,CSQ_ABORT);
+        lgInternalLog(FATAL, MODULE, CSE_FAILED_TO_FREE_ALL_SCENES, __func__,CSQ_ABORT);
         return RES_FREE_ALL_SCENES_FAIL;
     }
 

@@ -58,7 +58,7 @@ typedef enum
 {
     USER,
     INFO,
-    WARNING,
+    WARN,
     ERROR,
     FATAL,
 } lgInternalLevel;
@@ -73,7 +73,7 @@ typedef enum
  *
  * Provides module or tool name, cause, function name, and consequences for context.
  *
- * @param level Severity level of the log (LOG_INFO, LOG_WARNING, etc.).
+ * @param level Severity level of the log (INFO, WARN, etc.).
  * @param origin Name of the module or tool generating the log.
  * @param cause Description of the cause of the log event.
  * @param fnName Name of the function where the log is generated.
@@ -82,15 +82,14 @@ typedef enum
  * @return Returns `0` on success, or a negative error code on failure.
  *
  * @note Fails if: any input argument is null; time conversion/formatting
- *       fails (`LG_RESULT_TIME_FAILED`); or write to `stderr` fails
- *       (`LG_RESULT_WRITE_FAILED`).
+ *       fails (`RES_TIME_FAIL`); or write to `stderr` fails
+ *       (`RES_WRITE_FAIL`).
  * @note Side effects: when `level` is `FATAL`, the configured fatal handler is
  *       invoked after attempting to log.
  *
  * @author Vitor Betmann
  */
-int lgInternalLog(lgInternalLevel level, const char *origin, const char *cause,
-                  const char *fnName, const char *conseq);
+int lgInternalLog(lgInternalLevel level, const char *origin, const char *cause, const char *fnName, const char *conseq);
 
 /**
  * @brief Used by Smile modules to log info, warnings, errors, or fatal events
@@ -99,26 +98,25 @@ int lgInternalLog(lgInternalLevel level, const char *origin, const char *cause,
  * Similar to lgInternalLog, but includes an extra argument string for
  * additional context.
  *
- * @param level Severity level of the log (LOG_WARNING, LOG_ERROR, etc.).
+ * @param lvl Severity level of the log (WARN, ERROR, etc.).
  * @param origin Name of the module generating the log.
  * @param cause Description of the cause of the log event.
  * @param arg Additional context argument relevant to the log event.
  * @param fnName Name of the function where the log is generated.
- * @param conseq Consequences or additional information about the event.
+ * @param csq Consequences or additional information about the event.
  *
  * @return Returns `0` on success, or a negative error code on failure.
  *
  * @note Fails if: any input argument is null; time conversion/formatting
- *       fails (`LG_RESULT_TIME_FAILED`); or write to `stderr` fails
- *       (`LG_RESULT_WRITE_FAILED`).
+ *       fails (`RES_TIME_FAIL`); or write to `stderr` fails
+ *       (`RES_WRITE_FAIL`).
  * @note Side effects: when `level` is `FATAL`, the configured fatal handler is
  *       invoked after attempting to log.
  *
  * @author Vitor Betmann
  */
-int lgInternalLogWithArg(lgInternalLevel level, const char *origin,
-                         const char *cause, const char *arg,
-                         const char *fnName, const char *conseq);
+int lgInternalLogWithArg(lgInternalLevel lvl, const char *origin, const char *cse, const char *arg, const char *fnName,
+                         const char *csq);
 
 
 #endif

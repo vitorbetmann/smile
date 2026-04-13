@@ -35,8 +35,8 @@
 // Fatals
 #define CSE_CREATE_FILE_FAIL "Failed To Create File"
 #define CSE_CREATE_DIR_FAIL "Failed To Create Directory"
-#define CSE_DELETE_FILE_FAIL "Failed To Delete File"
-#define CSE_DELETE_DIR_FAIL "Failed To Delete Directory"
+#define CSE_DEL_FILE_FAIL "Failed To Delete File"
+#define CSE_DEL_DIR_FAIL "Failed To Delete Directory"
 // Errors or Fatals
 #define CSE_FILE_NOT_EXISTS "File Does Not Exist"
 #define CSE_DIR_NOT_EXISTS "Directory Does Not Exist"

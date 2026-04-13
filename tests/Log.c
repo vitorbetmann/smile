@@ -17,8 +17,8 @@
 #include "Log.h"
 #include "LogInternal.h"
 // Support
-#include "Common.h"
-#include "Test.h"
+#include "internal/Common/Common.h"
+#include "internal/Test/Test.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -26,7 +26,7 @@
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 #ifdef NDEBUG
-#error "LogAPITest must be compiled without NDEBUG (asserts required)."
+#error "TestAPILog must be compiled without NDEBUG (asserts required)."
 #endif
 
 
@@ -74,7 +74,7 @@ void Test_lgInternalLog_FatalInvokesCustomHandler(void)
     fatalHandlerCount = 0;
     assert(lgSetFatal(mockFatalHandler) == RES_OK);
     assert(
-        lgInternalLog(FATAL, "LogAPITest", "Fatal path exercised", __func__,
+        lgInternalLog(FATAL, "TestAPILog", "Fatal path exercised", __func__,
             "for verification") == RES_OK);
     assert(fatalHandlerCount == 1);
     assert(lgSetFatal(nullptr) == RES_OK);
@@ -84,7 +84,7 @@ void Test_lgInternalLog_FatalInvokesCustomHandler(void)
 void Test_lgInternalLog_InfoReturnsSuccess(void)
 {
     assert(
-        lgInternalLog(INFO, "LogAPITest", "Info path exercised", __func__,
+        lgInternalLog(INFO, "TestAPILog", "Info path exercised", __func__,
             "for verification") == RES_OK);
     tsPass(__func__);
 }
@@ -92,7 +92,7 @@ void Test_lgInternalLog_InfoReturnsSuccess(void)
 void Test_lgInternalLog_WarningReturnsSuccess(void)
 {
     assert(
-        lgInternalLog(WARNING, "LogAPITest", "Warning path exercised",
+        lgInternalLog(WARN, "TestAPILog", "Warning path exercised",
             __func__, "for verification") == RES_OK);
     tsPass(__func__);
 }

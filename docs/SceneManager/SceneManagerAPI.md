@@ -503,7 +503,7 @@ scenes.
 
 - Notes:
     - Fails if: SceneManager is not running.
-    - May fail with `SM_RESULT_FREE_ALL_SCENES_FAILED` if cleanup invariants
+    - May fail with `RES_FREE_ALL_SCENES_FAIL` if cleanup invariants
       are violated.
     - The exit function of the current scene is called before cleanup.
     - After stopping, all internal data is reset. SceneManager must be

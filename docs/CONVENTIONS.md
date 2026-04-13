@@ -42,10 +42,14 @@ formatter alone.
 
 - Use the naming already established in Smile's codebase for types.
 - Public type names use the module prefix, for example `smEnterFn`.
-- Internal-only type names use the module prefix followed by `Internal`, for
-  example `smInternalScene`.
-- Result-code enums may use the module prefix plus a descriptive name, for
-  example `smResult`.
+- Types declared in a per-module internal header (e.g., `SceneManagerInternal.h`)
+  use the module prefix followed by `Internal`, for example `smInternalScene`,
+  to disambiguate from the sibling public header.
+- Types declared in modules that live entirely under `internal/` (e.g., `Common`,
+  `Test`) drop the `Internal` suffix, since the parent directory already conveys
+  it — for example `cmResult`, `cmIsRunningFn`, `tsSysFn`.
+- Result-code enums use the module prefix plus a descriptive name, for
+  example `cmResult` (public) or `smInternalResult` (per-module internal).
 - Do not typedef primitive types.
 
 ### Functions
@@ -53,8 +57,10 @@ formatter alone.
 - Smile function names begin with a two-letter lowercase module prefix followed
   by a `PascalCase` verb or verb phrase.
 - Public functions use only the module prefix, for example `smStart`.
-- Module-private internal functions use `Internal` after the prefix, for example
-  `smInternalGetScene`.
+- Module-private internal functions declared in a per-module internal header use
+  `Internal` after the prefix, for example `smInternalGetScene`.
+- Functions in modules that live entirely under `internal/` drop the `Internal`
+  segment — for example `cmDirExists`, `cmValidatePath`, `tsMalloc`, `tsDisable`.
 - File-private helper functions use `Private` after the prefix and must be
   declared `static`, for example `smPrivateIsNameValid`.
 - Test helpers use `Test` after the prefix.
@@ -167,22 +173,19 @@ Current module prefixes:
 
 - Shared log and error message macros should use these prefixes:
 
-| Element        | Prefix    |
-|----------------|-----------|
-| Function names | `FN_`     |
-| Causes         | `CAUSE_`  |
-| Consequences   | `CONSEQ_` |
+| Element        | Prefix |
+|----------------|--------|
+| Causes         | `CSE_` |
+| Consequences   | `CSQ_` |
 
 - Macro names should use English words separated by underscores.
 - Macro values should match the macro name after the prefix, using spaces and
   normal capitalization.
-- Function-name message values should omit the module prefix and match the
-  declared function name, for example `FN_SET_SCENE` -> `"SetScene"`.
 - Do not end message macro values with a period.
 - Message files define strings used for logging operation success, warnings,
   errors, and fatal conditions.
 - Message files use this section order when sections are present:
-  `Module Name`, `Functions Names`, `Causes`, `Consequences`.
+  `Module Name`, `Causes`, `Consequences`.
 - Message files should define the module name as `MODULE`.
 - In `Causes`, subsections should follow the order `Infos`, `Warnings`,
   `Errors`, `Fatals`.

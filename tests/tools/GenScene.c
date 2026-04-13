@@ -18,9 +18,9 @@
 // Module Related
 #include "GenSceneInternal.h"
 // Support
-#include "Common.h"
+#include "internal/Common/Common.h"
+#include "internal/Test/Test.h"
 #include "Log.h"
-#include "Test.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -28,7 +28,7 @@
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 #ifdef NDEBUG
-#error "GenSceneToolTest must be compiled without NDEBUG (asserts required)."
+#error "TestToolGenScene must be compiled without NDEBUG (asserts required)."
 #endif
 
 

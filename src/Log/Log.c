@@ -26,7 +26,7 @@
 #include "Log.h"
 #include "LogInternal.h"
 // Support
-#include "Common.h"
+#include "internal/Common/Common.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -86,7 +86,7 @@ static void lgPrivateGetColorAndPrefix(lgInternalLevel level, const char **color
 /**
  * @brief Default handler for fatal log events.
  *
- * Called when a log with LOG_FATAL level is issued and no custom fatal handler
+ * Called when a log with FATAL level is issued and no custom fatal handler
  * is set. Terminates the program with failure status.
  *
  * @author Vitor Betmann
@@ -142,16 +142,16 @@ int lgInternalLog(lgInternalLevel level, const char *origin, const char *cause, 
     return lgPrivateLog(level, origin, "%s. '%s' %s.", cause, fnName, conseq);
 }
 
-int lgInternalLogWithArg(lgInternalLevel level, const char *origin, const char *cause, const char *arg,
-                         const char *fnName, const char *conseq)
+int lgInternalLogWithArg(lgInternalLevel lvl, const char *origin, const char *cause, const char *arg,
+                         const char *fnName, const char *csq)
 {
-    if (!origin || !cause || !arg || !fnName || !conseq)
+    if (!origin || !cause || !arg || !fnName || !csq)
     {
         return RES_NULL_ARG;
     }
 
-    return lgPrivateLog(level, origin, "%s: %s. '%s' %s.", cause, arg, fnName,
-                        conseq);
+    return lgPrivateLog(lvl, origin, "%s: %s. '%s' %s.", cause, arg, fnName,
+                        csq);
 }
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -245,7 +245,7 @@ static bool lgPrivateIsLevelEnabled(lgInternalLevel level)
 #else
         return false;
 #endif
-    case WARNING:
+    case WARN:
 #ifdef SMILE_WARN
         return true;
 #else
@@ -268,7 +268,7 @@ static void lgPrivateGetColorAndPrefix(lgInternalLevel level, const char **color
         *color = SMILE_CYAN;
         *prefix = "Info";
         return;
-    case WARNING:
+    case WARN:
         *color = SMILE_YELLOW;
         *prefix = "Warning";
         return;

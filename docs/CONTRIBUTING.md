@@ -109,15 +109,22 @@ Smile
 
 ### Public and Internal
 
-- Smile separates user-facing and developer-facing components into `Public` and
-  `Internal`.
-- In the `docs/` and `src/` directories, `internal` holds developer-focused
-  documentation, functions, and modules.
-- The current `tests/` directory contains public API tests such as
-  `Log.c` and `SceneManager.c`.
-- Public modules and tools do not live under a dedicated `Public` directory.
-- Within directories that use this convention, anything outside `internal` is
-  considered public.
+- Smile uses two organizational subdirectories that can appear under `src/`,
+  `docs/`, or `tests/`:
+    - `internal/` holds developer-facing modules and documentation that support
+      Smile's implementation but are not part of the public API.
+    - `tools/` holds standalone command-line tools such as `GenScene`.
+- Within a directory that uses this convention, anything outside `internal/`
+  and `tools/` is considered public.
+- Directory naming follows a convention: `camelCase` names (`internal`,
+  `tools`) are organizational buckets that group related modules or tools;
+  `PascalCase` names (`SceneManager`, `Log`, `Common`, `GenScene`) are the
+  actual modules or tools.
+- Public modules and tools do not live under a dedicated `Public` directory —
+  their absence from `internal/` or `tools/` makes them public by default.
+- `tests/` currently contains only public API tests (`Log.c`, `SceneManager.c`,
+  `tools/GenScene.c`). There is no `tests/internal/` — public-API tests are
+  expected to exercise internal code transitively.
 
 ### Directory Breakdown
 
@@ -140,6 +147,9 @@ Public Smile modules commonly include these files:
 3. `<ModuleName>Messages.h` - Defines module-specific log and error messages.
 4. `<ModuleName>TestHooks.h` - Exposes test-only hooks needed to validate
    internal behavior without making those details part of the public API.
+
+> Note: the `Log` module is the current exception — it does not define a
+> `LogTestHooks.h`, because its public API already exposes everything tests need.
 
 #### The `Log` module
 

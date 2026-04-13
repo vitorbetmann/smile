@@ -21,8 +21,8 @@
 #include "SceneManagerInternal.h"
 #include "SceneManagerTestHooks.h"
 // Support
-#include "Common.h"
-#include "Test.h"
+#include "internal/Common/Common.h"
+#include "internal/Test/Test.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -650,7 +650,7 @@ void Test_smDeleteScene_FailsToDeleteCurrentScene(void)
         smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
         RES_OK);
     assert(smSetScene(mock.name, nullptr) == RES_OK);
-    assert(smDeleteScene(mock.name) == RES_CANNOT_DEL_CURR_SCENE);
+    assert(smDeleteScene(mock.name) == RES_CANT_DEL_CURR_SCENE);
     teardown();
     tsPass(__func__);
 }

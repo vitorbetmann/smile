@@ -81,8 +81,8 @@ target_include_directories(smile
         ${CMAKE_CURRENT_SOURCE_DIR}/external
         ${CMAKE_CURRENT_SOURCE_DIR}/src/Log
         ${CMAKE_CURRENT_SOURCE_DIR}/src/SceneManager
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/internal/Test
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/internal/Common
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/tools/GenScene
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/
 )
 
 
@@ -90,12 +90,12 @@ target_include_directories(smile
 # TOOLS
 # ——————————————————————————————————————————————————————————————————————————————
 
-add_executable(GenScene tools/GenScene/GenScene.c)
+add_executable(GenScene src/tools/GenScene/GenScene.c)
 target_link_libraries(GenScene PRIVATE smile)
 target_include_directories(GenScene PRIVATE
         $<TARGET_PROPERTY:smile,INTERFACE_INCLUDE_DIRECTORIES>
         $<TARGET_PROPERTY:smile,INCLUDE_DIRECTORIES>
-        ${CMAKE_CURRENT_SOURCE_DIR}/tools/GenScene
+        src/tools/GenScene
 )
 install(TARGETS GenScene RUNTIME DESTINATION bin)
 
@@ -155,7 +155,7 @@ if (SMILE_TESTS)
     add_smile_test(TestAPILog tests/Log.c)
 
     # TOOL TESTS
-    add_smile_tool_test(TestToolGenScene tests/tools/GenScene.c tools/GenScene tools/GenScene/GenScene.c GS_TESTING)
+    add_smile_tool_test(TestToolGenScene tests/tools/GenScene.c src/tools/GenScene src/tools/GenScene/GenScene.c GS_TESTING)
 endif ()
 
 
