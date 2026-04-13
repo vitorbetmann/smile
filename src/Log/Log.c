@@ -17,13 +17,15 @@
 // Includes
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+// External
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
+// Module Related
 #include "Log.h"
 #include "LogInternal.h"
+// Support
 #include "CommonInternal.h"
 
 

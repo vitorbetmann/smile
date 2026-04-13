@@ -13,6 +13,7 @@
 // Includes
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+// External
 #include <ctype.h>
 #include <errno.h>
 #include <stdio.h>
@@ -23,12 +24,12 @@
 #include <unistd.h>
 #endif
 #include <sys/stat.h>
-
+// Module Related
 #include "CommonInternal.h"
 #include "CommonInternalMessages.h"
-
+// Support
 #include "LogInternal.h"
-#include "TestInternal.h"
+#include "Test.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -146,7 +147,7 @@ int cmInternalCreateDir(const char *path)
         {
             char sep = *p;
             *p = '\0';
-            if (tsInternalMkdir(tmp) == -1 && errno != EEXIST)
+            if (tsMkdir(tmp) == -1 && errno != EEXIST)
             {
                 return CM_RESULT_FAIL_TO_CREATE_DIR;
             }
@@ -154,7 +155,7 @@ int cmInternalCreateDir(const char *path)
         }
     }
 
-    if (tsInternalMkdir(tmp) == -1 && errno != EEXIST)
+    if (tsMkdir(tmp) == -1 && errno != EEXIST)
     {
         return CM_RESULT_FAIL_TO_CREATE_DIR;
     }

@@ -10,13 +10,15 @@
 // Includes
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+// External
 #include <assert.h>
 #include <stdio.h>
-
+// Module Related
 #include "Log.h"
 #include "LogInternal.h"
+// Support
 #include "CommonInternal.h"
-#include "TestInternal.h"
+#include "Test.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -52,19 +54,19 @@ static void mockFatalHandler(void)
 void Test_lgLog_SucceedsWithValidMessage(void)
 {
     assert(lgLog("Hello, %s!", "Smile") == CM_RESULT_OK);
-    tsInternalPass(__func__);
+    tsPass(__func__);
 }
 
 void Test_lgLog_FailsWithNullMessage(void)
 {
     assert(lgLog(nullptr) == CM_RESULT_NULL_ARG);
-    tsInternalPass(__func__);
+    tsPass(__func__);
 }
 
 void Test_lgSetFatal_SucceedsWithNullHandler(void)
 {
     assert(lgSetFatal(nullptr) == CM_RESULT_OK);
-    tsInternalPass(__func__);
+    tsPass(__func__);
 }
 
 void Test_lgInternalLog_FatalInvokesCustomHandler(void)
@@ -76,7 +78,7 @@ void Test_lgInternalLog_FatalInvokesCustomHandler(void)
             "for verification") == CM_RESULT_OK);
     assert(fatalHandlerCount == 1);
     assert(lgSetFatal(nullptr) == CM_RESULT_OK);
-    tsInternalPass(__func__);
+    tsPass(__func__);
 }
 
 void Test_lgInternalLog_InfoReturnsSuccess(void)
@@ -84,7 +86,7 @@ void Test_lgInternalLog_InfoReturnsSuccess(void)
     assert(
         lgInternalLog(INFO, "LogAPITest", "Info path exercised", __func__,
             "for verification") == CM_RESULT_OK);
-    tsInternalPass(__func__);
+    tsPass(__func__);
 }
 
 void Test_lgInternalLog_WarningReturnsSuccess(void)
@@ -92,7 +94,7 @@ void Test_lgInternalLog_WarningReturnsSuccess(void)
     assert(
         lgInternalLog(WARNING, "LogAPITest", "Warning path exercised",
             __func__, "for verification") == CM_RESULT_OK);
-    tsInternalPass(__func__);
+    tsPass(__func__);
 }
 
 

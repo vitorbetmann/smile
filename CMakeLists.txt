@@ -53,7 +53,7 @@ endif ()
 set(SRC_FILES
         src/Log/Log.c
         src/SceneManager/SceneManager.c
-        src/internal/Test/TestInternal.c
+        src/internal/Test/Test.c
         src/internal/Common/CommonInternal.c
 )
 
@@ -72,7 +72,7 @@ endif ()
 # INCLUDE DIRECTORIES (HEADERS)
 # ——————————————————————————————————————————————————————————————————————————————
 
-# Expose only public API headers to consumers; keep internal include paths private.
+# Expose only public API headers to users; keep internal include paths private.
 target_include_directories(smile
         PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

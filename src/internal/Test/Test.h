@@ -1,13 +1,13 @@
 /**
  * @file
  * @brief Declarations of internal data types and functions for the
- *        TestInternal module.
+ *        Test module.
  *
  * @author Vitor Betmann
  */
 
-#ifndef SMILE_TEST_INTERNAL_H
-#define SMILE_TEST_INTERNAL_H
+#ifndef SMILE_TEST_H
+#define SMILE_TEST_H
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Includes
@@ -23,7 +23,7 @@
 /**
  * @brief Identifies system functions for failure simulation.
  *
- * Used with tsInternalDisable to specify which function should be
+ * Used with tsDisable to specify which function should be
  * forced to fail on a given call count.
  *
  * @author Vitor Betmann
@@ -35,10 +35,10 @@ typedef enum
     REALLOC,
     FOPEN,
     MKDIR,
-} InternalSysFn;
+} tsSysFn;
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-// Functions - Internal
+// Functions -
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 /**
@@ -48,7 +48,7 @@ typedef enum
  *
  * @author Vitor Betmann
  */
-void tsInternalPass(const char *fnName);
+void tsPass(const char *fnName);
 
 /**
  * @brief Disable a system function for controlled failure simulation.
@@ -62,12 +62,12 @@ void tsInternalPass(const char *fnName);
  *
  * @author Vitor Betmann
  */
-bool tsInternalDisable(InternalSysFn fnName, unsigned int at);
+bool tsDisable(tsSysFn fnName, unsigned int at);
 
 /**
  * @brief Wrapper around malloc() with optional failure simulation.
  *
- * Use tsInternalDisable(MALLOC, n) to force the nth malloc call to return nullptr.
+ * Use tsDisable(MALLOC, n) to force the nth malloc call to return nullptr.
  *
  * @param size Number of bytes to allocate.
  *
@@ -75,12 +75,12 @@ bool tsInternalDisable(InternalSysFn fnName, unsigned int at);
  *
  * @author Vitor Betmann
  */
-void *tsInternalMalloc(size_t size);
+void *tsMalloc(size_t size);
 
 /**
  * @brief Wrapper around calloc() with optional failure simulation.
  *
- * Use tsInternalDisable(CALLOC, n) to force the nth calloc call to return nullptr.
+ * Use tsDisable(CALLOC, n) to force the nth calloc call to return nullptr.
  *
  * @param nitems Number of elements to allocate.
  * @param size Size of each element in bytes.
@@ -89,12 +89,12 @@ void *tsInternalMalloc(size_t size);
  *
  * @author Vitor Betmann
  */
-void *tsInternalCalloc(size_t nitems, size_t size);
+void *tsCalloc(size_t nitems, size_t size);
 
 /**
  * @brief Wrapper around realloc() with optional failure simulation.
  *
- * Use tsInternalDisable(REALLOC, n) to force the nth realloc call to return nullptr.
+ * Use tsDisable(REALLOC, n) to force the nth realloc call to return nullptr.
  *
  * @param ptr Pointer to a memory block to be reallocated.
  * @param size Number of bytes to allocate.
@@ -103,12 +103,12 @@ void *tsInternalCalloc(size_t nitems, size_t size);
  *
  * @author Vitor Betmann
  */
-void *tsInternalRealloc(void *ptr, size_t size);
+void *tsRealloc(void *ptr, size_t size);
 
 /**
  * @brief Wrapper around fopen() with optional failure simulation.
  *
- * Use tsInternalDisable(FOPEN, n) to force the nth fopen call to return nullptr.
+ * Use tsDisable(FOPEN, n) to force the nth fopen call to return nullptr.
  *
  * @param path Path of the file to open.
  * @param mode Mode string passed to fopen.
@@ -117,12 +117,12 @@ void *tsInternalRealloc(void *ptr, size_t size);
  *
  * @author Vitor Betmann
  */
-FILE *tsInternalFopen(const char *path, const char *mode);
+FILE *tsFopen(const char *path, const char *mode);
 
 /**
  * @brief Wrapper around mkdir() with optional failure simulation.
  *
- * Use tsInternalDisable(MKDIR, n) to force the nth mkdir call to return -1.
+ * Use tsDisable(MKDIR, n) to force the nth mkdir call to return -1.
  *
  * @param path Path of the directory to create.
  *
@@ -130,7 +130,7 @@ FILE *tsInternalFopen(const char *path, const char *mode);
  *
  * @author Vitor Betmann
  */
-int tsInternalMkdir(const char *path);
+int tsMkdir(const char *path);
 
 /**
  * @brief Portable wrapper around mkdtemp().
@@ -145,17 +145,17 @@ int tsInternalMkdir(const char *path);
  *
  * @author Vitor Betmann
  */
-char *tsInternalMkdtemp(char *tmpl);
+char *tsMkdtemp(char *tmpl);
 
 /**
  * @brief Reset all failure simulation state to its default (no failures scheduled).
  *
- * Call this at the start of any test that uses tsInternalDisable to guarantee a
+ * Call this at the start of any test that uses tsDisable to guarantee a
  * clean slate, regardless of what a previous test may have left behind.
  *
  * @author Vitor Betmann
  */
-void tsInternalReset(void);
+void tsReset(void);
 
 
 #endif

@@ -1,8 +1,8 @@
 /**
  * @file
- * @brief Implementation of the TestInternal module.
+ * @brief Implementation of the Test module.
  *
- * @see TestInternal.h
+ * @see Test.h
  *
  * @author Vitor Betmann
  */
@@ -11,6 +11,7 @@
 // Include
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+// External
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef _WIN32
@@ -20,12 +21,12 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #endif
-
-#include "TestInternal.h"
+// Module Related
+#include "Test.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-// TestInternal state
+// Test state
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 static bool canMalloc = true;
@@ -45,12 +46,12 @@ static unsigned int mkdirNum;
 // Functions
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-void tsInternalPass(const char *fnName)
+void tsPass(const char *fnName)
 {
     printf("\t[PASS] %s\n", fnName);
 }
 
-bool tsInternalDisable(InternalSysFn fnName, unsigned int at)
+bool tsDisable(tsSysFn fnName, unsigned int at)
 {
     if (at == 0)
         return false;
@@ -81,7 +82,7 @@ bool tsInternalDisable(InternalSysFn fnName, unsigned int at)
     }
 }
 
-void *tsInternalMalloc(const size_t size)
+void *tsMalloc(const size_t size)
 {
     mallocNum--;
     if (!canMalloc && mallocNum == 0)
@@ -92,7 +93,7 @@ void *tsInternalMalloc(const size_t size)
     return malloc(size);
 }
 
-void *tsInternalCalloc(const size_t nitems, const size_t size)
+void *tsCalloc(const size_t nitems, const size_t size)
 {
     callocNum--;
     if (!canCalloc && callocNum == 0)
@@ -103,7 +104,7 @@ void *tsInternalCalloc(const size_t nitems, const size_t size)
     return calloc(nitems, size);
 }
 
-void *tsInternalRealloc(void *ptr, const size_t size)
+void *tsRealloc(void *ptr, const size_t size)
 {
     reallocNum--;
     if (!canRealloc && reallocNum == 0)
@@ -114,7 +115,7 @@ void *tsInternalRealloc(void *ptr, const size_t size)
     return realloc(ptr, size);
 }
 
-FILE *tsInternalFopen(const char *path, const char *mode)
+FILE *tsFopen(const char *path, const char *mode)
 {
     fopenNum--;
     if (!canFopen && fopenNum == 0)
@@ -125,7 +126,7 @@ FILE *tsInternalFopen(const char *path, const char *mode)
     return fopen(path, mode);
 }
 
-int tsInternalMkdir(const char *path)
+int tsMkdir(const char *path)
 {
     mkdirNum--;
     if (!canMkdir && mkdirNum == 0)
@@ -140,7 +141,7 @@ int tsInternalMkdir(const char *path)
 #endif
 }
 
-void tsInternalReset(void)
+void tsReset(void)
 {
     canMalloc = true;
     canCalloc = true;
@@ -155,7 +156,7 @@ void tsInternalReset(void)
     mkdirNum = 0;
 }
 
-char *tsInternalMkdtemp(char *tmpl)
+char *tsMkdtemp(char *tmpl)
 {
 #ifdef _WIN32
     if (_mktemp(tmpl) == nullptr)

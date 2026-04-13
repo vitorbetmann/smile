@@ -18,19 +18,20 @@
 // Includes
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+// External
 #include <string.h>
 #include <time.h>
 #include <uthash.h>
-
+// Module Related
 #include "SceneManager.h"
 #include "SceneManagerInternal.h"
 #include "SceneManagerMessages.h"
-
+// Support
 #include "CommonInternal.h"
 #include "CommonInternalMessages.h"
 #include "LogInternal.h"
 #include "SceneManagerTestHooks.h"
-#include "TestInternal.h"
+#include "Test.h"
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 // Variables
@@ -63,7 +64,7 @@ int smStart(void)
         return CM_RESULT_ALREADY_RUNNING;
     }
 
-    tracker = tsInternalCalloc(1, sizeof(smInternalTracker));
+    tracker = tsCalloc(1, sizeof(smInternalTracker));
     if (!tracker)
     {
         lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, __func__,CONSEQ_ABORTED);
@@ -109,7 +110,7 @@ int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
         return SM_RESULT_NO_VALID_FUNCTIONS;
     }
 
-    smInternalScene *scene = tsInternalMalloc(sizeof(smInternalScene));
+    smInternalScene *scene = tsMalloc(sizeof(smInternalScene));
     if (!scene)
     {
         lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, __func__,CONSEQ_ABORTED);
@@ -117,7 +118,7 @@ int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
     }
 
     const size_t NAME_SIZE = strlen(name) + 1;
-    char *nameCopy = tsInternalMalloc(NAME_SIZE);
+    char *nameCopy = tsMalloc(NAME_SIZE);
     if (!nameCopy)
     {
         lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, __func__,CONSEQ_ABORTED);
@@ -131,7 +132,7 @@ int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
     scene->draw = draw;
     scene->exit = exit;
 
-    smInternalSceneMap *mapEntry = tsInternalMalloc(sizeof(smInternalSceneMap));
+    smInternalSceneMap *mapEntry = tsMalloc(sizeof(smInternalSceneMap));
     if (!mapEntry)
     {
         lgInternalLog(ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, __func__,CONSEQ_ABORTED);

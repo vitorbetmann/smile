@@ -1,8 +1,8 @@
-<!-- TODO #19 [Docs][TestInternal] Add example for tsInternalRealloc wrapper function -->
+<!-- TODO #19 [Docs][Test] Add example for tsInternalRealloc wrapper function -->
 
-# TestInternal — API 🧪
+# Test — API 🧪
 
-`TestInternal` provides instrumented memory allocation wrappers and fatal hooks
+`Test` provides instrumented memory allocation wrappers and fatal hooks
 for SMILE. These functions can be used in production for safe allocations and
 logging, and in unit tests to simulate failures.
 
@@ -23,13 +23,13 @@ logging, and in unit tests to simulate failures.
 
 ## 😊Module Header
 
-The module’s header is `TestInternal.h`. Its full Smile path is:
-`src/internal/Test/TestInternal.h`
+The module’s header is `Test.h`. Its full Smile path is:
+`src/internal/Test/Test.h`
 
 ✅ Example
 
 ```c
-#include "TestInternal.h"
+#include "Test.h"
 ```
 
 ---

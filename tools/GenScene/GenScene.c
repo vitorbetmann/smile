@@ -23,7 +23,7 @@
 #include "GenSceneMessages.h"
 #include "Log.h"
 #include "LogInternal.h"
-#include "TestInternal.h"
+#include "Test.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -432,7 +432,7 @@ int gsInternalRun(int argc, char *argv[])
         lgInternalLogWithArg(INFO, ORIGIN, CAUSE_DIR_CREATED, args.includePath, ORIGIN, CONSEQ_SUCCESSFUL);
     }
 
-    FILE *srcFile = tsInternalFopen(srcBuf, "w");
+    FILE *srcFile = tsFopen(srcBuf, "w");
     if (!srcFile)
     {
         lgInternalLogWithArg(FATAL, ORIGIN, CAUSE_FAIL_TO_CREATE_FILE, srcBuf, ORIGIN, CONSEQ_ABORTED);
@@ -442,7 +442,7 @@ int gsInternalRun(int argc, char *argv[])
     fclose(srcFile);
     lgInternalLogWithArg(INFO, ORIGIN, CAUSE_FILE_CREATED, srcBuf, ORIGIN, CONSEQ_SUCCESSFUL);
 
-    FILE *includeFile = tsInternalFopen(includeBuf, "w");
+    FILE *includeFile = tsFopen(includeBuf, "w");
     if (!includeFile)
     {
         lgInternalLogWithArg(FATAL, ORIGIN, CAUSE_FAIL_TO_CREATE_FILE, includeBuf, ORIGIN, CONSEQ_ABORTED);
