@@ -10,15 +10,17 @@
 // Includes
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+// External
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "CommonInternal.h"
+// Module Related
 #include "GenSceneInternal.h"
+// Support
+#include "internal/Common/Common.h"
+#include "internal/Test/Test.h"
 #include "Log.h"
-#include "TestInternal.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -26,7 +28,7 @@
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 #ifdef NDEBUG
-#error "GenSceneToolTest must be compiled without NDEBUG (asserts required)."
+#error "TestToolGenScene must be compiled without NDEBUG (asserts required)."
 #endif
 
 
@@ -74,89 +76,89 @@ static bool fileContains(const char *path, const char *needle)
 void Test_gsInternalSanitizeName_SucceedsWithSimpleName(void)
 {
     char buf[GS_NAME_MAX];
-    assert(gsInternalSanitizeName(buf, GS_NAME_MAX, "MyScene") == CM_RESULT_OK);
+    assert(gsInternalSanitizeName(buf, GS_NAME_MAX, "MyScene") == RES_OK);
     assert(strcmp(buf, "MyScene") == 0);
-    tsInternalPass(__func__);
+    tsPass(__func__);
 }
 
 void Test_gsInternalSanitizeName_SucceedsConvertsSpacesToCamelCase(void)
 {
     char buf[GS_NAME_MAX];
-    assert(gsInternalSanitizeName(buf, GS_NAME_MAX, "my scene") == CM_RESULT_OK);
+    assert(gsInternalSanitizeName(buf, GS_NAME_MAX, "my scene") == RES_OK);
     assert(strcmp(buf, "myScene") == 0);
-    tsInternalPass(__func__);
+    tsPass(__func__);
 }
 
 void Test_gsInternalSanitizeName_SucceedsWithUnderscoreStart(void)
 {
     char buf[GS_NAME_MAX];
-    assert(gsInternalSanitizeName(buf, GS_NAME_MAX, "_myScene") == CM_RESULT_OK);
+    assert(gsInternalSanitizeName(buf, GS_NAME_MAX, "_myScene") == RES_OK);
     assert(strcmp(buf, "_myScene") == 0);
-    tsInternalPass(__func__);
+    tsPass(__func__);
 }
 
 void Test_gsInternalSanitizeName_SucceedsTrimmingLeadingSpaces(void)
 {
     char buf[GS_NAME_MAX];
-    assert(gsInternalSanitizeName(buf, GS_NAME_MAX, "  MyScene") == CM_RESULT_OK);
+    assert(gsInternalSanitizeName(buf, GS_NAME_MAX, "  MyScene") == RES_OK);
     assert(strcmp(buf, "MyScene") == 0);
-    tsInternalPass(__func__);
+    tsPass(__func__);
 }
 
 void Test_gsInternalSanitizeName_SucceedsTrimmingTrailingSpaces(void)
 {
     char buf[GS_NAME_MAX];
-    assert(gsInternalSanitizeName(buf, GS_NAME_MAX, "MyScene  ") == CM_RESULT_OK);
+    assert(gsInternalSanitizeName(buf, GS_NAME_MAX, "MyScene  ") == RES_OK);
     assert(strcmp(buf, "MyScene") == 0);
-    tsInternalPass(__func__);
+    tsPass(__func__);
 }
 
 void Test_gsInternalSanitizeName_FailsWithNullBuf(void)
 {
-    assert(gsInternalSanitizeName(nullptr, GS_NAME_MAX, "MyScene") == CM_RESULT_NULL_ARG);
-    tsInternalPass(__func__);
+    assert(gsInternalSanitizeName(nullptr, GS_NAME_MAX, "MyScene") == RES_NULL_ARG);
+    tsPass(__func__);
 }
 
 void Test_gsInternalSanitizeName_FailsWithNullName(void)
 {
     char buf[GS_NAME_MAX];
-    assert(gsInternalSanitizeName(buf, GS_NAME_MAX, nullptr) == CM_RESULT_NULL_ARG);
-    tsInternalPass(__func__);
+    assert(gsInternalSanitizeName(buf, GS_NAME_MAX, nullptr) == RES_NULL_ARG);
+    tsPass(__func__);
 }
 
 void Test_gsInternalSanitizeName_FailsWithEmptyName(void)
 {
     char buf[GS_NAME_MAX];
-    assert(gsInternalSanitizeName(buf, GS_NAME_MAX, "") == CM_RESULT_EMPTY_ARG);
-    tsInternalPass(__func__);
+    assert(gsInternalSanitizeName(buf, GS_NAME_MAX, "") == RES_EMPTY_ARG);
+    tsPass(__func__);
 }
 
 void Test_gsInternalSanitizeName_FailsWithWhitespaceOnly(void)
 {
     char buf[GS_NAME_MAX];
-    assert(gsInternalSanitizeName(buf, GS_NAME_MAX, "   ") == CM_RESULT_EMPTY_ARG);
-    tsInternalPass(__func__);
+    assert(gsInternalSanitizeName(buf, GS_NAME_MAX, "   ") == RES_EMPTY_ARG);
+    tsPass(__func__);
 }
 
 void Test_gsInternalSanitizeName_FailsWithDigitStart(void)
 {
     char buf[GS_NAME_MAX];
-    assert(gsInternalSanitizeName(buf, GS_NAME_MAX, "1MyScene") == CM_RESULT_INVALID_NAME);
-    tsInternalPass(__func__);
+    assert(gsInternalSanitizeName(buf, GS_NAME_MAX, "1MyScene") == RES_INVALID_ARG);
+    tsPass(__func__);
 }
 
 void Test_gsInternalSanitizeName_FailsWithInvalidChar(void)
 {
     char buf[GS_NAME_MAX];
-    assert(gsInternalSanitizeName(buf, GS_NAME_MAX, "My!Scene") == CM_RESULT_INVALID_NAME);
-    tsInternalPass(__func__);
+    assert(gsInternalSanitizeName(buf, GS_NAME_MAX, "My!Scene") == RES_INVALID_ARG);
+    tsPass(__func__);
 }
 
 void Test_gsInternalSanitizeName_FailsWhenOutputTooLong(void)
 {
     char buf[3];
-    assert(gsInternalSanitizeName(buf, 3, "MyScene") == CM_RESULT_INVALID_NAME);
-    tsInternalPass(__func__);
+    assert(gsInternalSanitizeName(buf, 3, "MyScene") == RES_INVALID_ARG);
+    tsPass(__func__);
 }
 
 void Test_gsInternalSanitizeName_SucceedsAtMaxNameLength(void)
@@ -165,8 +167,8 @@ void Test_gsInternalSanitizeName_SucceedsAtMaxNameLength(void)
     char name[GS_NAME_MAX];
     memset(name, 'A', GS_NAME_MAX - 1);
     name[GS_NAME_MAX - 1] = '\0';
-    assert(gsInternalSanitizeName(buf, GS_NAME_MAX, name) == CM_RESULT_OK);
-    tsInternalPass(__func__);
+    assert(gsInternalSanitizeName(buf, GS_NAME_MAX, name) == RES_OK);
+    tsPass(__func__);
 }
 
 void Test_gsInternalSanitizeName_FailsExceedingMaxNameLength(void)
@@ -175,8 +177,8 @@ void Test_gsInternalSanitizeName_FailsExceedingMaxNameLength(void)
     char name[GS_NAME_MAX + 1];
     memset(name, 'A', GS_NAME_MAX);
     name[GS_NAME_MAX] = '\0';
-    assert(gsInternalSanitizeName(buf, GS_NAME_MAX, name) == CM_RESULT_INVALID_NAME);
-    tsInternalPass(__func__);
+    assert(gsInternalSanitizeName(buf, GS_NAME_MAX, name) == RES_INVALID_ARG);
+    tsPass(__func__);
 }
 
 
@@ -187,71 +189,71 @@ void Test_gsInternalSanitizeName_FailsExceedingMaxNameLength(void)
 void Test_gsInternalRun_FailsWithNoArgs(void)
 {
     char *argv[] = {"GenScene"};
-    assert(gsInternalRun(1, argv) == CM_RESULT_EMPTY_ARG);
-    tsInternalPass(__func__);
+    assert(gsInternalRun(1, argv) == RES_EMPTY_ARG);
+    tsPass(__func__);
 }
 
 void Test_gsInternalRun_SucceedsWithHelpFlag(void)
 {
     char *argv[] = {"GenScene", "--help"};
-    assert(gsInternalRun(2, argv) == CM_RESULT_OK);
-    tsInternalPass(__func__);
+    assert(gsInternalRun(2, argv) == RES_OK);
+    tsPass(__func__);
 }
 
 void Test_gsInternalRun_SucceedsWithShortHelpFlag(void)
 {
     char *argv[] = {"GenScene", "-h"};
-    assert(gsInternalRun(2, argv) == CM_RESULT_OK);
-    tsInternalPass(__func__);
+    assert(gsInternalRun(2, argv) == RES_OK);
+    tsPass(__func__);
 }
 
 void Test_gsInternalRun_FailsWithNameStartingWithDash(void)
 {
     char *argv[] = {"GenScene", "-NotAScene"};
-    assert(gsInternalRun(2, argv) == CM_RESULT_INVALID_NAME);
-    tsInternalPass(__func__);
+    assert(gsInternalRun(2, argv) == RES_INVALID_ARG);
+    tsPass(__func__);
 }
 
 void Test_gsInternalRun_FailsWithInvalidFlag(void)
 {
     char *argv[] = {"GenScene", "MyScene", "-z"};
-    assert(gsInternalRun(3, argv) == GS_RESULT_INVALID_FLAG);
-    tsInternalPass(__func__);
+    assert(gsInternalRun(3, argv) == RES_INVALID_FLAG);
+    tsPass(__func__);
 }
 
 void Test_gsInternalRun_FailsWithNoCallbacks(void)
 {
     char *argv[] = {"GenScene", "MyScene", "-ne", "-nu", "-nd", "-nx"};
-    assert(gsInternalRun(6, argv) == GS_RESULT_NO_CALLBACKS);
-    tsInternalPass(__func__);
+    assert(gsInternalRun(6, argv) == RES_NO_CALLBACKS);
+    tsPass(__func__);
 }
 
 void Test_gsInternalRun_FailsWithMissingSourceInArg(void)
 {
     char *argv[] = {"GenScene", "MyScene", "-si"};
-    assert(gsInternalRun(3, argv) == CM_RESULT_EMPTY_ARG);
-    tsInternalPass(__func__);
+    assert(gsInternalRun(3, argv) == RES_EMPTY_ARG);
+    tsPass(__func__);
 }
 
 void Test_gsInternalRun_FailsWithMissingHeaderInArg(void)
 {
     char *argv[] = {"GenScene", "MyScene", "-hi"};
-    assert(gsInternalRun(3, argv) == CM_RESULT_EMPTY_ARG);
-    tsInternalPass(__func__);
+    assert(gsInternalRun(3, argv) == RES_EMPTY_ARG);
+    tsPass(__func__);
 }
 
 void Test_gsInternalRun_FailsWithInvalidSourcePath(void)
 {
     char *argv[] = {"GenScene", "MyScene", "-si", "../bad"};
-    assert(gsInternalRun(4, argv) == CM_RESULT_INVALID_PATH);
-    tsInternalPass(__func__);
+    assert(gsInternalRun(4, argv) == RES_INVALID_PATH);
+    tsPass(__func__);
 }
 
 void Test_gsInternalRun_FailsWithInvalidHeaderPath(void)
 {
     char *argv[] = {"GenScene", "MyScene", "-hi", "../bad"};
-    assert(gsInternalRun(4, argv) == CM_RESULT_INVALID_PATH);
-    tsInternalPass(__func__);
+    assert(gsInternalRun(4, argv) == RES_INVALID_PATH);
+    tsPass(__func__);
 }
 
 
@@ -263,36 +265,36 @@ void Test_gsInternalRun_SucceedsAndCreatesBothFiles(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
     char incDir[] = "gstest_inc_XXXXXX";
-    assert(tsInternalMkdtemp(srcDir) != nullptr);
-    assert(tsInternalMkdtemp(incDir) != nullptr);
+    assert(tsMkdtemp(srcDir) != nullptr);
+    assert(tsMkdtemp(incDir) != nullptr);
 
     char *argv[] = {"GenScene", "TestScene", "-si", srcDir, "-hi", incDir};
-    assert(gsInternalRun(6, argv) == CM_RESULT_OK);
+    assert(gsInternalRun(6, argv) == RES_OK);
 
     char srcPath[CM_PATH_MAX];
     char incPath[CM_PATH_MAX];
     snprintf(srcPath, sizeof(srcPath), "%s/TestScene.c", srcDir);
     snprintf(incPath, sizeof(incPath), "%s/TestScene.h", incDir);
 
-    assert(cmInternalFileExists(srcPath));
-    assert(cmInternalFileExists(incPath));
+    assert(cmFileExists(srcPath));
+    assert(cmFileExists(incPath));
 
     remove(srcPath);
     remove(incPath);
-    cmInternalDeleteDir(srcDir);
-    cmInternalDeleteDir(incDir);
-    tsInternalPass(__func__);
+    cmDeleteDir(srcDir);
+    cmDeleteDir(incDir);
+    tsPass(__func__);
 }
 
 void Test_gsInternalRun_GeneratedSrcContainsAllCallbacks(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
     char incDir[] = "gstest_inc_XXXXXX";
-    assert(tsInternalMkdtemp(srcDir) != nullptr);
-    assert(tsInternalMkdtemp(incDir) != nullptr);
+    assert(tsMkdtemp(srcDir) != nullptr);
+    assert(tsMkdtemp(incDir) != nullptr);
 
     char *argv[] = {"GenScene", "TestScene", "-si", srcDir, "-hi", incDir};
-    assert(gsInternalRun(6, argv) == CM_RESULT_OK);
+    assert(gsInternalRun(6, argv) == RES_OK);
 
     char srcPath[CM_PATH_MAX];
     char incPath[CM_PATH_MAX];
@@ -306,20 +308,20 @@ void Test_gsInternalRun_GeneratedSrcContainsAllCallbacks(void)
 
     remove(srcPath);
     remove(incPath);
-    cmInternalDeleteDir(srcDir);
-    cmInternalDeleteDir(incDir);
-    tsInternalPass(__func__);
+    cmDeleteDir(srcDir);
+    cmDeleteDir(incDir);
+    tsPass(__func__);
 }
 
 void Test_gsInternalRun_GeneratedSrcOmitsDisabledCallbacks(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
     char incDir[] = "gstest_inc_XXXXXX";
-    assert(tsInternalMkdtemp(srcDir) != nullptr);
-    assert(tsInternalMkdtemp(incDir) != nullptr);
+    assert(tsMkdtemp(srcDir) != nullptr);
+    assert(tsMkdtemp(incDir) != nullptr);
 
     char *argv[] = {"GenScene", "TestScene", "-ne", "-si", srcDir, "-hi", incDir};
-    assert(gsInternalRun(7, argv) == CM_RESULT_OK);
+    assert(gsInternalRun(7, argv) == RES_OK);
 
     char srcPath[CM_PATH_MAX];
     char incPath[CM_PATH_MAX];
@@ -333,96 +335,96 @@ void Test_gsInternalRun_GeneratedSrcOmitsDisabledCallbacks(void)
 
     remove(srcPath);
     remove(incPath);
-    cmInternalDeleteDir(srcDir);
-    cmInternalDeleteDir(incDir);
-    tsInternalPass(__func__);
+    cmDeleteDir(srcDir);
+    cmDeleteDir(incDir);
+    tsPass(__func__);
 }
 
 void Test_gsInternalRun_FailsWhenSrcFileCannotBeCreated(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
     char incDir[] = "gstest_inc_XXXXXX";
-    assert(tsInternalMkdtemp(srcDir) != nullptr);
-    assert(tsInternalMkdtemp(incDir) != nullptr);
+    assert(tsMkdtemp(srcDir) != nullptr);
+    assert(tsMkdtemp(incDir) != nullptr);
 
-    tsInternalReset();
-    assert(lgSetFatal(gsInternalFatalHandler) == CM_RESULT_OK);
-    tsInternalDisable(FOPEN, 1);
+    tsReset();
+    assert(lgSetFatal(gsInternalFatalHandler) == RES_OK);
+    tsDisable(FOPEN, 1);
     char *argv[] = {"GenScene", "TestScene", "-si", srcDir, "-hi", incDir};
     int result = gsInternalRun(6, argv);
-    assert(lgSetFatal(nullptr) == CM_RESULT_OK);
+    assert(lgSetFatal(nullptr) == RES_OK);
 
-    cmInternalDeleteDir(srcDir);
-    cmInternalDeleteDir(incDir);
-    assert(result == CM_RESULT_FAIL_TO_CREATE_FILE);
-    tsInternalPass(__func__);
+    cmDeleteDir(srcDir);
+    cmDeleteDir(incDir);
+    assert(result == RES_CREATE_FILE_FAIL);
+    tsPass(__func__);
 }
 
 void Test_gsInternalRun_FailsWhenIncFileCannotBeCreated(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
     char incDir[] = "gstest_inc_XXXXXX";
-    assert(tsInternalMkdtemp(srcDir) != nullptr);
-    assert(tsInternalMkdtemp(incDir) != nullptr);
+    assert(tsMkdtemp(srcDir) != nullptr);
+    assert(tsMkdtemp(incDir) != nullptr);
 
-    tsInternalReset();
-    assert(lgSetFatal(gsInternalFatalHandler) == CM_RESULT_OK);
-    tsInternalDisable(FOPEN, 2);
+    tsReset();
+    assert(lgSetFatal(gsInternalFatalHandler) == RES_OK);
+    tsDisable(FOPEN, 2);
     char *argv[] = {"GenScene", "TestScene", "-si", srcDir, "-hi", incDir};
     int result = gsInternalRun(6, argv);
-    assert(lgSetFatal(nullptr) == CM_RESULT_OK);
+    assert(lgSetFatal(nullptr) == RES_OK);
 
     char srcPath[CM_PATH_MAX];
     snprintf(srcPath, sizeof(srcPath), "%s/TestScene.c", srcDir);
     remove(srcPath);
-    cmInternalDeleteDir(srcDir);
-    cmInternalDeleteDir(incDir);
-    assert(result == CM_RESULT_FAIL_TO_CREATE_FILE);
-    tsInternalPass(__func__);
+    cmDeleteDir(srcDir);
+    cmDeleteDir(incDir);
+    assert(result == RES_CREATE_FILE_FAIL);
+    tsPass(__func__);
 }
 
 void Test_gsInternalRun_FailsWhenSrcDirCannotBeCreated(void)
 {
-    tsInternalReset();
-    assert(lgSetFatal(gsInternalFatalHandler) == CM_RESULT_OK);
+    tsReset();
+    assert(lgSetFatal(gsInternalFatalHandler) == RES_OK);
     gsTestUserConfirms = true;
-    tsInternalDisable(MKDIR, 1);
+    tsDisable(MKDIR, 1);
     char *argv[] = {"GenScene", "TestScene", "-si", "gstest_nonexistent_src", "-hi", "gstest_nonexistent_inc"};
     int result = gsInternalRun(6, argv);
     gsTestUserConfirms = false;
-    assert(lgSetFatal(nullptr) == CM_RESULT_OK);
-    assert(result == CM_RESULT_FAIL_TO_CREATE_DIR);
-    tsInternalPass(__func__);
+    assert(lgSetFatal(nullptr) == RES_OK);
+    assert(result == RES_CREATE_DIR_FAIL);
+    tsPass(__func__);
 }
 
 void Test_gsInternalRun_FailsWhenIncDirCannotBeCreated(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
-    assert(tsInternalMkdtemp(srcDir) != nullptr);
+    assert(tsMkdtemp(srcDir) != nullptr);
 
-    tsInternalReset();
-    assert(lgSetFatal(gsInternalFatalHandler) == CM_RESULT_OK);
+    tsReset();
+    assert(lgSetFatal(gsInternalFatalHandler) == RES_OK);
     gsTestUserConfirms = true;
-    tsInternalDisable(MKDIR, 1);
+    tsDisable(MKDIR, 1);
     char *argv[] = {"GenScene", "TestScene", "-si", srcDir, "-hi", "gstest_nonexistent_inc"};
     int result = gsInternalRun(6, argv);
     gsTestUserConfirms = false;
-    assert(lgSetFatal(nullptr) == CM_RESULT_OK);
+    assert(lgSetFatal(nullptr) == RES_OK);
 
-    cmInternalDeleteDir(srcDir);
-    assert(result == CM_RESULT_FAIL_TO_CREATE_DIR);
-    tsInternalPass(__func__);
+    cmDeleteDir(srcDir);
+    assert(result == RES_CREATE_DIR_FAIL);
+    tsPass(__func__);
 }
 
 void Test_gsInternalRun_GeneratedHeaderHasCorrectIncludeGuard(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
     char incDir[] = "gstest_inc_XXXXXX";
-    assert(tsInternalMkdtemp(srcDir) != nullptr);
-    assert(tsInternalMkdtemp(incDir) != nullptr);
+    assert(tsMkdtemp(srcDir) != nullptr);
+    assert(tsMkdtemp(incDir) != nullptr);
 
     char *argv[] = {"GenScene", "TestScene", "-si", srcDir, "-hi", incDir};
-    assert(gsInternalRun(6, argv) == CM_RESULT_OK);
+    assert(gsInternalRun(6, argv) == RES_OK);
 
     char srcPath[CM_PATH_MAX];
     char incPath[CM_PATH_MAX];
@@ -435,9 +437,9 @@ void Test_gsInternalRun_GeneratedHeaderHasCorrectIncludeGuard(void)
 
     remove(srcPath);
     remove(incPath);
-    cmInternalDeleteDir(srcDir);
-    cmInternalDeleteDir(incDir);
-    tsInternalPass(__func__);
+    cmDeleteDir(srcDir);
+    cmDeleteDir(incDir);
+    tsPass(__func__);
 }
 
 
@@ -450,29 +452,29 @@ void Test_gsInternalRun_AbortsWhenUserDeclinesCreateSrcDir(void)
     char *argv[] = {"GenScene", "TestScene", "-si", "gstest_nonexistent_src",
                     "-hi", "gstest_nonexistent_inc"};
     int result = gsInternalRun(6, argv);
-    assert(result == GS_RESULT_USER_ABORTED);
-    tsInternalPass(__func__);
+    assert(result == RES_USER_ABORT);
+    tsPass(__func__);
 }
 
 void Test_gsInternalRun_AbortsWhenUserDeclinesCreateIncDir(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
-    assert(tsInternalMkdtemp(srcDir) != nullptr);
+    assert(tsMkdtemp(srcDir) != nullptr);
 
     char *argv[] = {"GenScene", "TestScene", "-si", srcDir, "-hi", "gstest_nonexistent_inc"};
     int result = gsInternalRun(6, argv);
 
-    cmInternalDeleteDir(srcDir);
-    assert(result == GS_RESULT_USER_ABORTED);
-    tsInternalPass(__func__);
+    cmDeleteDir(srcDir);
+    assert(result == RES_USER_ABORT);
+    tsPass(__func__);
 }
 
 void Test_gsInternalRun_AbortsWhenUserDeclinesOverwriteSrcFile(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
     char incDir[] = "gstest_inc_XXXXXX";
-    assert(tsInternalMkdtemp(srcDir) != nullptr);
-    assert(tsInternalMkdtemp(incDir) != nullptr);
+    assert(tsMkdtemp(srcDir) != nullptr);
+    assert(tsMkdtemp(incDir) != nullptr);
 
     char srcPath[CM_PATH_MAX];
     snprintf(srcPath, sizeof(srcPath), "%s/TestScene.c", srcDir);
@@ -484,18 +486,18 @@ void Test_gsInternalRun_AbortsWhenUserDeclinesOverwriteSrcFile(void)
     int result = gsInternalRun(6, argv);
 
     remove(srcPath);
-    cmInternalDeleteDir(srcDir);
-    cmInternalDeleteDir(incDir);
-    assert(result == GS_RESULT_USER_ABORTED);
-    tsInternalPass(__func__);
+    cmDeleteDir(srcDir);
+    cmDeleteDir(incDir);
+    assert(result == RES_USER_ABORT);
+    tsPass(__func__);
 }
 
 void Test_gsInternalRun_AbortsWhenUserDeclinesOverwriteIncFile(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
     char incDir[] = "gstest_inc_XXXXXX";
-    assert(tsInternalMkdtemp(srcDir) != nullptr);
-    assert(tsInternalMkdtemp(incDir) != nullptr);
+    assert(tsMkdtemp(srcDir) != nullptr);
+    assert(tsMkdtemp(incDir) != nullptr);
 
     char incPath[CM_PATH_MAX];
     snprintf(incPath, sizeof(incPath), "%s/TestScene.h", incDir);
@@ -507,18 +509,18 @@ void Test_gsInternalRun_AbortsWhenUserDeclinesOverwriteIncFile(void)
     int result = gsInternalRun(6, argv);
 
     remove(incPath);
-    cmInternalDeleteDir(srcDir);
-    cmInternalDeleteDir(incDir);
-    assert(result == GS_RESULT_USER_ABORTED);
-    tsInternalPass(__func__);
+    cmDeleteDir(srcDir);
+    cmDeleteDir(incDir);
+    assert(result == RES_USER_ABORT);
+    tsPass(__func__);
 }
 
 void Test_gsInternalRun_SucceedsWhenUserAcceptsOverwrite(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
     char incDir[] = "gstest_inc_XXXXXX";
-    assert(tsInternalMkdtemp(srcDir) != nullptr);
-    assert(tsInternalMkdtemp(incDir) != nullptr);
+    assert(tsMkdtemp(srcDir) != nullptr);
+    assert(tsMkdtemp(incDir) != nullptr);
 
     char srcPath[CM_PATH_MAX];
     char incPath[CM_PATH_MAX];
@@ -538,18 +540,18 @@ void Test_gsInternalRun_SucceedsWhenUserAcceptsOverwrite(void)
 
     remove(srcPath);
     remove(incPath);
-    cmInternalDeleteDir(srcDir);
-    cmInternalDeleteDir(incDir);
-    assert(result == CM_RESULT_OK);
-    tsInternalPass(__func__);
+    cmDeleteDir(srcDir);
+    cmDeleteDir(incDir);
+    assert(result == RES_OK);
+    tsPass(__func__);
 }
 
 void Test_gsInternalRun_GeneratedSrcHasSectionsWithFlag(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
     char incDir[] = "gstest_inc_XXXXXX";
-    assert(tsInternalMkdtemp(srcDir) != nullptr);
-    assert(tsInternalMkdtemp(incDir) != nullptr);
+    assert(tsMkdtemp(srcDir) != nullptr);
+    assert(tsMkdtemp(incDir) != nullptr);
 
     char srcPath[CM_PATH_MAX];
     char incPath[CM_PATH_MAX];
@@ -562,20 +564,20 @@ void Test_gsInternalRun_GeneratedSrcHasSectionsWithFlag(void)
     bool hasSections = fileContains(srcPath, GS_SECTION_DIV);
     remove(srcPath);
     remove(incPath);
-    cmInternalDeleteDir(srcDir);
-    cmInternalDeleteDir(incDir);
+    cmDeleteDir(srcDir);
+    cmDeleteDir(incDir);
 
-    assert(result == CM_RESULT_OK);
+    assert(result == RES_OK);
     assert(hasSections);
-    tsInternalPass(__func__);
+    tsPass(__func__);
 }
 
 void Test_gsInternalRun_GeneratedSrcHasNoSectionsWithoutFlag(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
     char incDir[] = "gstest_inc_XXXXXX";
-    assert(tsInternalMkdtemp(srcDir) != nullptr);
-    assert(tsInternalMkdtemp(incDir) != nullptr);
+    assert(tsMkdtemp(srcDir) != nullptr);
+    assert(tsMkdtemp(incDir) != nullptr);
 
     char srcPath[CM_PATH_MAX];
     char incPath[CM_PATH_MAX];
@@ -588,12 +590,12 @@ void Test_gsInternalRun_GeneratedSrcHasNoSectionsWithoutFlag(void)
     bool noSections = !fileContains(srcPath, GS_SECTION_DIV);
     remove(srcPath);
     remove(incPath);
-    cmInternalDeleteDir(srcDir);
-    cmInternalDeleteDir(incDir);
+    cmDeleteDir(srcDir);
+    cmDeleteDir(incDir);
 
-    assert(result == CM_RESULT_OK);
+    assert(result == RES_OK);
     assert(noSections);
-    tsInternalPass(__func__);
+    tsPass(__func__);
 }
 
 

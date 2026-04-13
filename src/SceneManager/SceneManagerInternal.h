@@ -17,10 +17,9 @@
 // Includes
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+// External
 #include <time.h>
 #include <uthash.h>
-
-#include "SceneManager.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -39,20 +38,20 @@
  *
  * @note SceneManager-specific failures cover the following range: `-100..-199`.
  *
- * @see  src/_Internal/_Common/CommonInternal.h for common result codes
+ * @see  src/internal/Common/Common.h for common result codes
  *
  * @author Vitor Betmann
  */
 typedef enum
 {
-    SM_RESULT_SCENE_ALREADY_EXISTS = -100,
-    SM_RESULT_SCENE_NOT_FOUND = -101,
-    SM_RESULT_NO_VALID_FUNCTIONS = -102,
-    SM_RESULT_CANNOT_DELETE_CURRENT_SCENE = -103,
-    SM_RESULT_NO_CURRENT_SCENE = -104,
-    SM_RESULT_NO_UPDATE_FUNCTION = -105,
-    SM_RESULT_NO_DRAW_FUNCTION = -106,
-    SM_RESULT_FREE_ALL_SCENES_FAILED = -107,
+    RES_SCENE_ALREADY_EXISTS = -100,
+    RES_SCENE_NOT_FOUND = -101,
+    RES_NO_VALID_FUNCS = -102,
+    RES_CANT_DEL_CURR_SCENE = -103,
+    RES_NO_CURR_SCENE = -104,
+    RES_NO_UPDATE_FUNC = -105,
+    RES_NO_DRAW_FUNC = -106,
+    RES_FREE_ALL_SCENES_FAIL = -107,
 } smInternalResult;
 
 /**
@@ -83,7 +82,7 @@ typedef struct
 typedef struct
 {
     char *name;
-    smInternalScene *state;
+    smInternalScene *scene;
     UT_hash_handle hh;
 } smInternalSceneMap;
 

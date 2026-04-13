@@ -33,24 +33,24 @@ The module’s header is `SceneManagerInternal.h`. Its full Smile path is:
 
 ### — Enums
 
-| `smResult` |
-|------------|
+| `smInternalResult` |
+|--------------------|
 
 SceneManager-specific result codes used when failures are not covered
-by [cmResult](CommonInternalAPI.md#-enums).
+by [cmResult](CommonAPI.md#-enums).
 
 - SceneManager-specific failures cover the following range: `-100..-199`.
 
-| Item                                    | Value  | Summary                                                     |
-|-----------------------------------------|--------|-------------------------------------------------------------|
-| `SM_RESULT_SCENE_ALREADY_EXISTS`        | `-100` | A scene with the same name already exists.                  |
-| `SM_RESULT_SCENE_NOT_FOUND`             | `-101` | Requested scene was not found.                              |
-| `SM_RESULT_NO_VALID_FUNCTIONS`          | `-102` | Scene creation received no valid lifecycle callbacks.       |
-| `SM_RESULT_CANNOT_DELETE_CURRENT_SCENE` | `-103` | Attempted to delete the currently active scene.             |
-| `SM_RESULT_NO_CURRENT_SCENE`            | `-104` | Operation requires an active scene, but none is set.        |
-| `SM_RESULT_NO_UPDATE_FUNCTION`          | `-105` | Active scene has no update callback.                        |
-| `SM_RESULT_NO_DRAW_FUNCTION`            | `-106` | Active scene has no draw callback.                          |
-| `SM_RESULT_FREE_ALL_SCENES_FAILED`      | `-107` | Internal cleanup invariant failed while freeing all scenes. |
+| Item                       | Value  | Summary                                                     |
+|----------------------------|--------|-------------------------------------------------------------|
+| `RES_SCENE_ALREADY_EXISTS` | `-100` | A scene with the same name already exists.                  |
+| `RES_SCENE_NOT_FOUND`      | `-101` | Requested scene was not found.                              |
+| `RES_NO_VALID_FUNCS`       | `-102` | Scene creation received no valid lifecycle callbacks.       |
+| `RES_CANT_DEL_CURR_SCENE`  | `-103` | Attempted to delete the currently active scene.             |
+| `RES_NO_CURR_SCENE`        | `-104` | Operation requires an active scene, but none is set.        |
+| `RES_NO_UPDATE_FUNC`       | `-105` | Active scene has no update callback.                        |
+| `RES_NO_DRAW_FUNC`         | `-106` | Active scene has no draw callback.                          |
+| `RES_FREE_ALL_SCENES_FAIL` | `-107` | Internal cleanup invariant failed while freeing all scenes. |
 
 <br>
 
@@ -74,12 +74,12 @@ Represents a scene and its lifecycle callbacks.
 | `smInternalSceneMap` |
 |----------------------|
 
-Hash map entry that associates a scene name with its internal scene state.
+Hash map entry that associates a scene name with its internal scene.
 
 | Field   | Type                | Summary                           |
 |---------|---------------------|-----------------------------------|
 | `name`  | `char *`            | Hash key / scene name.            |
-| `state` | `smInternalScene *` | Pointer to scene state.           |
+| `scene` | `smInternalScene *` | Pointer to scene.                 |
 | `hh`    | `UT_hash_handle`    | uthash handle for map operations. |
 
 <br>

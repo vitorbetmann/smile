@@ -1,8 +1,8 @@
-<!-- TODO #19 [Docs][TestInternal] Add example for tsInternalRealloc wrapper function -->
+<!-- TODO #19 [Docs][Test] Add example for tsRealloc wrapper function -->
 
-# TestInternal — API 🧪
+# Test — API 🧪
 
-`TestInternal` provides instrumented memory allocation wrappers and fatal hooks
+`Test` provides instrumented memory allocation wrappers and fatal hooks
 for SMILE. These functions can be used in production for safe allocations and
 logging, and in unit tests to simulate failures.
 
@@ -23,13 +23,13 @@ logging, and in unit tests to simulate failures.
 
 ## 😊Module Header
 
-The module’s header is `TestInternal.h`. Its full Smile path is:
-`src/_Internal/Test/TestInternal.h`
+The module’s header is `Test.h`. Its full Smile path is:
+`src/internal/Test/Test.h`
 
 ✅ Example
 
 ```c
-#include "TestInternal.h"
+#include "Test.h"
 ```
 
 ---
@@ -38,10 +38,10 @@ The module’s header is `TestInternal.h`. Its full Smile path is:
 
 ### — Enums
 
-| `InternalSysFn` |
-|-----------------|
+| `tsSysFn` |
+|-----------|
 
-Identifies system functions for failure simulation. Used with `tsInternalDisable`
+Identifies system functions for failure simulation. Used with `tsDisable`
 to specify which function should be forced to fail on a given call count.
 
 | Item      | Simulates |
@@ -57,9 +57,9 @@ to specify which function should be forced to fail on a given call count.
 ```c
 void Test_smStart_FailsIfCallocFails(void)
 {
-    tsInternalDisable(CALLOC, 1);
+    tsDisable(CALLOC, 1);
     assert(!smStart());
-    tsInternalPass("Test_smStart_FailsIfCallocFails");
+    tsPass("Test_smStart_FailsIfCallocFails");
 }
 ```
 
@@ -69,8 +69,8 @@ void Test_smStart_FailsIfCallocFails(void)
 
 ### — Test Suites Related
 
-| `void tsInternalPass(const char *fnName)` |
-|-------------------------------------------|
+| `void tsPass(const char *fnName)` |
+|-----------------------------------|
 
 Logs a `[PASS]` message for a successful test or operation.
 
@@ -83,14 +83,14 @@ Logs a `[PASS]` message for a successful test or operation.
 void Test_smHasStarted_FailsPreStart(void)
 {
     assert(!smHasStarted());
-    tsInternalPass("Test_smHasStarted_FailsPreStart");
+    tsPass("Test_smHasStarted_FailsPreStart");
 }
 ```
 
 <br>
 
-| `bool tsInternalDisable(InternalSysFn fnName, unsigned int at)` |
-|-----------------------------------------------------------------|
+| `bool tsDisable(tsSysFn fnName, unsigned int at)` |
+|---------------------------------------------------|
 
 Temporarily disables a system function, causing it to fail at the specified
 call count. After the failure occurs, normal behaviour resumes.
@@ -106,24 +106,24 @@ call count. After the failure occurs, normal behaviour resumes.
 ```c
 void Test_smStart_FailsIfCallocFails(void)
 {
-    tsInternalDisable(CALLOC, 1);
+    tsDisable(CALLOC, 1);
     assert(!smStart());
-    tsInternalPass("Test_smStart_FailsIfCallocFails");
+    tsPass("Test_smStart_FailsIfCallocFails");
 }
 ```
 
 <br>
 
-| `void tsInternalReset(void)` |
-|------------------------------|
+| `void tsReset(void)` |
+|----------------------|
 
 Resets all failure simulation state to its defaults — no failures scheduled,
 all system function wrappers pass through normally. Call this at the start of
-any test that uses `tsInternalDisable` to guarantee a clean slate, regardless
+any test that uses `tsDisable` to guarantee a clean slate, regardless
 of what a previous test may have left behind.
 
-> **Note:** `tsInternalDisable` already auto-resets when the simulated failure
-> fires, so `tsInternalReset` is only necessary as a defensive guard at the
+> **Note:** `tsDisable` already auto-resets when the simulated failure
+> fires, so `tsReset` is only necessary as a defensive guard at the
 > top of each test that schedules a failure.
 
 ✅ Example
@@ -131,10 +131,10 @@ of what a previous test may have left behind.
 ```c
 void Test_smStart_FailsIfCallocFails(void)
 {
-    tsInternalReset();
-    tsInternalDisable(CALLOC, 1);
+    tsReset();
+    tsDisable(CALLOC, 1);
     assert(!smStart());
-    tsInternalPass(__func__);
+    tsPass(__func__);
 }
 ```
 
@@ -142,8 +142,8 @@ void Test_smStart_FailsIfCallocFails(void)
 
 ### — Allocation and I/O Related
 
-| `void *tsInternalMalloc(size_t size)` |
-|---------------------------------------|
+| `void *tsMalloc(size_t size)` |
+|-------------------------------|
 
 Wrapper around `malloc()` with optional failure simulation.
 
@@ -155,19 +155,18 @@ Wrapper around `malloc()` with optional failure simulation.
 ✅ Example
 
 ```c
-State *state = tsInternalMalloc(sizeof(State));
-if (!state)
+smInternalScene *scene = tsMalloc(sizeof(smInternalScene));
+if (!scene)
 {
-    lgInternalLog(LOG_ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED,
-                  FN_CREATE_SCENE, CONSEQ_ABORTED);
+    lgInternalLog(ERROR, MODULE, CSE_MEM_ALLOC_FAIL, __func__, CSQ_ABORT);
     return false;
 }
 ```
 
 <br>
 
-| `void *tsInternalCalloc(size_t nitems, size_t size)` |
-|------------------------------------------------------|
+| `void *tsCalloc(size_t nitems, size_t size)` |
+|----------------------------------------------|
 
 Wrapper around `calloc()` with optional failure simulation.
 
@@ -180,19 +179,18 @@ Wrapper around `calloc()` with optional failure simulation.
 ✅ Example
 
 ```c
-tracker = tsInternalCalloc(1, sizeof(SceneManagerTracker));
+tracker = tsCalloc(1, sizeof(SceneManagerTracker));
 if (!tracker)
 {
-    lgInternalLog(LOG_ERROR, MODULE, CAUSE_MEM_ALLOC_FAILED, FN_START,
-                  CONSEQ_ABORTED);
+    lgInternalLog(ERROR, MODULE, CSE_MEM_ALLOC_FAIL, __func__, CSQ_ABORT);
     return false;
 }
 ```
 
 <br>
 
-| `void *tsInternalRealloc(void *ptr, size_t size)` |
-|---------------------------------------------------|
+| `void *tsRealloc(void *ptr, size_t size)` |
+|-------------------------------------------|
 
 Wrapper around `realloc()` with optional failure simulation.
 
@@ -211,8 +209,8 @@ Wrapper around `realloc()` with optional failure simulation.
 
 <br>
 
-| `FILE *tsInternalFopen(const char *path, const char *mode)` |
-|-------------------------------------------------------------|
+| `FILE *tsFopen(const char *path, const char *mode)` |
+|-----------------------------------------------------|
 
 Wrapper around `fopen()` with optional failure simulation.
 
@@ -224,15 +222,15 @@ Wrapper around `fopen()` with optional failure simulation.
 ✅ Example
 
 ```c
-tsInternalDisable(FOPEN, 1);
-assert(gsInternalRun(argc, argv) == CM_RESULT_FAIL_TO_CREATE_FILE);
-tsInternalPass("Test_gsInternalRun_FailsIfFopenFails");
+tsDisable(FOPEN, 1);
+assert(gsInternalRun(argc, argv) == RES_CREATE_FILE_FAIL);
+tsPass("Test_gsInternalRun_FailsIfFopenFails");
 ```
 
 <br>
 
-| `int tsInternalMkdir(const char *path)` |
-|-----------------------------------------|
+| `int tsMkdir(const char *path)` |
+|---------------------------------|
 
 Wrapper around `mkdir()` with optional failure simulation.
 
@@ -243,15 +241,15 @@ Wrapper around `mkdir()` with optional failure simulation.
 ✅ Example
 
 ```c
-tsInternalDisable(MKDIR, 1);
-assert(gsInternalRun(argc, argv) == CM_RESULT_FAIL_TO_CREATE_DIR);
-tsInternalPass("Test_gsInternalRun_FailsIfMkdirFails");
+tsDisable(MKDIR, 1);
+assert(gsInternalRun(argc, argv) == RES_CREATE_DIR_FAIL);
+tsPass("Test_gsInternalRun_FailsIfMkdirFails");
 ```
 
 <br>
 
-| `char *tsInternalMkdtemp(char *tmpl)` |
-|---------------------------------------|
+| `char *tsMkdtemp(char *tmpl)` |
+|-------------------------------|
 
 Portable wrapper around `mkdtemp()`. Creates a unique temporary directory by
 replacing the trailing `"XXXXXX"` in `tmpl` with a unique suffix, then creating
@@ -262,9 +260,9 @@ the directory. On POSIX, delegates to `mkdtemp`; on Windows, uses `_mktemp` +
     - `tmpl` — Template string ending in `"XXXXXX"`, modified in-place.
 - Returns: Pointer to `tmpl` on success, `nullptr` on failure.
 
-> **Note:** `tsInternalMkdtemp` calls the platform's directory creation
-> primitive directly and does **not** go through `tsInternalMkdir`.
-> `tsInternalDisable(MKDIR, n)` has no effect on temp directory creation.
+> **Note:** `tsMkdtemp` calls the platform's directory creation
+> primitive directly and does **not** go through `tsMkdir`.
+> `tsDisable(MKDIR, n)` has no effect on temp directory creation.
 > This is intentional — temp dirs are test infrastructure, not code under
 > test, so failure simulation should not interfere with them.
 
@@ -272,6 +270,6 @@ the directory. On POSIX, delegates to `mkdtemp`; on Windows, uses `_mktemp` +
 
 ```c
 char dir[] = "gstest_src_XXXXXX";
-assert(tsInternalMkdtemp(dir) != nullptr);
+assert(tsMkdtemp(dir) != nullptr);
 // dir is now e.g. "gstest_src_a01234" and the directory exists
 ```

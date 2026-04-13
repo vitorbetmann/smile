@@ -39,15 +39,15 @@
  *
  * @note GenScene-specific failures cover the following range: `-100..-199`.
  *
- * @see  src/_Internal/_Common/CommonInternal.h for common result codes
+ * @see  src/internal/Common/Common.h for common result codes
  *
  * @author Vitor Betmann
  */
 typedef enum
 {
-    GS_RESULT_INVALID_FLAG = -100,
-    GS_RESULT_NO_CALLBACKS = -101,
-    GS_RESULT_USER_ABORTED = -102,
+    RES_INVALID_FLAG = -100,
+    RES_NO_CALLBACKS = -101,
+    RES_USER_ABORT = -102,
 } gsInternalResult;
 
 /**
@@ -84,13 +84,13 @@ typedef struct
  * @param bufSize Capacity of @p buf in bytes.
  * @param name    Raw input name to sanitize.
  *
- * @return `CM_RESULT_OK` on success, or a negative error code on failure.
+ * @return `RES_OK` on success, or a negative error code on failure.
  *
- * @note Fails if: @p buf or @p name is NULL (`CM_RESULT_NULL_ARG`); @p name is
- *       empty or all whitespace (`CM_RESULT_EMPTY_ARG`); the first character is
+ * @note Fails if: @p buf or @p name is NULL (`RES_NULL_ARG`); @p name is
+ *       empty or all whitespace (`RES_EMPTY_ARG`); the first character is
  *       not alphabetic, or the name contains characters other than letters,
  *       digits, underscores, or spaces, or the sanitized result exceeds
- *       @p bufSize (`CM_RESULT_INVALID_NAME`).
+ *       @p bufSize (`RES_INVALID_ARG`).
  *
  * @author Vitor Betmann
  */
@@ -119,16 +119,16 @@ void gsInternalFatalHandler(void);
  * @param argc Number of command-line arguments.
  * @param argv Array of command-line argument strings.
  *
- * @return `CM_RESULT_OK` on success, or a negative error code on failure.
+ * @return `RES_OK` on success, or a negative error code on failure.
  *
- * @note Fails if: no scene name is provided (`CM_RESULT_EMPTY_ARG`); the name
- *       is invalid (`CM_RESULT_INVALID_NAME`); a path is invalid or the
- *       combined path exceeds `CM_PATH_MAX` (`CM_RESULT_INVALID_PATH`); an
- *       unknown flag is supplied (`GS_RESULT_INVALID_FLAG`); all callbacks are
- *       disabled (`GS_RESULT_NO_CALLBACKS`); the user declines a prompt
- *       (`GS_RESULT_USER_ABORTED`); a directory cannot be created
- *       (`CM_RESULT_FAIL_TO_CREATE_DIR`); or a file cannot be written
- *       (`CM_RESULT_FAIL_TO_CREATE_FILE`).
+ * @note Fails if: no scene name is provided (`RES_EMPTY_ARG`); the name
+ *       is invalid (`RES_INVALID_ARG`); a path is invalid or the
+ *       combined path exceeds `CM_PATH_MAX` (`RES_INVALID_PATH`); an
+ *       unknown flag is supplied (`RES_INVALID_FLAG`); all callbacks are
+ *       disabled (`RES_NO_CALLBACKS`); the user declines a prompt
+ *       (`RES_USER_ABORT`); a directory cannot be created
+ *       (`RES_CREATE_DIR_FAIL`); or a file cannot be written
+ *       (`RES_CREATE_FILE_FAIL`).
  * @note Side effects: may create directories and files on the filesystem;
  *       reads user input interactively via `scanf`.
  *

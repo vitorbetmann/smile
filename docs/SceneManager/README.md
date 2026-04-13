@@ -2,7 +2,7 @@
 
 The `SceneManager` module provides a simple, flexible system for defining and
 controlling game flow through independent scenes. Each scene defines its own
-behavior using enter, update, draw, and exit callback functions.
+behaviour using enter, update, draw, and exit callback functions.
 
 Module contract:
 
@@ -27,7 +27,7 @@ For detailed documentation see: [SceneManager – API](SceneManagerAPI.md)
 ## 👀 Visual Example
 
 <p align="center">
-  <img src="../../docs/_Internal/Assets/SceneManager/SceneManagerDemo.gif" width="90%" alt="Scene Manager example"/>
+  <img src="../../docs/internal/Assets/SceneManager/SceneManagerDemo.gif" width="90%" alt="Scene Manager example"/>
 </p>
 
 ---

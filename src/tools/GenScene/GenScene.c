@@ -17,13 +17,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "CommonInternal.h"
-#include "CommonInternalMessages.h"
+#include "internal/Common/Common.h"
+#include "internal/Common/CommonMessages.h"
 #include "GenSceneInternal.h"
 #include "GenSceneMessages.h"
 #include "Log.h"
 #include "LogInternal.h"
-#include "TestInternal.h"
+#include "internal/Test/Test.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -81,11 +81,11 @@ int gsInternalSanitizeName(char *buf, size_t bufSize, const char *name)
 {
     if (!buf || !name)
     {
-        return CM_RESULT_NULL_ARG;
+        return RES_NULL_ARG;
     }
     if (!name[0])
     {
-        return CM_RESULT_EMPTY_ARG;
+        return RES_EMPTY_ARG;
     }
 
     const char *src = name;
@@ -97,12 +97,12 @@ int gsInternalSanitizeName(char *buf, size_t bufSize, const char *name)
 
     if (!*src)
     {
-        return CM_RESULT_EMPTY_ARG;
+        return RES_EMPTY_ARG;
     }
 
     if (!isalpha((unsigned char)*src) && *src != '_')
     {
-        return CM_RESULT_INVALID_NAME;
+        return RES_INVALID_ARG;
     }
 
     size_t out = 0;
@@ -128,7 +128,7 @@ int gsInternalSanitizeName(char *buf, size_t bufSize, const char *name)
         {
             if (out + 1 >= bufSize)
             {
-                return CM_RESULT_INVALID_NAME;
+                return RES_INVALID_ARG;
             }
             buf[out++] = capitalizeNext ? (char)toupper((unsigned char)*src) : *src;
             capitalizeNext = false;
@@ -136,12 +136,12 @@ int gsInternalSanitizeName(char *buf, size_t bufSize, const char *name)
         }
         else
         {
-            return CM_RESULT_INVALID_NAME;
+            return RES_INVALID_ARG;
         }
     }
 
     buf[out] = '\0';
-    return CM_RESULT_OK;
+    return RES_OK;
 }
 
 void gsInternalFatalHandler(void)
@@ -248,8 +248,8 @@ int gsInternalRun(int argc, char *argv[])
 {
     if (argc == 1)
     {
-        lgInternalLog(ERROR, ORIGIN, CAUSE_EMPTY_ARG, ORIGIN, CONSEQ_ABORTED);
-        return CM_RESULT_EMPTY_ARG;
+        lgInternalLog(ERROR, ORIGIN, CSE_EMPTY_ARG, ORIGIN, CSQ_ABORT);
+        return RES_EMPTY_ARG;
     }
 
     if (strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0)
@@ -260,15 +260,15 @@ int gsInternalRun(int argc, char *argv[])
 
     if (argv[1][0] == '-' || strlen(argv[1]) > GS_NAME_MAX)
     {
-        lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_INVALID_NAME, argv[1], ORIGIN, CONSEQ_ABORTED);
-        return CM_RESULT_INVALID_NAME;
+        lgInternalLogWithArg(ERROR, ORIGIN, CSE_INVALID_ARG, argv[1], ORIGIN, CSQ_ABORT);
+        return RES_INVALID_ARG;
     }
 
     char sanitizedName[GS_NAME_MAX];
-    if (gsInternalSanitizeName(sanitizedName, GS_NAME_MAX, argv[1]) != CM_RESULT_OK)
+    if (gsInternalSanitizeName(sanitizedName, GS_NAME_MAX, argv[1]) != RES_OK)
     {
-        lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_INVALID_NAME, argv[1], ORIGIN, CONSEQ_ABORTED);
-        return CM_RESULT_INVALID_NAME;
+        lgInternalLogWithArg(ERROR, ORIGIN, CSE_INVALID_ARG, argv[1], ORIGIN, CSQ_ABORT);
+        return RES_INVALID_ARG;
     }
 
     gsInternalArgs args = {0};
@@ -302,13 +302,13 @@ int gsInternalRun(int argc, char *argv[])
         {
             if (i + 1 >= argc)
             {
-                lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_FLAG_REQUIRES_PATH_ARG, argv[i], ORIGIN, CONSEQ_ABORTED);
-                return CM_RESULT_EMPTY_ARG;
+                lgInternalLogWithArg(ERROR, ORIGIN, CSE_FLAG_REQ_PATH_ARG, argv[i], ORIGIN, CSQ_ABORT);
+                return RES_EMPTY_ARG;
             }
-            if (cmInternalValidatePath(argv[i + 1]) != CM_RESULT_OK)
+            if (cmValidatePath(argv[i + 1]) != RES_OK)
             {
-                lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_INVALID_PATH, argv[i + 1], ORIGIN, CONSEQ_ABORTED);
-                return CM_RESULT_INVALID_PATH;
+                lgInternalLogWithArg(ERROR, ORIGIN, CSE_INVALID_PATH, argv[i + 1], ORIGIN, CSQ_ABORT);
+                return RES_INVALID_PATH;
             }
             args.srcPath = argv[++i];
         }
@@ -316,27 +316,27 @@ int gsInternalRun(int argc, char *argv[])
         {
             if (i + 1 >= argc)
             {
-                lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_FLAG_REQUIRES_PATH_ARG, argv[i], ORIGIN, CONSEQ_ABORTED);
-                return CM_RESULT_EMPTY_ARG;
+                lgInternalLogWithArg(ERROR, ORIGIN, CSE_FLAG_REQ_PATH_ARG, argv[i], ORIGIN, CSQ_ABORT);
+                return RES_EMPTY_ARG;
             }
-            if (cmInternalValidatePath(argv[i + 1]) != CM_RESULT_OK)
+            if (cmValidatePath(argv[i + 1]) != RES_OK)
             {
-                lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_INVALID_PATH, argv[i + 1], ORIGIN, CONSEQ_ABORTED);
-                return CM_RESULT_INVALID_PATH;
+                lgInternalLogWithArg(ERROR, ORIGIN, CSE_INVALID_PATH, argv[i + 1], ORIGIN, CSQ_ABORT);
+                return RES_INVALID_PATH;
             }
             args.includePath = argv[++i];
         }
         else
         {
-            lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_INVALID_FLAG, argv[i], ORIGIN, CONSEQ_ABORTED);
-            return GS_RESULT_INVALID_FLAG;
+            lgInternalLogWithArg(ERROR, ORIGIN, CSE_INVALID_FLAG, argv[i], ORIGIN, CSQ_ABORT);
+            return RES_INVALID_FLAG;
         }
     }
 
     if (args.noEnter && args.noDraw && args.noUpdate && args.noExit)
     {
-        lgInternalLog(ERROR, ORIGIN, CAUSE_NO_CALLBACKS, ORIGIN, CONSEQ_ABORTED);
-        return GS_RESULT_NO_CALLBACKS;
+        lgInternalLog(ERROR, ORIGIN, CSE_NO_CALLBACKS, ORIGIN, CSQ_ABORT);
+        return RES_NO_CALLBACKS;
     }
 
     // if srcPath and includePath are null, set them to the default
@@ -352,32 +352,32 @@ int gsInternalRun(int argc, char *argv[])
     if (strlen(args.sceneName) + strlen(args.srcPath) + 4 > CM_PATH_MAX || // +4 because of ".c\0"
         strlen(args.sceneName) + strlen(args.includePath) + 4 > CM_PATH_MAX) // +4 because of ".h\0"
     {
-        lgInternalLog(FATAL, ORIGIN, CAUSE_INVALID_PATH, ORIGIN, CONSEQ_ABORTED);
-        return CM_RESULT_INVALID_PATH;
+        lgInternalLog(FATAL, ORIGIN, CSE_INVALID_PATH, ORIGIN, CSQ_ABORT);
+        return RES_INVALID_PATH;
     }
 
     // Check if they exist
-    if (!cmInternalDirExists(args.srcPath))
+    if (!cmDirExists(args.srcPath))
     {
-        lgInternalLogWithArg(WARNING, ORIGIN, CAUSE_DIR_DOES_NOT_EXIST, args.srcPath, ORIGIN, CONSEQ_PAUSED);
+        lgInternalLogWithArg(WARN, ORIGIN, CSE_DIR_NOT_EXISTS, args.srcPath, ORIGIN, CSQ_PAUSE);
         char buf[512];
         snprintf(buf, sizeof(buf), "Create directory: '%s'?", args.srcPath);
         if (!gsPrivatePrompt(buf))
         {
-            lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_DIR_DOES_NOT_EXIST, args.srcPath, ORIGIN, CONSEQ_ABORTED);
-            return GS_RESULT_USER_ABORTED;
+            lgInternalLogWithArg(ERROR, ORIGIN, CSE_DIR_NOT_EXISTS, args.srcPath, ORIGIN, CSQ_ABORT);
+            return RES_USER_ABORT;
         }
         createSrcDir = true;
     }
-    if (!cmInternalDirExists(args.includePath))
+    if (!cmDirExists(args.includePath))
     {
-        lgInternalLogWithArg(WARNING, ORIGIN, CAUSE_DIR_DOES_NOT_EXIST, args.includePath, ORIGIN, CONSEQ_PAUSED);
+        lgInternalLogWithArg(WARN, ORIGIN, CSE_DIR_NOT_EXISTS, args.includePath, ORIGIN, CSQ_PAUSE);
         char buf[512];
         snprintf(buf, sizeof(buf), "Create directory: '%s'?", args.includePath);
         if (!gsPrivatePrompt(buf))
         {
-            lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_DIR_DOES_NOT_EXIST, args.includePath, ORIGIN, CONSEQ_ABORTED);
-            return GS_RESULT_USER_ABORTED;
+            lgInternalLogWithArg(ERROR, ORIGIN, CSE_DIR_NOT_EXISTS, args.includePath, ORIGIN, CSQ_ABORT);
+            return RES_USER_ABORT;
         }
         createIncludeDir = true;
     }
@@ -385,29 +385,29 @@ int gsInternalRun(int argc, char *argv[])
     // Handling system specific path should be Common's job
     char srcBuf[CM_PATH_MAX];
     snprintf(srcBuf, sizeof(srcBuf), "%s/%s.c", args.srcPath, args.sceneName);
-    if (cmInternalFileExists(srcBuf))
+    if (cmFileExists(srcBuf))
     {
-        lgInternalLogWithArg(WARNING, ORIGIN, CAUSE_FILE_ALREADY_EXISTS, srcBuf, ORIGIN, CONSEQ_PAUSED);
+        lgInternalLogWithArg(WARN, ORIGIN, CSE_FILE_ALREADY_EXISTS, srcBuf, ORIGIN, CSQ_PAUSE);
         char buf[2 * CM_PATH_MAX];
         snprintf(buf, sizeof(buf), "Overwrite '%s'? (this may be irreversible)", srcBuf);
         if (!gsPrivatePrompt(buf))
         {
-            lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_FILE_ALREADY_EXISTS, args.srcPath, ORIGIN, CONSEQ_ABORTED);
-            return GS_RESULT_USER_ABORTED;
+            lgInternalLogWithArg(ERROR, ORIGIN, CSE_FILE_ALREADY_EXISTS, args.srcPath, ORIGIN, CSQ_ABORT);
+            return RES_USER_ABORT;
         }
     }
 
     char includeBuf[CM_PATH_MAX];
     snprintf(includeBuf, sizeof(includeBuf), "%s/%s.h", args.includePath, args.sceneName);
-    if (cmInternalFileExists(includeBuf))
+    if (cmFileExists(includeBuf))
     {
-        lgInternalLogWithArg(WARNING, ORIGIN, CAUSE_FILE_ALREADY_EXISTS, includeBuf, ORIGIN, CONSEQ_PAUSED);
+        lgInternalLogWithArg(WARN, ORIGIN, CSE_FILE_ALREADY_EXISTS, includeBuf, ORIGIN, CSQ_PAUSE);
         char buf[2 * CM_PATH_MAX];
         snprintf(buf, sizeof(buf), "Overwrite '%s'? (this may be irreversible)", includeBuf);
         if (!gsPrivatePrompt(buf))
         {
-            lgInternalLogWithArg(ERROR, ORIGIN, CAUSE_FILE_ALREADY_EXISTS, includeBuf, ORIGIN, CONSEQ_ABORTED);
-            return GS_RESULT_USER_ABORTED;
+            lgInternalLogWithArg(ERROR, ORIGIN, CSE_FILE_ALREADY_EXISTS, includeBuf, ORIGIN, CSQ_ABORT);
+            return RES_USER_ABORT;
         }
     }
 
@@ -415,50 +415,50 @@ int gsInternalRun(int argc, char *argv[])
     // Create directories if needed
     if (createSrcDir)
     {
-        if (cmInternalCreateDir(args.srcPath) != CM_RESULT_OK)
+        if (cmCreateDir(args.srcPath) != RES_OK)
         {
-            lgInternalLogWithArg(FATAL, ORIGIN, CAUSE_FAIL_TO_CREATE_DIR, args.srcPath, ORIGIN, CONSEQ_ABORTED);
-            return CM_RESULT_FAIL_TO_CREATE_DIR;
+            lgInternalLogWithArg(FATAL, ORIGIN, CSE_CREATE_DIR_FAIL, args.srcPath, ORIGIN, CSQ_ABORT);
+            return RES_CREATE_DIR_FAIL;
         }
-        lgInternalLogWithArg(INFO, ORIGIN, CAUSE_DIR_CREATED, args.srcPath, ORIGIN, CONSEQ_SUCCESSFUL);
+        lgInternalLogWithArg(INFO, ORIGIN, CSE_DIR_CREATE, args.srcPath, ORIGIN, CSQ_SUCCESS);
     }
     if (createIncludeDir)
     {
-        if (cmInternalCreateDir(args.includePath) != CM_RESULT_OK)
+        if (cmCreateDir(args.includePath) != RES_OK)
         {
-            lgInternalLogWithArg(FATAL, ORIGIN, CAUSE_FAIL_TO_CREATE_DIR, args.includePath, ORIGIN, CONSEQ_ABORTED);
-            return CM_RESULT_FAIL_TO_CREATE_DIR;
+            lgInternalLogWithArg(FATAL, ORIGIN, CSE_CREATE_DIR_FAIL, args.includePath, ORIGIN, CSQ_ABORT);
+            return RES_CREATE_DIR_FAIL;
         }
-        lgInternalLogWithArg(INFO, ORIGIN, CAUSE_DIR_CREATED, args.includePath, ORIGIN, CONSEQ_SUCCESSFUL);
+        lgInternalLogWithArg(INFO, ORIGIN, CSE_DIR_CREATE, args.includePath, ORIGIN, CSQ_SUCCESS);
     }
 
-    FILE *srcFile = tsInternalFopen(srcBuf, "w");
+    FILE *srcFile = tsFopen(srcBuf, "w");
     if (!srcFile)
     {
-        lgInternalLogWithArg(FATAL, ORIGIN, CAUSE_FAIL_TO_CREATE_FILE, srcBuf, ORIGIN, CONSEQ_ABORTED);
-        return CM_RESULT_FAIL_TO_CREATE_FILE;
+        lgInternalLogWithArg(FATAL, ORIGIN, CSE_CREATE_FILE_FAIL, srcBuf, ORIGIN, CSQ_ABORT);
+        return RES_CREATE_FILE_FAIL;
     }
     gsPrivateWriteSrc(srcFile, &args);
     fclose(srcFile);
-    lgInternalLogWithArg(INFO, ORIGIN, CAUSE_FILE_CREATED, srcBuf, ORIGIN, CONSEQ_SUCCESSFUL);
+    lgInternalLogWithArg(INFO, ORIGIN, CSE_FILE_CREATE, srcBuf, ORIGIN, CSQ_SUCCESS);
 
-    FILE *includeFile = tsInternalFopen(includeBuf, "w");
+    FILE *includeFile = tsFopen(includeBuf, "w");
     if (!includeFile)
     {
-        lgInternalLogWithArg(FATAL, ORIGIN, CAUSE_FAIL_TO_CREATE_FILE, includeBuf, ORIGIN, CONSEQ_ABORTED);
-        return CM_RESULT_FAIL_TO_CREATE_FILE;
+        lgInternalLogWithArg(FATAL, ORIGIN, CSE_CREATE_FILE_FAIL, includeBuf, ORIGIN, CSQ_ABORT);
+        return RES_CREATE_FILE_FAIL;
     }
     gsPrivateWriteHeader(includeFile, &args);
     fclose(includeFile);
 
-    lgInternalLogWithArg(INFO, ORIGIN, CAUSE_FILE_CREATED, includeBuf, ORIGIN, CONSEQ_SUCCESSFUL);
-    return CM_RESULT_OK;
+    lgInternalLogWithArg(INFO, ORIGIN, CSE_FILE_CREATE, includeBuf, ORIGIN, CSQ_SUCCESS);
+    return RES_OK;
 }
 
 #ifndef GS_TESTING
 int main(int argc, char *argv[])
 {
     lgSetFatal(gsInternalFatalHandler);
-    return gsInternalRun(argc, argv) == CM_RESULT_OK ? 0 : 1;
+    return gsInternalRun(argc, argv) == RES_OK ? 0 : 1;
 }
 #endif

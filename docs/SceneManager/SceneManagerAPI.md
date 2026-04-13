@@ -1,13 +1,12 @@
 # SceneManager — API 🎬
 
-The `SceneManager` module manages game flow by organizing behavior into
+The `SceneManager` module manages game flow by organizing behaviour into
 independent scenes. Each scene defines its own enter, update, draw, and exit
 callbacks.
 
 For workflow examples see: [SceneManager – Getting Started](README.md)
 
-For non-public API see: [SceneManagerInternal – API](../_Internal/SceneManagerInternalAPI.md)
-
+For non-public API see: [SceneManagerInternal – API](../internal/SceneManagerInternalAPI.md)
 
 ### 🚨 Warning! This module is not thread-safe!
 
@@ -504,7 +503,7 @@ scenes.
 
 - Notes:
     - Fails if: SceneManager is not running.
-    - May fail with `SM_RESULT_FREE_ALL_SCENES_FAILED` if cleanup invariants
+    - May fail with `RES_FREE_ALL_SCENES_FAIL` if cleanup invariants
       are violated.
     - The exit function of the current scene is called before cleanup.
     - After stopping, all internal data is reset. SceneManager must be

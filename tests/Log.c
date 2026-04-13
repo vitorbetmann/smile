@@ -10,13 +10,15 @@
 // Includes
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+// External
 #include <assert.h>
 #include <stdio.h>
-
+// Module Related
 #include "Log.h"
 #include "LogInternal.h"
-#include "CommonInternal.h"
-#include "TestInternal.h"
+// Support
+#include "internal/Common/Common.h"
+#include "internal/Test/Test.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -24,7 +26,7 @@
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 #ifdef NDEBUG
-#error "LogAPITest must be compiled without NDEBUG (asserts required)."
+#error "TestAPILog must be compiled without NDEBUG (asserts required)."
 #endif
 
 
@@ -51,48 +53,48 @@ static void mockFatalHandler(void)
 
 void Test_lgLog_SucceedsWithValidMessage(void)
 {
-    assert(lgLog("Hello, %s!", "Smile") == CM_RESULT_OK);
-    tsInternalPass(__func__);
+    assert(lgLog("Hello, %s!", "Smile") == RES_OK);
+    tsPass(__func__);
 }
 
 void Test_lgLog_FailsWithNullMessage(void)
 {
-    assert(lgLog(nullptr) == CM_RESULT_NULL_ARG);
-    tsInternalPass(__func__);
+    assert(lgLog(nullptr) == RES_NULL_ARG);
+    tsPass(__func__);
 }
 
 void Test_lgSetFatal_SucceedsWithNullHandler(void)
 {
-    assert(lgSetFatal(nullptr) == CM_RESULT_OK);
-    tsInternalPass(__func__);
+    assert(lgSetFatal(nullptr) == RES_OK);
+    tsPass(__func__);
 }
 
 void Test_lgInternalLog_FatalInvokesCustomHandler(void)
 {
     fatalHandlerCount = 0;
-    assert(lgSetFatal(mockFatalHandler) == CM_RESULT_OK);
+    assert(lgSetFatal(mockFatalHandler) == RES_OK);
     assert(
-        lgInternalLog(FATAL, "LogAPITest", "Fatal path exercised", __func__,
-            "for verification") == CM_RESULT_OK);
+        lgInternalLog(FATAL, "TestAPILog", "Fatal path exercised", __func__,
+            "for verification") == RES_OK);
     assert(fatalHandlerCount == 1);
-    assert(lgSetFatal(nullptr) == CM_RESULT_OK);
-    tsInternalPass(__func__);
+    assert(lgSetFatal(nullptr) == RES_OK);
+    tsPass(__func__);
 }
 
 void Test_lgInternalLog_InfoReturnsSuccess(void)
 {
     assert(
-        lgInternalLog(INFO, "LogAPITest", "Info path exercised", __func__,
-            "for verification") == CM_RESULT_OK);
-    tsInternalPass(__func__);
+        lgInternalLog(INFO, "TestAPILog", "Info path exercised", __func__,
+            "for verification") == RES_OK);
+    tsPass(__func__);
 }
 
 void Test_lgInternalLog_WarningReturnsSuccess(void)
 {
     assert(
-        lgInternalLog(WARNING, "LogAPITest", "Warning path exercised",
-            __func__, "for verification") == CM_RESULT_OK);
-    tsInternalPass(__func__);
+        lgInternalLog(WARN, "TestAPILog", "Warning path exercised",
+            __func__, "for verification") == RES_OK);
+    tsPass(__func__);
 }
 
 

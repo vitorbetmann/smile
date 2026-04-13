@@ -1,9 +1,9 @@
 /**
  * @file
- * @brief Implementation of the CommonInternal module.
+ * @brief Implementation of the Common module.
  *
- * @see CommonInternal.h
- * @see CommonInternalMessages.h
+ * @see Common.h
+ * @see CommonMessages.h
  *
  * @author Vitor Betmann
  */
@@ -13,6 +13,7 @@
 // Includes
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+// External
 #include <ctype.h>
 #include <errno.h>
 #include <stdio.h>
@@ -23,12 +24,12 @@
 #include <unistd.h>
 #endif
 #include <sys/stat.h>
-
-#include "CommonInternal.h"
-#include "CommonInternalMessages.h"
-
+// Module Related
+#include "Common.h"
+#include "CommonMessages.h"
+// Support
+#include "internal/Test/Test.h"
 #include "LogInternal.h"
-#include "TestInternal.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -37,12 +38,12 @@
 
 // Start Related
 
-bool cmInternalIsRunning(cmIsRunningFn cmIsRunning, const char *module,
-                         const char *fnName)
+bool cmIsRunning(cmIsRunningFn cmIsRunning, const char *module,
+                 const char *fnName)
 {
     if (!cmIsRunning())
     {
-        lgInternalLog(ERROR, module, CAUSE_NOT_RUNNING, fnName, CONSEQ_ABORTED);
+        lgInternalLog(ERROR, module, CSE_NOT_RUNNING, fnName, CSQ_ABORT);
         return false;
     }
 
@@ -51,7 +52,7 @@ bool cmInternalIsRunning(cmIsRunningFn cmIsRunning, const char *module,
 
 // Filesystem
 
-bool cmInternalDirExists(const char *path)
+bool cmDirExists(const char *path)
 {
 #ifdef _WIN32
     struct _stat sb;
@@ -63,33 +64,33 @@ bool cmInternalDirExists(const char *path)
 }
 
 
-int cmInternalValidatePath(const char *path)
+int cmValidatePath(const char *path)
 {
     if (!path)
     {
-        return CM_RESULT_NULL_ARG;
+        return RES_NULL_ARG;
     }
     if (!path[0])
     {
-        return CM_RESULT_EMPTY_ARG;
+        return RES_EMPTY_ARG;
     }
 
 #ifdef _WIN32
     if (path[0] == '/' || path[0] == '\\' || (isalpha((unsigned char)path[0]) && path[1] == ':'))
     {
-        return CM_RESULT_INVALID_PATH;
+        return RES_INVALID_PATH;
     }
 #else
     if (path[0] == '/')
     {
-        return CM_RESULT_INVALID_PATH;
+        return RES_INVALID_PATH;
     }
 #endif
 
     size_t len = strnlen(path, CM_PATH_MAX);
     if (len >= CM_PATH_MAX)
     {
-        return CM_RESULT_INVALID_PATH;
+        return RES_INVALID_PATH;
     }
 
     // Reject any bare ".." segment to prevent escaping cwd
@@ -108,7 +109,7 @@ int cmInternalValidatePath(const char *path)
             *p = '\0';
             if (strcmp(seg, "..") == 0)
             {
-                return CM_RESULT_INVALID_PATH;
+                return RES_INVALID_PATH;
             }
             *p = saved;
             if (saved == '\0')
@@ -119,14 +120,14 @@ int cmInternalValidatePath(const char *path)
         }
     }
 
-    return CM_RESULT_OK;
+    return RES_OK;
 }
 
 
-int cmInternalCreateDir(const char *path)
+int cmCreateDir(const char *path)
 {
-    int result = cmInternalValidatePath(path);
-    if (result != CM_RESULT_OK)
+    int result = cmValidatePath(path);
+    if (result != RES_OK)
     {
         return result;
     }
@@ -146,23 +147,23 @@ int cmInternalCreateDir(const char *path)
         {
             char sep = *p;
             *p = '\0';
-            if (tsInternalMkdir(tmp) == -1 && errno != EEXIST)
+            if (tsMkdir(tmp) == -1 && errno != EEXIST)
             {
-                return CM_RESULT_FAIL_TO_CREATE_DIR;
+                return RES_CREATE_DIR_FAIL;
             }
             *p = sep;
         }
     }
 
-    if (tsInternalMkdir(tmp) == -1 && errno != EEXIST)
+    if (tsMkdir(tmp) == -1 && errno != EEXIST)
     {
-        return CM_RESULT_FAIL_TO_CREATE_DIR;
+        return RES_CREATE_DIR_FAIL;
     }
 
-    return CM_RESULT_OK;
+    return RES_OK;
 }
 
-bool cmInternalFileExists(const char *filename)
+bool cmFileExists(const char *filename)
 {
     FILE *file = fopen(filename, "r");
     if (file)
@@ -173,38 +174,38 @@ bool cmInternalFileExists(const char *filename)
     return false;
 }
 
-int cmInternalDeleteFile(const char *path)
+int cmDeleteFile(const char *path)
 {
-    int result = cmInternalValidatePath(path);
-    if (result != CM_RESULT_OK)
+    int result = cmValidatePath(path);
+    if (result != RES_OK)
     {
         return result;
     }
 
-    if (!cmInternalFileExists(path))
+    if (!cmFileExists(path))
     {
-        return CM_RESULT_FILE_NOT_FOUND;
+        return RES_FILE_NOT_FOUND;
     }
 
     if (remove(path) != 0)
     {
-        return CM_RESULT_FAIL_TO_DELETE_FILE;
+        return RES_DEL_FILE_FAIL;
     }
 
-    return CM_RESULT_OK;
+    return RES_OK;
 }
 
-int cmInternalDeleteDir(const char *path)
+int cmDeleteDir(const char *path)
 {
-    int result = cmInternalValidatePath(path);
-    if (result != CM_RESULT_OK)
+    int result = cmValidatePath(path);
+    if (result != RES_OK)
     {
         return result;
     }
 
-    if (!cmInternalDirExists(path))
+    if (!cmDirExists(path))
     {
-        return CM_RESULT_DIR_NOT_FOUND;
+        return RES_DIR_NOT_FOUND;
     }
 
 #ifdef _WIN32
@@ -213,8 +214,8 @@ int cmInternalDeleteDir(const char *path)
     if (rmdir(path) != 0)
 #endif
     {
-        return CM_RESULT_FAIL_TO_DELETE_DIR;
+        return RES_DEL_DIR_FAIL;
     }
 
-    return CM_RESULT_OK;
+    return RES_OK;
 }
