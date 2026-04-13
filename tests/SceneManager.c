@@ -21,7 +21,7 @@
 #include "SceneManagerInternal.h"
 #include "SceneManagerTestHooks.h"
 // Support
-#include "CommonInternal.h"
+#include "Common.h"
 #include "Test.h"
 
 
@@ -30,7 +30,7 @@
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 #ifdef NDEBUG
-#error "SceneManagerAPITest must be compiled without NDEBUG (asserts required)."
+#error "TestAPISceneManager must be compiled without NDEBUG (asserts required)."
 #endif
 
 #define NS_PER_S 1000000000L

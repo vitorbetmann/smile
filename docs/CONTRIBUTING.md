@@ -114,7 +114,7 @@ Smile
 - In the `docs/` and `src/` directories, `internal` holds developer-focused
   documentation, functions, and modules.
 - The current `tests/` directory contains public API tests such as
-  `LogAPITest.c` and `SceneManagerAPITest.c`.
+  `Log.c` and `SceneManager.c`.
 - Public modules and tools do not live under a dedicated `Public` directory.
 - Within directories that use this convention, anything outside `internal` is
   considered public.

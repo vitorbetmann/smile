@@ -1,6 +1,6 @@
-# CommonInternal — API 🧰
+# Common — API 🧰
 
-`CommonInternal` aggregates internal data types and functions that can be shared
+`Common` aggregates internal data types and functions that can be shared
 throughout all modules.
 
 ### 🚨 Warning! This module is not thread-safe!
@@ -21,13 +21,13 @@ throughout all modules.
 
 ## 😊Module Header
 
-The module’s header is `CommonInternal.h`. Its full Smile path is:
-`src/internal/Common/CommonInternal.h`
+The module’s header is `Common.h`. Its full Smile path is:
+`src/internal/Common/Common.h`
 
 ✅ Example
 
 ```c
-#include "CommonInternal.h"
+#include "Common.h"
 ```
 
 ---

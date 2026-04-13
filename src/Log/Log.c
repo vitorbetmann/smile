@@ -26,7 +26,7 @@
 #include "Log.h"
 #include "LogInternal.h"
 // Support
-#include "CommonInternal.h"
+#include "Common.h"
 
 
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————

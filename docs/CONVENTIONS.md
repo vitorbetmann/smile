@@ -123,7 +123,7 @@ Current module prefixes:
 - Public declarations belong in headers under `include/`.
 - Module-private internal declarations belong in `[ModuleName]Internal.h`.
 - Shared internal utilities belong under `internal`, typically in files such as
-  `CommonInternal.h`.
+  `Common.h`.
 - All headers must use include guards.
 - Smile include guards begin with `SMILE_` and use underscores between words.
 - Leave 2 blank lines before the closing `#endif` of an include guard and
@@ -187,7 +187,7 @@ Current module prefixes:
 - In `Causes`, subsections should follow the order `Infos`, `Warnings`,
   `Errors`, `Fatals`.
 - In `Consequences`, subsections should follow the order `Success`, `Failure`, `Pause`.
-- Check `CommonInternalMessages.h` before adding new module-specific messages so
+- Check `CommonMessages.h` before adding new module-specific messages so
   shared messages are reused consistently.
 
 ## Comments
@@ -204,5 +204,5 @@ Current module prefixes:
 - Match the naming patterns already used in the repository.
 - Public and module-specific source/header files typically use module-style
   names such as `SceneManager.h`, `SceneManagerInternal.h`, and
-  `SceneManagerAPITest.c`.
+  `SceneManager.c`.
 - Avoid spaces and special characters in new file and directory names.

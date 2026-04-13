@@ -27,8 +27,8 @@
 #include "SceneManagerInternal.h"
 #include "SceneManagerMessages.h"
 // Support
-#include "CommonInternal.h"
-#include "CommonInternalMessages.h"
+#include "Common.h"
+#include "CommonMessages.h"
 #include "LogInternal.h"
 #include "SceneManagerTestHooks.h"
 #include "Test.h"

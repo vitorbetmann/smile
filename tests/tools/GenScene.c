@@ -18,7 +18,7 @@
 // Module Related
 #include "GenSceneInternal.h"
 // Support
-#include "CommonInternal.h"
+#include "Common.h"
 #include "Log.h"
 #include "Test.h"
 

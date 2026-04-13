@@ -1,5 +1,5 @@
 /**
- * @file
+* @file
  * @brief Definitions for shared log messages.
  *
  * @author Vitor Betmann

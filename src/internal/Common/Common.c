@@ -1,9 +1,9 @@
 /**
  * @file
- * @brief Implementation of the CommonInternal module.
+ * @brief Implementation of the Common module.
  *
- * @see CommonInternal.h
- * @see CommonInternalMessages.h
+ * @see Common.h
+ * @see CommonMessages.h
  *
  * @author Vitor Betmann
  */
@@ -25,8 +25,8 @@
 #endif
 #include <sys/stat.h>
 // Module Related
-#include "CommonInternal.h"
-#include "CommonInternalMessages.h"
+#include "Common.h"
+#include "CommonMessages.h"
 // Support
 #include "LogInternal.h"
 #include "Test.h"

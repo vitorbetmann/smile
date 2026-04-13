@@ -1,10 +1,7 @@
 /**
  * @file
  * @brief Internal declarations of data structures and functions for the
- *        CommonInternal module.
- *
- * @note TODO #XX [Function] for [CommonInternal] - Add cmInternalPathJoin(buf, bufSize, dir, file) for cross-platform
- *                                                  path joining (CM_PATH_MAX, correct separator)
+ *        Common module.
  *
  * @author Vitor Betmann
  */

@@ -54,7 +54,7 @@ set(SRC_FILES
         src/Log/Log.c
         src/SceneManager/SceneManager.c
         src/internal/Test/Test.c
-        src/internal/Common/CommonInternal.c
+        src/internal/Common/Common.c
 )
 
 add_library(smile STATIC ${SRC_FILES})
@@ -138,20 +138,24 @@ if (SMILE_TESTS)
         add_test(NAME ${target_name} COMMAND ${target_name})
     endfunction()
 
+    function(add_smile_tool_test target_name test_source tool_dir tool_sources testing_define)
+        add_executable(${target_name} ${test_source} ${tool_sources})
+        target_compile_definitions(${target_name} PRIVATE ${testing_define})
+        target_link_libraries(${target_name} PRIVATE smile)
+        target_include_directories(${target_name} PRIVATE
+                $<TARGET_PROPERTY:smile,INTERFACE_INCLUDE_DIRECTORIES>
+                $<TARGET_PROPERTY:smile,INCLUDE_DIRECTORIES>
+                ${CMAKE_CURRENT_SOURCE_DIR}/${tool_dir}
+        )
+        add_test(NAME ${target_name} COMMAND ${target_name})
+    endfunction()
+
     # PUBLIC API TESTS
-    add_smile_test(SceneManagerAPITest tests/SceneManagerAPITest.c)
-    add_smile_test(LogAPITest tests/LogAPITest.c)
+    add_smile_test(TestAPISceneManager tests/SceneManager.c)
+    add_smile_test(TestAPILog tests/Log.c)
 
     # TOOL TESTS
-    add_executable(GenSceneToolTest tests/GenSceneToolTest.c tools/GenScene/GenScene.c)
-    target_compile_definitions(GenSceneToolTest PRIVATE GS_TESTING)
-    target_link_libraries(GenSceneToolTest PRIVATE smile)
-    target_include_directories(GenSceneToolTest PRIVATE
-            $<TARGET_PROPERTY:smile,INTERFACE_INCLUDE_DIRECTORIES>
-            $<TARGET_PROPERTY:smile,INCLUDE_DIRECTORIES>
-            ${CMAKE_CURRENT_SOURCE_DIR}/tools/GenScene
-    )
-    add_test(NAME GenSceneToolTest COMMAND GenSceneToolTest)
+    add_smile_tool_test(TestToolGenScene tests/tools/GenScene.c tools/GenScene tools/GenScene/GenScene.c GS_TESTING)
 endif ()
 
 

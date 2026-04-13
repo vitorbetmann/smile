@@ -17,8 +17,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "CommonInternal.h"
-#include "CommonInternalMessages.h"
+#include "Common.h"
+#include "CommonMessages.h"
 #include "GenSceneInternal.h"
 #include "GenSceneMessages.h"
 #include "Log.h"

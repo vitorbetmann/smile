@@ -36,7 +36,7 @@
  *
  * @note Log-specific failures cover the following range: `-100..-199`.
  *
- * @see  src/internal/Common/CommonInternal.h for common result codes
+ * @see  src/internal/Common/Common.h for common result codes
  *
  * @author Vitor Betmann
  */
