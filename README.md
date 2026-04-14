@@ -27,6 +27,10 @@ integrates seamlessly with libraries like [raylib](https://www.raylib.com).
   <img src="/docs/internal/Assets/Log/LogDemo.gif" width="45%" alt="gif of log working"/>
 </p>
 
+<p align="center">
+  <img src="/docs/internal/Assets/tools/GenScene/GenSceneDemo.gif" width="45%" alt="Scene Manager example"/>
+</p>
+
 ## 🚀 Building Your Game
 
 ### — Prerequisites

@@ -7,9 +7,18 @@ header files for use with Smile's SceneManager module.
 
 ## 📋 Table of Contents
 
+- [Visual Example](#-visual-example)
 - [Usage](#-usage)
 - [Options](#-options)
 - [Examples](#-examples)
+
+---
+
+## 👀 Visual Example
+
+<p align="center">
+  <img src="../../docs/internal/Assets/tools/GenScene/GenSceneDemo.gif" width="90%" alt="Scene Manager example"/>
+</p>
 
 ---
 
