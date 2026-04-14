@@ -141,6 +141,19 @@ int tsMkdir(const char *path)
 #endif
 }
 
+char *tsMkdtemp(char *tmpl)
+{
+#ifdef _WIN32
+    if (_mktemp(tmpl) == nullptr)
+        return nullptr;
+    if (_mkdir(tmpl) != 0)
+        return nullptr;
+    return tmpl;
+#else
+    return mkdtemp(tmpl);
+#endif
+}
+
 void tsReset(void)
 {
     canMalloc = true;
@@ -154,17 +167,4 @@ void tsReset(void)
     reallocNum = 0;
     fopenNum = 0;
     mkdirNum = 0;
-}
-
-char *tsMkdtemp(char *tmpl)
-{
-#ifdef _WIN32
-    if (_mktemp(tmpl) == nullptr)
-        return nullptr;
-    if (_mkdir(tmpl) != 0)
-        return nullptr;
-    return tmpl;
-#else
-    return mkdtemp(tmpl);
-#endif
 }
