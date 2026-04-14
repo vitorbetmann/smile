@@ -20,7 +20,7 @@ configuring fatal error handling.
 ## Visual Example
 
 <p align="center">
-  <img src="../../docs/internal/Assets/Log/LogDemo.gif" width="90%"/>
+  <img src="https://raw.githubusercontent.com/vitorbetmann/smile-assets/refs/heads/main/Log/LogDemo.gif" width="90%" alt="Gif of Log module working"/>
 </p>
 
 ---

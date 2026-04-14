@@ -18,17 +18,17 @@ integrates seamlessly with libraries like [raylib](https://www.raylib.com).
 ## 🎮 Smile Demo
 
 <p align="center">
-  <img src="/docs/internal/Assets/SceneManager/SceneManagerDemo.gif" width="45%" alt="gif of scene manager working"/>
-  <img src="/docs/internal/Assets/ParticleSystem/ParticleSystemDemo.gif" width="45%" alt="gif of particle system module working"/>
+  <img src="https://raw.githubusercontent.com/vitorbetmann/smile-assets/refs/heads/main/SceneManager/SceneManagerDemo.gif" width="45%" alt="Gif of Scene Manager module working"/>
+  <img src="https://raw.githubusercontent.com/vitorbetmann/smile-assets/refs/heads/main/ParticleSystem/ParticleSystemDemo.gif" width="45%" alt="Gif of Particle System module working"/>
 </p>
 
 <p align="center">
-  <img src="/docs/internal/Assets/SaveLoad/SaveLoadDemo.gif" width="45%" alt="gif of save load working"/>
-  <img src="/docs/internal/Assets/Log/LogDemo.gif" width="45%" alt="gif of log working"/>
+  <img src="https://raw.githubusercontent.com/vitorbetmann/smile-assets/refs/heads/main/SaveLoad/SaveLoadDemo.gif" width="45%" alt="Gif of Save Load module working"/>
+  <img src="https://raw.githubusercontent.com/vitorbetmann/smile-assets/refs/heads/main/Log/LogDemo.gif" width="45%" alt="Gif of Log module working"/>
 </p>
 
 <p align="center">
-  <img src="/docs/internal/Assets/tools/GenScene/GenSceneDemo.gif" width="45%" alt="Scene Manager example"/>
+  <img src="https://raw.githubusercontent.com/vitorbetmann/smile-assets/refs/heads/main/tools/GenScene/GenSceneDemo.gif" width="45%" alt="Gif of GenScene tool working"/>
 </p>
 
 ## 🚀 Building Your Game
@@ -79,7 +79,7 @@ A typical project structure might look like this:
 By default, Smile compiles with runtime `warning` and `info` logs enabled.
 Below is an example of how they would appear in your terminal:
 
-![Example of Smile's Logs](/docs/internal/Assets/_README/LogExample.png)
+![Example of Smile's Logs](https://raw.githubusercontent.com/vitorbetmann/smile-assets/refs/heads/main/README/LogExample.png)
 
 If you want to disable them, pass the following flags when configuring your
 build with CMake:

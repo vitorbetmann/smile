@@ -27,7 +27,7 @@ For detailed documentation see: [SceneManager – API](SceneManagerAPI.md)
 ## 👀 Visual Example
 
 <p align="center">
-  <img src="../../docs/internal/Assets/SceneManager/SceneManagerDemo.gif" width="90%" alt="Scene Manager example"/>
+  <img src="https://raw.githubusercontent.com/vitorbetmann/smile-assets/refs/heads/main/SceneManager/SceneManagerDemo.gif" width="90%" alt="Gif of Scene Manager module working"/>
 </p>
 
 ---
