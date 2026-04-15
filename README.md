@@ -71,7 +71,7 @@ target_include_directories(my_game PRIVATE
 target_link_libraries(my_game PRIVATE smile)
 ```
 
-#### ⚠️ Note: Replace `my_game` with the name of your game.
+#### ⚠️ Replace `my_game` with the name of your game.
 
 From your project's root, run:
 
