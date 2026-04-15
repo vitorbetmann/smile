@@ -45,76 +45,15 @@ Before building Smile, make sure you have the following installed:
 
 ### — Cloning and Building
 
-From your game directory, run:
+#### ⚠️ This walkthrough expects you to have a `CMakeLists.txt` file.
 
-```zsh
-git clone https://github.com/vitorbetmann/smile.git
-
-cmake -S smile -B smile/build
-cmake --build smile/build
-```
-
-Optional: install Smile tools so they're accessible from anywhere.
-
-```zsh
-# Mac/Linux:
-sudo cmake --install smile/build
-# Windows (run from an admin terminal):
-cmake --install smile/build
-```
-
-Smile builds as a static library (libsmile.a on Mac/Linux, smile.lib on
-Windows) containing all Smile modules that you can link directly into your game.
-
-A typical project structure might look like this:
+Your root should look similar to this:
 
 ```plaintext
-/my_game_project/
-├── main.c                # Your game's entry point
-└── smile/                # Smile cloned here
-```
-
-#### Note
-
-By default, Smile compiles with runtime `warning` and `info` logs enabled.
-Below is an example of how they would appear in your terminal:
-
-![Example of Smile's Logs](https://raw.githubusercontent.com/vitorbetmann/smile-assets/refs/heads/main/README/LogExample.png)
-
-If you want to disable them, pass the following flags when configuring your
-build with CMake:
-
- ```zsh
- cmake -S ./smile -B smile/build -DSMILE_WARN=OFF -DSMILE_INFO=OFF
- ```
-
-This will disable all Smile `warning` and `info` logging output at build
-time. `Error` logs cannot be disabled.
-
----
-
-### — Compiling
-
-There are two common ways to compile your game using Smile:
-
-#### Option 1 — With Clang (from your source directory)
-
-```zsh
-clang main.c -Ismile/include -Lsmile/build -lsmile -o my_game
-```
-
-If needed, replace `main.c` with your entry source file and/or `my_game` with
-your desired output name.
-
-#### Option 2 — With CMake
-
-Your project directory should look like this:
-
-```plaintext
-/my_game_project/
+/my_game/
 ├── CMakeLists.txt        # Your game's CMake file
 ├── main.c                # Your game's entry point
-└── smile/                # Smile cloned or copied here
+└── ...                   # Other files/directories
 ```
 
 In your CMakeLists.txt, add:
@@ -132,8 +71,55 @@ target_include_directories(my_game PRIVATE
 target_link_libraries(my_game PRIVATE smile)
 ```
 
-If needed, replace `my_game` with the name of your project's executable, and you
-can compile your game normally using cmake.
+#### ⚠️ Note: Replace `my_game` with the name of your game.
+
+From your project's root, run:
+
+```zsh
+git clone https://github.com/vitorbetmann/smile.git
+
+cmake -S . -B build
+cmake --build build
+```
+
+Optional: install Smile tools so they're accessible from anywhere.
+
+```zsh
+# Mac/Linux:
+sudo cmake --install build
+# Windows (run from an admin terminal):
+cmake --install build
+```
+
+Smile builds as a static library (libsmile.a on Mac/Linux, smile.lib on
+Windows) containing all Smile modules that you can link directly into your game.
+
+Your root should now look similar to this:
+
+```plaintext
+/my_game/
+├── build/                # Your game's executable will be here
+├── smile/                # Cloned Smile library
+├── main.c
+├── CMakeLists.txt
+└── ...                   # Other files/directories
+```
+
+#### Note
+
+By default, Smile compiles with runtime `Warning` and `Info` logs enabled.
+Below is an example of how they would appear in your terminal:
+
+![Example of Smile's Logs](https://raw.githubusercontent.com/vitorbetmann/smile-assets/refs/heads/main/README/LogExample.png)
+
+If you want to disable them, delete the build directory (if you have one) and pass the following flags when configuring your
+build with CMake:
+
+ ```zsh
+ cmake -S . -B smile -DSMILE_WARN=OFF -DSMILE_INFO=OFF
+ ```
+
+This will disable all Smile `Warning` and `Info` logging output. `Error` and `Fatal` logs cannot be disabled.
 
 ## ⌨️ Actually Coding
 
