@@ -45,7 +45,20 @@ Before building Smile, make sure you have the following installed:
 
 ### — Cloning and Building
 
-#### ⚠️ This walkthrough expects you to have a `CMakeLists.txt` file.
+#### ⚠️ This walkthrough expects you to have a `CMakeLists.txt`. If you don't have one, start with the template below:
+
+```cmake
+cmake_minimum_required(VERSION 3.30)
+project(my_game C)
+
+set(CMAKE_C_STANDARD 23)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+add_executable(my_game 
+        # Add your sources here
+        src/main.c
+)
+```
 
 Your root should look similar to this:
 
@@ -56,7 +69,7 @@ Your root should look similar to this:
 └── ...                   # Other files/directories
 ```
 
-In your CMakeLists.txt, add:
+To your CMakeLists.txt file, add:
 
 ```cmake
 # Add Smile as a subdirectory
@@ -65,6 +78,7 @@ add_subdirectory(smile)
 # Include Smile headers
 target_include_directories(my_game PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/smile/include
+        # Add other directories for you headers here too
 )
 
 # Link against the Smile static library
