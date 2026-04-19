@@ -8,9 +8,9 @@
  * @author Vitor Betmann
  */
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————
 // Includes
-// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————
 
 #include <ctype.h>
 #include <stdio.h>
@@ -26,9 +26,9 @@
 #include "internal/Test/Test.h"
 
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————
 // Variables
-// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————
 
 #ifdef GS_TESTING
 bool gsTestUserConfirms = false;
@@ -60,9 +60,9 @@ static const char *HELP =
     "  Note: Neither path (i.e., `<dir>/<SceneName>.c` or `<dir>/<SceneName>.h`) must exceed 256 characters\n";
 
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————
 // Prototypes
-// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————
 
 bool gsPrivatePrompt(const char *prompt);
 
@@ -73,9 +73,9 @@ void gsPrivateWriteSrc(FILE *f, const gsInternalArgs *args);
 void gsPrivateWriteHeader(FILE *f, const gsInternalArgs *args);
 
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————
 // Functions - Internal
-// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————
 
 int gsInternalSanitizeName(char *buf, size_t bufSize, const char *name)
 {
@@ -153,9 +153,9 @@ void gsInternalFatalHandler(void)
 }
 
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————
 // Functions - Private
-// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————
 
 bool gsPrivatePrompt(const char *prompt)
 {
@@ -240,9 +240,9 @@ void gsPrivateWriteHeader(FILE *f, const gsInternalArgs *args)
 }
 
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————
 // Functions - Main
-// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+// —————————————————————————————————————————————————————————————————————————————————————————————————
 
 int gsInternalRun(int argc, char *argv[])
 {
@@ -302,12 +302,14 @@ int gsInternalRun(int argc, char *argv[])
         {
             if (i + 1 >= argc)
             {
-                lgInternalLogWithArg(ERROR, ORIGIN, CSE_FLAG_REQ_PATH_ARG, argv[i], ORIGIN, CSQ_ABORT);
+                lgInternalLogWithArg(ERROR, ORIGIN, CSE_FLAG_REQ_PATH_ARG, argv[i], ORIGIN,
+                                     CSQ_ABORT);
                 return RES_EMPTY_ARG;
             }
             if (cmValidatePath(argv[i + 1]) != RES_OK)
             {
-                lgInternalLogWithArg(ERROR, ORIGIN, CSE_INVALID_PATH, argv[i + 1], ORIGIN, CSQ_ABORT);
+                lgInternalLogWithArg(ERROR, ORIGIN, CSE_INVALID_PATH, argv[i + 1], ORIGIN,
+                                     CSQ_ABORT);
                 return RES_INVALID_PATH;
             }
             args.srcPath = argv[++i];
@@ -316,12 +318,14 @@ int gsInternalRun(int argc, char *argv[])
         {
             if (i + 1 >= argc)
             {
-                lgInternalLogWithArg(ERROR, ORIGIN, CSE_FLAG_REQ_PATH_ARG, argv[i], ORIGIN, CSQ_ABORT);
+                lgInternalLogWithArg(ERROR, ORIGIN, CSE_FLAG_REQ_PATH_ARG, argv[i], ORIGIN,
+                                     CSQ_ABORT);
                 return RES_EMPTY_ARG;
             }
             if (cmValidatePath(argv[i + 1]) != RES_OK)
             {
-                lgInternalLogWithArg(ERROR, ORIGIN, CSE_INVALID_PATH, argv[i + 1], ORIGIN, CSQ_ABORT);
+                lgInternalLogWithArg(ERROR, ORIGIN, CSE_INVALID_PATH, argv[i + 1], ORIGIN,
+                                     CSQ_ABORT);
                 return RES_INVALID_PATH;
             }
             args.includePath = argv[++i];
@@ -364,7 +368,8 @@ int gsInternalRun(int argc, char *argv[])
         snprintf(buf, sizeof(buf), "Create directory: '%s'?", args.srcPath);
         if (!gsPrivatePrompt(buf))
         {
-            lgInternalLogWithArg(ERROR, ORIGIN, CSE_DIR_NOT_EXISTS, args.srcPath, ORIGIN, CSQ_ABORT);
+            lgInternalLogWithArg(ERROR, ORIGIN, CSE_DIR_NOT_EXISTS, args.srcPath, ORIGIN,
+                                 CSQ_ABORT);
             return RES_USER_ABORT;
         }
         createSrcDir = true;
@@ -376,7 +381,8 @@ int gsInternalRun(int argc, char *argv[])
         snprintf(buf, sizeof(buf), "Create directory: '%s'?", args.includePath);
         if (!gsPrivatePrompt(buf))
         {
-            lgInternalLogWithArg(ERROR, ORIGIN, CSE_DIR_NOT_EXISTS, args.includePath, ORIGIN, CSQ_ABORT);
+            lgInternalLogWithArg(ERROR, ORIGIN, CSE_DIR_NOT_EXISTS, args.includePath, ORIGIN,
+                                 CSQ_ABORT);
             return RES_USER_ABORT;
         }
         createIncludeDir = true;
@@ -392,7 +398,8 @@ int gsInternalRun(int argc, char *argv[])
         snprintf(buf, sizeof(buf), "Overwrite '%s'? (this may be irreversible)", srcBuf);
         if (!gsPrivatePrompt(buf))
         {
-            lgInternalLogWithArg(ERROR, ORIGIN, CSE_FILE_ALREADY_EXISTS, args.srcPath, ORIGIN, CSQ_ABORT);
+            lgInternalLogWithArg(ERROR, ORIGIN, CSE_FILE_ALREADY_EXISTS, args.srcPath, ORIGIN,
+                                 CSQ_ABORT);
             return RES_USER_ABORT;
         }
     }
@@ -406,7 +413,8 @@ int gsInternalRun(int argc, char *argv[])
         snprintf(buf, sizeof(buf), "Overwrite '%s'? (this may be irreversible)", includeBuf);
         if (!gsPrivatePrompt(buf))
         {
-            lgInternalLogWithArg(ERROR, ORIGIN, CSE_FILE_ALREADY_EXISTS, includeBuf, ORIGIN, CSQ_ABORT);
+            lgInternalLogWithArg(ERROR, ORIGIN, CSE_FILE_ALREADY_EXISTS, includeBuf, ORIGIN,
+                                 CSQ_ABORT);
             return RES_USER_ABORT;
         }
     }
@@ -417,7 +425,8 @@ int gsInternalRun(int argc, char *argv[])
     {
         if (cmCreateDir(args.srcPath) != RES_OK)
         {
-            lgInternalLogWithArg(FATAL, ORIGIN, CSE_CREATE_DIR_FAIL, args.srcPath, ORIGIN, CSQ_ABORT);
+            lgInternalLogWithArg(FATAL, ORIGIN, CSE_CREATE_DIR_FAIL, args.srcPath, ORIGIN,
+                                 CSQ_ABORT);
             return RES_CREATE_DIR_FAIL;
         }
         lgInternalLogWithArg(INFO, ORIGIN, CSE_DIR_CREATE, args.srcPath, ORIGIN, CSQ_SUCCESS);
@@ -426,7 +435,8 @@ int gsInternalRun(int argc, char *argv[])
     {
         if (cmCreateDir(args.includePath) != RES_OK)
         {
-            lgInternalLogWithArg(FATAL, ORIGIN, CSE_CREATE_DIR_FAIL, args.includePath, ORIGIN, CSQ_ABORT);
+            lgInternalLogWithArg(FATAL, ORIGIN, CSE_CREATE_DIR_FAIL, args.includePath, ORIGIN,
+                                 CSQ_ABORT);
             return RES_CREATE_DIR_FAIL;
         }
         lgInternalLogWithArg(INFO, ORIGIN, CSE_DIR_CREATE, args.includePath, ORIGIN, CSQ_SUCCESS);
