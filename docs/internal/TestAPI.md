@@ -93,7 +93,7 @@ void Test_smHasStarted_FailsPreStart(void)
 |---------------------------------------------------|
 
 Temporarily disables a system function, causing it to fail at the specified
-call count. After the failure occurs, normal behaviour resumes.
+call count. After the failure occurs, normal behavior resumes.
 
 - Parameters:
     - `fnName` — Function to disable (`MALLOC`, `CALLOC`, `REALLOC`, `FOPEN`, `MKDIR`).

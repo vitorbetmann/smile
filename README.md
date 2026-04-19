@@ -18,17 +18,17 @@ integrates seamlessly with libraries like [raylib](https://www.raylib.com).
 ## 🎮 Smile Demo
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/vitorbetmann/smile-assets/refs/heads/main/SceneManager/SceneManagerDemo.gif" width="45%" alt="Gif of Scene Manager module working"/>
-  <img src="https://raw.githubusercontent.com/vitorbetmann/smile-assets/refs/heads/main/ParticleSystem/ParticleSystemDemo.gif" width="45%" alt="Gif of Particle System module working"/>
+  <img src="https://raw.githubusercontent.com/vitorbetmann/smile-assets/refs/heads/main/SceneManager/SceneManagerDemo.gif" width="45%" alt="GIF of Scene Manager module working"/>
+  <img src="https://raw.githubusercontent.com/vitorbetmann/smile-assets/refs/heads/main/ParticleSystem/ParticleSystemDemo.gif" width="45%" alt="GIF of Particle System module working"/>
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/vitorbetmann/smile-assets/refs/heads/main/SaveLoad/SaveLoadDemo.gif" width="45%" alt="Gif of Save Load module working"/>
-  <img src="https://raw.githubusercontent.com/vitorbetmann/smile-assets/refs/heads/main/Log/LogDemo.gif" width="45%" alt="Gif of Log module working"/>
+  <img src="https://raw.githubusercontent.com/vitorbetmann/smile-assets/refs/heads/main/SaveLoad/SaveLoadDemo.gif" width="45%" alt="GIF of Save Load module working"/>
+  <img src="https://raw.githubusercontent.com/vitorbetmann/smile-assets/refs/heads/main/Log/LogDemo.gif" width="45%" alt="GIF of Log module working"/>
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/vitorbetmann/smile-assets/refs/heads/main/tools/GenScene/GenSceneDemo.gif" width="45%" alt="Gif of GenScene tool working"/>
+  <img src="https://raw.githubusercontent.com/vitorbetmann/smile-assets/refs/heads/main/tools/GenScene/GenSceneDemo.gif" width="45%" alt="GIF of GenScene tool working"/>
 </p>
 
 ## 🚀 Building Your Game
@@ -343,7 +343,7 @@ full credit in the code and Git history!):
 
 To learn more, check out the [Contributing Guide](/docs/CONTRIBUTING.md).
 
-## 🪪 Licence
+## 🪪 License
 
-Smile is released under the MIT Licence. See the [LICENCE](LICENCE) file for
+Smile is released under the MIT License. See the [LICENSE](LICENSE) file for
 details.
