@@ -70,19 +70,20 @@ lgInternalLog(ERROR, ORI, CSE_NOT_RUNNING, fnName, CSQ_ABORT);
 
 ### — Log Related
 
-| `int lgInternalLog(lgInternalLevel level, const char *module, const char *cause, const char *fnName, const char *conseq)` |
-|---------------------------------------------------------------------------------------------------------------------------|
+| `int lgInternalLog(lgInternalLevel lvl, const char *ori, const char *cse, const char *caller, const char *csq)` |
+|-----------------------------------------------------------------------------------------------------------------|
 
 Used by Smile modules to log info, warnings, errors, or fatal events.
 
-Provides module name, cause, function name, and consequences for context.
+Provides module name, cause, caller identifier, and consequences for context.
 
 - Parameters:
-    - `level` — Severity level of the log (`INFO`, `WARN`, etc.).
-    - `module` — Name of the module generating the log.
-    - `cause` — Description of the cause of the log event.
-    - `fnName` — Name of the function where the log is generated.
-    - `conseq` — Consequences or additional information about the event.
+    - `lvl` — Severity level of the log (`INFO`, `WARN`, etc.).
+    - `ori` — Name of the module or tool generating the log.
+    - `cse` — Description of the cause of the log event.
+    - `caller` — Identifier of the caller — typically the function name (e.g.
+      `__func__`), or the tool name for top-level tool logs.
+    - `csq` — Consequences or additional information about the event.
 
 - Returns: `0` on success, or a negative result code on failure.
 
@@ -90,7 +91,7 @@ Provides module name, cause, function name, and consequences for context.
     - Common failures use `cmResult` (for example, `RES_NULL_ARG`).
     - Log-specific failures use `lgInternalResult`:
       `RES_TIME_FAIL`, `RES_WRITE_FAIL`.
-    - If `level` is `FATAL`, the configured fatal handler is invoked after
+    - If `lvl` is `FATAL`, the configured fatal handler is invoked after
       attempting to log.
 
 ✅ Example
@@ -110,8 +111,8 @@ bool smPrivateHasStarted(const char *fnName)
 
 <br>
 
-| `int lgInternalLogWithArg(lgInternalLevel level, const char *module, const char *cause, const char *arg, const char *fnName, const char *conseq)` |
-|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| `int lgInternalLogWithArg(lgInternalLevel lvl, const char *ori, const char *cse, const char *arg, const char *caller, const char *csq)` |
+|-----------------------------------------------------------------------------------------------------------------------------------------|
 
 Used by Smile modules to log info, warnings, errors, or fatal events with
 additional context.
@@ -120,12 +121,13 @@ Similar to lgInternalLog, but includes an extra argument string for additional
 context.
 
 - Parameters:
-    - `level` — Severity level of the log (`INFO`, `WARN`, etc.).
-    - `module` — Name of the module generating the log.
-    - `cause` — Description of the cause of the log event.
+    - `lvl` — Severity level of the log (`INFO`, `WARN`, etc.).
+    - `ori` — Name of the module or tool generating the log.
+    - `cse` — Description of the cause of the log event.
     - `arg` — Additional context argument relevant to the log event.
-    - `fnName` — Name of the function where the log is generated.
-    - `conseq` — Consequences or additional information about the event.
+    - `caller` — Identifier of the caller — typically the function name (e.g.
+      `__func__`), or the tool name for top-level tool logs.
+    - `csq` — Consequences or additional information about the event.
 
 - Returns: `0` on success, or a negative result code on failure.
 
@@ -133,7 +135,7 @@ context.
     - Common failures use `cmResult` (for example, `RES_NULL_ARG`).
     - Log-specific failures use `lgInternalResult`:
       `RES_TIME_FAIL`, `RES_WRITE_FAIL`.
-    - If `level` is `FATAL`, the configured fatal handler is invoked after
+    - If `lvl` is `FATAL`, the configured fatal handler is invoked after
       attempting to log.
 
 ✅ Example

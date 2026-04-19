@@ -82,7 +82,7 @@ formatting.
 
 ```c
 lgLog("Smile version %.1f is out!", 1.0f);
-// Outputs: 01:23:45 [Smile Log From User] - Smile version 1.0 is out!
+// Outputs: 01:23:45 [User LOG] - Smile version 1.0 is out!
 
 const char *untrustedInput = getExternalText();
 lgLog("%s", untrustedInput); // Safe for arbitrary text input

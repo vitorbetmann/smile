@@ -73,10 +73,10 @@ typedef enum
  *
  * Provides module or tool name, cause, function name, and consequences for context.
  *
- * @param level Severity level of the log (INFO, WARN, etc.).
- * @param origin Name of the module or tool generating the log.
+ * @param lvl Severity level of the log (INFO, WARN, etc.).
+ * @param ori Name of the module or tool generating the log.
  * @param cse Description of the cause of the log event.
- * @param fnName Name of the function where the log is generated.
+ * @param caller Name of the function where the log is generated.
  * @param csq Consequences or additional information about the event.
  *
  * @return Returns `0` on success, or a negative error code on failure.
@@ -89,7 +89,8 @@ typedef enum
  *
  * @author Vitor Betmann
  */
-int lgInternalLog(lgInternalLevel level, const char *origin, const char *cse, const char *fnName, const char *csq);
+int lgInternalLog(lgInternalLevel lvl, const char *ori, const char *cse, const char *caller,
+                  const char *csq);
 
 /**
  * @brief Used by Smile modules to log info, warnings, errors, or fatal events
@@ -99,10 +100,10 @@ int lgInternalLog(lgInternalLevel level, const char *origin, const char *cse, co
  * additional context.
  *
  * @param lvl Severity level of the log (WARN, ERROR, etc.).
- * @param origin Name of the module generating the log.
- * @param cause Description of the cause of the log event.
+ * @param ori Name of the module or tool generating the log.
+ * @param cse Description of the cause of the log event.
  * @param arg Additional context argument relevant to the log event.
- * @param fnName Name of the function where the log is generated.
+ * @param caller Name of the function where the log is generated.
  * @param csq Consequences or additional information about the event.
  *
  * @return Returns `0` on success, or a negative error code on failure.
@@ -115,8 +116,8 @@ int lgInternalLog(lgInternalLevel level, const char *origin, const char *cse, co
  *
  * @author Vitor Betmann
  */
-int lgInternalLogWithArg(lgInternalLevel lvl, const char *origin, const char *cse, const char *arg, const char *fnName,
-                         const char *csq);
+int lgInternalLogWithArg(lgInternalLevel lvl, const char *ori, const char *cse, const char *arg,
+                         const char *caller, const char *csq);
 
 
 #endif
