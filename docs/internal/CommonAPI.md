@@ -102,7 +102,7 @@ continues, logging an error if it is not.
 ```c
 bool smSceneExists(const char *name)
 {
-    if (!cmIsRunning(smIsRunning, MODULE, __func__))
+    if (!cmIsRunning(smIsRunning, ORI, __func__))
     {
         return false;
     }

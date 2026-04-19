@@ -63,7 +63,7 @@ message, ranging from user-defined messages to fatal errors.
 ✅ Example
 
 ```c
-lgInternalLog(ERROR, MODULE, CSE_NOT_RUNNING, fnName, CSQ_ABORT);
+lgInternalLog(ERROR, ORI, CSE_NOT_RUNNING, fnName, CSQ_ABORT);
 ```
 
 ## 🛠️ Functions
@@ -100,7 +100,7 @@ bool smPrivateHasStarted(const char *fnName)
 {
     if (!smHasStarted())
     {
-        lgInternalLog(ERROR, MODULE, CSE_NOT_RUNNING, fnName, CSQ_ABORT);
+        lgInternalLog(ERROR, ORI, CSE_NOT_RUNNING, fnName, CSQ_ABORT);
         return false;
     }
 
@@ -143,7 +143,7 @@ bool smPrivateIsNameValid(const char *name, const char *fnName)
 {
     if (!name)
     {
-        lgInternalLogWithArg(ERROR, MODULE, CSE_NULL_ARG, "name", fnName, CSQ_ABORT);
+        lgInternalLogWithArg(ERROR, ORI, CSE_NULL_ARG, "name", fnName, CSQ_ABORT);
         return false;
     }
 

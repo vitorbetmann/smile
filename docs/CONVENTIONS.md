@@ -172,10 +172,10 @@ Current module prefixes:
 
 - Shared log and error message macros should use these prefixes:
 
-| Element        | Prefix |
-|----------------|--------|
-| Causes         | `CSE_` |
-| Consequences   | `CSQ_` |
+| Element      | Prefix |
+|--------------|--------|
+| Causes       | `CSE_` |
+| Consequences | `CSQ_` |
 
 - Macro names should use English words separated by underscores.
 - Macro values should match the macro name after the prefix, using spaces and
@@ -185,7 +185,7 @@ Current module prefixes:
   errors, and fatal conditions.
 - Message files use this section order when sections are present:
   `Module Name`, `Causes`, `Consequences`.
-- Message files should define the module name as `MODULE`.
+- Message files should define the module or tool name as `ORI` (short for origin).
 - In `Causes`, subsections should follow the order `Infos`, `Warnings`,
   `Errors`, `Fatals`.
 - In `Consequences`, subsections should follow the order `Success`, `Failure`, `Pause`.
