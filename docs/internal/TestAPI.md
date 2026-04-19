@@ -158,7 +158,7 @@ Wrapper around `malloc()` with optional failure simulation.
 smInternalScene *scene = tsMalloc(sizeof(smInternalScene));
 if (!scene)
 {
-    lgInternalLog(ERROR, MODULE, CSE_MEM_ALLOC_FAIL, __func__, CSQ_ABORT);
+    lgInternalLog(ERROR, ORI, CSE_MEM_ALLOC_FAIL, __func__, CSQ_ABORT);
     return false;
 }
 ```
@@ -182,7 +182,7 @@ Wrapper around `calloc()` with optional failure simulation.
 tracker = tsCalloc(1, sizeof(SceneManagerTracker));
 if (!tracker)
 {
-    lgInternalLog(ERROR, MODULE, CSE_MEM_ALLOC_FAIL, __func__, CSQ_ABORT);
+    lgInternalLog(ERROR, ORI, CSE_MEM_ALLOC_FAIL, __func__, CSQ_ABORT);
     return false;
 }
 ```
