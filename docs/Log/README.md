@@ -20,7 +20,7 @@ configuring fatal error handling.
 ## Visual Example
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/vitorbetmann/smile-assets/refs/heads/main/Log/LogDemo.gif" width="90%" alt="Gif of Log module working"/>
+  <img src="https://raw.githubusercontent.com/vitorbetmann/smile-assets/refs/heads/main/Log/LogDemo.gif" width="90%" alt="GIF of Log module working"/>
 </p>
 
 ---
@@ -41,7 +41,7 @@ The module’s header is `Log.h`. Its full Smile path is: `smile/include/Log.h`
 
 1️⃣ Use `lgLog` to print messages to the terminal and help with debugging.
 
-2️⃣ Use `lgSetFatal` to customize the behaviour of fatal errors that
+2️⃣ Use `lgSetFatal` to customize the behavior of fatal errors that
 would end the program by default. To do so, you must pass a function pointer to
 your custom handler.
 

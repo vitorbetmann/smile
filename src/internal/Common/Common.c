@@ -38,8 +38,7 @@
 
 // Start Related
 
-bool cmIsRunning(cmIsRunningFn cmIsRunning, const char *module,
-                 const char *fnName)
+bool cmIsRunning(cmIsRunningFn cmIsRunning, const char *module, const char *fnName)
 {
     if (!cmIsRunning())
     {
@@ -59,7 +58,7 @@ bool cmDirExists(const char *path)
     return _stat(path, &sb) == 0 && sb.st_mode & _S_IFDIR;
 #else
     struct stat sb;
-    return (stat(path, &sb) == 0 && S_ISDIR(sb.st_mode));
+    return stat(path, &sb) == 0 && S_ISDIR(sb.st_mode);
 #endif
 }
 

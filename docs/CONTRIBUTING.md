@@ -97,7 +97,7 @@ At the project root, you'll find a structure similar to this:
 Smile
 ├── CMakeLists.txt
 ├── .gitignore
-├── LICENCE
+├── LICENSE
 ├── README.md
 ├── build/
 ├── docs/
@@ -146,7 +146,7 @@ Public Smile modules commonly include these files:
    module but not exposed as public API.
 3. `<ModuleName>Messages.h` - Defines module-specific log and error messages.
 4. `<ModuleName>TestHooks.h` - Exposes test-only hooks needed to validate
-   internal behaviour without making those details part of the public API.
+   internal behavior without making those details part of the public API.
 
 > Note: the `Log` module is the current exception — it does not define a
 > `LogTestHooks.h`, because its public API already exposes everything tests need.
@@ -167,7 +167,7 @@ Public Smile modules commonly include these files:
 - The `Test` module lives entirely under `src/internal/Test/` and is not part
   of Smile's public API.
 - It provides allocation-interception wrappers that tests use to validate
-  internal behaviour such as memory-allocation failure paths.
+  internal behavior such as memory-allocation failure paths.
 - Modules that need test-controllable allocations should call the `Test`
   wrappers instead of the standard allocators directly.
 

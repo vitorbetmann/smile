@@ -126,4 +126,4 @@ Full style rules (C23 usage, include ordering, shared-message conventions, secti
 - `docs/tools/` — tool documentation.
 - `docs/CONTRIBUTING.md` and `docs/CONVENTIONS.md` — contributor entry points.
 
-Smile uses British English in prose (the repo ships a `LICENCE`, not a `LICENSE`) — prefer `behaviour`, `licence`, `colour`, etc. in documentation.
+Smile uses American English in prose (the repo ships a `LICENSE`, not a `LICENCE`) — prefer `behavior`, `license`, `color`, etc. in documentation.

@@ -17,7 +17,7 @@ header files for use with Smile's SceneManager module.
 ## 👀 Visual Example
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/vitorbetmann/smile-assets/refs/heads/main/tools/GenScene/GenSceneDemo.gif" width="90%" alt="Gif of GenScene tool working"/>
+  <img src="https://raw.githubusercontent.com/vitorbetmann/smile-assets/refs/heads/main/tools/GenScene/GenSceneDemo.gif" width="90%" alt="GIF of GenScene tool working"/>
 </p>
 
 ---
