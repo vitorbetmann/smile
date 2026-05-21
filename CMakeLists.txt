@@ -52,9 +52,11 @@ endif ()
 
 set(SRC_FILES
         src/Log/Log.c
+        src/ParticleSystem/ParticleSystem.c
         src/SceneManager/SceneManager.c
-        src/internal/Test/Test.c
+
         src/internal/Common/Common.c
+        src/internal/Test/Test.c
 )
 
 add_library(smile STATIC ${SRC_FILES})
@@ -80,6 +82,7 @@ target_include_directories(smile
         PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/external
         ${CMAKE_CURRENT_SOURCE_DIR}/src/Log
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ParticleSystem
         ${CMAKE_CURRENT_SOURCE_DIR}/src/SceneManager
         ${CMAKE_CURRENT_SOURCE_DIR}/src/
 )
@@ -150,8 +153,9 @@ if (SMILE_TESTS)
     endfunction()
 
     # PUBLIC API TESTS
-    add_smile_test(TestAPISceneManager tests/SceneManager.c)
     add_smile_test(TestAPILog tests/Log.c)
+    add_smile_test(TestAPIParticleSystem tests/ParticleSystem.c)
+    add_smile_test(TestAPISceneManager tests/SceneManager.c)
 
     # TOOL TESTS
     add_smile_tool_test(TestToolGenScene tests/tools/GenScene.c src/tools/GenScene src/tools/GenScene/GenScene.c GS_TESTING)
