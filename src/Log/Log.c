@@ -1,107 +1,49 @@
-/**
- * @file
- * @brief Implementation of the Log module.
- *
- * @see Log.h
- * @see LogInternal.h
- *
- * @note TODO #20 [Feature] for [Log] - Add file logging support for standard
- *       and fatal logs
- * @note TODO #21 [Feature] for [Log] - Add runtime and module-specific log
- *       filtering
- *
- * @author Vitor Betmann
- */
+// Includes ————————————————————————————————————————————————————————————————————————————————————————
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Includes
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-
-// External
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-// Module Related
+
 #include "Log.h"
 #include "LogInternal.h"
-// Support
+
 #include "internal/Common/Common.h"
 
+// Prototypes ——————————————————————————————————————————————————————————————————————————————————————
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Prototypes
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-
-/**
- * @brief Outputs messages with a specific log level and origin.
- *
- * Wraps variable argument handling for internal logging functions.
- *
- * @param lvl Severity level of the log message.
- * @param origin Origin or module name for the log message.
- * @param msg Format string for the message to log.
- * @param ... Additional arguments for the format string.
- *
- * @author Vitor Betmann
- */
 static int lgPrivateLog(lgInternalLevel lvl, const char *origin, const char *msg, ...);
 
-/**
- * @brief Outputs formatted messages.
- *
- * Handles timestamp formatting, color coding, log prefixes, and log level filtering.
- *
- * @param lvl Severity level of the log message.
- * @param ori Origin or module name for the log message.
- * @param msg Format string for the message to log.
- * @param args Variable argument list corresponding to the format string.
- *
- * @author Vitor Betmann
- */
 static int lgPrivateLogV(lgInternalLevel lvl, const char *ori, const char *msg, va_list args);
 
-/**
- * @brief Determines if logging is enabled for a given level.
- *
- * @param lvl Severity level to check.
- * @return true if logging is enabled for the level, false otherwise.
- *
- * @author Vitor Betmann
- */
 static bool lgPrivateIsLevelEnabled(lgInternalLevel lvl);
 
-/**
- * @brief Determines the color and prefix for a given log level.
- *
- * @param lvl Severity level of the log message.
- * @param color Output pointer to the ANSI color string for the level.
- * @param prefix Output pointer to the prefix string for the level.
- *
- * @author Vitor Betmann
- */
 static void lgPrivateGetColorAndPrefix(lgInternalLevel lvl, const char **color,
                                        const char **prefix);
 
-/**
- * @brief Default handler for fatal log events.
- *
- * Called when a log with FATAL level is issued and no custom fatal handler
- * is set. Terminates the program with failure status.
- *
- * @author Vitor Betmann
- */
 static void lgPrivateFatalHandler(void);
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Variables
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+
+// Variables ———————————————————————————————————————————————————————————————————————————————————————
+
+// -- Static Constants
+
+static constexpr char SMILE_CYAN[] = "\033[36m";
+static constexpr char SMILE_YELLOW[] = "\033[33m";
+static constexpr char SMILE_RED[] = "\033[31m";
+static constexpr char SMILE_PURPLE[] = "\033[0;35m";
+static constexpr char SMILE_GREEN[] = "\033[32m";
+static constexpr char SMILE_WHITE[] = "\033[0m";
+
+static constexpr char LOG_TIME_FMT[] = "%H:%M:%S";
+
+static constexpr int LOG_TIME_BUFFER_LEN = 32;
+
+// -- Static
 
 static lgFatalHandler fatalHandler = lgPrivateFatalHandler;
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Functions - Public
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Functions - Public ——————————————————————————————————————————————————————————————————————————————
 
 int lgLog(const char *msg, ...)
 {
@@ -117,7 +59,7 @@ int lgLog(const char *msg, ...)
     return result;
 }
 
-int lgSetFatal(lgFatalHandler handler)
+int lgSetFatal(const lgFatalHandler handler)
 {
     if (!handler)
     {
@@ -128,11 +70,9 @@ int lgSetFatal(lgFatalHandler handler)
     return RES_OK;
 }
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Functions - Internal
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Functions - Internal ————————————————————————————————————————————————————————————————————————————
 
-int lgInternalLog(lgInternalLevel lvl, const char *ori, const char *cse, const char *caller,
+int lgInternalLog(const lgInternalLevel lvl, const char *ori, const char *cse, const char *caller,
                   const char *csq)
 {
     if (!ori || !cse || !caller || !csq)
@@ -143,22 +83,20 @@ int lgInternalLog(lgInternalLevel lvl, const char *ori, const char *cse, const c
     return lgPrivateLog(lvl, ori, "%s. '%s' %s.", cse, caller, csq);
 }
 
-int lgInternalLogWithArg(lgInternalLevel lvl, const char *ori, const char *cause, const char *arg,
-                         const char *caller, const char *csq)
+int lgInternalLogWithArg(const lgInternalLevel lvl, const char *ori, const char *cse,
+                         const char *arg, const char *caller, const char *csq)
 {
-    if (!ori || !cause || !arg || !caller || !csq)
+    if (!ori || !cse || !arg || !caller || !csq)
     {
         return RES_NULL_ARG;
     }
 
-    return lgPrivateLog(lvl, ori, "%s: %s. '%s' %s.", cause, arg, caller, csq);
+    return lgPrivateLog(lvl, ori, "%s: %s. '%s' %s.", cse, arg, caller, csq);
 }
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Functions - Private
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Functions - Private —————————————————————————————————————————————————————————————————————————————
 
-static int lgPrivateLog(lgInternalLevel lvl, const char *origin, const char *msg, ...)
+static int lgPrivateLog(const lgInternalLevel lvl, const char *origin, const char *msg, ...)
 {
     va_list args;
     va_start(args, msg);
@@ -167,7 +105,8 @@ static int lgPrivateLog(lgInternalLevel lvl, const char *origin, const char *msg
     return result;
 }
 
-static int lgPrivateLogV(lgInternalLevel lvl, const char *ori, const char *msg, va_list args)
+static int lgPrivateLogV(const lgInternalLevel lvl, const char *ori, const char *msg,
+                         const va_list args)
 {
     if (!lgPrivateIsLevelEnabled(lvl))
     {
@@ -235,7 +174,7 @@ static int lgPrivateLogV(lgInternalLevel lvl, const char *ori, const char *msg, 
     return RES_OK;
 }
 
-static bool lgPrivateIsLevelEnabled(lgInternalLevel lvl)
+static bool lgPrivateIsLevelEnabled(const lgInternalLevel lvl)
 {
     switch (lvl)
     {
@@ -256,7 +195,7 @@ static bool lgPrivateIsLevelEnabled(lgInternalLevel lvl)
     }
 }
 
-static void lgPrivateGetColorAndPrefix(lgInternalLevel lvl, const char **color,
+static void lgPrivateGetColorAndPrefix(const lgInternalLevel lvl, const char **color,
                                        const char **prefix)
 {
     switch (lvl)
