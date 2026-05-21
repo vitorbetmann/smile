@@ -86,5 +86,4 @@ int main(void)
     Test_lgInternalLog_WarningReturnsSuccess();
 
     puts("\nTIME TO SMILE! :)\n\tAll Tests Passed!");
-    return 0;
 }

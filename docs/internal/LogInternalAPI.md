@@ -18,7 +18,7 @@ fatal events inside Smile core modules.
 
 ## 😊Module Header
 
-The module’s header is `LogInternal.h`. Its full Smile path is:
+The module's header is `LogInternal.h`. Its full Smile path is:
 `src/Log/LogInternal.h`
 
 ✅ Example
@@ -34,10 +34,10 @@ The module’s header is `LogInternal.h`. Its full Smile path is:
 | `lgInternalResult` |
 |--------------------|
 
-Log-specific result codes used when failures are not covered
-by [cmResult](CommonAPI.md#-enums).
+Log-specific result codes for failures not covered by
+[cmResult](CommonAPI.md#-enums).
 
-- Log-specific failures cover the following range: `-100..-199`.
+- Log uses the range `-100..-199` for its module-specific codes.
 
 | Item             | Value  | Summary                             |
 |------------------|--------|-------------------------------------|
@@ -49,16 +49,16 @@ by [cmResult](CommonAPI.md#-enums).
 | `lgInternalLevel` |
 |-------------------|
 
-LogInternal severity levels used by Smile. Represents the importance of a log
+Severity levels for internal Smile logging. Represents the importance of a log
 message, ranging from user-defined messages to fatal errors.
 
-| Item    | Summary                                                                                              | Color  |
-|---------|------------------------------------------------------------------------------------------------------|--------|
-| `USER`  | For custom user generated logs. See lgLog in [Log_API](../Log/LogAPI.md).                            | Green  |
-| `INFO`  | Reports informational logs. E.g. "Start Successful."                                                 | Blue   |
-| `WARN`  | Reports non-game breaking or non-intentional events. E.g. calling the Start function twice in a row. | Yellow |
-| `ERROR` | Reports game-breaking errors. E.g. memory allocation failed.                                         | Red    |
-| `FATAL` | Reports program-breaking errors. E.g. fatal cleanup failures.                                        | Purple |
+| Item    | Summary                                                                         | Color  |
+|---------|---------------------------------------------------------------------------------|--------|
+| `USER`  | Custom user-generated log. See lgLog() in [Log API](../Log/LogAPI.md).          | Green  |
+| `INFO`  | Reports informational Smile events (e.g., start successful).                    | Blue   |
+| `WARN`  | Reports non-critical unexpected events (e.g., module started twice).            | Yellow |
+| `ERROR` | Reports game-breaking errors (e.g., memory allocation failure).                 | Red    |
+| `FATAL` | Reports program-breaking errors (e.g., fatal cleanup failure).                  | Purple |
 
 ✅ Example
 
@@ -73,17 +73,15 @@ lgInternalLog(ERROR, ORI, CSE_NOT_RUNNING, fnName, CSQ_ABORT);
 | `int lgInternalLog(lgInternalLevel lvl, const char *ori, const char *cse, const char *caller, const char *csq)` |
 |-----------------------------------------------------------------------------------------------------------------|
 
-Used by Smile modules to log info, warnings, errors, or fatal events.
-
-Provides module name, cause, caller identifier, and consequences for context.
+Logs an internal Smile event with module, cause, and consequence context.
 
 - Parameters:
-    - `lvl` — Severity level of the log (`INFO`, `WARN`, etc.).
-    - `ori` — Name of the module or tool generating the log.
-    - `cse` — Description of the cause of the log event.
-    - `caller` — Identifier of the caller — typically the function name (e.g.
-      `__func__`), or the tool name for top-level tool logs.
-    - `csq` — Consequences or additional information about the event.
+    - `lvl` — Severity level (INFO, WARN, ERROR, FATAL).
+    - `ori` — Name of the module generating the log.
+    - `cse` — Cause of the log event.
+    - `caller` — Caller identifier — pass `__func__`, or tool name for
+      top-level tool logs.
+    - `csq` — Consequence or follow-up description.
 
 - Returns: `0` on success, or a negative result code on failure.
 
@@ -92,7 +90,7 @@ Provides module name, cause, caller identifier, and consequences for context.
     - Log-specific failures use `lgInternalResult`:
       `RES_TIME_FAIL`, `RES_WRITE_FAIL`.
     - If `lvl` is `FATAL`, the configured fatal handler is invoked after
-      attempting to log.
+      logging.
 
 ✅ Example
 
@@ -111,20 +109,19 @@ bool smAddScene(const char *name, smEnterFn enter, smUpdateFn update, smDrawFn d
 | `int lgInternalLogWithArg(lgInternalLevel lvl, const char *ori, const char *cse, const char *arg, const char *caller, const char *csq)` |
 |-----------------------------------------------------------------------------------------------------------------------------------------|
 
-Used by Smile modules to log info, warnings, errors, or fatal events with
-additional context.
+Logs an internal Smile event with an additional context argument.
 
-Similar to lgInternalLog, but includes an extra argument string for additional
-context.
+Identical to `lgInternalLog()` but includes an extra string for context
+(for example, the name of the offending argument).
 
 - Parameters:
-    - `lvl` — Severity level of the log (`INFO`, `WARN`, etc.).
-    - `ori` — Name of the module or tool generating the log.
-    - `cse` — Description of the cause of the log event.
-    - `arg` — Additional context argument relevant to the log event.
-    - `caller` — Identifier of the caller — typically the function name (e.g.
-      `__func__`), or the tool name for top-level tool logs.
-    - `csq` — Consequences or additional information about the event.
+    - `lvl` — Severity level (INFO, WARN, ERROR, FATAL).
+    - `ori` — Name of the module generating the log.
+    - `cse` — Cause of the log event.
+    - `arg` — Additional context string relevant to the event.
+    - `caller` — Caller identifier — pass `__func__`, or tool name for
+      top-level tool logs.
+    - `csq` — Consequence or follow-up description.
 
 - Returns: `0` on success, or a negative result code on failure.
 

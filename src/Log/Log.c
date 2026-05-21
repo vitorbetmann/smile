@@ -23,10 +23,9 @@ static void lgPrivateGetColorAndPrefix(lgInternalLevel lvl, const char **color,
 
 static void lgPrivateFatalHandler(void);
 
-
 // Variables ———————————————————————————————————————————————————————————————————————————————————————
 
-// -- Static Constants
+// Constant
 
 static constexpr char SMILE_CYAN[] = "\033[36m";
 static constexpr char SMILE_YELLOW[] = "\033[33m";
@@ -39,7 +38,7 @@ static constexpr char LOG_TIME_FMT[] = "%H:%M:%S";
 
 static constexpr int LOG_TIME_BUFFER_LEN = 32;
 
-// -- Static
+// Mutable
 
 static lgFatalHandler fatalHandler = lgPrivateFatalHandler;
 
