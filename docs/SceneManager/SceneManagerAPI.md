@@ -207,7 +207,7 @@ while (smIsRunning()) {
 
 ### — Scene Functions
 
-| `int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update, smDrawFn draw, smExitFn exit)` |
+| `int smAddScene(const char *name, smEnterFn enter, smUpdateFn update, smDrawFn draw, smExitFn exit)` |
 |---------------------------------------------------------------------------------------------------------|
 
 Creates a new scene with the specified name and callback functions.
@@ -272,7 +272,7 @@ void menuExit(void)
 int main(void)
 {
     smStart();
-    smCreateScene("menu", nullptr, menuUpdate, menuDraw, menuExit);
+    smAddScene("menu", nullptr, menuUpdate, menuDraw, menuExit);
     ...
 }
 ```
@@ -298,7 +298,7 @@ Checks whether a scene with the given name exists.
 ```c
 if (!smSceneExists("level 1"))
 {
-    smCreateScene("level 1", enter, update, draw, exit);
+    smAddScene("level 1", enter, update, draw, exit);
 }
 ```
 

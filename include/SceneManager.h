@@ -86,7 +86,7 @@ bool smIsRunning(void);
 // Scene Functions
 
 /**
- * @brief Creates a new scene with the specified name and callback functions.
+ * @brief Registers a new scene with the specified name and callback functions.
  *
  * @param name Unique name identifying the scene.
  * @param enter Callback executed when entering the scene.
@@ -107,8 +107,8 @@ bool smIsRunning(void);
  *
  * @author Vitor Betmann
  */
-int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
-                  smDrawFn draw, smExitFn exit);
+int smAddScene(const char *name, smEnterFn enter, smUpdateFn update,
+               smDrawFn draw, smExitFn exit);
 
 /**
  * @brief Checks whether a scene with the given name exists.
@@ -120,7 +120,7 @@ int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
  * @note Returns false if: SceneManager is not running or `name` is null or
  *       empty.
  *
- * @see smCreateScene
+ * @see smAddScene
  * @see smDeleteScene
  *
  * @author Vitor Betmann
@@ -142,7 +142,7 @@ bool smSceneExists(const char *name);
  * @note Ownership: `args` is borrowed for the duration of the enter callback.
  *
  * @see smGetCurrentSceneName
- * @see smCreateScene
+ * @see smAddScene
  *
  * @author Vitor Betmann
  */
@@ -177,7 +177,7 @@ const char *smGetCurrentSceneName(void);
  * @note Fails if: SceneManager is not running; `name` is null or empty; the
  *       scene does not exist; or `name` is the currently active scene.
  *
- * @see smCreateScene
+ * @see smAddScene
  * @see smSceneExists
  * @see smGetCurrentSceneName
  *
@@ -191,7 +191,7 @@ int smDeleteScene(const char *name);
  * @return Returns the number of registered scenes on success, or a negative
  *         error code on failure.
  *
- * @see smCreateScene
+ * @see smAddScene
  * @see smDeleteScene
  *
  * @author Vitor Betmann

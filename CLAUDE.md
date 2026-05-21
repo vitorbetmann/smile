@@ -90,7 +90,7 @@ Both live entirely under `src/internal/` and, by convention, their types and fun
 
 ### Start → Use → Stop lifecycle
 
-Public modules follow a uniform `Start → Use → Stop` shape (e.g., `smStart()` → `smCreateScene`/`smUpdate`/`smDraw` → `smStop()`). Modules own their memory internally; users interact through the module prefix only. Public APIs guard entry points with `cmIsRunning` before doing work.
+Public modules follow a uniform `Start → Use → Stop` shape (e.g., `smStart()` → `smAddScene`/`smUpdate`/`smDraw` → `smStop()`). Modules own their memory internally; users interact through the module prefix only. Public APIs guard entry points with `cmIsRunning` before doing work.
 
 ### Naming at a glance
 

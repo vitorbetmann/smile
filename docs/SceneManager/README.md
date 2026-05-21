@@ -56,7 +56,7 @@ self-contained scene (e.g., a main menu, level, or pause screen). Each scene
 must define at least one, and up to four, lifecycle callbacks (enter, update,
 draw, and/or exit).
 
-3️⃣ Use `smCreateScene()` to register uniquely named scenes with their callbacks
+3️⃣ Use `smAddScene()` to register uniquely named scenes with their callbacks
 into memory. You can create as many scenes as you like.
 
 4️⃣ Use `smSetScene()` to transition into a new scene, optionally passing data
@@ -92,7 +92,7 @@ dangling pointers.
 |----------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
 | `bool smStart(void)`                                                                                     | Initializes SceneManager and prepares it for use.                                                               |
 | `bool smIsRunning(void)`                                                                                 | Checks whether SceneManager has been initialized.                                                               |
-| `bool smCreateScene(const char *name, smEnterFn enter, smUpdateFn update, smDrawFn draw, smExitFn exit)` | Registers a new named scene with its lifecycle callbacks.                                                       |
+| `bool smAddScene(const char *name, smEnterFn enter, smUpdateFn update, smDrawFn draw, smExitFn exit)` | Registers a new named scene with its lifecycle callbacks.                                                       |
 | `bool smSceneExists(const char *name)`                                                                   | Checks if a scene with the given name exists.                                                                   |
 | `bool smSetScene(const char *name, void *args)`                                                          | Calls the current scene's `exit` function, then sets a new active scene by name and calls its `enter` function. |
 | `const char *smGetCurrentSceneName(void)`                                                                | Returns the name of the current active scene.                                                                   |
@@ -120,9 +120,9 @@ int main(void) {
     smStart();
     
     // Create your scenes. Callback functions declared in respective header files.
-    smCreateScene("menu", nullptr, menuUpdate, menuDraw, menuExit);
-    smCreateScene("level 1", levelOneEnter, levelOneUpdate, levelOneDraw, levelOneExit);
-    smCreateScene("level 2", levelTwoEnter, levelTwoUpdate, levelTwoDraw, nullptr);
+    smAddScene("menu", nullptr, menuUpdate, menuDraw, menuExit);
+    smAddScene("level 1", levelOneEnter, levelOneUpdate, levelOneDraw, levelOneExit);
+    smAddScene("level 2", levelTwoEnter, levelTwoUpdate, levelTwoDraw, nullptr);
     
     /* We start in the main menu, which, in this example, requires no arguments,
      * so we pass in nullptr.

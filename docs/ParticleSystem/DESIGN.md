@@ -13,8 +13,6 @@ All modules follow a `Start → Use → Stop` lifecycle with two variants:
 | Module-level singleton | `xStart()` / `xStop()` | Modules with global state (e.g. scene manager) |
 | Object-level instance | `xCreate()` / `xDestroy()` | Owned handles (e.g. particle system) |
 
-> **Convention note:** `smCreateScene` should be revisited — it registers a scene into the manager rather than returning an owned object, so `smAddScene` is a better fit. Flagged for a future naming pass.
-
 ### What "Dependency-Free" Means
 
 Dependency-free is from the **user's perspective**: the user only includes Smile's header and links Smile's library. Smile may use platform APIs or bundled header-only libraries internally (e.g. `uthash`) as long as the user doesn't have to install or link anything themselves.
@@ -289,6 +287,4 @@ Capabilities exercised:
 
 ## Pending
 
-- `smCreateScene` → `smAddScene` (registers into manager, doesn't return an owned object)
-- Audit other `smCreate*` functions for the same issue
 - Finalize `psEmissionShape` sampling math (uniform distribution for ellipse fills and borders)

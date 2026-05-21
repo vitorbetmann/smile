@@ -46,7 +46,7 @@ static smInternalTracker *tracker;
 static int smPrivateIsValidName(const char *name, const char *caller);
 
 /* Wrapper around uthash insertion to keep hash-key usage localized and keep
- * smCreateScene focused on scene construction and validation.
+ * smAddScene focused on scene construction and validation.
  */
 static void smPrivateAddScene(smInternalSceneMap *mapEntry);
 
@@ -83,8 +83,8 @@ bool smIsRunning(void) { return tracker; }
 
 // Scene Functions
 
-int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
-                  smDrawFn draw, smExitFn exit)
+int smAddScene(const char *name, smEnterFn enter, smUpdateFn update,
+               smDrawFn draw, smExitFn exit)
 {
     if (!cmIsRunning(smIsRunning, ORI, __func__))
     {

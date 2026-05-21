@@ -155,9 +155,9 @@ int main(void)
       */
     smStart();
     
-    // Pass in the scenes' functions into smCreateScene.
-    smCreateScene("menu", menuEnter, menuUpdate, menuDraw, menuExit);
-    smCreateScene("level 1", levelOneEnter, levelOneUpdate, levelOneDraw, levelOneExit);
+    // Pass in the scenes' functions into smAddScene.
+    smAddScene("menu", menuEnter, menuUpdate, menuDraw, menuExit);
+    smAddScene("level 1", levelOneEnter, levelOneUpdate, levelOneDraw, levelOneExit);
     
     smSetScene("menu", nullptr); // Choose where you want to start
     
@@ -182,8 +182,8 @@ int main(void)
 {
     smStart();
     
-    smCreateScene("menu", menuEnter, menuUpdate, menuDraw, menuExit);
-    smCreateScene("level 1", levelOneEnter, levelOneUpdate, levelOneDraw, levelOneExit);
+    smAddScene("menu", menuEnter, menuUpdate, menuDraw, menuExit);
+    smAddScene("level 1", levelOneEnter, levelOneUpdate, levelOneDraw, levelOneExit);
     
     smSetScene("menu", nullptr); 
     
