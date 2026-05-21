@@ -1,19 +1,5 @@
-/**
- * @file
- * @brief Implementation of the Common module.
- *
- * @see Common.h
- * @see CommonMessages.h
- *
- * @author Vitor Betmann
- */
+// Includes ————————————————————————————————————————————————————————————————————————————————————————
 
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Includes
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-
-// External
 #include <ctype.h>
 #include <errno.h>
 #include <stdio.h>
@@ -24,21 +10,23 @@
 #include <unistd.h>
 #endif
 #include <sys/stat.h>
-// Module Related
+
 #include "Common.h"
 #include "CommonMessages.h"
-// Support
+
 #include "internal/Test/Test.h"
 #include "LogInternal.h"
 
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Functions
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Variables ———————————————————————————————————————————————————————————————————————————————————————
 
-// Start Related
+const int CM_PATH_MAX = 256;
 
-bool cmIsRunning(cmIsRunningFn cmIsRunning, const char *module, const char *fnName)
+// Functions ———————————————————————————————————————————————————————————————————————————————————————
+
+// Start
+
+bool cmIsRunning(const cmIsRunningFn cmIsRunning, const char *module, const char *fnName)
 {
     if (!cmIsRunning())
     {
@@ -61,7 +49,6 @@ bool cmDirExists(const char *path)
     return stat(path, &sb) == 0 && S_ISDIR(sb.st_mode);
 #endif
 }
-
 
 int cmValidatePath(const char *path)
 {
@@ -121,7 +108,6 @@ int cmValidatePath(const char *path)
 
     return RES_OK;
 }
-
 
 int cmCreateDir(const char *path)
 {
@@ -196,10 +182,10 @@ int cmDeleteFile(const char *path)
 
 int cmDeleteDir(const char *path)
 {
-    int result = cmValidatePath(path);
-    if (result != RES_OK)
+    const int RES = cmValidatePath(path);
+    if (RES != RES_OK)
     {
-        return result;
+        return RES;
     }
 
     if (!cmDirExists(path))
