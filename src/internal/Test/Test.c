@@ -13,12 +13,6 @@
 
 // Variables ———————————————————————————————————————————————————————————————————————————————————————
 
-// -- External Constants
-
-const float TS_MOCK_DT = 0.016f;
-
-// -- Static
-
 static bool canMalloc = true;
 static bool canCalloc = true;
 static bool canRealloc = true;
