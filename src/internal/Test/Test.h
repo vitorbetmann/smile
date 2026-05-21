@@ -11,11 +11,11 @@
  */
 typedef enum
 {
-    MALLOC,  /**< malloc()  */
-    CALLOC,  /**< calloc()  */
+    MALLOC, /**< malloc()  */
+    CALLOC, /**< calloc()  */
     REALLOC, /**< realloc() */
-    FOPEN,   /**< fopen()   */
-    MKDIR,   /**< mkdir()   */
+    FOPEN, /**< fopen()   */
+    MKDIR, /**< mkdir()   */
 } tsSysFn;
 
 // Functions ———————————————————————————————————————————————————————————————————————————————————————
@@ -32,6 +32,7 @@ void tsPass(const char *fnName);
  *
  * @param fnName Function to intercept.
  * @param at     Call count at which failure fires; must be ≥ 1.
+ *
  * @return true on success, false if fnName is invalid or at is 0.
  */
 bool tsDisable(tsSysFn fnName, unsigned int at);
@@ -40,6 +41,7 @@ bool tsDisable(tsSysFn fnName, unsigned int at);
  * @brief Wrapper around malloc() with optional failure simulation.
  *
  * @param size Bytes to allocate.
+ *
  * @return Allocated pointer, or nullptr if failure is simulated.
  */
 void *tsMalloc(size_t size);
@@ -49,6 +51,7 @@ void *tsMalloc(size_t size);
  *
  * @param numItems Element count.
  * @param size     Element size in bytes.
+ *
  * @return Zero-initialized pointer, or nullptr if failure is simulated.
  */
 void *tsCalloc(size_t numItems, size_t size);
@@ -58,6 +61,7 @@ void *tsCalloc(size_t numItems, size_t size);
  *
  * @param dest Block to resize.
  * @param size New size in bytes.
+ *
  * @return Resized pointer, or nullptr if failure is simulated.
  */
 void *tsRealloc(void *dest, size_t size);
@@ -67,6 +71,7 @@ void *tsRealloc(void *dest, size_t size);
  *
  * @param path File path.
  * @param mode fopen mode string.
+ *
  * @return FILE pointer, or nullptr if failure is simulated.
  */
 FILE *tsFopen(const char *path, const char *mode);
@@ -75,6 +80,7 @@ FILE *tsFopen(const char *path, const char *mode);
  * @brief Wrapper around mkdir() with optional failure simulation.
  *
  * @param path Directory path.
+ *
  * @return 0 on success, -1 on failure (real or simulated).
  */
 int tsMkdir(const char *path);
@@ -84,6 +90,7 @@ int tsMkdir(const char *path);
  *        Not intercepted by tsDisable(MKDIR).
  *
  * @param tmpl Template string ending in "XXXXXX", modified in-place.
+ * 
  * @return Pointer to tmpl on success, nullptr on failure.
  */
 char *tsMkdtemp(char *tmpl);

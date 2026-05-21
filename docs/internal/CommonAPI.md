@@ -211,7 +211,7 @@ the directory exists, then removes it.
 
 ## 📦 Variables
 
-| `const int CM_PATH_MAX` |
+| `int CM_PATH_MAX` |
 |-------------------------|
 
 Maximum allowed path length in bytes, including the null terminator. Used by

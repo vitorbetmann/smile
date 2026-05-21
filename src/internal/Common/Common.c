@@ -17,11 +17,6 @@
 #include "internal/Test/Test.h"
 #include "LogInternal.h"
 
-
-// Variables ———————————————————————————————————————————————————————————————————————————————————————
-
-const int CM_PATH_MAX = 256;
-
 // Functions ———————————————————————————————————————————————————————————————————————————————————————
 
 // Start
@@ -39,16 +34,7 @@ bool cmIsRunning(const cmIsRunningFn cmIsRunning, const char *module, const char
 
 // Filesystem
 
-bool cmDirExists(const char *path)
-{
-#ifdef _WIN32
-    struct _stat sb;
-    return _stat(path, &sb) == 0 && sb.st_mode & _S_IFDIR;
-#else
-    struct stat sb;
-    return stat(path, &sb) == 0 && S_ISDIR(sb.st_mode);
-#endif
-}
+// -- Path
 
 int cmValidatePath(const char *path)
 {
@@ -109,6 +95,8 @@ int cmValidatePath(const char *path)
     return RES_OK;
 }
 
+// -- Directory
+
 int cmCreateDir(const char *path)
 {
     int result = cmValidatePath(path);
@@ -148,6 +136,44 @@ int cmCreateDir(const char *path)
     return RES_OK;
 }
 
+bool cmDirExists(const char *path)
+{
+#ifdef _WIN32
+    struct _stat sb;
+    return _stat(path, &sb) == 0 && sb.st_mode & _S_IFDIR;
+#else
+    struct stat sb;
+    return stat(path, &sb) == 0 && S_ISDIR(sb.st_mode);
+#endif
+}
+
+int cmDeleteDir(const char *path)
+{
+    const int RES = cmValidatePath(path);
+    if (RES != RES_OK)
+    {
+        return RES;
+    }
+
+    if (!cmDirExists(path))
+    {
+        return RES_DIR_NOT_FOUND;
+    }
+
+#ifdef _WIN32
+    if (_rmdir(path) != 0)
+#else
+    if (rmdir(path) != 0)
+#endif
+    {
+        return RES_DEL_DIR_FAIL;
+    }
+
+    return RES_OK;
+}
+
+// -- File
+
 bool cmFileExists(const char *filename)
 {
     FILE *file = fopen(filename, "r");
@@ -175,31 +201,6 @@ int cmDeleteFile(const char *path)
     if (remove(path) != 0)
     {
         return RES_DEL_FILE_FAIL;
-    }
-
-    return RES_OK;
-}
-
-int cmDeleteDir(const char *path)
-{
-    const int RES = cmValidatePath(path);
-    if (RES != RES_OK)
-    {
-        return RES;
-    }
-
-    if (!cmDirExists(path))
-    {
-        return RES_DIR_NOT_FOUND;
-    }
-
-#ifdef _WIN32
-    if (_rmdir(path) != 0)
-#else
-    if (rmdir(path) != 0)
-#endif
-    {
-        return RES_DEL_DIR_FAIL;
     }
 
     return RES_OK;
