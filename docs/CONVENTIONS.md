@@ -130,9 +130,7 @@ Current module prefixes:
 - Module-private internal declarations belong in `[ModuleName]Internal.h`.
 - Shared internal utilities belong under `internal`, typically in files such as
   `Common.h`.
-- All headers must use include guards.
-- Smile include guards begin with `SMILE_` and use underscores between words.
-- Leave 2 blank lines before the closing `#endif` of an include guard.
+- All headers must use `#pragma once`.
 - Source files must include everything they directly use. Do not rely on
   transitive includes or implied dependencies.
 - Include statements should use only the file name, never an absolute or
@@ -156,12 +154,11 @@ Current module prefixes:
   internal headers, and message files, as the generated templates define
   Smile's standard boilerplate and file layout.
 - Smile code files are organized into named sections marked by a standardized
-  section-header comment block.
+  section-header comment of the form `// SectionName ————...` trailing to
+  column 100.
 - Omit sections that do not apply to the file.
 - Leave 1 blank line between a section header and the first line in that
   section.
-- Leave 2 blank lines between the last line of one section and the next section
-  header.
 - Long groups of messages, data types, or functions may be split into
   subsections using comments in the form `// <Subsection Name>`.
 - Leave 1 blank line between a subsection comment and functions or data types.

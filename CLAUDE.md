@@ -53,7 +53,7 @@ There is no `tests/internal/` — public-API tests are expected to exercise inte
 
 ## Formatting
 
-`.clang-format` is the source of truth (C23, 4-space indent, 120 col, `Right` pointer alignment, braces on their own line via `BreakBeforeBraces: Custom`). If `docs/CONVENTIONS.md` conflicts with the formatter, the formatter wins.
+`.clang-format` is the source of truth (C23, 4-space indent, 100 col, `Right` pointer alignment, braces on their own line via `BreakBeforeBraces: Custom`). If `docs/CONVENTIONS.md` conflicts with the formatter, the formatter wins.
 
 ## Architecture
 
