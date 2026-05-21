@@ -30,11 +30,13 @@ formatter alone.
 
 - Use `SCREAMING_SNAKE_CASE` for named constants.
 - Do not use function-like macros.
-- Object-like macros are allowed for named constants and shared message
-  definitions.
+- Prefer `static constexpr` for typed compile-time constants, including those
+  defined in headers.
+- Object-like macros are allowed for named constants only when `static constexpr`
+  cannot be used.
 - Prefer named constants over repeated or meaningful literals.
 - Prefer `enum` for related integer constants.
-- Prefer `static const` for typed immutable data private to a source file.
+- Prefer `static const` for typed immutable data that is not a compile-time constant.
 - Local `const` values inside functions are allowed when they improve clarity,
   but avoid filling function bodies with one-off constants.
 
@@ -167,17 +169,18 @@ Current module prefixes:
 
 ## Shared Messages
 
-- Shared log and error message macros should use these prefixes:
+- Shared log and error message string constants should use these prefixes:
 
 | Element      | Prefix |
 |--------------|--------|
 | Causes       | `CSE_` |
 | Consequences | `CSQ_` |
 
-- Macro names should use English words separated by underscores.
-- Macro values should match the macro name after the prefix, using spaces and
+- Define shared message string constants as `static constexpr char NAME[] = "value";`.
+- Constant names should use English words separated by underscores.
+- Constant values should match the constant name after the prefix, using spaces and
   normal capitalization.
-- Do not end message macro values with a period.
+- Do not end message constant values with a period.
 - Message files define strings used for logging operation success, warnings,
   errors, and fatal conditions.
 - Message files use this section order when sections are present:

@@ -122,8 +122,8 @@ Smile
   actual modules or tools.
 - Public modules and tools do not live under a dedicated `Public` directory —
   their absence from `internal/` or `tools/` makes them public by default.
-- `tests/` currently contains only public API tests (`Log.c`, `SceneManager.c`,
-  `tools/GenScene.c`). There is no `tests/internal/` — public-API tests are
+- `tests/` currently contains only public API tests (`Log.c`, `ParticleSystem.c`,
+  `SceneManager.c`, `tools/GenScene.c`). There is no `tests/internal/` — public-API tests are
   expected to exercise internal code transitively.
 
 ### Directory Breakdown
@@ -160,16 +160,30 @@ Public Smile modules commonly include these files:
 
 #### The `Common` module
 
-- The common module contains code and messages shared across multiple modules.
+- The `Common` module lives entirely under `src/internal/Common/` and is not part
+  of Smile's public API.
+- It provides utilities shared across multiple modules:
+  - `cmResult` — shared result-code enum; the `-1..-99` range is exclusive to Common.
+  - `CM_PATH_MAX` — maximum allowed path length (256 bytes, including null terminator).
+  - `cmIsRunning` — guard that verifies a module is running before a public API call proceeds.
+  - Filesystem helpers: `cmDirExists`, `cmValidatePath`, `cmCreateDir`, `cmFileExists`,
+    `cmDeleteFile`, `cmDeleteDir`.
+- `CommonMessages.h` defines shared `CSE_`/`CSQ_` string constants. Check it before
+  adding new module-specific messages so shared strings are reused consistently.
 
 #### The `Test` module
 
 - The `Test` module lives entirely under `src/internal/Test/` and is not part
   of Smile's public API.
-- It provides allocation-interception wrappers that tests use to validate
-  internal behavior such as memory-allocation failure paths.
-- Modules that need test-controllable allocations should call the `Test`
-  wrappers instead of the standard allocators directly.
+- It provides interception wrappers for system functions that tests use to validate
+  internal behavior, including memory-allocation and file-system failure paths:
+  `tsMalloc`, `tsCalloc`, `tsRealloc`, `tsFopen`, `tsMkdir`.
+- Use `tsDisable(FN, n)` to make the nth call to a wrapped function fail, and
+  `tsReset()` at the start of any test that uses `tsDisable()` to clear state.
+- Additional helpers: `tsMkdtemp` (portable `mkdtemp()`), `tsPass` (prints a
+  `[PASS]` line), and `TS_MOCK_DT` (mock delta-time, ≈ 60 fps).
+- Modules that need test-controllable system calls should call these wrappers
+  instead of the standard library functions directly.
 
 #### `docs/`
 
