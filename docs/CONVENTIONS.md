@@ -201,6 +201,30 @@ Current module prefixes:
 - If a block needs heavy commentary to be understandable, refactor it into a
   better-named helper instead.
 
+### Doxygen
+
+Every declaration in a public or internal header must have a Doxygen comment.
+
+- Use a single-line `/** @brief … */` block for typedefs, function pointer
+  types, enum/struct type blocks, and variables.
+- Use `/**< … */` inline trailing comments for enum values and struct fields.
+- Use a multi-line block for function declarations:
+  ```c
+  /**
+   * @brief One-sentence summary.
+   *
+   * @param name Description.
+   *
+   * @return 0 on success, or a negative result code on failure.
+   */
+  ```
+- Keep `@brief` to one sentence.
+- For `int`-returning functions, write `@return` as
+  `0 on success, or a negative result code on failure` — never name specific
+  internal result codes such as `RES_ALREADY_RUNNING`.
+- For `bool`-returning functions, describe the true/false meaning directly,
+  for example `true if running, false otherwise`.
+
 ## File and Directory Names
 
 - Match the naming patterns already used in the repository.

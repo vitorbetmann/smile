@@ -46,6 +46,7 @@ ctest --test-dir build -R TestAPISceneManager --output-on-failure
 Current test targets (see `CMakeLists.txt` for the source of truth):
 
 - `TestAPILog` — `tests/Log.c`
+- `TestAPIParticleSystem` — `tests/ParticleSystem.c`
 - `TestAPISceneManager` — `tests/SceneManager.c`
 - `TestToolGenScene` — `tests/tools/GenScene.c`, compiled with `GS_TESTING` so it can link against `GenScene.c` without its `main`.
 
@@ -67,7 +68,7 @@ The repo uses a convention that repeats under `src/`, `docs/`, and `tests/`:
 - `camelCase` directory = organizational bucket (`internal`, `tools`); `PascalCase` directory = an actual module/tool (`SceneManager`, `Common`, `GenScene`).
 - There is no `Public/` directory — public is the default.
 
-`include/` contains only public headers (`Log.h`, `SceneManager.h`). Everything else lives beside its implementation in `src/`.
+`include/` contains only public headers (`Log.h`, `ParticleSystem.h`, `SceneManager.h`). Everything else lives beside its implementation in `src/`.
 
 ### Anatomy of a public module
 
@@ -122,7 +123,7 @@ Full style rules (C23 usage, include ordering, shared-message conventions, secti
 `docs/` mirrors the public/internal split:
 
 - `docs/<Module>/` — public API docs + README with an overview and example.
-- `docs/internal/` — internal API references (`CommonAPI.md`, `LogInternalAPI.md`, `SceneManagerInternalAPI.md`, `TestAPI.md`) and shared `Assets/` (GIFs, images, screenshots).
+- `docs/internal/` — internal API references (`CommonAPI.md`, `LogInternalAPI.md`, `SceneManagerInternalAPI.md`, `SceneManagerTestHooksAPI.md`, `TestAPI.md`) and shared `Assets/` (GIFs, images, screenshots).
 - `docs/tools/` — tool documentation.
 - `docs/CONTRIBUTING.md` and `docs/CONVENTIONS.md` — contributor entry points.
 
