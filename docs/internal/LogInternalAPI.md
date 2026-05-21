@@ -97,15 +97,12 @@ Provides module name, cause, caller identifier, and consequences for context.
 ✅ Example
 
 ```c
-bool smPrivateHasStarted(const char *fnName)
+bool smAddScene(const char *name, smEnterFn enter, smUpdateFn update, smDrawFn draw, smExitFn exit)
 {
-    if (!smHasStarted())
-    {
-        lgInternalLog(ERROR, ORI, CSE_NOT_RUNNING, fnName, CSQ_ABORT);
-        return false;
-    }
+    if (!cmIsRunning(smIsRunning, ORI, __func__))
+        return RES_NOT_RUNNING;
 
-    return true;
+    ...
 }
 ```
 
