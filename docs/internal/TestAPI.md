@@ -1,5 +1,3 @@
-<!-- TODO #19 [Docs][Test] Add example for tsRealloc wrapper function -->
-
 # Test — API 🧪
 
 `Test` provides instrumented memory allocation wrappers and fatal hooks
@@ -18,6 +16,7 @@ logging, and in unit tests to simulate failures.
 - [Functions](#-functions)
     - [Test Suites Related](#-test-suites-related)
     - [Allocation and I/O Related](#-allocation-and-io-related)
+- [Variables](#-variables)
 
 ---
 
@@ -165,13 +164,13 @@ if (!scene)
 
 <br>
 
-| `void *tsCalloc(size_t nitems, size_t size)` |
-|----------------------------------------------|
+| `void *tsCalloc(size_t numItems, size_t size)` |
+|------------------------------------------------|
 
 Wrapper around `calloc()` with optional failure simulation.
 
 - Parameters:
-    - `nitems` — Number of elements to allocate.
+    - `numItems` — Number of elements to allocate.
     - `size` — Size of each element in bytes.
 - Returns: Pointer to allocated memory, or `nullptr` if failure is
   simulated.
@@ -189,14 +188,14 @@ if (!tracker)
 
 <br>
 
-| `void *tsRealloc(void *ptr, size_t size)` |
-|-------------------------------------------|
+| `void *tsRealloc(void *dest, size_t size)` |
+|--------------------------------------------|
 
 Wrapper around `realloc()` with optional failure simulation.
 
 - Parameters:
-    - `ptr` — Pointer to an existing memory block.
-    - `size` — Number of bytes to allocate.
+    - `dest` — Pointer to the memory block to resize.
+    - `size` — New size in bytes.
 
 - Returns: Pointer to reallocated memory, or `nullptr` if failure is
   simulated.
@@ -204,7 +203,10 @@ Wrapper around `realloc()` with optional failure simulation.
 ✅ Example
 
 ```c
-// NO EXAMPLE YET
+psInternalEvent *grown = tsRealloc(ps->events, newCapacity * sizeof(psInternalEvent));
+if (!grown)
+    return RES_MEM_ALLOC_FAIL;
+ps->events = grown;
 ```
 
 <br>
@@ -272,4 +274,20 @@ the directory. On POSIX, delegates to `mkdtemp`; on Windows, uses `_mktemp` +
 char dir[] = "gstest_src_XXXXXX";
 assert(tsMkdtemp(dir) != nullptr);
 // dir is now e.g. "gstest_src_a01234" and the directory exists
+```
+
+---
+
+## 📦 Variables
+
+| `const float TS_MOCK_DT` |
+|--------------------------|
+
+Mock delta-time value (`0.016` s ≈ 60 fps) for use in tests that call `psUpdate`,
+`smUpdate`, or any other time-stepped function.
+
+✅ Example
+
+```c
+psUpdate(ps, TS_MOCK_DT);
 ```

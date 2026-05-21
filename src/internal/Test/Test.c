@@ -1,18 +1,5 @@
-/**
- * @file
- * @brief Implementation of the Test module.
- *
- * @see Test.h
- *
- * @author Vitor Betmann
- */
+// Include —————————————————————————————————————————————————————————————————————————————————————————
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Include
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-
-// External
-#include <stdio.h>
 #include <stdlib.h>
 #ifdef _WIN32
 #include <direct.h>
@@ -21,13 +8,16 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #endif
-// Module Related
+
 #include "Test.h"
 
+// Variables ———————————————————————————————————————————————————————————————————————————————————————
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Test state
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// -- External Constants
+
+const float TS_MOCK_DT = 0.016f;
+
+// -- Static
 
 static bool canMalloc = true;
 static bool canCalloc = true;
@@ -41,17 +31,14 @@ static unsigned int reallocNum;
 static unsigned int fopenNum;
 static unsigned int mkdirNum;
 
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Functions
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Functions ———————————————————————————————————————————————————————————————————————————————————————
 
 void tsPass(const char *fnName)
 {
     printf("\t[PASS] %s\n", fnName);
 }
 
-bool tsDisable(tsSysFn fnName, unsigned int at)
+bool tsDisable(const tsSysFn fnName, unsigned int at)
 {
     if (at == 0)
         return false;
@@ -93,7 +80,7 @@ void *tsMalloc(const size_t size)
     return malloc(size);
 }
 
-void *tsCalloc(const size_t nitems, const size_t size)
+void *tsCalloc(const size_t numItems, const size_t size)
 {
     callocNum--;
     if (!canCalloc && callocNum == 0)
@@ -101,10 +88,10 @@ void *tsCalloc(const size_t nitems, const size_t size)
         canCalloc = true;
         return nullptr;
     }
-    return calloc(nitems, size);
+    return calloc(numItems, size);
 }
 
-void *tsRealloc(void *ptr, const size_t size)
+void *tsRealloc(void *dest, const size_t size)
 {
     reallocNum--;
     if (!canRealloc && reallocNum == 0)
@@ -112,7 +99,7 @@ void *tsRealloc(void *ptr, const size_t size)
         canRealloc = true;
         return nullptr;
     }
-    return realloc(ptr, size);
+    return realloc(dest, size);
 }
 
 FILE *tsFopen(const char *path, const char *mode)
