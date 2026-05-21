@@ -90,18 +90,18 @@ dangling pointers.
 
 | Signature                                                                                                | Description                                                                                                     |
 |----------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
-| `bool smStart(void)`                                                                                     | Initializes SceneManager and prepares it for use.                                                               |
+| `int smStart(void)`                                                                                      | Initializes SceneManager and prepares it for use.                                                               |
 | `bool smIsRunning(void)`                                                                                 | Checks whether SceneManager has been initialized.                                                               |
-| `bool smAddScene(const char *name, smEnterFn enter, smUpdateFn update, smDrawFn draw, smExitFn exit)` | Registers a new named scene with its lifecycle callbacks.                                                       |
+| `int smAddScene(const char *name, smEnterFn enter, smUpdateFn update, smDrawFn draw, smExitFn exit)`  | Registers a new named scene with its lifecycle callbacks.                                                       |
 | `bool smSceneExists(const char *name)`                                                                   | Checks if a scene with the given name exists.                                                                   |
-| `bool smSetScene(const char *name, void *args)`                                                          | Calls the current scene's `exit` function, then sets a new active scene by name and calls its `enter` function. |
+| `int smSetScene(const char *name, void *args)`                                                           | Calls the current scene's `exit` function, then sets a new active scene by name and calls its `enter` function. |
 | `const char *smGetCurrentSceneName(void)`                                                                | Returns the name of the current active scene.                                                                   |
-| `bool smDeleteScene(const char *name)`                                                                   | Deletes a non-active a scene by name.                                                                           |
+| `int smRemoveScene(const char *name)`                                                                    | Removes a non-active scene by name.                                                                             |
 | `int smGetSceneCount(void)`                                                                              | Returns the total number of registered scenes.                                                                  |
-| `bool smUpdate(float dt)`                                                                                | Calls the update function of the active scene.                                                                  |
+| `int smUpdate(float dt)`                                                                                 | Calls the update function of the active scene.                                                                  |
 | `float smGetDt(void)`                                                                                    | Returns the delta time (in seconds) since the last frame.                                                       |
-| `bool smDraw(void)`                                                                                      | Calls the draw function of the active scene.                                                                    |
-| `bool smStop(void)`                                                                                      | Calls the current scene's `exit` function, then stops SceneManager and frees all registered scenes.             |
+| `int smDraw(void)`                                                                                       | Calls the draw function of the active scene.                                                                    |
+| `int smStop(void)`                                                                                       | Calls the current scene's `exit` function, then stops SceneManager and frees all registered scenes.             |
 
 ---
 

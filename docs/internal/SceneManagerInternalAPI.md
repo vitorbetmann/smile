@@ -5,6 +5,8 @@ helper functions used by the SceneManager module implementation.
 
 For public API see: [SceneManager – API](../SceneManager/SceneManagerAPI.md)
 
+For test hooks see: [SceneManagerTestHooks – API](SceneManagerTestHooksAPI.md)
+
 ### 🚨 Warning! This module is not thread-safe!
 
 ---
@@ -17,6 +19,7 @@ For public API see: [SceneManager – API](../SceneManager/SceneManagerAPI.md)
     - [Structs](#-structs)
 - [Functions](#-functions)
     - [Lookup Related](#-lookup-related)
+- [Variables](#-variables)
 
 ## 😊Module Header
 
@@ -79,7 +82,7 @@ Hash map entry that associates a scene name with its internal scene.
 | Field   | Type                | Summary                           |
 |---------|---------------------|-----------------------------------|
 | `name`  | `char *`            | Hash key / scene name.            |
-| `scene` | `smInternalScene *` | Pointer to scene.                 |
+| `scene` | `smInternalScene *` | Pointer to the scene.             |
 | `hh`    | `UT_hash_handle`    | uthash handle for map operations. |
 
 <br>
@@ -146,3 +149,13 @@ if (entry)
     // Entry found
 }
 ```
+
+<br>
+
+---
+
+## 📐 Variables
+
+| Name          | Value | Summary                                                         |
+|---------------|-------|-----------------------------------------------------------------|
+| `DEFAULT_FPS` | `60`  | Target FPS used by `smGetDt()` as the first-call dt fallback.  |

@@ -1,56 +1,52 @@
-/**
- * @file
- * @brief Developer-mode test hooks for SceneManager.
- *
- * @author Vitor Betmann
- */
+#pragma once
 
-#ifndef SMILE_SCENE_MANAGER_TEST_HOOKS_H
-#define SMILE_SCENE_MANAGER_TEST_HOOKS_H
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Data Types
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Data Types ——————————————————————————————————————————————————————————————————————————————————————
 
 /**
- * @brief Stores counters and mock scene data used during test execution.
+ * @brief Holds invocation counters shared across all test hook callbacks.
  */
 typedef struct
 {
-    int enterCount;
-    int exitCount;
+    int enterCount; /**< Incremented each time a scene enter callback fires. */
+    int exitCount;  /**< Incremented each time a scene exit callback fires.  */
 } MockData;
 
 /**
- * @brief Represents a simple mock argument structure passed to scene functions.
+ * @brief Carries arbitrary test arguments into enter callbacks.
  */
 typedef struct
 {
-    bool flag;
+    bool flag; /**< Arbitrary boolean carried into the enter callback. */
 } MockArgs;
 
-/**
- * @brief Hook type for enter callbacks without explicit args.
- */
+/** @brief Function pointer type for intercepting enter callbacks that take no user arguments. */
 typedef void (*smTestEnterFn)(MockData *data);
 
-/**
- * @brief Hook type for enter callbacks with explicit args.
- */
+/** @brief Function pointer type for intercepting enter callbacks that receive a MockArgs *. */
 typedef void (*smTestEnterWithArgsFn)(MockData *data, MockArgs *args);
 
-/**
- * @brief Hook type for exit callbacks.
- */
+/** @brief Function pointer type for intercepting exit callbacks. */
 typedef void (*smTestExitFn)(MockData *data);
 
+// Variables  ——————————————————————————————————————————————————————————————————————————————————————
+
+/** @brief Interceptor for enter callbacks that take no args. */
 extern smTestEnterFn smTestEnter;
+
+/** @brief Interceptor for enter callbacks that receive a MockArgs *. */
 extern smTestEnterWithArgsFn smTestEnterWithArgs;
+
+/** @brief Interceptor for exit callbacks. */
 extern smTestExitFn smTestExit;
+
+/** @brief Arguments pointer forwarded to smTestEnterWithArgs. */
 extern MockArgs *smMockArgs;
+
+/** @brief Shared counter struct threaded through all three interceptors. */
 extern MockData *smMockData;
+
+/** @brief Overrides the real clock in smGetDt() to simulate elapsed time. */
 extern struct timespec smMockCurrTime;
+
+/** @brief When true, forces smGetDt() to return RES_CLOCK_GETTIME_FAIL. */
 extern bool smMockClockGettimeFails;
-
-
-#endif
