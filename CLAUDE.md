@@ -89,9 +89,14 @@ Both live entirely under `src/internal/` and, by convention, their types and fun
 - **Common** (`src/internal/Common/`, prefix `cm`) — cross-module utilities: the shared `cmResult` result-code enum (`RES_OK`, `RES_*` negatives, Common-exclusive range is `-1..-99`), `cmIsRunning` guard, filesystem helpers (`cmDirExists`, `cmValidatePath`, `cmCreateDir`, `cmFileExists`, `cmDeleteFile`, `cmDeleteDir`), and `CM_PATH_MAX`. `CommonMessages.h` holds shared `CSE_`/`CSQ_` message macros — check it before adding new module-specific messages.
 - **Test** (`src/internal/Test/`, prefix `ts`) — allocation-interception wrappers (`tsMalloc`, `tsDisable`, …) that let tests force `MALLOC`/`CALLOC`/`REALLOC`/`FOPEN`/`MKDIR` failures at specific call counts. Modules that need test-controllable allocations should call these wrappers instead of the libc functions directly.
 
-### Start → Use → Stop lifecycle
+### Module lifecycle
 
-Public modules follow a uniform `Start → Use → Stop` shape (e.g., `smStart()` → `smAddScene`/`smUpdate`/`smDraw` → `smStop()`). Modules own their memory internally; users interact through the module prefix only. Public APIs guard entry points with `cmIsRunning` before doing work.
+Public modules follow one of two lifecycle shapes:
+
+- **Global-state modules** (e.g., `SceneManager`) use `Start → Use → Stop`: `smStart()` initializes shared state; `smStop()` tears it down.
+- **Per-instance modules** (e.g., `ParticleSystem`) use `Create → Use → Destroy`: `psCreate()` returns a caller-owned instance; `psDestroy()` frees it.
+
+Modules own their memory internally; users interact through the module prefix only. Public APIs guard entry points with `cmIsRunning` before doing work.
 
 ### Naming at a glance
 
