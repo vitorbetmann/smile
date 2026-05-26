@@ -2,20 +2,8 @@
 
 ## Context
 
-Building a `ps`-prefixed ParticleSystem module for **Smile**, a dependency-free C23 static library for 2D game development targeting game jams and rapid prototyping. Smile doesn't handle rendering — it integrates with libraries like raylib.
-
-### Lifecycle Conventions
-
-All modules follow a `Start → Use → Stop` lifecycle with two variants:
-
-| Pattern | Functions | Used for |
-|---|---|---|
-| Module-level singleton | `xStart()` / `xStop()` | Modules with global state (e.g. scene manager) |
-| Object-level instance | `xCreate()` / `xDestroy()` | Owned handles (e.g. particle system) |
-
-### What "Dependency-Free" Means
-
-Dependency-free is from the **user's perspective**: the user only includes Smile's header and links Smile's library. Smile may use platform APIs or bundled header-only libraries internally (e.g. `uthash`) as long as the user doesn't have to install or link anything themselves.
+Building a `ps`-prefixed ParticleSystem module for **Smile**, which doesn't handle rendering — it
+integrates with libraries like raylib.
 
 ---
 
@@ -23,15 +11,24 @@ Dependency-free is from the **user's perspective**: the user only includes Smile
 
 ### Memory Layout
 
-- **Memory pool** — one upfront `malloc` for all particles instead of per-particle allocation. Eliminates allocation cost and cache thrashing.
-- **Swap-and-pop** — when a particle at index `i` dies, swap it with the particle at `count-1` and decrement `count`. Active particles always live in `0..count-1`; the update loop is simply `for (int i = 0; i < count; i++)`.
-- **Array of Structures (AoS)** — SoA (separate arrays per field) was rejected: swap-and-pop would require synchronizing every array simultaneously, which is easy to corrupt and not worth the cache benefit at game-jam scale.
+- **Memory pool** — one upfront `malloc` for all particles instead of per-particle allocation.
+  Eliminates allocation cost and cache thrashing.
+- **Swap-and-pop** — when a particle at index `i` dies, swap it with the particle at `count-1` and
+  decrement `count`. Active particles always live in `0..count-1`; the update loop is simply
+  `for (int i = 0; i < count; i++)`.
+- **Array of Structures (AoS)** — SoA (separate arrays per field) was rejected: swap-and-pop would
+  require synchronizing every array simultaneously, which is easy to corrupt and not worth the cache
+  benefit.
 
 ### Flyweight Pattern
 
-The `ParticleSystem` stores the **spawn recipe** — ranges used to generate particles (lifetime min/max, acceleration min/max, emission area, etc.). Individual `Particle` structs hold only per-particle runtime state.
+The `ParticleSystem` stores the **spawn recipe** — ranges used to generate particles (lifetime
+min/max, acceleration min/max, emission area, etc.). Individual `Particle` structs hold only
+per-particle runtime state.
 
-**Why ranges must persist on the system:** `psEmit` can be called multiple times over the system's lifetime (e.g. a brick gets hit, particles die, brick gets hit again). The system needs the ranges every time it emits.
+**Why ranges must persist on the system:** the system needs the ranges every time it emits, since
+`psBurst` can be called multiple times over the system's lifetime (e.g. a brick gets hit, particles
+die, brick gets hit again).
 
 ### Particle Struct
 
@@ -45,13 +42,21 @@ typedef struct {
 } Particle;
 ```
 
-**`age` instead of `lifeLeft`:** `age` counts *up* from `0` to `lifetime`, which keeps the direction consistent with the lifetime event threshold (0.0 = just born, 1.0 = about to die). A `lifeLeft` field counting down would require a directional inversion inside `psUpdate`'s threshold-crossing check — a permanent source of confusion and off-by-one bugs. The trade-off is that a fade-out ratio becomes `1.0f - age / lifetime` instead of `lifeLeft / lifetime`; that's one extra operation in the user's `psForEach` callback.
+**`age` instead of `lifeLeft`:** `age` counts *up* from `0` to `lifetime`. The trade-off is that a
+fade-out ratio becomes `1.0f - age / lifetime` instead of `lifeLeft / lifetime` — one extra
+operation in the user's `psForEach` callback. The gain is that game-loop crossing checks read
+naturally: `p->age + dt >= p->lifetime` means "this particle dies next update," with no directional
+inversion required.
 
-**Why no hot/cold split:** `velocityX`, `velocityY`, `accelerationX`, `accelerationY` are all read every frame to update position — there are no cold fields worth splitting out.
+**Why no hot/cold split:** `velocityX`, `velocityY`, `accelerationX`, `accelerationY` are all read
+every frame to update position — there are no cold fields worth splitting out.
 
 ### Particle Recycling
 
-When a dead particle is recycled, all values are re-rolled fresh from the system's ranges. Preserving values was rejected: re-randomizing is cheap (a few RNG calls), produces natural visual variety, and is simpler. Recycled particles following identical trajectories looks unnatural in continuous emitters like fire.
+When a dead particle is recycled, all values are re-rolled fresh from the system's ranges.
+Preserving values was rejected: re-randomizing is cheap (a few RNG calls), produces natural visual
+variety, and is simpler. Recycled particles following identical trajectories looks unnatural in
+continuous emitters like fire.
 
 **Consequence:** `Particle` does not need a separate "initial state" copy.
 
@@ -65,9 +70,12 @@ When a dead particle is recycled, all values are re-rolled fresh from the system
 typedef void (*ParticleFn)(const Particle *p, void *args);
 ```
 
-- `const Particle *p` — read-only access to one particle per invocation. Clients cannot modify particles directly through this callback.
-- `void *args` — arbitrary client context (e.g. a color, a texture) without Smile needing to know about it.
-- Iteration is controlled entirely by `psForEach` internally. Clients define what to do with a particle, not which particle to act on, and never hold an index or access the array directly.
+- `const Particle *p` — read-only access to one particle per invocation. Clients cannot modify
+  particles directly through this callback.
+- `void *args` — arbitrary client context (e.g. a color, a texture) without Smile needing to know
+  about it.
+- Iteration is controlled entirely by `psForEach` internally. Clients define what to do with a
+  particle, not which particle to act on, and never hold an index or access the array directly.
 
 This keeps Smile fully decoupled from raylib while giving the client everything needed to render.
 
@@ -91,64 +99,149 @@ int psSetEmissionShape(ParticleSystem *ps, psEmissionShape shape);
 int psSetSpread(ParticleSystem *ps, float innerX, float innerY, float outerX, float outerY);
 int psSetOrigin(ParticleSystem *ps, float x, float y);
 
+// Emission
+int psBurst(ParticleSystem *ps, int n);        // spawns n particles immediately
+int psStream(ParticleSystem *ps, float rate);  // particles per second; 0.0f disables
+
 // Use
-int psEmit(ParticleSystem *ps, int count);
 int psUpdate(ParticleSystem *ps, float dt);
-int psForEach(ParticleSystem *ps, ParticleFn fn, void *args);
+int psForEach(const ParticleSystem *ps, ParticleFn fn, void *args);
 
 // Query
-float psGetX(ParticleSystem *ps);
-float psGetY(ParticleSystem *ps);
-int psGetActive(ParticleSystem *ps);  // number of live particles
-int psGetIdle(ParticleSystem *ps);    // available slots (maxParticles - active)
+float psGetX(const ParticleSystem *ps);
+float psGetY(const ParticleSystem *ps);
+int   psGetActive(const ParticleSystem *ps);  // number of live particles
+int   psGetIdle(const ParticleSystem *ps);    // available slots (maxParticles - active)
 ```
 
-**`psReset`:** kills all active particles without freeing the system. Useful for pooled systems — allocate once, reuse across waves without the cost of destroy/create.
+**`psCreate`:** returns `NULL` on invalid input (`maxParticles <= 0`) or allocation failure. Both
+paths log before returning. Callers must check the return value before use.
 
-**`psGetX` / `psGetY`:** return the system's origin. Smile has no tuple or vector type, so the origin is exposed as two separate float getters rather than a compound return value.
+**`psDestroy`:** returns `int` — `RES_OK` on success, `< 0` if `ps` is `NULL`. The non-void return
+is for testability: tests that exercise failure paths (e.g. a `NULL` result from a failed
+`psCreate`) can assert on the return value rather than relying on side effects alone.
 
-**`psGetActive` / `psGetIdle`:** convenience pair for the staged-emission pattern (e.g. pool of 100, emit 20 at a time, emit more as slots free up). `active + idle == maxParticles` always, so the maximum capacity is recoverable without a separate getter.
+**`psReset`:** kills all active particles without freeing the system. Useful for pooled systems —
+allocate once, reuse across waves without the cost of destroy/create. Two specific behaviors:
+
+- **Accumulator is not reset.** `psReset` clears visual state, not emission configuration. Zeroing
+  the accumulator would be a surprising side effect; the sub-particle fraction it holds (`< 1.0`)
+  has no visible impact on resumption.
+- **Stream rate is not reset.** If `psStream` is active when `psReset` is called, emission resumes
+  on the next `psUpdate`. Users who want to stop streaming after a reset must call
+  `psStream(ps, 0.0f)` explicitly.
+
+**`psGetX` / `psGetY`:** return the system's origin. Both take `const ParticleSystem *` — they are
+pure queries with no side effects. Smile has no tuple or vector type, so the origin is exposed as
+two separate float getters rather than a compound return value.
+
+**`psGetActive` / `psGetIdle`:** convenience pair for the staged-emission pattern (e.g. pool of 100,
+emit 20 at a time, emit more as slots free up). `active + idle == maxParticles` always, so the
+maximum capacity is recoverable without a separate getter.
+
+**Repeated bursting:** loop functionality (`psSetLoop`, `psSetLoopInterval`) was considered and
+rejected. The user can implement repeated bursting with two lines in their update function —
+`psGetActive(ps) == 0` signals that all particles are dead and `psBurst` can be called again.
+A built-in loop would require storing a burst count separately from `psBurst`'s `n` parameter,
+and "re-fire when all particles are dead" is game logic, not particle system logic.
 
 ### Emission Shape and Spread
 
-The original single `EmissionType` enum was replaced with a shape enum and inner/outer spread values. This eliminates a separate mode enum — the relationship between inner and outer spread encodes fill, border, and thickness naturally.
+The original single `EmissionType` enum was replaced with a shape enum and inner/outer spread
+values. This eliminates a separate mode enum — the relationship between inner and outer spread
+encodes fill, border, and thickness naturally.
 
 ```c
 typedef enum {
-    PS_SHAPE_POINT,    // convenience alias for zero-spread ellipse; spread ignored in psEmit
     PS_SHAPE_ELLIPSE,  // ellipse of semi-axes outerX × outerY (circle = equal semi-axes)
     PS_SHAPE_RECT,     // rectangle of dimensions outerX × outerY
 } psEmissionShape;
 ```
 
-**Why ellipse instead of circle:** a circle is a degenerate ellipse (`outerX == outerY`). A single `PS_SHAPE_ELLIPSE` covers both without adding an enumerator.
+**Why ellipse instead of circle:** a circle is a degenerate ellipse (`outerX == outerY`). A single
+`PS_SHAPE_ELLIPSE` covers both without adding an enumerator.
 
-**`PS_SHAPE_POINT` as a convenience alias:** mathematically, point emission is a zero-spread ellipse. `PS_SHAPE_POINT` is kept as an explicit enumerator so users don't need two calls (`psSetEmissionShape` + `psSetSpread(0,0,0,0)`) to express the most common case. In `psEmit`, it is handled as an early-out before any spread math. The spread fields are stored but ignored.
+**Point emission via zero spread:** point emission is `PS_SHAPE_ELLIPSE` with all spreads `0.0f` —
+no dedicated enumerator is needed. This is also the default at `psCreate`, so a freshly created
+system emits at the origin without any configuration.
 
-**Why inner/outer spread replaces a mode enum:** three spawn patterns fall out of the inner/outer relationship with no extra concept:
+**Why inner/outer spread replaces a mode enum:** three spawn patterns fall out of the inner/outer
+relationship with no extra concept:
 
-| Pattern | Condition |
-|---------|-----------|
-| Filled area | `innerX = innerY = 0` |
+| Pattern               | Condition                              |
+|-----------------------|----------------------------------------|
+| Filled area           | `innerX = innerY = 0`                  |
 | Zero-thickness border | `innerX == outerX && innerY == outerY` |
-| Thick ring / frame | `0 < inner < outer` |
+| Thick ring / frame    | `0 < inner < outer`                    |
 
-A separate `psEmissionMode` enum (`FILLED` / `BORDER`) was rejected — it couldn't express thickness and required an extra setter.
+A separate `psEmissionMode` enum (`FILLED` / `BORDER`) was rejected — it couldn't express thickness
+and required an extra setter.
 
 **Two setters replace `psSetEmissionArea`:**
 
 ```c
 int psSetEmissionShape(ParticleSystem *ps, psEmissionShape shape);
-int psSetSpread(ParticleSystem *ps, float innerX, float innerY, float outerX, float outerY);
+int psSetInnerSpread(ParticleSystem *ps, float x, float y);
+int psSetOuterSpread(ParticleSystem *ps, float x, float y);
 ```
 
-Each setter is a single responsibility. `psSetEmissionArea(ps, type, spreadX, spreadY)` was rejected — five parameters, shape and spread conflated, forced an unused spread argument for `PS_SHAPE_POINT`.
+Each setter is a single responsibility. `psSetEmissionArea(ps, type, spreadX, spreadY)` was
+rejected — five parameters, shape and spread conflated. The original `psSetSpread` with four float
+parameters was split further: each half is independently settable, which is less error-prone and
+saves a call when only one boundary needs changing.
 
-**Defaults at `psCreate`:** `PS_SHAPE_POINT`, all spreads `0.0f`. A freshly created system emits at the origin without any configuration.
+**Validation:** `psSetOuterSpread` and `psSetInnerSpread` enforce `outer >= inner` on both axes. If
+`outerX < innerX` or `outerY < innerY`, the call is rejected (logged and returns negative) — the
+inner boundary cannot exceed the outer. `outer == inner` is valid and produces zero-thickness border
+emission.
 
-**Zero-spread behavior:** if a non-point shape is set but `psSetSpread` is never called, all spreads remain `0.0f` and particles spawn at the origin — effectively point emission. This is user error; Smile may log a warning in `psEmit` but does not guard against it.
+**Defaults at `psCreate`:** `PS_SHAPE_ELLIPSE`, all spreads `0.0f`. A freshly created system emits
+at the origin (point emission) without any configuration.
 
-**Spread with point shape:** `psSetSpread` has no effect when shape is `PS_SHAPE_POINT` — spread values are stored but ignored in `psEmit`.
+**Zero-spread behavior:** if a shape is set but spread is never configured, all spreads remain
+`0.0f` and particles spawn at the origin — effectively point emission. This is user error; Smile
+may log a warning but does not guard against it.
+
+---
+
+## Decided: Emission Model
+
+Two distinct, independent emission functions replace the previous unified `psEmit`:
+
+```c
+int psBurst(ParticleSystem *ps, int n);
+int psStream(ParticleSystem *ps, float rate);
+```
+
+They are honest about what they do and neither bleeds into the other's concerns.
+
+### psBurst
+
+Attempts to spawn up to `n` particles immediately using the system's current spawn recipe. Capped
+at the number of idle slots; excess count is silently dropped. `psBurst` can be called at any time,
+including while particles from a previous burst are still alive — the pool cap prevents
+over-emission without any additional guard logic.
+
+### psStream
+
+Enables continuous rate-based emission driven by `psUpdate`. Each frame, `psUpdate` accumulates
+`rate * dt` fractional particles and spawns whole numbers as the accumulator crosses integers.
+
+`psStream(ps, 0.0f)` disables streaming. The accumulator is not reset — it resumes if the rate is
+restored.
+
+**Rate cap:** rate is capped internally at `maxParticles` per second. Requesting a higher rate is
+not an error; it simply resolves to the pool maximum.
+
+**Pool exhaustion:** if no idle slots are available when the accumulator would spawn, that spawn is
+skipped. The accumulator is not penalized and continues accumulating. Emission resumes as particles
+die and slots free up.
+
+**`psStream` takes effect immediately** — there is no deferred-start behavior. Calling `psStream`
+with a non-zero rate starts the accumulator on the next `psUpdate`.
+
+**`psStream` is independent of `psBurst`** — both can be active on the same system simultaneously,
+drawing from the same pool.
 
 ---
 
@@ -167,33 +260,61 @@ int psSetInfluence(ParticleSystem *ps, void *context, InfluenceFn fn);
 // Snapshot influence — inter-particle awareness (e.g. boids)
 // Each particle reads all particles' state at time t, writes to t+1.
 // Triggers lazy allocation of the second buffer; returns 0 on success, < 0 on failure.
-// No context parameter — if external state is needed, close over it in the function.
-int psSetSnapshotInfluence(ParticleSystem *ps, SnapshotInfluenceFn fn);
+// context is passed through to the callback for any external state needed alongside snapshot access.
+int psSetSnapshotInfluence(ParticleSystem *ps, void *context, SnapshotInfluenceFn fn);
 ```
 
-**Naming rationale:** "external vs. internal" was rejected as the distinguishing axis. The real distinction is the update model:
+**Naming rationale:** "external vs. internal" was rejected as the distinguishing axis. The real
+distinction is the update model:
+
 - `psSetInfluence` — stateless, each particle updated independently.
-- `psSetSnapshotInfluence` — snapshot semantics: all particles read from time `t`, write to time `t+1`. Requires a double-buffered pool.
+- `psSetSnapshotInfluence` — snapshot semantics: all particles read from time `t`, write to time
+  `t+1`. Requires a double-buffered pool.
 
-**Why no context on `psSetSnapshotInfluence`:** the callback only operates on the system's own particles. The snapshot buffer and count are passed directly by `psUpdate`. If external state is genuinely needed alongside snapshot access, close over it in the function pointer.
+**`context` on `psSetSnapshotInfluence`:** consistent with `psSetInfluence`. In C, function pointers
+cannot close over state, so a `void *context` parameter is required for any external state the
+callback needs alongside snapshot access. May be `NULL` if not needed.
 
-**`count` in snapshot callback:** the pool has `maxParticles` slots but only `count` are active at any given frame. Without `count`, the callback cannot safely iterate the snapshot buffer.
+**`count` in snapshot callback:** the pool has `maxParticles` slots but only `count` are active at
+any given frame. Without `count`, the callback cannot safely iterate the snapshot buffer.
 
-**Update behavior:** `psUpdate` applies whichever influence functions are set, in sequence — stateless first, then snapshot. No branching on a mode; just calling function pointers that may or may not be `NULL`. Both can be active simultaneously.
+**Update behavior:** `psUpdate` applies whichever influence functions are set, in sequence —
+stateless first, then snapshot. No branching on a mode; just calling function pointers that may or
+may not be `NULL`. Both can be active simultaneously.
 
-**Lazy second buffer:** starts as `NULL` at create time. `psSetSnapshotInfluence` triggers allocation and copies the current buffer in. Only systems that use inter-particle awareness pay the `2 × maxParticles × sizeof(Particle)` memory cost.
+**Influence ordering:** stateless influence runs before snapshot. The snapshot callback reads from
+the pre-update copy of the buffer (time `t`), so it never sees positions modified by stateless
+influence in the same frame. This one-frame lag is a consequence of double-buffering and is
+intentional.
 
-**Error handling:** `psSetSnapshotInfluence` returns `int` — `0` on success, negative on allocation failure. Consistent with Smile's existing error convention (e.g. SceneManager). The negative value signals that something went wrong; the specific cause is not exposed to the client.
+**Lazy second buffer:** starts as `NULL` at create time. `psSetSnapshotInfluence` triggers
+allocation and copies the current buffer in. Only systems that use inter-particle awareness pay the
+`2 × maxParticles × sizeof(Particle)` memory cost.
 
-**Dynamic behavior:** influence functions can be swapped at any point during the system's lifetime — no need to destroy and recreate. This enables user-driven behavioral state machines (e.g. particles move left for 2s, then switch to moving right).
+**Second buffer teardown policy:** once allocated, the second buffer is never freed mid-lifetime —
+passing `NULL` for `fn` stops snapshot influence from running but leaves the buffer intact. This
+avoids repeated alloc/free churn in behavioral state machines that toggle snapshot influence on and
+off. To reclaim the memory, destroy and recreate the system.
+
+**Error handling:** `psSetSnapshotInfluence` returns `int` — `0` on success, negative on allocation
+failure. Consistent with Smile's existing error convention (e.g. SceneManager). The negative value
+signals that something went wrong; the specific cause is not exposed to the client.
+
+**Dynamic behavior:** influence functions can be swapped at any point during the system's lifetime —
+no need to destroy and recreate. This enables user-driven behavioral state machines (e.g. particles
+move left for 2s, then switch to moving right).
 
 ---
 
 ## Decided: Cross-System Interaction
 
-**Scenario:** a water surface system reacts to fish positions/velocity; a fish system uses boids (inter-particle awareness); the two systems influence each other.
+**Scenario:** a water surface system reacts to fish positions/velocity; a fish system uses boids (
+inter-particle awareness); the two systems influence each other.
 
-Covered by `psSetInfluence`. Pass the other `ParticleSystem *` as `context`, then use `psForEach` inside the influence function to read its particles. Since `psForEach` exposes particles as `const Particle *`, the influencing system's state is read-only — one system cannot corrupt another's particles.
+Covered by `psSetInfluence`. Pass the other `ParticleSystem *` as `context`, then use `psForEach`
+inside the influence function to read its particles. Since `psForEach` exposes particles as
+`const Particle *`, the influencing system's state is read-only — one system cannot corrupt
+another's particles.
 
 ```c
 void waterInfluence(Particle *p, void *context) {
@@ -204,84 +325,49 @@ void waterInfluence(Particle *p, void *context) {
 psSetInfluence(water, fish, waterInfluence);
 ```
 
-**Note:** iterating one system's particles while calling `psForEach` on another is O(n×m) per frame. Acceptable at game-jam scale.
+**Note:** iterating one system's particles while calling `psForEach` on another is O(n×m) per frame.
+Acceptable at typical game scales for small-to-medium particle counts.
+
+**Re-entrancy:** `psForEach` is safe to call on a system other than the one currently being updated.
+Calling `psForEach` on the *same* system that is mid-update (e.g. passing it as its own context) is
+undefined behavior; debug builds assert against this.
 
 No additional design needed.
 
 ---
 
-## Decided: Lifetime Events
-
-Trigger a callback at a specific point in a particle's lifetime. Smile fires the callback when the threshold is crossed, passing the triggering particle as read-only. The user owns everything that comes out of the callback — including any new systems created inside it.
-
-```c
-// Returns 0 on success, < 0 on error — consistent with Smile's error convention
-int psSetEvent(ParticleSystem *ps, float threshold, ParticleFn fn, void *context);
-```
-
-### Threshold semantics
-
-`threshold` is an **elapsed fraction**: `0.0` = just born, `1.0` = about to die. This matches the direction of `age` on the `Particle` struct and requires no mental inversion when reading the code.
-
-The crossing check inside `psUpdate` (for any threshold `t`):
-
-```c
-float ageNew = p->age + dt;
-float thresholdAge = p->lifetime * t;
-if (p->age < thresholdAge && ageNew >= thresholdAge)
-    event.fn(p, event.context);
-```
-
-### Fire before removal
-
-Lifetime events at threshold `1.0` fire **before** swap-and-pop. The callback receives the particle at its final valid state — position, velocity, and all other fields are readable. This is the useful behaviour: the main use case for a death event is spawning a child system at `p->x, p->y`.
-
-Firing after removal would require either a per-particle copy (overhead for every death, even without listeners) or a dangling pointer. Both are worse.
-
-### Multiple thresholds
-
-A system supports any number of lifetime events via a **small dynamic array** (stretchy buffer). Starts with a default capacity and grows via `realloc` when exceeded. No artificial cap; the user only pays for what they register.
-
-Linked list was rejected — per-node heap allocation and pointer indirection on every traversal undermine the memory pool's cache benefits, and the actual memory savings are negligible at game-jam scale (3 unused structs ≈ 60 bytes per system). The dynamic array gives the same "pay for what you use" property with contiguous memory and no pointer chasing.
-
-Typical use — spawning a child system at a particle's position:
-
-```c
-void onDeath(const Particle *p, void *context) {
-    Game *game = (Game *)context;
-    ParticleSystem *sparks = psCreate(50, p->x, p->y);
-    psEmit(sparks, 50);
-    game->activeSystems[game->systemCount++] = sparks;
-}
-
-psSetEvent(ps, 1.0f, onDeath, game);
-```
-
-`psCreate` takes an origin (`x`, `y`) so the spawned system can be positioned at the triggering particle's location. `psSetOrigin` covers the case where the origin needs to change after creation (e.g. a continuous emitter following a moving object).
-
-Smile never holds a reference to spawned systems — ownership and lifecycle management are entirely the user's responsibility.
-
----
-
 ## Showcase Demo — Fireworks → Fish → Boids
 
-A planned interactive demo that exercises the full module in sequence. **To be written concurrently with the module** so API awkwardness surfaces during development rather than after.
+A planned interactive demo that exercises the full module in sequence. **To be written concurrently
+with the module** so API awkwardness surfaces during development rather than after.
 
-1. **Rocket** — single particle emitter travelling upward; lifetime event at `0.0` spawns a trail effect; lifetime event at `1.0` spawns an explosion system at its position
-2. **Explosion** — burst emitter; lifetime event on each particle transforms it into a fish (destroys explosion system, spawns boids system at same position)
-3. **Fish** — boids system using `psSetSnapshotInfluence` for separation, alignment, and cohesion; `psSetInfluence` with mouse cursor position as context — fish flee the cursor (hook/predator interaction)
-4. **Water** — separate system using `psSetInfluence` with the fish system as context; reads fish positions via `psForEach` to ripple the surface
+1. **Rocket** — single particle emitter traveling upward; game loop detects near-death via
+   `p->age + dt >= p->lifetime` in a `psForEach` pass, records position, spawns trail (`psStream`)
+   and explosion (`psBurst`) at that position after `psUpdate`
+2. **Explosion** — `psBurst` emitter; game loop detects expiring particles each frame and spawns the
+   boids system once the last one is gone (`psGetActive == 0`)
+3. **Fish** — boids system using `psSetSnapshotInfluence` for separation, alignment, and cohesion;
+   `psSetInfluence` with mouse cursor position as context — fish flee the cursor (hook/predator
+   interaction)
+4. **Water** — separate system using `psStream` for continuous surface ripple; `psSetInfluence` with
+   the fish system as context reads fish positions via `psForEach`
 
-**Interactive element:** the mouse cursor acts as a hook. Fish flee it via `psSetInfluence`, demonstrating real-time external influence with a user-controlled context. Swapping the influence function at runtime (repel → attract) demonstrates behavioral state machines.
+**Interactive element:** the mouse cursor acts as a hook. Fish flee it via `psSetInfluence`,
+demonstrating real-time external influence with a user-controlled context. Swapping the influence
+function at runtime (repel → attract) demonstrates behavioral state machines.
 
 Capabilities exercised:
+
 - `psCreate` with origin positioning
-- `psSetEvent` for chained system spawning and transformation (uses multiple thresholds on rocket)
 - `psSetSnapshotInfluence` with double-buffered pool
 - `psSetInfluence` for cross-system interaction and cursor-driven behavior
-- `psForEach` for read-only inter-system state access
+- `psForEach` for read-only inter-system state access and game-loop condition detection
+- `psBurst` for one-shot effects
+- `psStream` for continuous effects (trail, water surface)
+- `psGetActive` for transition detection between stages
 
-**Ownership chain:** each spawned system is owned by the user-level game context, passed through as `context` in each lifetime event callback. Smile holds no references across the chain.
+**Ownership chain:** each spawned system is owned by the user-level game context. Smile holds no
+references across the chain. All chaining logic lives in the game loop.
 
 ---
 

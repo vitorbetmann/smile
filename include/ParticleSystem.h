@@ -13,16 +13,16 @@ typedef struct
 
 typedef enum
 {
-    PS_SHAPE_POINT,
     PS_SHAPE_ELLIPSE,
     PS_SHAPE_RECT,
 } psEmissionShape;
 
 typedef struct psInternalParticleSystem ParticleSystem;
 
-typedef void (*ParticleFn)(const Particle *p, void *args);
+typedef void (*ParticleFn)(const Particle *p, void *context);
 
-typedef void (*SnapshotInfluenceFn)(Particle *p, const Particle *snapshot, int count);
+typedef void (*SnapshotInfluenceFn)(Particle *p, const Particle *snapshot, int count,
+                                    void *context);
 
 typedef void (*InfluenceFn)(Particle *p, void *context);
 
@@ -30,31 +30,37 @@ typedef void (*InfluenceFn)(Particle *p, void *context);
 
 // Lifecycle
 
-ParticleSystem *psCreate(int particles, float x, float y);
+ParticleSystem *psCreate(int maxParticles, float originX, float originY);
 
-int psEmit(ParticleSystem *ps, int count);
-
-int psUpdate(ParticleSystem *ps, float dt);
+int psDestroy(ParticleSystem *ps);
 
 int psReset(ParticleSystem *ps);
 
-int psForEach(ParticleSystem *ps, ParticleFn fn, void *args);
+// Emission
 
-int psDestroy(ParticleSystem *ps);
+int psBurst(ParticleSystem *ps, int amount);
+
+int psStream(ParticleSystem *ps, float rate);
+
+// Update / Query
+
+int psUpdate(ParticleSystem *ps, float dt);
+
+int psForEach(const ParticleSystem *ps, ParticleFn fn, void *context);
 
 // Getters
 
 // -- Position
 
-float psGetX(ParticleSystem *ps);
+float psGetX(const ParticleSystem *ps);
 
-float psGetY(ParticleSystem *ps);
+float psGetY(const ParticleSystem *ps);
 
 // -- Count
 
-int psGetActive(ParticleSystem *ps);
+int psGetActive(const ParticleSystem *ps);
 
-int psGetIdle(ParticleSystem *ps);
+int psGetIdle(const ParticleSystem *ps);
 
 // Setters
 
@@ -74,8 +80,6 @@ int psSetAcceleration(ParticleSystem *ps, float minX, float minY, float maxX, fl
 
 int psSetLifetime(ParticleSystem *ps, float min, float max);
 
-int psSetEvent(ParticleSystem *ps, float threshold, ParticleFn fn, void *context);
-
 // -- Shape
 
 int psSetEmissionShape(ParticleSystem *ps, psEmissionShape shape);
@@ -84,4 +88,4 @@ int psSetEmissionShape(ParticleSystem *ps, psEmissionShape shape);
 
 int psSetInfluence(ParticleSystem *ps, void *context, InfluenceFn fn);
 
-int psSetSnapshotInfluence(ParticleSystem *ps, SnapshotInfluenceFn fn);
+int psSetSnapshotInfluence(ParticleSystem *ps, void *context, SnapshotInfluenceFn fn);

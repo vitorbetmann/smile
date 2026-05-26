@@ -21,7 +21,13 @@
 // Constant
 
 static constexpr int MAX_PARTICLES = 100;
+static constexpr int NEGATIVE_MAX_PARTICLES = -100;
 static constexpr int STRESS_ITERATIONS = 1000;
+static constexpr float STREAM_RATE = 10.0f;
+static constexpr float NEGATIVE_RATE = -1.0f;
+static constexpr float STREAM_ACCUMULATOR = 0.7f;
+static constexpr float ORIGIN_X = 3.0f;
+static constexpr float ORIGIN_Y = 7.0f;
 
 // Mutable
 
@@ -31,7 +37,7 @@ static ParticleSystem *ps;
 
 static void setup(void)
 {
-    ps = psCreate(MAX_PARTICLES, 0.0f, 0.0f);
+    ps = psCreate(MAX_PARTICLES, ORIGIN_X, ORIGIN_Y);
     assert(ps);
 }
 
@@ -50,449 +56,617 @@ void Test_psCreate_ReturnsNonNullOnValidArgs(void)
     tsPass(__func__);
 }
 
-// void Test_psCreate_ReturnsNullWhenMaxParticlesIsZero(void)
-// {
-//     ps = psCreate(0, 0.0f, 0.0f);
-//     assert(!ps);
-//     teardown();
-//     tsPass(__func__);
-// }
-//
-// void Test_psCreate_ReturnsNullWhenMallocFails(void)
-// {
-//     tsDisable(MALLOC, 1);
-//     ps = psCreate(MAX_PARTICLES, 0.0f, 0.0f);
-//     assert(!ps);
-//     teardown();
-//     tsPass(__func__);
-// }
-//
-// void Test_psCreate_StartsWithZeroActiveParticles(void)
-// {
-//     setup();
-//     assert(psGetActive(ps) == 0);
-//     teardown();
-//     tsPass(__func__);
-// }
-//
-// // Destroy —————————————————————————————————————————————————————————————————————————————————————————
-//
-// void Test_psDestroy_FreesSystem(void)
-// {
-//     setup();
-//     teardown();
-//     assert(!ps);
-//     tsPass(__func__);
-// }
-//
-// void Test_psDestroy_IsNullSafe(void)
-// {
-//     assert(psDestroy(nullptr) == RES_NULL_ARG);
-//     tsPass(__func__);
-// }
-//
-// // Reset ———————————————————————————————————————————————————————————————————————————————————————————
-//
-// void Test_psReset_KillsAllActiveParticles(void)
-// {
-//     setup();
-//     assert(psEmit(ps, MAX_PARTICLES) == RES_OK);
-//     assert(psReset(ps) == RES_OK);
-//     assert(psGetActive(ps) == 0);
-//     assert(psGetIdle(ps) == MAX_PARTICLES);
-//     teardown();
-//     tsPass(__func__);
-// }
-//
-// void Test_psReset_IsNullSafe(void)
-// {
-//     assert(psReset(nullptr) == RES_NULL_ARG);
-//     tsPass(__func__);
-// }
-//
-//
-// // —————————————————————————————————————————————————————————————————————————————————————————————————
-// // Emit
-// // —————————————————————————————————————————————————————————————————————————————————————————————————
-//
-// void Test_psEmit_IncreasesActiveCount(void)
-// {
-//     setup();
-//     assert(psGetActive(ps) == 0);
-//     assert(psGetIdle(ps) == MAX_PARTICLES);
-//     assert(psEmit(ps, MAX_PARTICLES) == RES_OK);
-//     assert(psGetActive(ps) == MAX_PARTICLES);
-//     assert(psGetIdle(ps) == 0);
-//     teardown();
-//     tsPass(__func__);
-// }
-//
-// void Test_psEmit_DoesNotExceedMaxParticles(void)
-// {
-//     setup();
-//     assert(psEmit(ps, MAX_PARTICLES + 1) == RES_OK);
-//     assert(psGetActive(ps) == MAX_PARTICLES);
-//     assert(psGetIdle(ps) == 0);
-//     teardown();
-//     tsPass(__func__);
-// }
-//
-// void Test_psEmit_IsNullSafe(void)
-// {
-//     setup();
-//     assert(psEmit(nullptr, MAX_PARTICLES) == RES_NULL_ARG);
-//     teardown();
-//     tsPass(__func__);
-// }
-//
-//
-// // Get Active ——————————————————————————————————————————————————————————————————————————————————————
-//
+void Test_psCreate_ReturnsNullWhenMaxParticlesIsZero(void)
+{
+    ps = psCreate(0, ORIGIN_X, ORIGIN_Y);
+    assert(!ps);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psCreate_ReturnsNullWhenMaxParticlesIsNegative(void)
+{
+    ps = psCreate(NEGATIVE_MAX_PARTICLES, ORIGIN_X, ORIGIN_Y);
+    assert(!ps);
+    tsPass(__func__);
+}
+
+void Test_psCreate_ReturnsNullWhenCallocFails(void)
+{
+    tsDisable(CALLOC, 1);
+    ps = psCreate(MAX_PARTICLES, ORIGIN_X, ORIGIN_Y);
+    assert(!ps);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psCreate_StoresOrigin(void)
+{
+    setup();
+    assert(ps->originX == ORIGIN_X);
+    assert(ps->originY == ORIGIN_Y);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psCreate_StartsWithZeroActiveParticles(void)
+{
+    setup();
+    assert(ps->activeParticles == 0);
+    teardown();
+    tsPass(__func__);
+}
+
+// Destroy —————————————————————————————————————————————————————————————————————————————————————————
+
+void Test_psDestroy_FreesSystem(void)
+{
+    setup();
+    assert(psDestroy(ps) == RES_OK);
+    ps = nullptr;
+    tsPass(__func__);
+}
+
+void Test_psDestroy_IsNullSafe(void)
+{
+    assert(psDestroy(nullptr) == RES_NULL_ARG);
+    tsPass(__func__);
+}
+
+// Reset ———————————————————————————————————————————————————————————————————————————————————————————
+
+void Test_psReset_KillsAllActiveParticles(void)
+{
+    setup();
+    ps->activeParticles = MAX_PARTICLES;
+    assert(psReset(ps) == RES_OK);
+    assert(ps->activeParticles == 0);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psReset_DoesNotResetStreamRate(void)
+{
+    setup();
+    ps->streamRate = STREAM_RATE;
+    assert(psReset(ps)==RES_OK);
+    assert(ps->streamRate == STREAM_RATE);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psReset_DoesNotResetAccumulator(void)
+{
+    setup();
+    ps->streamAccumulator = STREAM_ACCUMULATOR;
+    assert(psReset(ps)==RES_OK);
+    assert(ps->streamAccumulator == STREAM_ACCUMULATOR);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psReset_IsNullSafe(void)
+{
+    assert(psReset(nullptr) == RES_NULL_ARG);
+    tsPass(__func__);
+}
+
+// Burst ———————————————————————————————————————————————————————————————————————————————————————————
+
+void Test_psBurst_IncreasesActiveCount(void)
+{
+    setup();
+    assert(psBurst(ps, MAX_PARTICLES) == RES_OK);
+    assert(ps->activeParticles == MAX_PARTICLES);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psBurst_DoesNotExceedMaxParticles(void)
+{
+    setup();
+    assert(psBurst(ps, MAX_PARTICLES + 1) == RES_OK);
+    assert(ps->activeParticles == MAX_PARTICLES);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psBurst_IsNullSafe(void)
+{
+    assert(psBurst(nullptr, 1) == RES_NULL_ARG);
+    tsPass(__func__);
+}
+
+void Test_psBurst_RejectsNonPositiveAmount(void)
+{
+    setup();
+    assert(psBurst(ps, 0) == RES_INVALID_ARG);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psBurst_AddsToExistingActiveParticles(void)
+{
+    setup();
+    assert(psBurst(ps, MAX_PARTICLES / 2) == RES_OK);
+    assert(psBurst(ps, MAX_PARTICLES / 2) == RES_OK);
+    assert(ps->activeParticles == MAX_PARTICLES);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psBurst_WhenAtCapacityDoesNothing(void)
+{
+    setup();
+    assert(psBurst(ps, MAX_PARTICLES) == RES_OK);
+    assert(psBurst(ps, 1) == RES_OK);
+    assert(ps->activeParticles == MAX_PARTICLES);
+    teardown();
+    tsPass(__func__);
+}
+
+// Stream ——————————————————————————————————————————————————————————————————————————————————————————
+
+void Test_psStream_SetsRate(void)
+{
+    setup();
+    assert(psStream(ps, STREAM_RATE) == RES_OK);
+    assert(ps->streamRate == STREAM_RATE);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psStream_ZeroDisablesStreaming(void)
+{
+    setup();
+    assert(psStream(ps, STREAM_RATE) == RES_OK);
+    assert(psStream(ps, 0.0f) == RES_OK);
+    assert(ps->streamRate == 0.0f);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psStream_RejectsNegativeRate(void)
+{
+    setup();
+    assert(psStream(ps, NEGATIVE_RATE) == RES_INVALID_ARG);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psStream_RateCapIsMaxParticles(void)
+{
+    setup();
+    assert(psStream(ps, (float)MAX_PARTICLES + 1.0f) == RES_OK);
+    assert(ps->streamRate == (float)MAX_PARTICLES);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psStream_IsNullSafe(void)
+{
+    setup();
+    assert(psStream(nullptr, STREAM_RATE) == RES_NULL_ARG);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psStream_AccumulatorNotResetOnZero(void)
+{
+    setup();
+    ps->streamAccumulator = STREAM_ACCUMULATOR;
+    assert(psStream(ps, 0.0f) == RES_OK);
+    assert(ps->streamAccumulator == STREAM_ACCUMULATOR);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psStream_IsIndependentOfBurst(void)
+{
+    setup();
+    assert(psStream(ps, STREAM_RATE) == RES_OK);
+    assert(psBurst(ps, MAX_PARTICLES) == RES_OK);
+    assert(ps->streamRate == STREAM_RATE);
+    assert(ps->activeParticles == MAX_PARTICLES);
+    teardown();
+    tsPass(__func__);
+}
+
+// Get Active ——————————————————————————————————————————————————————————————————————————————————————
+
 // void Test_psGetActive_ReturnsZeroAfterCreate(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
-// void Test_psGetActive_ReturnsCountAfterEmit(void)
+
+// void Test_psGetActive_ReturnsAmountAfterBurst(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psGetActive_DecreasesAfterUpdate(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psGetActive_IsNullSafe(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
-// // Get Idle ————————————————————————————————————————————————————————————————————————————————————————
-//
+
+// Get Idle ————————————————————————————————————————————————————————————————————————————————————————
+
 // void Test_psGetIdle_EqualsMaxParticlesAfterCreate(void)
 // {
-//     setup();
-//     assert(psGetIdle(ps) == MAX_PARTICLES);
-//     teardown();
-//     tsPass(__func__);
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
-// void Test_psGetIdle_DecreasesAfterEmit(void)
+
+// void Test_psGetIdle_DecreasesAfterBurst(void)
 // {
-//     setup();
-//     assert(psGetIdle(ps) == MAX_PARTICLES);
-//     assert(psEmit(ps, MAX_PARTICLES) == RES_OK);
-//     assert(psGetIdle(ps) == 0);
-//     teardown();
-//     tsPass(__func__);
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psGetIdle_IncreasesAfterUpdate(void)
 // {
-//     setup();
-//     assert(psGetIdle(ps) == MAX_PARTICLES);
-//     assert(psEmit(ps, MAX_PARTICLES) == RES_OK);
-//     assert(psUpdate(ps, TS_MOCK_DT) == RES_OK);
-//
-//     teardown();
-//     tsPass(__func__);
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psGetIdle_IsNullSafe(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
-// // Get Position ————————————————————————————————————————————————————————————————————————————————————
-//
+
+// Get Position ————————————————————————————————————————————————————————————————————————————————————
+
 // void Test_psGetX_ReturnsOriginX(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psGetX_IsNullSafe(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psGetY_ReturnsOriginY(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psGetY_IsNullSafe(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
-// // Update ——————————————————————————————————————————————————————————————————————————————————————————
-//
+
+// Update ——————————————————————————————————————————————————————————————————————————————————————————
+
 // void Test_psUpdate_KillsParticleWhenLifetimeExpires(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psUpdate_MovesParticlesWithVelocity(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psUpdate_IsNullSafe(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
-// // ForEach —————————————————————————————————————————————————————————————————————————————————————————
-//
+
+// void Test_psUpdate_SpawnsParticlesAfterSufficientTime(void)
+// {
+//    assert(false);
+//    tsPass(__func__);
+// }
+
+// void Test_psUpdate_AccumulatorContinuesWhenPoolExhausted(void)
+// {
+//    assert(false);
+//    tsPass(__func__);
+// }
+
+// ForEach —————————————————————————————————————————————————————————————————————————————————————————
+
 // void Test_psForEach_IteratesAllActiveParticles(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psForEach_PassesArgsToCallback(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psForEach_SkipsNullCallback(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psForEach_IsNullSafe(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
-//
-// // —————————————————————————————————————————————————————————————————————————————————————————————————
-// // Configuration
-// // —————————————————————————————————————————————————————————————————————————————————————————————————
-//
+
+// Configuration ———————————————————————————————————————————————————————————————————————————————————
+
 // void Test_psSetLifetime_SetsRange(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psSetLifetime_IsNullSafe(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psSetVelocity_SetsRange(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psSetVelocity_IsNullSafe(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psSetAcceleration_SetsRange(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psSetAcceleration_IsNullSafe(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psSetEmissionShape_SetsShape(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psSetEmissionShape_IsNullSafe(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psSetSpread_SetsSpreads(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
+// void Test_psSetSpread_RejectsInnerExceedingOuter(void)
+// {
+//    assert(false);
+//    tsPass(__func__);
+// }
+
 // void Test_psSetSpread_IsNullSafe(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psSetOrigin_UpdatesOrigin(void)
 // {
-// }
-//
+//    assert(false);
+//    tsPass(__func__);
+// {
+
 // void Test_psSetOrigin_IsNullSafe(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
-//
-// // —————————————————————————————————————————————————————————————————————————————————————————————————
-// // Influence
-// // —————————————————————————————————————————————————————————————————————————————————————————————————
-//
+
+// Influence ———————————————————————————————————————————————————————————————————————————————————————
+
 // void Test_psSetInfluence_SetsCallback(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psSetInfluence_NullCallbackClearsInfluence(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psSetInfluence_IsAppliedDuringUpdate(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psSetInfluence_IsNullSafe(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
-//
-// // —————————————————————————————————————————————————————————————————————————————————————————————————
-// // Snapshot Influence
-// // —————————————————————————————————————————————————————————————————————————————————————————————————
-//
+
+// Snapshot Influence ——————————————————————————————————————————————————————————————————————————————
+
 // void Test_psSetSnapshotInfluence_ReturnsZeroOnSuccess(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psSetSnapshotInfluence_ReturnsNegativeWhenMallocFails(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psSetSnapshotInfluence_NullCallbackClearsInfluence(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psSetSnapshotInfluence_IsAppliedDuringUpdate(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
+
 // void Test_psSetSnapshotInfluence_IsNullSafe(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
-//
-// // —————————————————————————————————————————————————————————————————————————————————————————————————
-// // Lifetime Events
-// // —————————————————————————————————————————————————————————————————————————————————————————————————
-//
-// void Test_psSetEvent_ReturnsZeroOnSuccess(void)
+
+// Stress Tests ————————————————————————————————————————————————————————————————————————————————————
+
+// void TestStress_psBurst_EmittingManyParticlesCausesNoSkips(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
-// void Test_psSetEvent_ReturnsNegativeWhenMallocFails(void)
-// {
-// }
-//
-// void Test_psSetEvent_FiresWhenThresholdCrossed(void)
-// {
-// }
-//
-// void Test_psSetEvent_DoesNotFireBeforeThreshold(void)
-// {
-// }
-//
-// void Test_psSetEvent_SupportsMultipleThresholds(void)
-// {
-// }
-//
-// void Test_psSetEvent_IsNullSafe(void)
-// {
-// }
-//
-//
-// // —————————————————————————————————————————————————————————————————————————————————————————————————
-// // Stress Tests
-// // —————————————————————————————————————————————————————————————————————————————————————————————————
-//
-// void TestStress_psEmit_EmittingManyParticlesCausesNoSkips(void)
-// {
-// }
-//
+
 // void TestStress_psUpdate_UpdatingManyFramesCausesNoSkips(void)
 // {
+//    assert(false);
+//    tsPass(__func__);
 // }
-//
-// void TestStress_psSetEvent_RegisteringManyEventsCausesNoSkips(void)
-// {
-// }
-//
-//
 
 // Main ————————————————————————————————————————————————————————————————————————————————————————————
 
 int main(void)
 {
     puts("\nCREATE TESTING");
-    //     Test_psCreate_ReturnsNonNullOnValidArgs();
-    //     Test_psCreate_ReturnsNullWhenMaxParticlesIsZero();
-    //     Test_psCreate_ReturnsNullWhenMallocFails();
-    //     Test_psCreate_StartsWithZeroActiveParticles();
-    //
-    //     puts("\nDESTROY TESTING");
-    //     Test_psDestroy_FreesSystem();
-    //     Test_psDestroy_IsNullSafe();
-    //
-    //     puts("\nRESET TESTING");
-    //     Test_psReset_KillsAllActiveParticles();
-    //     Test_psReset_IsNullSafe();
-    //
-    //     puts("\nEMIT TESTING");
-    //     Test_psEmit_IncreasesActiveCount();
-    //     Test_psEmit_DoesNotExceedMaxParticles();
-    //     Test_psEmit_IsNullSafe();
-    //
-    //     puts("\nGET ACTIVE TESTING");
-    //     Test_psGetActive_ReturnsZeroAfterCreate();
-    //     Test_psGetActive_ReturnsCountAfterEmit();
-    //     Test_psGetActive_DecreasesAfterUpdate();
-    //     Test_psGetActive_IsNullSafe();
-    //
-    //     puts("\nGET IDLE TESTING");
-    //     Test_psGetIdle_EqualsMaxParticlesAfterCreate();
-    //     Test_psGetIdle_DecreasesAfterEmit();
-    //     Test_psGetIdle_IncreasesAfterUpdate();
-    //     Test_psGetIdle_IsNullSafe();
-    //
-    //     puts("\nGET POSITION TESTING");
-    //     Test_psGetX_ReturnsOriginX();
-    //     Test_psGetX_IsNullSafe();
-    //     Test_psGetY_ReturnsOriginY();
-    //     Test_psGetY_IsNullSafe();
-    //
-    //     puts("\nUPDATE TESTING");
-    //     Test_psUpdate_KillsParticleWhenLifetimeExpires();
-    //     Test_psUpdate_MovesParticlesWithVelocity();
-    //     Test_psUpdate_IsNullSafe();
-    //
-    //     puts("\nFOREACH TESTING");
-    //     Test_psForEach_IteratesAllActiveParticles();
-    //     Test_psForEach_PassesArgsToCallback();
-    //     Test_psForEach_SkipsNullCallback();
-    //     Test_psForEach_IsNullSafe();
-    //
-    //     puts("\nCONFIGURATION TESTING");
-    //     puts("• psSetLifetime");
-    //     Test_psSetLifetime_SetsRange();
-    //     Test_psSetLifetime_IsNullSafe();
-    //     puts("• psSetVelocity");
-    //     Test_psSetVelocity_SetsRange();
-    //     Test_psSetVelocity_IsNullSafe();
-    //     puts("• psSetAcceleration");
-    //     Test_psSetAcceleration_SetsRange();
-    //     Test_psSetAcceleration_IsNullSafe();
-    //     puts("• psSetEmissionShape");
-    //     Test_psSetEmissionShape_SetsShape();
-    //     Test_psSetEmissionShape_IsNullSafe();
-    //     puts("• psSetSpread");
-    //     Test_psSetSpread_SetsSpreads();
-    //     Test_psSetSpread_IsNullSafe();
-    //     puts("• psSetOrigin");
-    //     Test_psSetOrigin_UpdatesOrigin();
-    //     Test_psSetOrigin_IsNullSafe();
-    //
-    //     puts("\nINFLUENCE TESTING");
-    //     Test_psSetInfluence_SetsCallback();
-    //     Test_psSetInfluence_NullCallbackClearsInfluence();
-    //     Test_psSetInfluence_IsAppliedDuringUpdate();
-    //     Test_psSetInfluence_IsNullSafe();
-    //
-    //     puts("\nSNAPSHOT INFLUENCE TESTING");
-    //     Test_psSetSnapshotInfluence_ReturnsZeroOnSuccess();
-    //     Test_psSetSnapshotInfluence_ReturnsNegativeWhenMallocFails();
-    //     Test_psSetSnapshotInfluence_NullCallbackClearsInfluence();
-    //     Test_psSetSnapshotInfluence_IsAppliedDuringUpdate();
-    //     Test_psSetSnapshotInfluence_IsNullSafe();
-    //
-    //     puts("\nEVENT TESTING");
-    //     Test_psSetEvent_ReturnsZeroOnSuccess();
-    //     Test_psSetEvent_ReturnsNegativeWhenMallocFails();
-    //     Test_psSetEvent_FiresWhenThresholdCrossed();
-    //     Test_psSetEvent_DoesNotFireBeforeThreshold();
-    //     Test_psSetEvent_SupportsMultipleThresholds();
-    //     Test_psSetEvent_IsNullSafe();
-    //
-    //     puts("\nSTRESS TESTING");
-    //     TestStress_psEmit_EmittingManyParticlesCausesNoSkips();
-    //     TestStress_psUpdate_UpdatingManyFramesCausesNoSkips();
-    //     TestStress_psSetEvent_RegisteringManyEventsCausesNoSkips();
+    Test_psCreate_ReturnsNonNullOnValidArgs();
+    Test_psCreate_ReturnsNullWhenMaxParticlesIsZero();
+    Test_psCreate_ReturnsNullWhenMaxParticlesIsNegative();
+    Test_psCreate_ReturnsNullWhenCallocFails();
+    Test_psCreate_StoresOrigin();
+    Test_psCreate_StartsWithZeroActiveParticles();
+
+    puts("\nDESTROY TESTING");
+    Test_psDestroy_FreesSystem();
+    Test_psDestroy_IsNullSafe();
+
+    puts("\nRESET TESTING");
+    Test_psReset_KillsAllActiveParticles();
+    Test_psReset_DoesNotResetStreamRate();
+    Test_psReset_DoesNotResetAccumulator();
+    Test_psReset_IsNullSafe();
+
+    puts("\nBURST TESTING");
+    Test_psBurst_IncreasesActiveCount();
+    Test_psBurst_DoesNotExceedMaxParticles();
+    Test_psBurst_IsNullSafe();
+    Test_psBurst_RejectsNonPositiveAmount();
+    Test_psBurst_AddsToExistingActiveParticles();
+    Test_psBurst_WhenAtCapacityDoesNothing();
+
+    puts("\nSTREAM TESTING");
+    Test_psStream_SetsRate();
+    Test_psStream_ZeroDisablesStreaming();
+    Test_psStream_RejectsNegativeRate();
+    Test_psStream_RateCapIsMaxParticles();
+    Test_psStream_IsNullSafe();
+    Test_psStream_AccumulatorNotResetOnZero();
+    Test_psStream_IsIndependentOfBurst();
+
+    puts("\nGET ACTIVE TESTING");
+    // Test_psGetActive_ReturnsZeroAfterCreate();
+    // Test_psGetActive_ReturnsAmountAfterBurst();
+    // Test_psGetActive_DecreasesAfterUpdate();
+    // Test_psGetActive_IsNullSafe();
+
+    puts("\nGET IDLE TESTING");
+    // Test_psGetIdle_EqualsMaxParticlesAfterCreate();
+    // Test_psGetIdle_DecreasesAfterBurst();
+    // Test_psGetIdle_IncreasesAfterUpdate();
+    // Test_psGetIdle_IsNullSafe();
+
+    puts("\nGET POSITION TESTING");
+    // Test_psGetX_ReturnsOriginX();
+    // Test_psGetX_IsNullSafe();
+    // Test_psGetY_ReturnsOriginY();
+    // Test_psGetY_IsNullSafe();
+
+    puts("\nUPDATE TESTING");
+    // Test_psUpdate_KillsParticleWhenLifetimeExpires();
+    // Test_psUpdate_MovesParticlesWithVelocity();
+    // Test_psUpdate_IsNullSafe();
+    // Test_psUpdate_SpawnsParticlesAfterSufficientTime();
+    // Test_psUpdate_AccumulatorContinuesWhenPoolExhausted();
+
+    puts("\nFOREACH TESTING");
+    // Test_psForEach_IteratesAllActiveParticles();
+    // Test_psForEach_PassesArgsToCallback();
+    // Test_psForEach_SkipsNullCallback();
+    // Test_psForEach_IsNullSafe();
+
+    puts("\nCONFIGURATION TESTING");
+    // puts("• psSetLifetime");
+    // Test_psSetLifetime_SetsRange();
+    // Test_psSetLifetime_IsNullSafe();
+    // puts("• psSetVelocity");
+    // Test_psSetVelocity_SetsRange();
+    // Test_psSetVelocity_IsNullSafe();
+    // puts("• psSetAcceleration");
+    // Test_psSetAcceleration_SetsRange();
+    // Test_psSetAcceleration_IsNullSafe();
+    // puts("• psSetEmissionShape");
+    // Test_psSetEmissionShape_SetsShape();
+    // Test_psSetEmissionShape_IsNullSafe();
+    // puts("• psSetSpread");
+    // Test_psSetSpread_SetsSpreads();
+    // Test_psSetSpread_RejectsInnerExceedingOuter();
+    // Test_psSetSpread_IsNullSafe();
+    // puts("• psSetOrigin");
+    // Test_psSetOrigin_UpdatesOrigin();
+    // Test_psSetOrigin_IsNullSafe();
+
+    puts("\nINFLUENCE TESTING");
+    // Test_psSetInfluence_SetsCallback();
+    // Test_psSetInfluence_NullCallbackClearsInfluence();
+    // Test_psSetInfluence_IsAppliedDuringUpdate();
+    // Test_psSetInfluence_IsNullSafe();
+
+    puts("\nSNAPSHOT INFLUENCE TESTING");
+    // Test_psSetSnapshotInfluence_ReturnsZeroOnSuccess();
+    // Test_psSetSnapshotInfluence_ReturnsNegativeWhenMallocFails();
+    // Test_psSetSnapshotInfluence_NullCallbackClearsInfluence();
+    // Test_psSetSnapshotInfluence_IsAppliedDuringUpdate();
+    // Test_psSetSnapshotInfluence_IsNullSafe();
+
+    puts("\nSTRESS TESTING");
+    // TestStress_psBurst_EmittingManyParticlesCausesNoSkips();
+    // TestStress_psUpdate_UpdatingManyFramesCausesNoSkips();
 
     puts("\nTIME TO SMILE! :)\n\tAll Tests Passed!");
 }
