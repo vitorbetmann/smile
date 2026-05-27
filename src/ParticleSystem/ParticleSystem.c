@@ -1,9 +1,9 @@
 // Includes ————————————————————————————————————————————————————————————————————————————————————————
 
+#include <math.h>
 #include <stdlib.h>
 
 #include "ParticleSystem.h"
-
 #include "ParticleSystemInternal.h"
 #include "ParticleSystemMessages.h"
 
@@ -15,6 +15,8 @@
 // Variables ———————————————————————————————————————————————————————————————————————————————————————
 
 // Prototypes ——————————————————————————————————————————————————————————————————————————————————————
+
+static bool psPrivateIsPsNull(const ParticleSystem *ps, const char *caller);
 
 // Functions - Public ——————————————————————————————————————————————————————————————————————————————
 
@@ -46,9 +48,8 @@ ParticleSystem *psCreate(const int maxParticles, const float originX, const floa
 
 int psDestroy(ParticleSystem *ps)
 {
-    if (!ps)
+    if (psPrivateIsPsNull(ps, __func__))
     {
-        lgInternalLogWithArg(ERROR, ORI, CSE_NULL_ARG, "ps", __func__, CSQ_ABORT);
         return RES_NULL_ARG;
     }
 
@@ -58,9 +59,8 @@ int psDestroy(ParticleSystem *ps)
 
 int psGetActive(const ParticleSystem *ps)
 {
-    if (!ps)
+    if (psPrivateIsPsNull(ps, __func__))
     {
-        lgInternalLogWithArg(ERROR, ORI, CSE_NULL_ARG, "ps", __func__, CSQ_ABORT);
         return RES_NULL_ARG;
     }
 
@@ -69,9 +69,8 @@ int psGetActive(const ParticleSystem *ps)
 
 int psGetIdle(const ParticleSystem *ps)
 {
-    if (!ps)
+    if (psPrivateIsPsNull(ps, __func__))
     {
-        lgInternalLogWithArg(ERROR, ORI, CSE_NULL_ARG, "ps", __func__, CSQ_ABORT);
         return RES_NULL_ARG;
     }
 
@@ -80,9 +79,8 @@ int psGetIdle(const ParticleSystem *ps)
 
 int psReset(ParticleSystem *ps)
 {
-    if (!ps)
+    if (psPrivateIsPsNull(ps, __func__))
     {
-        lgInternalLogWithArg(ERROR, ORI, CSE_NULL_ARG, "ps", __func__, CSQ_ABORT);
         return RES_NULL_ARG;
     }
 
@@ -92,9 +90,8 @@ int psReset(ParticleSystem *ps)
 
 int psBurst(ParticleSystem *ps, const int amount)
 {
-    if (!ps)
+    if (psPrivateIsPsNull(ps, __func__))
     {
-        lgInternalLogWithArg(ERROR, ORI, CSE_NULL_ARG, "ps", __func__, CSQ_ABORT);
         return RES_NULL_ARG;
     }
 
@@ -112,9 +109,8 @@ int psBurst(ParticleSystem *ps, const int amount)
 
 int psStream(ParticleSystem *ps, const float rate)
 {
-    if (!ps)
+    if (psPrivateIsPsNull(ps, __func__))
     {
-        lgInternalLogWithArg(ERROR, ORI, CSE_NULL_ARG, "ps", __func__, CSQ_ABORT);
         return RES_NULL_ARG;
     }
 
@@ -129,6 +125,37 @@ int psStream(ParticleSystem *ps, const float rate)
     return RES_OK;
 }
 
+float psGetX(const ParticleSystem *ps)
+{
+    if (psPrivateIsPsNull(ps, __func__))
+    {
+        return nanf("");
+    }
+
+    return ps->originX;
+}
+
+float psGetY(const ParticleSystem *ps)
+{
+    if (psPrivateIsPsNull(ps, __func__) != RES_OK)
+    {
+        return nanf("");
+    }
+
+    return ps->originY;
+}
+
 // Functions - Internal ————————————————————————————————————————————————————————————————————————————
 
 // Functions - Private —————————————————————————————————————————————————————————————————————————————
+
+static bool psPrivateIsPsNull(const ParticleSystem *ps, const char *caller)
+{
+    if (!ps)
+    {
+        lgInternalLogWithArg(ERROR, ORI, CSE_NULL_ARG, "ps", caller, CSQ_ABORT);
+        return true;
+    }
+
+    return false;
+}

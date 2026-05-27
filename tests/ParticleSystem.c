@@ -2,6 +2,7 @@
 // Includes ————————————————————————————————————————————————————————————————————————————————————————
 
 #include <assert.h>
+#include <math.h>
 #include <stdlib.h>
 
 #include "ParticleSystem.h"
@@ -375,29 +376,37 @@ void Test_psGetIdle_ReturnsMaxParticlesAfterReset(void)
 
 // Get Position ————————————————————————————————————————————————————————————————————————————————————
 
-// void Test_psGetX_ReturnsOriginX(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psGetX_ReturnsOriginX(void)
+{
+    setup();
+    assert(psGetX(ps) == ORIGIN_X);
+    teardown();
+    tsPass(__func__);
+}
 
-// void Test_psGetX_IsNullSafe(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psGetX_IsNullSafe(void)
+{
+    setup();
+    assert(isnan(psGetX(nullptr)));
+    teardown();
+    tsPass(__func__);
+}
 
-// void Test_psGetY_ReturnsOriginY(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psGetY_ReturnsOriginY(void)
+{
+    setup();
+    assert(psGetY(ps) == ORIGIN_Y);
+    teardown();
+    tsPass(__func__);
+}
 
-// void Test_psGetY_IsNullSafe(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psGetY_IsNullSafe(void)
+{
+    setup();
+    assert(isnan(psGetY(nullptr)));
+    teardown();
+    tsPass(__func__);
+}
 
 // Update ——————————————————————————————————————————————————————————————————————————————————————————
 
@@ -665,10 +674,10 @@ int main(void)
     Test_psGetIdle_ReturnsZeroAtCapacity();
 
     puts("\nGET POSITION TESTING");
-    // Test_psGetX_ReturnsOriginX();
-    // Test_psGetX_IsNullSafe();
-    // Test_psGetY_ReturnsOriginY();
-    // Test_psGetY_IsNullSafe();
+    Test_psGetX_ReturnsOriginX();
+    Test_psGetX_IsNullSafe();
+    Test_psGetY_ReturnsOriginY();
+    Test_psGetY_IsNullSafe();
 
     puts("\nUPDATE TESTING");
     // Test_psUpdate_KillsParticleWhenLifetimeExpires();
