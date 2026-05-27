@@ -578,83 +578,118 @@ void Test_psUpdate_AccumulatorContinuesWhenPoolExhausted(void)
 
 // Configuration ———————————————————————————————————————————————————————————————————————————————————
 
-// void Test_psSetLifetime_SetsRange(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psSetLifetime_SetsRange(void)
+{
+    setup();
+    assert(psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME * 2) == RES_OK);
+    assert(ps->minLifetime == MOCK_LIFETIME);
+    assert(ps->maxLifetime == MOCK_LIFETIME * 2);
+    teardown();
+    tsPass(__func__);
+}
 
-// void Test_psSetLifetime_IsNullSafe(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psSetLifetime_IsNullSafe(void)
+{
+    assert(psSetLifetime(nullptr, MOCK_LIFETIME, MOCK_LIFETIME) == RES_NULL_ARG);
+    tsPass(__func__);
+}
 
-// void Test_psSetVelocity_SetsRange(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psSetVelocity_SetsRange(void)
+{
+    setup();
+    assert(psSetVelocity(ps, MOCK_VELOCITY_X, MOCK_VELOCITY_Y,
+        MOCK_VELOCITY_X * 2, MOCK_VELOCITY_Y * 2) == RES_OK);
+    assert(ps->minVelocityX == MOCK_VELOCITY_X);
+    assert(ps->minVelocityY == MOCK_VELOCITY_Y);
+    assert(ps->maxVelocityX == MOCK_VELOCITY_X * 2);
+    assert(ps->maxVelocityY == MOCK_VELOCITY_Y * 2);
+    teardown();
+    tsPass(__func__);
+}
 
-// void Test_psSetVelocity_IsNullSafe(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psSetVelocity_IsNullSafe(void)
+{
+    assert(psSetVelocity(nullptr, MOCK_VELOCITY_X, MOCK_VELOCITY_Y,
+        MOCK_VELOCITY_X, MOCK_VELOCITY_Y) == RES_NULL_ARG);
+    tsPass(__func__);
+}
 
-// void Test_psSetAcceleration_SetsRange(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psSetAcceleration_SetsRange(void)
+{
+    setup();
+    assert(psSetAcceleration(ps, MOCK_ACCELERATION_X, MOCK_ACCELERATION_Y,
+        MOCK_ACCELERATION_X * 2, MOCK_ACCELERATION_Y * 2) == RES_OK);
+    assert(ps->minAccelerationX == MOCK_ACCELERATION_X);
+    assert(ps->minAccelerationY == MOCK_ACCELERATION_Y);
+    assert(ps->maxAccelerationX == MOCK_ACCELERATION_X * 2);
+    assert(ps->maxAccelerationY == MOCK_ACCELERATION_Y * 2);
+    teardown();
+    tsPass(__func__);
+}
 
-// void Test_psSetAcceleration_IsNullSafe(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psSetAcceleration_IsNullSafe(void)
+{
+    assert(psSetAcceleration(nullptr, MOCK_ACCELERATION_X, MOCK_ACCELERATION_Y,
+        MOCK_ACCELERATION_X, MOCK_ACCELERATION_Y) == RES_NULL_ARG);
+    tsPass(__func__);
+}
 
-// void Test_psSetEmissionShape_SetsShape(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psSetEmissionShape_SetsShape(void)
+{
+    setup();
+    assert(psSetEmissionShape(ps, PS_SHAPE_RECT) == RES_OK);
+    assert(ps->emissionArea.shape == PS_SHAPE_RECT);
+    teardown();
+    tsPass(__func__);
+}
 
-// void Test_psSetEmissionShape_IsNullSafe(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psSetEmissionShape_IsNullSafe(void)
+{
+    assert(psSetEmissionShape(nullptr, PS_SHAPE_RECT) == RES_NULL_ARG);
+    tsPass(__func__);
+}
 
-// void Test_psSetSpread_SetsSpreads(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psSetSpread_SetsSpreads(void)
+{
+    setup();
+    assert(psSetSpread(ps, 1.0f, 2.0f, 3.0f, 4.0f) == RES_OK);
+    assert(ps->emissionArea.innerSpreadX == 1.0f);
+    assert(ps->emissionArea.innerSpreadY == 2.0f);
+    assert(ps->emissionArea.outerSpreadX == 3.0f);
+    assert(ps->emissionArea.outerSpreadY == 4.0f);
+    teardown();
+    tsPass(__func__);
+}
 
-// void Test_psSetSpread_RejectsInnerExceedingOuter(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psSetSpread_RejectsInnerExceedingOuter(void)
+{
+    setup();
+    assert(psSetSpread(ps, 5.0f, 5.0f, 3.0f, 3.0f) == RES_INVALID_ARG);
+    teardown();
+    tsPass(__func__);
+}
 
-// void Test_psSetSpread_IsNullSafe(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psSetSpread_IsNullSafe(void)
+{
+    assert(psSetSpread(nullptr, 0.0f, 0.0f, 1.0f, 1.0f) == RES_NULL_ARG);
+    tsPass(__func__);
+}
 
-// void Test_psSetOrigin_UpdatesOrigin(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// {
+void Test_psSetOrigin_UpdatesOrigin(void)
+{
+    setup();
+    assert(psSetOrigin(ps, ORIGIN_X * 2, ORIGIN_Y * 2) == RES_OK);
+    assert(ps->originX == ORIGIN_X * 2);
+    assert(ps->originY == ORIGIN_Y * 2);
+    teardown();
+    tsPass(__func__);
+}
 
-// void Test_psSetOrigin_IsNullSafe(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psSetOrigin_IsNullSafe(void)
+{
+    assert(psSetOrigin(nullptr, ORIGIN_X, ORIGIN_Y) == RES_NULL_ARG);
+    tsPass(__func__);
+}
 
 // Influence ———————————————————————————————————————————————————————————————————————————————————————
 
@@ -810,23 +845,23 @@ int main(void)
     // Test_psForEach_WithNullArgsCallsCallback();
 
     puts("\nCONFIGURATION TESTING");
-    // puts("• psSetLifetime");
-    // Test_psSetLifetime_SetsRange();
-    // Test_psSetLifetime_IsNullSafe();
-    // puts("• psSetVelocity");
-    // Test_psSetVelocity_SetsRange();
-    // Test_psSetVelocity_IsNullSafe();
-    // puts("• psSetAcceleration");
-    // Test_psSetAcceleration_SetsRange();
-    // Test_psSetAcceleration_IsNullSafe();
-    // puts("• psSetEmissionShape");
-    // Test_psSetEmissionShape_SetsShape();
-    // Test_psSetEmissionShape_IsNullSafe();
-    // puts("• psSetSpread");
+    puts("• psSetLifetime");
+    Test_psSetLifetime_SetsRange();
+    Test_psSetLifetime_IsNullSafe();
+    puts("• psSetVelocity");
+    Test_psSetVelocity_SetsRange();
+    Test_psSetVelocity_IsNullSafe();
+    puts("• psSetAcceleration");
+    Test_psSetAcceleration_SetsRange();
+    Test_psSetAcceleration_IsNullSafe();
+    puts("• psSetEmissionShape");
+    Test_psSetEmissionShape_SetsShape();
+    Test_psSetEmissionShape_IsNullSafe();
+    puts("• psSetSpread");
     // Test_psSetSpread_SetsSpreads();
     // Test_psSetSpread_RejectsInnerExceedingOuter();
     // Test_psSetSpread_IsNullSafe();
-    // puts("• psSetOrigin");
+    puts("• psSetOrigin");
     // Test_psSetOrigin_UpdatesOrigin();
     // Test_psSetOrigin_IsNullSafe();
 

@@ -272,6 +272,27 @@ int psSetLifetime(ParticleSystem *ps, const float min, const float max)
     return RES_OK;
 }
 
+int psSetEmissionShape(ParticleSystem *ps, psEmissionShape shape)
+{
+    if (psPrivateIsPsNull(ps, __func__))
+    {
+        return RES_NULL_ARG;
+    }
+
+    ps->emissionArea.shape = shape;
+    return RES_OK;
+}
+
+int psSetOrigin(ParticleSystem *ps, float x, float y)
+{
+    return RES_OK;
+}
+
+int psSetSpread(ParticleSystem *ps, float innerX, float innerY, float outerX, float outerY)
+{
+    return RES_OK;
+}
+
 // Functions - Internal ————————————————————————————————————————————————————————————————————————————
 
 // Functions - Private —————————————————————————————————————————————————————————————————————————————
