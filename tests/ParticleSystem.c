@@ -858,9 +858,9 @@ int main(void)
     Test_psSetEmissionShape_SetsShape();
     Test_psSetEmissionShape_IsNullSafe();
     puts("• psSetSpread");
-    // Test_psSetSpread_SetsSpreads();
-    // Test_psSetSpread_RejectsInnerExceedingOuter();
-    // Test_psSetSpread_IsNullSafe();
+    Test_psSetSpread_SetsSpreads();
+    Test_psSetSpread_RejectsInnerExceedingOuter();
+    Test_psSetSpread_IsNullSafe();
     puts("• psSetOrigin");
     Test_psSetOrigin_UpdatesOrigin();
     Test_psSetOrigin_IsNullSafe();

@@ -296,8 +296,26 @@ int psSetOrigin(ParticleSystem *ps, const float x, const float y)
     return RES_OK;
 }
 
-int psSetSpread(ParticleSystem *ps, float innerX, float innerY, float outerX, float outerY)
+int psSetSpread(ParticleSystem *ps, const float innerX, const float innerY, const float outerX,
+                const float outerY)
 {
+    if (psPrivateIsPsNull(ps, __func__))
+    {
+        return RES_NULL_ARG;
+    }
+
+    if (innerX > outerX || innerY > outerY)
+    {
+        lgInternalLogWithArg(WARN, ORI, CSE_NULL_ARG,
+                             "outer spread must be greater than inner spread", __func__, CSQ_ABORT);
+        return RES_INVALID_ARG;
+    }
+
+    ps->emissionArea.innerSpreadX = innerX;
+    ps->emissionArea.innerSpreadY = innerY;
+    ps->emissionArea.outerSpreadX = outerX;
+    ps->emissionArea.outerSpreadY = outerY;
+
     return RES_OK;
 }
 
