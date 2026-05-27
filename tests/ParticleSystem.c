@@ -573,8 +573,8 @@ static void psForEachCaptureCallback(const Particle *p, void *args)
     psForEachCapturedParticle *out = (psForEachCapturedParticle *)args;
     out->velocityX = p->velocityX;
     out->velocityY = p->velocityY;
-    out->age       = p->age;
-    out->lifetime  = p->lifetime;
+    out->age = p->age;
+    out->lifetime = p->lifetime;
 }
 
 static void psForEachArgsCallback(const Particle *p, void *args)
@@ -701,6 +701,24 @@ void Test_psSetLifetime_SetsRange(void)
 void Test_psSetLifetime_IsNullSafe(void)
 {
     assert(psSetLifetime(nullptr, MOCK_LIFETIME, MOCK_LIFETIME) == RES_NULL_ARG);
+    tsPass(__func__);
+}
+
+void Test_psSetLifetime_RejectsMinGreaterThanMax(void)
+{
+    setup();
+    assert(psSetLifetime(ps, MOCK_LIFETIME * 2, MOCK_LIFETIME) == RES_INVALID_ARG);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetLifetime_AffectsSpawnedParticles(void)
+{
+    setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    psBurst(ps, 1);
+    assert(ps->particles[0].lifetime == MOCK_LIFETIME);
+    teardown();
     tsPass(__func__);
 }
 
@@ -974,6 +992,8 @@ int main(void)
     puts("• psSetLifetime");
     Test_psSetLifetime_SetsRange();
     Test_psSetLifetime_IsNullSafe();
+    Test_psSetLifetime_RejectsMinGreaterThanMax();
+    Test_psSetLifetime_AffectsSpawnedParticles();
     puts("• psSetVelocity");
     Test_psSetVelocity_SetsRange();
     Test_psSetVelocity_IsNullSafe();
