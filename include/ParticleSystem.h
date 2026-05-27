@@ -15,6 +15,7 @@ typedef enum
 {
     PS_SHAPE_ELLIPSE,
     PS_SHAPE_RECT,
+    SHAPE_COUNT
 } psEmissionShape;
 
 typedef struct psInternalParticleSystem ParticleSystem;

@@ -300,6 +300,12 @@ int psSetEmissionShape(ParticleSystem *ps, psEmissionShape shape)
         return RES_NULL_ARG;
     }
 
+    if (shape >= SHAPE_COUNT)
+    {
+        lgInternalLogWithArg(WARN, ORI, CSE_INVALID_ARG, "shape", __func__, CSQ_ABORT);
+        return RES_INVALID_ARG;
+    }
+
     ps->emissionArea.shape = shape;
     return RES_OK;
 }

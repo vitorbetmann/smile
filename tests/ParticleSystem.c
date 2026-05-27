@@ -836,6 +836,31 @@ void Test_psSetEmissionShape_IsNullSafe(void)
     tsPass(__func__);
 }
 
+void Test_psSetEmissionShape_SetsEllipse(void)
+{
+    setup();
+    assert(psSetEmissionShape(ps, PS_SHAPE_ELLIPSE) == RES_OK);
+    assert(ps->emissionArea.shape == PS_SHAPE_ELLIPSE);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetEmissionShape_DefaultIsEllipse(void)
+{
+    setup();
+    assert(ps->emissionArea.shape == PS_SHAPE_ELLIPSE);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetEmissionShape_RejectsInvalidShape(void)
+{
+    setup();
+    assert(psSetEmissionShape(ps, (psEmissionShape)-1) == RES_INVALID_ARG);
+    teardown();
+    tsPass(__func__);
+}
+
 void Test_psSetSpread_SetsSpreads(void)
 {
     setup();
@@ -1068,6 +1093,9 @@ int main(void)
     puts("• psSetEmissionShape");
     Test_psSetEmissionShape_SetsShape();
     Test_psSetEmissionShape_IsNullSafe();
+    Test_psSetEmissionShape_SetsEllipse();
+    Test_psSetEmissionShape_DefaultIsEllipse();
+    Test_psSetEmissionShape_RejectsInvalidShape();
     puts("• psSetSpread");
     Test_psSetSpread_SetsSpreads();
     Test_psSetSpread_RejectsInnerExceedingOuter();
