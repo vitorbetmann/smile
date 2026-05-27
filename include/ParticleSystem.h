@@ -46,7 +46,7 @@ int psStream(ParticleSystem *ps, float rate);
 
 int psUpdate(ParticleSystem *ps, float dt);
 
-int psForEach(const ParticleSystem *ps, ParticleFn fn, void *context);
+int psForEach(ParticleSystem *ps, ParticleFn fn, void *context);
 
 // Getters
 
