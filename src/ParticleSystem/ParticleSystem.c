@@ -293,7 +293,7 @@ int psSetLifetime(ParticleSystem *ps, const float min, const float max)
     return RES_OK;
 }
 
-int psSetEmissionShape(ParticleSystem *ps, psEmissionShape shape)
+int psSetEmissionShape(ParticleSystem *ps, const psEmissionShape shape)
 {
     if (psPrivateIsPsNull(ps, __func__))
     {
