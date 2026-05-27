@@ -235,6 +235,13 @@ int psSetVelocity(ParticleSystem *ps, const float minX, const float minY, const 
         return RES_NULL_ARG;
     }
 
+    if (minX > maxX || minY > maxY)
+    {
+        lgInternalLogWithArg(WARN, ORI, CSE_NULL_ARG, MSG_INVALID_VELOCITY_RANGE, __func__,
+                             CSQ_ABORT);
+        return RES_INVALID_ARG;
+    }
+
     ps->minVelocityX = minX;
     ps->maxVelocityX = maxX;
     ps->minVelocityY = minY;
@@ -249,6 +256,13 @@ int psSetAcceleration(ParticleSystem *ps, const float minX, const float minY, co
     if (psPrivateIsPsNull(ps, __func__))
     {
         return RES_NULL_ARG;
+    }
+
+    if (minX > maxX || minY > maxY)
+    {
+        lgInternalLogWithArg(WARN, ORI, CSE_NULL_ARG, MSG_INVALID_ACCELERATION_RANGE, __func__,
+                             CSQ_ABORT);
+        return RES_INVALID_ARG;
     }
 
     ps->minAccelerationX = minX;

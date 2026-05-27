@@ -742,6 +742,35 @@ void Test_psSetVelocity_IsNullSafe(void)
     tsPass(__func__);
 }
 
+void Test_psSetVelocity_RejectsMinXGreaterThanMaxX(void)
+{
+    setup();
+    assert(psSetVelocity(ps, MOCK_VELOCITY_X * 2, MOCK_VELOCITY_Y,
+        MOCK_VELOCITY_X, MOCK_VELOCITY_Y) == RES_INVALID_ARG);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetVelocity_RejectsMinYGreaterThanMaxY(void)
+{
+    setup();
+    assert(psSetVelocity(ps, MOCK_VELOCITY_X, MOCK_VELOCITY_Y * 2,
+        MOCK_VELOCITY_X, MOCK_VELOCITY_Y) == RES_INVALID_ARG);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetVelocity_AffectsSpawnedParticles(void)
+{
+    setup();
+    psSetVelocity(ps, MOCK_VELOCITY_X, MOCK_VELOCITY_Y, MOCK_VELOCITY_X, MOCK_VELOCITY_Y);
+    psBurst(ps, 1);
+    assert(ps->particles[0].velocityX == MOCK_VELOCITY_X);
+    assert(ps->particles[0].velocityY == MOCK_VELOCITY_Y);
+    teardown();
+    tsPass(__func__);
+}
+
 void Test_psSetAcceleration_SetsRange(void)
 {
     setup();
@@ -759,6 +788,36 @@ void Test_psSetAcceleration_IsNullSafe(void)
 {
     assert(psSetAcceleration(nullptr, MOCK_ACCELERATION_X, MOCK_ACCELERATION_Y,
         MOCK_ACCELERATION_X, MOCK_ACCELERATION_Y) == RES_NULL_ARG);
+    tsPass(__func__);
+}
+
+void Test_psSetAcceleration_RejectsMinXGreaterThanMaxX(void)
+{
+    setup();
+    assert(psSetAcceleration(ps, MOCK_ACCELERATION_X * 2, MOCK_ACCELERATION_Y,
+        MOCK_ACCELERATION_X, MOCK_ACCELERATION_Y) == RES_INVALID_ARG);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetAcceleration_RejectsMinYGreaterThanMaxY(void)
+{
+    setup();
+    assert(psSetAcceleration(ps, MOCK_ACCELERATION_X, MOCK_ACCELERATION_Y * 2,
+        MOCK_ACCELERATION_X, MOCK_ACCELERATION_Y) == RES_INVALID_ARG);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetAcceleration_AffectsSpawnedParticles(void)
+{
+    setup();
+    psSetAcceleration(ps, MOCK_ACCELERATION_X, MOCK_ACCELERATION_Y,
+        MOCK_ACCELERATION_X, MOCK_ACCELERATION_Y);
+    psBurst(ps, 1);
+    assert(ps->particles[0].accelerationX == MOCK_ACCELERATION_X);
+    assert(ps->particles[0].accelerationY == MOCK_ACCELERATION_Y);
+    teardown();
     tsPass(__func__);
 }
 
@@ -997,9 +1056,15 @@ int main(void)
     puts("• psSetVelocity");
     Test_psSetVelocity_SetsRange();
     Test_psSetVelocity_IsNullSafe();
+    Test_psSetVelocity_RejectsMinXGreaterThanMaxX();
+    Test_psSetVelocity_RejectsMinYGreaterThanMaxY();
+    Test_psSetVelocity_AffectsSpawnedParticles();
     puts("• psSetAcceleration");
     Test_psSetAcceleration_SetsRange();
     Test_psSetAcceleration_IsNullSafe();
+    Test_psSetAcceleration_RejectsMinXGreaterThanMaxX();
+    Test_psSetAcceleration_RejectsMinYGreaterThanMaxY();
+    Test_psSetAcceleration_AffectsSpawnedParticles();
     puts("• psSetEmissionShape");
     Test_psSetEmissionShape_SetsShape();
     Test_psSetEmissionShape_IsNullSafe();
