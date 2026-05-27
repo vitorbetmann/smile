@@ -44,6 +44,11 @@ static constexpr float MOCK_ACCELERATION_Y = 15.0f;
 
 static constexpr float MOCK_LIFETIME = 0.5f;
 
+static constexpr float INNER_SPREAD_X = 1.0f;
+static constexpr float INNER_SPREAD_Y = 2.0f;
+static constexpr float OUTER_SPREAD_X = 3.0f;
+static constexpr float OUTER_SPREAD_Y = 4.0f;
+
 
 // Mutable
 
@@ -550,41 +555,136 @@ void Test_psUpdate_AccumulatorContinuesWhenPoolExhausted(void)
 
 // ForEach —————————————————————————————————————————————————————————————————————————————————————————
 
-// void Test_psForEach_IsNullSafe(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+typedef struct
+{
+    float velocityX, velocityY;
+    float age;
+    float lifetime;
+} psForEachCapturedParticle;
 
-// void Test_psForEach_SkipsNullCallback(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+static void psForEachCountCallback(const Particle *p, void *args)
+{
+    (void)p;
+    (*(int *)args)++;
+}
 
-// void Test_psForEach_WithEmptySystemCallsCallbackZeroTimes(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+static void psForEachCaptureCallback(const Particle *p, void *args)
+{
+    psForEachCapturedParticle *out = (psForEachCapturedParticle *)args;
+    out->velocityX = p->velocityX;
+    out->velocityY = p->velocityY;
+    out->age       = p->age;
+    out->lifetime  = p->lifetime;
+}
 
-// void Test_psForEach_IteratesAllActiveParticles(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+static void psForEachArgsCallback(const Particle *p, void *args)
+{
+    (void)p;
+    assert(args != nullptr);
+    (*(int *)args)++;
+}
 
-// void Test_psForEach_PassesArgsToCallback(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+static void psForEachNullArgsCallback(const Particle *p, void *args)
+{
+    (void)p;
+    assert(args == nullptr);
+}
 
-// void Test_psForEach_WithNullArgsCallsCallback(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psForEach_IsNullSafe(void)
+{
+    assert(psForEach(nullptr, psForEachCountCallback, nullptr) == RES_NULL_ARG);
+    tsPass(__func__);
+}
+
+void Test_psForEach_SkipsNullCallback(void)
+{
+    setup();
+    assert(psForEach(ps, nullptr, nullptr) == RES_INVALID_ARG);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psForEach_WithEmptySystemCallsCallbackZeroTimes(void)
+{
+    setup();
+    int count = 0;
+    psForEach(ps, psForEachCountCallback, &count);
+    assert(count == 0);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psForEach_IteratesAllActiveParticles(void)
+{
+    setup();
+    psBurst(ps, BURST_AMOUNT);
+    int count = 0;
+    psForEach(ps, psForEachCountCallback, &count);
+    assert(count == BURST_AMOUNT);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psForEach_PassesArgsToCallback(void)
+{
+    setup();
+    psBurst(ps, BURST_AMOUNT);
+    int count = 0;
+    psForEach(ps, psForEachArgsCallback, &count);
+    assert(count == BURST_AMOUNT);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psForEach_WithNullArgsCallsCallback(void)
+{
+    setup();
+    psBurst(ps, 1);
+    psForEach(ps, psForEachNullArgsCallback, nullptr);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psForEach_ReturnsOkOnSuccess(void)
+{
+    setup();
+    psBurst(ps, 1);
+    int count = 0;
+    assert(psForEach(ps, psForEachCountCallback, &count) == RES_OK);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psForEach_ExposesCorrectParticleData(void)
+{
+    setup();
+    psSetVelocity(ps, MOCK_VELOCITY_X, MOCK_VELOCITY_Y, MOCK_VELOCITY_X, MOCK_VELOCITY_Y);
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    psBurst(ps, 1);
+
+    psForEachCapturedParticle captured = {0};
+    psForEach(ps, psForEachCaptureCallback, &captured);
+
+    assert(captured.velocityX == MOCK_VELOCITY_X);
+    assert(captured.velocityY == MOCK_VELOCITY_Y);
+    assert(captured.age == 0.0f);
+    assert(captured.lifetime == MOCK_LIFETIME);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psForEach_SkipsDeadParticlesAfterUpdate(void)
+{
+    setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    psBurst(ps, BURST_AMOUNT);
+    psUpdate(ps, MOCK_LIFETIME);
+    int count = 0;
+    psForEach(ps, psForEachCountCallback, &count);
+    assert(count == 0);
+    teardown();
+    tsPass(__func__);
+}
 
 // Configuration ———————————————————————————————————————————————————————————————————————————————————
 
@@ -662,11 +762,12 @@ void Test_psSetEmissionShape_IsNullSafe(void)
 void Test_psSetSpread_SetsSpreads(void)
 {
     setup();
-    assert(psSetSpread(ps, 1.0f, 2.0f, 3.0f, 4.0f) == RES_OK);
-    assert(ps->emissionArea.innerSpreadX == 1.0f);
-    assert(ps->emissionArea.innerSpreadY == 2.0f);
-    assert(ps->emissionArea.outerSpreadX == 3.0f);
-    assert(ps->emissionArea.outerSpreadY == 4.0f);
+    assert(
+        psSetSpread(ps, INNER_SPREAD_X, INNER_SPREAD_Y, OUTER_SPREAD_X, OUTER_SPREAD_Y) == RES_OK);
+    assert(ps->emissionArea.innerSpreadX == INNER_SPREAD_X);
+    assert(ps->emissionArea.innerSpreadY == INNER_SPREAD_Y);
+    assert(ps->emissionArea.outerSpreadX == OUTER_SPREAD_X);
+    assert(ps->emissionArea.outerSpreadY == OUTER_SPREAD_Y);
     teardown();
     tsPass(__func__);
 }
@@ -674,14 +775,26 @@ void Test_psSetSpread_SetsSpreads(void)
 void Test_psSetSpread_RejectsInnerExceedingOuter(void)
 {
     setup();
-    assert(psSetSpread(ps, 5.0f, 5.0f, 3.0f, 3.0f) == RES_INVALID_ARG);
+    assert(
+        psSetSpread(ps,
+            OUTER_SPREAD_X,
+            OUTER_SPREAD_Y,
+            INNER_SPREAD_X,
+            INNER_SPREAD_Y
+        ) == RES_INVALID_ARG);
     teardown();
     tsPass(__func__);
 }
 
 void Test_psSetSpread_IsNullSafe(void)
 {
-    assert(psSetSpread(nullptr, 0.0f, 0.0f, 1.0f, 1.0f) == RES_NULL_ARG);
+    assert(
+        psSetSpread(nullptr,
+            INNER_SPREAD_X,
+            INNER_SPREAD_Y,
+            OUTER_SPREAD_X,
+            OUTER_SPREAD_Y
+        ) == RES_NULL_ARG);
     tsPass(__func__);
 }
 
@@ -847,12 +960,15 @@ int main(void)
     Test_psUpdate_AccumulatorContinuesWhenPoolExhausted();
 
     puts("\nFOREACH TESTING");
-    // Test_psForEach_IsNullSafe();
-    // Test_psForEach_SkipsNullCallback();
-    // Test_psForEach_WithEmptySystemCallsCallbackZeroTimes();
-    // Test_psForEach_IteratesAllActiveParticles();
-    // Test_psForEach_PassesArgsToCallback();
-    // Test_psForEach_WithNullArgsCallsCallback();
+    Test_psForEach_IsNullSafe();
+    Test_psForEach_SkipsNullCallback();
+    Test_psForEach_WithEmptySystemCallsCallbackZeroTimes();
+    Test_psForEach_IteratesAllActiveParticles();
+    Test_psForEach_PassesArgsToCallback();
+    Test_psForEach_WithNullArgsCallsCallback();
+    Test_psForEach_ReturnsOkOnSuccess();
+    Test_psForEach_ExposesCorrectParticleData();
+    Test_psForEach_SkipsDeadParticlesAfterUpdate();
 
     puts("\nCONFIGURATION TESTING");
     puts("• psSetLifetime");

@@ -319,6 +319,27 @@ int psSetSpread(ParticleSystem *ps, const float innerX, const float innerY, cons
     return RES_OK;
 }
 
+int psForEach(const ParticleSystem *ps, const ParticleFn fn, void *context)
+{
+    if (psPrivateIsPsNull(ps, __func__))
+    {
+        return RES_NULL_ARG;
+    }
+
+    if (!fn)
+    {
+        lgInternalLogWithArg(WARN, ORI, CSE_NULL_ARG, "fn", __func__, CSQ_ABORT);
+        return RES_INVALID_ARG;
+    }
+
+    for (int i = 0, active = ps->activeParticles; i < active; i++)
+    {
+        fn(&ps->particles[i], context);
+    }
+
+    return RES_OK;
+}
+
 // Functions - Internal ————————————————————————————————————————————————————————————————————————————
 
 // Functions - Private —————————————————————————————————————————————————————————————————————————————
