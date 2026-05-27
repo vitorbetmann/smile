@@ -283,8 +283,16 @@ int psSetEmissionShape(ParticleSystem *ps, psEmissionShape shape)
     return RES_OK;
 }
 
-int psSetOrigin(ParticleSystem *ps, float x, float y)
+int psSetOrigin(ParticleSystem *ps, const float x, const float y)
 {
+    if (psPrivateIsPsNull(ps, __func__))
+    {
+        return RES_NULL_ARG;
+    }
+
+    ps->originX = x;
+    ps->originY = y;
+
     return RES_OK;
 }
 

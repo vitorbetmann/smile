@@ -862,8 +862,8 @@ int main(void)
     // Test_psSetSpread_RejectsInnerExceedingOuter();
     // Test_psSetSpread_IsNullSafe();
     puts("• psSetOrigin");
-    // Test_psSetOrigin_UpdatesOrigin();
-    // Test_psSetOrigin_IsNullSafe();
+    Test_psSetOrigin_UpdatesOrigin();
+    Test_psSetOrigin_IsNullSafe();
 
     puts("\nINFLUENCE TESTING");
     // Test_psSetInfluence_SetsCallback();
