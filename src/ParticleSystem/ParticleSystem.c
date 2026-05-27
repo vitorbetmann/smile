@@ -58,7 +58,24 @@ int psDestroy(ParticleSystem *ps)
 
 int psGetActive(const ParticleSystem *ps)
 {
+    if (!ps)
+    {
+        lgInternalLogWithArg(ERROR, ORI, CSE_NULL_ARG, "ps", __func__, CSQ_ABORT);
+        return RES_NULL_ARG;
+    }
+
     return ps->activeParticles;
+}
+
+int psGetIdle(const ParticleSystem *ps)
+{
+    if (!ps)
+    {
+        lgInternalLogWithArg(ERROR, ORI, CSE_NULL_ARG, "ps", __func__, CSQ_ABORT);
+        return RES_NULL_ARG;
+    }
+
+    return ps->maxParticles - ps->activeParticles;
 }
 
 int psReset(ParticleSystem *ps)

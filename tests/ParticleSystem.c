@@ -23,6 +23,7 @@
 static constexpr int MAX_PARTICLES = 100;
 static constexpr int NEGATIVE_MAX_PARTICLES = -100;
 static constexpr int STRESS_ITERATIONS = 1000;
+static constexpr float BURST_AMOUNT = 50;
 static constexpr float STREAM_RATE = 10.0f;
 static constexpr float NEGATIVE_RATE = -1.0f;
 static constexpr float STREAM_ACCUMULATOR = 0.7f;
@@ -156,8 +157,8 @@ void Test_psReset_IsNullSafe(void)
 void Test_psBurst_IncreasesActiveCount(void)
 {
     setup();
-    assert(psBurst(ps, MAX_PARTICLES) == RES_OK);
-    assert(ps->activeParticles == MAX_PARTICLES);
+    assert(psBurst(ps, BURST_AMOUNT) == RES_OK);
+    assert(ps->activeParticles == BURST_AMOUNT);
     teardown();
     tsPass(__func__);
 }
@@ -188,9 +189,9 @@ void Test_psBurst_RejectsNonPositiveAmount(void)
 void Test_psBurst_AddsToExistingActiveParticles(void)
 {
     setup();
-    assert(psBurst(ps, MAX_PARTICLES / 2) == RES_OK);
-    assert(psBurst(ps, MAX_PARTICLES / 2) == RES_OK);
-    assert(ps->activeParticles == MAX_PARTICLES);
+    assert(psBurst(ps, BURST_AMOUNT) == RES_OK);
+    assert(psBurst(ps, BURST_AMOUNT) == RES_OK);
+    assert(ps->activeParticles == 2 * BURST_AMOUNT);
     teardown();
     tsPass(__func__);
 }
@@ -199,7 +200,7 @@ void Test_psBurst_WhenAtCapacityDoesNothing(void)
 {
     setup();
     assert(psBurst(ps, MAX_PARTICLES) == RES_OK);
-    assert(psBurst(ps, 1) == RES_OK);
+    assert(psBurst(ps, BURST_AMOUNT) == RES_OK);
     assert(ps->activeParticles == MAX_PARTICLES);
     teardown();
     tsPass(__func__);
@@ -274,17 +275,22 @@ void Test_psStream_IsIndependentOfBurst(void)
 
 // Get Active ——————————————————————————————————————————————————————————————————————————————————————
 
-// void Test_psGetActive_ReturnsZeroAfterCreate(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psGetActive_ReturnsZeroAfterCreate(void)
+{
+    setup();
+    assert(psGetActive(ps) == 0);
+    teardown();
+    tsPass(__func__);
+}
 
-// void Test_psGetActive_ReturnsAmountAfterBurst(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psGetActive_ReturnsAmountAfterBurst(void)
+{
+    setup();
+    assert(psBurst(ps, BURST_AMOUNT) == RES_OK);
+    assert(psGetActive(ps) == BURST_AMOUNT);
+    teardown();
+    tsPass(__func__);
+}
 
 // void Test_psGetActive_DecreasesAfterUpdate(void)
 // {
@@ -292,25 +298,49 @@ void Test_psStream_IsIndependentOfBurst(void)
 //    tsPass(__func__);
 // }
 
-// void Test_psGetActive_IsNullSafe(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psGetActive_IsNullSafe(void)
+{
+    assert(psGetActive(nullptr) == RES_NULL_ARG);
+    tsPass(__func__);
+}
+
+void Test_psGetActive_ReturnsMaxParticlesAtCapacity(void)
+{
+    setup();
+    ps->activeParticles = MAX_PARTICLES;
+    assert(psGetActive(ps) == MAX_PARTICLES);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psGetActive_ReturnsZeroAfterReset(void)
+{
+    setup();
+    ps->activeParticles = MAX_PARTICLES;
+    assert(psReset(ps) == RES_OK);
+    assert(psGetActive(ps) == 0);
+    teardown();
+    tsPass(__func__);
+}
 
 // Get Idle ————————————————————————————————————————————————————————————————————————————————————————
 
-// void Test_psGetIdle_EqualsMaxParticlesAfterCreate(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psGetIdle_EqualsMaxParticlesAfterCreate(void)
+{
+    setup();
+    assert(psGetIdle(ps) == MAX_PARTICLES);
+    teardown();
+    tsPass(__func__);
+}
 
-// void Test_psGetIdle_DecreasesAfterBurst(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psGetIdle_DecreasesAfterBurst(void)
+{
+    setup();
+    assert(psBurst(ps, BURST_AMOUNT) == RES_OK);
+    assert(psGetIdle(ps) == MAX_PARTICLES - BURST_AMOUNT);
+    teardown();
+    tsPass(__func__);
+}
 
 // void Test_psGetIdle_IncreasesAfterUpdate(void)
 // {
@@ -318,11 +348,30 @@ void Test_psStream_IsIndependentOfBurst(void)
 //    tsPass(__func__);
 // }
 
-// void Test_psGetIdle_IsNullSafe(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psGetIdle_IsNullSafe(void)
+{
+    assert(psGetIdle(nullptr) == RES_NULL_ARG);
+    tsPass(__func__);
+}
+
+void Test_psGetIdle_ReturnsZeroAtCapacity(void)
+{
+    setup();
+    ps->activeParticles = MAX_PARTICLES;
+    assert(psGetIdle(ps) == 0);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psGetIdle_ReturnsMaxParticlesAfterReset(void)
+{
+    setup();
+    ps->activeParticles = MAX_PARTICLES;
+    assert(psReset(ps) == RES_OK);
+    assert(psGetIdle(ps) == MAX_PARTICLES);
+    teardown();
+    tsPass(__func__);
+}
 
 // Get Position ————————————————————————————————————————————————————————————————————————————————————
 
@@ -600,16 +649,20 @@ int main(void)
     Test_psStream_IsIndependentOfBurst();
 
     puts("\nGET ACTIVE TESTING");
-    // Test_psGetActive_ReturnsZeroAfterCreate();
-    // Test_psGetActive_ReturnsAmountAfterBurst();
+    Test_psGetActive_ReturnsZeroAfterCreate();
+    Test_psGetActive_ReturnsAmountAfterBurst();
     // Test_psGetActive_DecreasesAfterUpdate();
-    // Test_psGetActive_IsNullSafe();
+    Test_psGetActive_IsNullSafe();
+    Test_psGetActive_ReturnsMaxParticlesAtCapacity();
+    Test_psGetActive_ReturnsZeroAfterReset();
 
     puts("\nGET IDLE TESTING");
-    // Test_psGetIdle_EqualsMaxParticlesAfterCreate();
-    // Test_psGetIdle_DecreasesAfterBurst();
+    Test_psGetIdle_EqualsMaxParticlesAfterCreate();
+    Test_psGetIdle_DecreasesAfterBurst();
     // Test_psGetIdle_IncreasesAfterUpdate();
-    // Test_psGetIdle_IsNullSafe();
+    Test_psGetIdle_IsNullSafe();
+    Test_psGetIdle_ReturnsMaxParticlesAfterReset();
+    Test_psGetIdle_ReturnsZeroAtCapacity();
 
     puts("\nGET POSITION TESTING");
     // Test_psGetX_ReturnsOriginX();
