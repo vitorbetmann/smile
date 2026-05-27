@@ -307,11 +307,16 @@ void Test_psGetActive_ReturnsAmountAfterBurst(void)
     tsPass(__func__);
 }
 
-// void Test_psGetActive_DecreasesAfterUpdate(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psGetActive_DecreasesAfterUpdate(void)
+{
+    setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    psBurst(ps, BURST_AMOUNT);
+    psUpdate(ps, MOCK_LIFETIME);
+    assert(psGetActive(ps) == 0);
+    teardown();
+    tsPass(__func__);
+}
 
 void Test_psGetActive_IsNullSafe(void)
 {
@@ -357,11 +362,16 @@ void Test_psGetIdle_DecreasesAfterBurst(void)
     tsPass(__func__);
 }
 
-// void Test_psGetIdle_IncreasesAfterUpdate(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psGetIdle_IncreasesAfterUpdate(void)
+{
+    setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    psBurst(ps, BURST_AMOUNT);
+    psUpdate(ps, MOCK_LIFETIME);
+    assert(psGetIdle(ps) == MAX_PARTICLES);
+    teardown();
+    tsPass(__func__);
+}
 
 void Test_psGetIdle_IsNullSafe(void)
 {
@@ -805,7 +815,7 @@ int main(void)
     puts("\nGET ACTIVE TESTING");
     Test_psGetActive_ReturnsZeroAfterCreate();
     Test_psGetActive_ReturnsAmountAfterBurst();
-    // Test_psGetActive_DecreasesAfterUpdate();
+    Test_psGetActive_DecreasesAfterUpdate();
     Test_psGetActive_IsNullSafe();
     Test_psGetActive_ReturnsMaxParticlesAtCapacity();
     Test_psGetActive_ReturnsZeroAfterReset();
@@ -813,7 +823,7 @@ int main(void)
     puts("\nGET IDLE TESTING");
     Test_psGetIdle_EqualsMaxParticlesAfterCreate();
     Test_psGetIdle_DecreasesAfterBurst();
-    // Test_psGetIdle_IncreasesAfterUpdate();
+    Test_psGetIdle_IncreasesAfterUpdate();
     Test_psGetIdle_IsNullSafe();
     Test_psGetIdle_ReturnsMaxParticlesAfterReset();
     Test_psGetIdle_ReturnsZeroAtCapacity();
