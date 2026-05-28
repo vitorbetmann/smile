@@ -4,7 +4,7 @@
 
 #define ORI "ParticleSystem"
 
-// Error Messages ——————————————————————————————————————————————————————————————————————————————————
+// Context Messages ————————————————————————————————————————————————————————————————————————————————
 
 static constexpr char MSG_INVALID_SPREAD_RANGE[] = "Outer spread must be greater than inner spread";
 static constexpr char MSG_INVALID_LIFETIME_RANGE[] =

@@ -1468,17 +1468,52 @@ void Test_psSetSnapshotInfluence_IsNotCalledWhenNoActiveParticles(void)
 
 // Stress Tests ————————————————————————————————————————————————————————————————————————————————————
 
-// void TestStress_psBurst_EmittingManyParticlesCausesNoSkips(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void TestStress_psBurst_BurstUpdateCycleCountsRemainConsistent(void)
+{
+    setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    for (int i = 0; i < STRESS_ITERATIONS; i++)
+    {
+        assert(psBurst(ps, MAX_PARTICLES) == RES_OK);
+        assert(ps->activeParticles == MAX_PARTICLES);
+        assert(psUpdate(ps, MOCK_LIFETIME) == RES_OK);
+        assert(ps->activeParticles == 0);
+    }
+    teardown();
+    tsPass(__func__);
+}
 
-// void TestStress_psUpdate_UpdatingManyFramesCausesNoSkips(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void TestStress_psGetActive_ActivePlusIdleAlwaysEqualsMaxParticles(void)
+{
+    setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    psStream(ps, STREAM_RATE);
+    for (int i = 0; i < STRESS_ITERATIONS; i++)
+    {
+        if (i % 10 == 0)
+            psBurst(ps, BURST_AMOUNT);
+        psUpdate(ps, MOCK_DT);
+        assert(psGetActive(ps) + psGetIdle(ps) == MAX_PARTICLES);
+    }
+    teardown();
+    tsPass(__func__);
+}
+
+void TestStress_psSetSnapshotInfluence_BufferRemainsCoherentUnderChurn(void)
+{
+    setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    psSetSnapshotInfluence(ps, nullptr, psSnapshotCountCallback);
+    psStream(ps, STREAM_RATE);
+    for (int i = 0; i < STRESS_ITERATIONS; i++)
+    {
+        assert(psUpdate(ps, MOCK_DT) == RES_OK);
+        assert(ps->snapshotBuffer != nullptr);
+        assert(ps->activeParticles <= MAX_PARTICLES);
+    }
+    teardown();
+    tsPass(__func__);
+}
 
 // Main ————————————————————————————————————————————————————————————————————————————————————————————
 
@@ -1641,8 +1676,9 @@ int main(void)
     Test_psSetSnapshotInfluence_IsNotCalledWhenNoActiveParticles();
 
     puts("\nSTRESS TESTING");
-    // TestStress_psBurst_EmittingManyParticlesCausesNoSkips();
-    // TestStress_psUpdate_UpdatingManyFramesCausesNoSkips();
+    TestStress_psBurst_BurstUpdateCycleCountsRemainConsistent();
+    TestStress_psGetActive_ActivePlusIdleAlwaysEqualsMaxParticles();
+    TestStress_psSetSnapshotInfluence_BufferRemainsCoherentUnderChurn();
 
     puts("\nTIME TO SMILE! :)\n\tAll Tests Passed!");
 }
