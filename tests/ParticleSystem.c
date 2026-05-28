@@ -130,6 +130,17 @@ static void psSnapshotCapturePreUpdateXCallback(Particle *p, const Particle *sna
     psSnapshotCapturedPreUpdateX = snapshot[0].x;
 }
 
+static float psSnapshotCapturedCurrentVelocityX;
+
+static void psSnapshotCaptureCurrentVelocityXCallback(Particle *p, const Particle *snapshot,
+                                                      int count, void *context)
+{
+    (void)snapshot;
+    (void)count;
+    (void)context;
+    psSnapshotCapturedCurrentVelocityX = p->velocityX;
+}
+
 // Routine
 
 static void setup(void)
@@ -237,6 +248,53 @@ void Test_psReset_DoesNotResetAccumulator(void)
     ps->streamAccumulator = STREAM_ACCUMULATOR;
     assert(psReset(ps)==RES_OK);
     assert(ps->streamAccumulator == STREAM_ACCUMULATOR);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psReset_DoesNotResetLifetimeRange(void)
+{
+    setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME * 2);
+    assert(psReset(ps) == RES_OK);
+    assert(ps->minLifetime == MOCK_LIFETIME);
+    assert(ps->maxLifetime == MOCK_LIFETIME * 2);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psReset_DoesNotResetVelocityRange(void)
+{
+    setup();
+    psSetVelocity(ps, MOCK_VELOCITY_X, MOCK_VELOCITY_Y, MOCK_VELOCITY_X * 2, MOCK_VELOCITY_Y * 2);
+    assert(psReset(ps) == RES_OK);
+    assert(ps->minVelocityX == MOCK_VELOCITY_X);
+    assert(ps->minVelocityY == MOCK_VELOCITY_Y);
+    assert(ps->maxVelocityX == MOCK_VELOCITY_X * 2);
+    assert(ps->maxVelocityY == MOCK_VELOCITY_Y * 2);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psReset_DoesNotResetEmissionShape(void)
+{
+    setup();
+    psSetEmissionShape(ps, PS_SHAPE_RECT);
+    assert(psReset(ps) == RES_OK);
+    assert(ps->emissionArea.shape == PS_SHAPE_RECT);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psReset_DoesNotResetSpread(void)
+{
+    setup();
+    psSetSpread(ps, INNER_SPREAD_X, INNER_SPREAD_Y, OUTER_SPREAD_X, OUTER_SPREAD_Y);
+    assert(psReset(ps) == RES_OK);
+    assert(ps->emissionArea.innerSpreadX == INNER_SPREAD_X);
+    assert(ps->emissionArea.innerSpreadY == INNER_SPREAD_Y);
+    assert(ps->emissionArea.outerSpreadX == OUTER_SPREAD_X);
+    assert(ps->emissionArea.outerSpreadY == OUTER_SPREAD_Y);
     teardown();
     tsPass(__func__);
 }
@@ -579,9 +637,7 @@ void Test_psGetX_ReturnsOriginX(void)
 
 void Test_psGetX_IsNullSafe(void)
 {
-    setup();
     assert(isnan(psGetX(nullptr)));
-    teardown();
     tsPass(__func__);
 }
 
@@ -595,9 +651,7 @@ void Test_psGetY_ReturnsOriginY(void)
 
 void Test_psGetY_IsNullSafe(void)
 {
-    setup();
     assert(isnan(psGetY(nullptr)));
-    teardown();
     tsPass(__func__);
 }
 
@@ -1466,6 +1520,21 @@ void Test_psSetSnapshotInfluence_IsNotCalledWhenNoActiveParticles(void)
     tsPass(__func__);
 }
 
+void Test_psSetSnapshotInfluence_InfluenceIsAppliedBeforeCallback(void)
+{
+    setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    psSetVelocity(ps, 0.0f, 0.0f, 0.0f, 0.0f);
+    psBurst(ps, 1);
+    psSetInfluence(ps, nullptr, psInfluenceSetVelocityCallback);
+    psSnapshotCapturedCurrentVelocityX = 0.0f;
+    psSetSnapshotInfluence(ps, nullptr, psSnapshotCaptureCurrentVelocityXCallback);
+    psUpdate(ps, MOCK_DT);
+    assert(psSnapshotCapturedCurrentVelocityX == MOCK_VELOCITY_X);
+    teardown();
+    tsPass(__func__);
+}
+
 // Stress Tests ————————————————————————————————————————————————————————————————————————————————————
 
 void TestStress_psBurst_BurstUpdateCycleCountsRemainConsistent(void)
@@ -1535,6 +1604,10 @@ int main(void)
     Test_psReset_KillsAllActiveParticles();
     Test_psReset_DoesNotResetStreamRate();
     Test_psReset_DoesNotResetAccumulator();
+    Test_psReset_DoesNotResetLifetimeRange();
+    Test_psReset_DoesNotResetVelocityRange();
+    Test_psReset_DoesNotResetEmissionShape();
+    Test_psReset_DoesNotResetSpread();
     Test_psReset_IsNullSafe();
 
     puts("\nBURST TESTING");
@@ -1674,6 +1747,7 @@ int main(void)
     Test_psSetSnapshotInfluence_SecondBufferNotReallocatedOnReSet();
     Test_psSetSnapshotInfluence_CountReflectsPreDeathActiveCount();
     Test_psSetSnapshotInfluence_IsNotCalledWhenNoActiveParticles();
+    Test_psSetSnapshotInfluence_InfluenceIsAppliedBeforeCallback();
 
     puts("\nSTRESS TESTING");
     TestStress_psBurst_BurstUpdateCycleCountsRemainConsistent();
