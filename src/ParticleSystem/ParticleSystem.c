@@ -112,19 +112,22 @@ int psBurst(ParticleSystem *ps, const int amount)
     }
 
     const int idleParticles = ps->maxParticles - ps->activeParticles;
+    const int oldActive = ps->activeParticles;
     ps->activeParticles += amount > idleParticles ? idleParticles : amount;
 
-    for (int i = 0; i < amount; i++)
+    for (int i = oldActive; i < ps->activeParticles; i++)
     {
         Particle *p = &ps->particles[i];
+        // Position
+        psInternalSamplePosition(ps->emissionArea, ps->originX, ps->originY, &p->x, &p->y);
         // Velocity
         const float velocityDiffX = ps->maxVelocityX - ps->minVelocityX;
         const float velocityDiffY = ps->maxVelocityY - ps->minVelocityY;
         p->velocityX = ps->minVelocityX + (float)rand() / (float)RAND_MAX * velocityDiffX;
         p->velocityY = ps->minVelocityY + (float)rand() / (float)RAND_MAX * velocityDiffY;
         // Acceleration
-        const float accelerationDiffX = ps->maxVelocityX - ps->minVelocityX;
-        const float accelerationDiffY = ps->maxVelocityY - ps->minVelocityY;
+        const float accelerationDiffX = ps->maxAccelerationX - ps->minAccelerationX;
+        const float accelerationDiffY = ps->maxAccelerationY - ps->minAccelerationY;
         p->accelerationX = ps->minAccelerationX + (float)rand() / (float)RAND_MAX *
                            accelerationDiffX;
         p->accelerationY = ps->minAccelerationY + (float)rand() / (float)RAND_MAX *
@@ -184,36 +187,26 @@ int psUpdate(ParticleSystem *ps, const float dt)
 
     if (dt <= 0.0f)
     {
-        lgInternalLogWithArg(WARN, ORI, CSE_NULL_ARG, "dt", __func__, CSQ_ABORT);
+        lgInternalLogWithArg(WARN, ORI, CSE_INVALID_ARG, "dt", __func__, CSQ_ABORT);
         return RES_INVALID_ARG;
     }
 
-    int deadParticles[ps->activeParticles];
-    int deadCount = 0;
-    for (int i = 0, active = ps->activeParticles; i < active; i++)
+    int i = 0;
+    while (i < ps->activeParticles)
     {
         Particle *p = &ps->particles[i];
         p->age += dt;
-        if (p->age >= p->lifetime)
-        {
-            deadParticles[deadCount] = i;
-            deadCount++;
-        }
         p->velocityX += p->accelerationX * dt;
         p->velocityY += p->accelerationY * dt;
         p->x += p->velocityX * dt;
         p->y += p->velocityY * dt;
-    }
 
-    int i = 0;
-    while (i < deadCount)
-    {
-        const int deadIndex = deadParticles[i];
-        const Particle temp = ps->particles[deadIndex];
-
-        ps->activeParticles--;
-        ps->particles[deadIndex] = ps->particles[ps->activeParticles];
-        ps->particles[ps->activeParticles] = temp;
+        if (p->age >= p->lifetime)
+        {
+            ps->activeParticles--;
+            ps->particles[i] = ps->particles[ps->activeParticles];
+            continue;
+        }
 
         i++;
     }
@@ -221,8 +214,9 @@ int psUpdate(ParticleSystem *ps, const float dt)
     // Stream particles
     ps->streamAccumulator += ps->streamRate * dt;
     const int newParticles = (int)ps->streamAccumulator;
-    psBurst(ps, newParticles);
-    ps->streamAccumulator -= fminf((float)newParticles, (float)psGetIdle(ps));
+    const int toSpawn = newParticles < psGetIdle(ps) ? newParticles : psGetIdle(ps);
+    if (toSpawn > 0) psBurst(ps, toSpawn);
+    ps->streamAccumulator -= (float)toSpawn;
 
     return RES_OK;
 }
@@ -300,7 +294,7 @@ int psSetEmissionShape(ParticleSystem *ps, const psEmissionShape shape)
         return RES_NULL_ARG;
     }
 
-    if (shape >= SHAPE_COUNT)
+    if ((unsigned)shape >= (unsigned)SHAPE_COUNT)
     {
         lgInternalLogWithArg(WARN, ORI, CSE_INVALID_ARG, "shape", __func__, CSQ_ABORT);
         return RES_INVALID_ARG;
@@ -368,6 +362,76 @@ int psForEach(const ParticleSystem *ps, const ParticleFn fn, void *context)
 }
 
 // Functions - Internal ————————————————————————————————————————————————————————————————————————————
+
+void psInternalSamplePosition(const psInternalEmissionArea area, const float originX,
+                              float const originY, float *outX, float *outY)
+{
+    if (area.outerSpreadX == 0.0f && area.outerSpreadY == 0.0f)
+    {
+        *outX = originX;
+        *outY = originY;
+        return;
+    }
+
+    switch (area.shape)
+    {
+    case PS_SHAPE_ELLIPSE:
+        if (area.innerSpreadX == area.outerSpreadX && area.innerSpreadY == area.outerSpreadY)
+        {
+            const float theta = (float)rand() / (float)RAND_MAX * 6.28318530718f;
+            *outX = originX + area.outerSpreadX * cosf(theta);
+            *outY = originY + area.outerSpreadY * sinf(theta);
+            break;
+        }
+        {
+            float dx, dy;
+            do
+            {
+                dx = ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f) * area.outerSpreadX;
+                dy = ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f) * area.outerSpreadY;
+            }
+            while (
+                (dx / area.outerSpreadX) * (dx / area.outerSpreadX) +
+                (dy / area.outerSpreadY) * (dy / area.outerSpreadY) > 1.0f ||
+                (area.innerSpreadX > 0.0f &&
+                 (dx / area.innerSpreadX) * (dx / area.innerSpreadX) +
+                 (dy / area.innerSpreadY) * (dy / area.innerSpreadY) < 1.0f)
+            );
+            *outX = originX + dx;
+            *outY = originY + dy;
+        }
+        break;
+    case PS_SHAPE_RECT:
+        if (area.innerSpreadX == area.outerSpreadX && area.innerSpreadY == area.outerSpreadY)
+        {
+            const float halfPerimeter = area.outerSpreadX + area.outerSpreadY;
+            const float t = (float)rand() / (float)RAND_MAX * halfPerimeter;
+            if (t < area.outerSpreadX)
+            {
+                *outX = originX + t * 2.0f - area.outerSpreadX;
+                *outY = originY + (rand() % 2 ? area.outerSpreadY : -area.outerSpreadY);
+            }
+            else
+            {
+                *outX = originX + (rand() % 2 ? area.outerSpreadX : -area.outerSpreadX);
+                *outY = originY + (t - area.outerSpreadX) * 2.0f - area.outerSpreadY;
+            }
+            break;
+        }
+        {
+            float dx, dy;
+            do
+            {
+                dx = ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f) * area.outerSpreadX;
+                dy = ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f) * area.outerSpreadY;
+            }
+            while (fabsf(dx) < area.innerSpreadX && fabsf(dy) < area.innerSpreadY);
+            *outX = originX + dx;
+            *outY = originY + dy;
+        }
+        break;
+    }
+}
 
 // Functions - Private —————————————————————————————————————————————————————————————————————————————
 

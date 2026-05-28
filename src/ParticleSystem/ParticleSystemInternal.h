@@ -35,3 +35,8 @@ typedef struct psInternalParticleSystem
 
     Particle particles[];
 } psInternalParticleSystem;
+
+// Prototypes ——————————————————————————————————————————————————————————————————————————————————————
+
+void psInternalSamplePosition(psInternalEmissionArea area, float originX, float originY,
+                              float *outX, float *outY);

@@ -43,6 +43,7 @@ static constexpr float MOCK_ACCELERATION_X = 5.0f;
 static constexpr float MOCK_ACCELERATION_Y = 15.0f;
 
 static constexpr float MOCK_LIFETIME = 0.5f;
+static constexpr float SHORT_LIFETIME = MOCK_DT;
 
 static constexpr float INNER_SPREAD_X = 1.0f;
 static constexpr float INNER_SPREAD_Y = 2.0f;
@@ -97,7 +98,6 @@ void Test_psCreate_ReturnsNullWhenCallocFails(void)
     tsDisable(CALLOC, 1);
     ps = psCreate(MAX_PARTICLES, ORIGIN_X, ORIGIN_Y);
     assert(!ps);
-    teardown();
     tsPass(__func__);
 }
 
@@ -222,6 +222,95 @@ void Test_psBurst_WhenAtCapacityDoesNothing(void)
     assert(psBurst(ps, MAX_PARTICLES) == RES_OK);
     assert(psBurst(ps, BURST_AMOUNT) == RES_OK);
     assert(ps->activeParticles == MAX_PARTICLES);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psBurst_SetsParticlePositionToOrigin(void)
+{
+    setup();
+    psBurst(ps, 1);
+    assert(ps->particles[0].x == ORIGIN_X);
+    assert(ps->particles[0].y == ORIGIN_Y);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psBurst_SpawnsParticlesWithinRectBounds(void)
+{
+    setup();
+    psSetEmissionShape(ps, PS_SHAPE_RECT);
+    psSetSpread(ps, 0.0f, 0.0f, OUTER_SPREAD_X, OUTER_SPREAD_Y);
+    psBurst(ps, MAX_PARTICLES);
+    for (int i = 0; i < ps->activeParticles; i++)
+    {
+        const float dx = ps->particles[i].x - ORIGIN_X;
+        const float dy = ps->particles[i].y - ORIGIN_Y;
+        assert(fabsf(dx) <= OUTER_SPREAD_X);
+        assert(fabsf(dy) <= OUTER_SPREAD_Y);
+    }
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psBurst_SpawnsParticlesWithinEllipseBounds(void)
+{
+    setup();
+    psSetEmissionShape(ps, PS_SHAPE_ELLIPSE);
+    psSetSpread(ps, 0.0f, 0.0f, OUTER_SPREAD_X, OUTER_SPREAD_Y);
+    psBurst(ps, MAX_PARTICLES);
+    for (int i = 0; i < ps->activeParticles; i++)
+    {
+        const float dx = (ps->particles[i].x - ORIGIN_X) / OUTER_SPREAD_X;
+        const float dy = (ps->particles[i].y - ORIGIN_Y) / OUTER_SPREAD_Y;
+        assert(dx * dx + dy * dy <= 1.0f);
+    }
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psBurst_DoesNotOverwriteExistingParticlesOnSecondBurst(void)
+{
+    setup();
+    psSetVelocity(ps, MOCK_VELOCITY_X, MOCK_VELOCITY_Y, MOCK_VELOCITY_X, MOCK_VELOCITY_Y);
+    psBurst(ps, 1);
+    psSetVelocity(ps, MOCK_VELOCITY_X * 2.0f, MOCK_VELOCITY_Y * 2.0f,
+                  MOCK_VELOCITY_X * 2.0f, MOCK_VELOCITY_Y * 2.0f);
+    psBurst(ps, 1);
+    assert(ps->particles[0].velocityX == MOCK_VELOCITY_X);
+    assert(ps->particles[0].velocityY == MOCK_VELOCITY_Y);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psBurst_SpawnsParticlesOutsideInnerRectBounds(void)
+{
+    setup();
+    psSetEmissionShape(ps, PS_SHAPE_RECT);
+    psSetSpread(ps, INNER_SPREAD_X, INNER_SPREAD_Y, OUTER_SPREAD_X, OUTER_SPREAD_Y);
+    psBurst(ps, MAX_PARTICLES);
+    for (int i = 0; i < ps->activeParticles; i++)
+    {
+        const float dx = fabsf(ps->particles[i].x - ORIGIN_X);
+        const float dy = fabsf(ps->particles[i].y - ORIGIN_Y);
+        assert(!(dx < INNER_SPREAD_X && dy < INNER_SPREAD_Y));
+    }
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psBurst_SpawnsParticlesOutsideInnerEllipseBounds(void)
+{
+    setup();
+    psSetEmissionShape(ps, PS_SHAPE_ELLIPSE);
+    psSetSpread(ps, INNER_SPREAD_X, INNER_SPREAD_Y, OUTER_SPREAD_X, OUTER_SPREAD_Y);
+    psBurst(ps, MAX_PARTICLES);
+    for (int i = 0; i < ps->activeParticles; i++)
+    {
+        const float dx = (ps->particles[i].x - ORIGIN_X) / INNER_SPREAD_X;
+        const float dy = (ps->particles[i].y - ORIGIN_Y) / INNER_SPREAD_Y;
+        assert(dx * dx + dy * dy >= 1.0f);
+    }
     teardown();
     tsPass(__func__);
 }
@@ -445,7 +534,7 @@ void Test_psUpdate_IsNullSafe(void)
     tsPass(__func__);
 }
 
-void Test_psUpdate_WithZeroDtHasNoEffect(void)
+void Test_psUpdate_RejectsZeroDt(void)
 {
     setup();
     assert(psUpdate(ps, 0.0f) == RES_INVALID_ARG);
@@ -453,9 +542,18 @@ void Test_psUpdate_WithZeroDtHasNoEffect(void)
     tsPass(__func__);
 }
 
+void Test_psUpdate_RejectsNegativeDt(void)
+{
+    setup();
+    assert(psUpdate(ps, -MOCK_DT) == RES_INVALID_ARG);
+    teardown();
+    tsPass(__func__);
+}
+
 void Test_psUpdate_AdvancesParticleAge(void)
 {
     setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
     psBurst(ps, 1);
     assert(psUpdate(ps, MOCK_DT) == RES_OK);
     assert(ps->particles[0].age == MOCK_DT);
@@ -466,6 +564,7 @@ void Test_psUpdate_AdvancesParticleAge(void)
 void Test_psUpdate_MovesParticlesWithVelocity(void)
 {
     setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
     psSetVelocity(ps, MOCK_VELOCITY_X, MOCK_VELOCITY_Y, MOCK_VELOCITY_X, MOCK_VELOCITY_Y);
     psBurst(ps, 1);
 
@@ -484,6 +583,7 @@ void Test_psUpdate_MovesParticlesWithVelocity(void)
 void Test_psUpdate_AppliesAccelerationToVelocity(void)
 {
     setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
     psSetVelocity(ps, 0.0f, 0.0f, 0.0f, 0.0f);
     psSetAcceleration(ps, MOCK_ACCELERATION_X, MOCK_ACCELERATION_Y,
                       MOCK_ACCELERATION_X, MOCK_ACCELERATION_Y);
@@ -518,6 +618,21 @@ void Test_psUpdate_KillsMultipleExpiredParticlesInSameFrame(void)
 
 }
 
+void Test_psUpdate_KillsNonContiguousParticlesCorrectly(void)
+{
+    setup();
+    psSetLifetime(ps, SHORT_LIFETIME, SHORT_LIFETIME);
+    psBurst(ps, 1);                                      // index 0: dies on update
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    psBurst(ps, 2);                                      // indices 1, 2: survive
+    psSetLifetime(ps, SHORT_LIFETIME, SHORT_LIFETIME);
+    psBurst(ps, 1);                                      // index 3: dies on update
+    psUpdate(ps, MOCK_DT);
+    assert(ps->activeParticles == 2);
+    teardown();
+    tsPass(__func__);
+}
+
 void Test_psUpdate_SpawnsParticlesAfterSufficientTime(void)
 {
     setup();
@@ -548,7 +663,20 @@ void Test_psUpdate_AccumulatorContinuesWhenPoolExhausted(void)
     psStream(ps, STREAM_RATE);
     psUpdate(ps, 1.0f / STREAM_RATE);
     assert(ps->activeParticles == MAX_PARTICLES);
-    assert(ps->streamAccumulator > 0.0f);
+    assert(ps->streamAccumulator == 1.0f);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psUpdate_AccumulatorDecrementsOnlyByActualSpawns(void)
+{
+    setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    psBurst(ps, MAX_PARTICLES - 1);                      // 1 idle slot
+    psStream(ps, STREAM_RATE);
+    psUpdate(ps, 3.0f / STREAM_RATE);                   // accumulator = 3.0, only 1 spawned
+    assert(ps->activeParticles == MAX_PARTICLES);
+    assert(ps->streamAccumulator == 2.0f);               // 3.0 - 1 spawned = 2.0
     teardown();
     tsPass(__func__);
 }
@@ -900,6 +1028,55 @@ void Test_psSetSpread_IsNullSafe(void)
     tsPass(__func__);
 }
 
+void Test_psSetSpread_RejectsInnerXExceedingOuterX(void)
+{
+    setup();
+    assert(psSetSpread(ps, OUTER_SPREAD_X, INNER_SPREAD_Y, INNER_SPREAD_X, OUTER_SPREAD_Y) ==
+           RES_INVALID_ARG);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetSpread_RejectsInnerYExceedingOuterY(void)
+{
+    setup();
+    assert(psSetSpread(ps, INNER_SPREAD_X, OUTER_SPREAD_Y, OUTER_SPREAD_X, INNER_SPREAD_Y) ==
+           RES_INVALID_ARG);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetSpread_AllowsInnerEqualToOuter(void)
+{
+    setup();
+    assert(psSetSpread(ps, OUTER_SPREAD_X, OUTER_SPREAD_Y, OUTER_SPREAD_X, OUTER_SPREAD_Y) ==
+           RES_OK);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetSpread_DefaultsToZero(void)
+{
+    setup();
+    assert(ps->emissionArea.innerSpreadX == 0.0f);
+    assert(ps->emissionArea.innerSpreadY == 0.0f);
+    assert(ps->emissionArea.outerSpreadX == 0.0f);
+    assert(ps->emissionArea.outerSpreadY == 0.0f);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetOrigin_AffectsSpawnedParticles(void)
+{
+    setup();
+    psSetOrigin(ps, ORIGIN_X * 2, ORIGIN_Y * 2);
+    psBurst(ps, 1);
+    assert(ps->particles[0].x == ORIGIN_X * 2);
+    assert(ps->particles[0].y == ORIGIN_Y * 2);
+    teardown();
+    tsPass(__func__);
+}
+
 void Test_psSetOrigin_UpdatesOrigin(void)
 {
     setup();
@@ -1017,6 +1194,12 @@ int main(void)
     Test_psBurst_RejectsNonPositiveAmount();
     Test_psBurst_AddsToExistingActiveParticles();
     Test_psBurst_WhenAtCapacityDoesNothing();
+    Test_psBurst_SetsParticlePositionToOrigin();
+    Test_psBurst_SpawnsParticlesWithinRectBounds();
+    Test_psBurst_SpawnsParticlesWithinEllipseBounds();
+    Test_psBurst_DoesNotOverwriteExistingParticlesOnSecondBurst();
+    Test_psBurst_SpawnsParticlesOutsideInnerRectBounds();
+    Test_psBurst_SpawnsParticlesOutsideInnerEllipseBounds();
 
     puts("\nSTREAM TESTING");
     Test_psStream_SetsRate();
@@ -1051,15 +1234,18 @@ int main(void)
 
     puts("\nUPDATE TESTING");
     Test_psUpdate_IsNullSafe();
-    Test_psUpdate_WithZeroDtHasNoEffect();
+    Test_psUpdate_RejectsZeroDt();
+    Test_psUpdate_RejectsNegativeDt();
     Test_psUpdate_AdvancesParticleAge();
     Test_psUpdate_MovesParticlesWithVelocity();
     Test_psUpdate_AppliesAccelerationToVelocity();
     Test_psUpdate_KillsParticleWhenLifetimeExpires();
     Test_psUpdate_KillsMultipleExpiredParticlesInSameFrame();
+    Test_psUpdate_KillsNonContiguousParticlesCorrectly();
     Test_psUpdate_SpawnsParticlesAfterSufficientTime();
     Test_psUpdate_AccumulatorBelowThresholdDoesNotSpawn();
     Test_psUpdate_AccumulatorContinuesWhenPoolExhausted();
+    Test_psUpdate_AccumulatorDecrementsOnlyByActualSpawns();
 
     puts("\nFOREACH TESTING");
     Test_psForEach_IsNullSafe();
@@ -1100,7 +1286,12 @@ int main(void)
     Test_psSetSpread_SetsSpreads();
     Test_psSetSpread_RejectsInnerExceedingOuter();
     Test_psSetSpread_IsNullSafe();
+    Test_psSetSpread_RejectsInnerXExceedingOuterX();
+    Test_psSetSpread_RejectsInnerYExceedingOuterY();
+    Test_psSetSpread_AllowsInnerEqualToOuter();
+    Test_psSetSpread_DefaultsToZero();
     puts("• psSetOrigin");
+    Test_psSetOrigin_AffectsSpawnedParticles();
     Test_psSetOrigin_UpdatesOrigin();
     Test_psSetOrigin_IsNullSafe();
 
