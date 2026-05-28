@@ -79,4 +79,4 @@ smInternalSceneMap *smInternalGetEntry(const char *name);
 // Variables ———————————————————————————————————————————————————————————————————————————————————————
 
 /** @brief Target FPS used by smGetDt() as the first-call dt fallback. */
-static constexpr int DEFAULT_FPS = 60;
+static const int DEFAULT_FPS = 60;

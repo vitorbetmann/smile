@@ -101,4 +101,4 @@ int cmDeleteDir(const char *path);
 // Variables ———————————————————————————————————————————————————————————————————————————————————————
 
 /** @brief Maximum allowed path length in bytes, including the null terminator. */
-static constexpr int CM_PATH_MAX = 256;;
+static const int CM_PATH_MAX = 256;

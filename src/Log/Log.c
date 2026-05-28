@@ -27,16 +27,16 @@ static void lgPrivateFatalHandler(void);
 
 // Constant
 
-static constexpr char SMILE_CYAN[] = "\033[36m";
-static constexpr char SMILE_YELLOW[] = "\033[33m";
-static constexpr char SMILE_RED[] = "\033[31m";
-static constexpr char SMILE_PURPLE[] = "\033[0;35m";
-static constexpr char SMILE_GREEN[] = "\033[32m";
-static constexpr char SMILE_WHITE[] = "\033[0m";
+static const char SMILE_CYAN[] = "\033[36m";
+static const char SMILE_YELLOW[] = "\033[33m";
+static const char SMILE_RED[] = "\033[31m";
+static const char SMILE_PURPLE[] = "\033[0;35m";
+static const char SMILE_GREEN[] = "\033[32m";
+static const char SMILE_WHITE[] = "\033[0m";
 
-static constexpr char LOG_TIME_FMT[] = "%H:%M:%S";
+static const char LOG_TIME_FMT[] = "%H:%M:%S";
 
-static constexpr int LOG_TIME_BUFFER_LEN = 32;
+static const int LOG_TIME_BUFFER_LEN = 32;
 
 // Mutable
 
@@ -104,8 +104,7 @@ static int lgPrivateLog(const lgInternalLevel lvl, const char *origin, const cha
     return result;
 }
 
-static int lgPrivateLogV(const lgInternalLevel lvl, const char *ori, const char *msg,
-                         const va_list args)
+static int lgPrivateLogV(lgInternalLevel lvl, const char *ori, const char *msg, va_list args)
 {
     if (!lgPrivateIsLevelEnabled(lvl))
     {

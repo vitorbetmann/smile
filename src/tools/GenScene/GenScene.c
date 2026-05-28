@@ -17,8 +17,8 @@
 
 // Constant
 
-static constexpr char DEFAULT_SRC_DIR[] = "src";
-static constexpr char DEFAULT_INCLUDE_DIR[] = "include";
+static const char DEFAULT_SRC_DIR[] = "src";
+static const char DEFAULT_INCLUDE_DIR[] = "include";
 
 // Mutable
 

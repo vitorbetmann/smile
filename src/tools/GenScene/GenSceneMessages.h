@@ -2,15 +2,15 @@
 
 // Tool Name ———————————————————————————————————————————————————————————————————————————————————————
 
-static constexpr char ORI[] = "GenScene";
+static const char ORI[] = "GenScene";
 
 // Tool Messages ———————————————————————————————————————————————————————————————————————————————————
 
-static constexpr char USAGE[] =
+static const char USAGE[] =
     "Usage: GenScene <SceneName> [options]\n"
     "Try 'GenScene --help' for more information.\n";
 
-static constexpr char HELP[] =
+static const char HELP[] =
     "Usage: GenScene <SceneName> [options]\n"
     "\n"
     "Options:\n"
@@ -35,6 +35,6 @@ static constexpr char HELP[] =
 
 // Fatals
 
-static constexpr char CSE_NO_CALLBACKS[] = "Scene Has No Callbacks";
-static constexpr char CSE_FLAG_REQ_PATH_ARG[] = "Flag Requires Path Argument";
-static constexpr char CSE_INVALID_FLAG[] = "Invalid Flag";
+static const char CSE_NO_CALLBACKS[] = "Scene Has No Callbacks";
+static const char CSE_FLAG_REQ_PATH_ARG[] = "Flag Requires Path Argument";
+static const char CSE_INVALID_FLAG[] = "Invalid Flag";

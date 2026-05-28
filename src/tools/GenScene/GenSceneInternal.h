@@ -68,10 +68,10 @@ int gsInternalRun(int argc, char *argv[]);
 // Constant
 
 /** @brief Max scene name length in bytes; also the sanitization buffer size. */
-static constexpr int GS_NAME_MAX = 64;
+static const int GS_NAME_MAX = 64;
 
 /** @brief Prefix of a section-divider line. */
-static constexpr char GS_SECTION_DIV[] = "// Includes ";
+static const char GS_SECTION_DIV[] = "// Includes ";
 
 // Mutable
 

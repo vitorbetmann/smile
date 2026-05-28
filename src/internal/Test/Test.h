@@ -103,4 +103,4 @@ void tsReset(void);
 // Variables ———————————————————————————————————————————————————————————————————————————————————————
 
 /** @brief Mock delta-time for tests (0.016 s ≈ 60 fps). */
-static constexpr float TS_MOCK_DT = 0.016f;
+static const float TS_MOCK_DT = 0.016f;
