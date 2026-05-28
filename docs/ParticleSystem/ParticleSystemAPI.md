@@ -267,8 +267,8 @@ ps = nullptr;
 | `int psReset(ParticleSystem *ps)` |
 |-----------------------------------|
 
-Deactivates all particles and resets streaming state without freeing the
-system.
+Deactivates all particles without freeing the system or clearing the stream
+accumulator.
 
 - Parameters:
     - `ps` — ParticleSystem to reset.
@@ -278,8 +278,7 @@ system.
 - Notes:
     - Fails if `ps` is `nullptr`.
     - The capacity, origin, and configuration (velocity, lifetime, shape,
-      etc.) are preserved; only the live particle pool and streaming
-      accumulator are cleared.
+      etc.) are preserved; only the live particle pool is cleared.
     - Use this to restart an effect without reallocating the instance.
 
 ✅ Example
@@ -335,7 +334,8 @@ streaming.
     - Fails if `ps` is `nullptr` or `rate` is negative.
     - Fractional particles accumulate across frames; the system emits a whole
       particle only once the accumulator reaches `1.0`.
-    - Calling `psReset()` clears the accumulator and stops streaming.
+    - Calling `psReset()` deactivates all particles without clearing the
+      accumulator.
 
 ✅ Example
 
@@ -366,7 +366,8 @@ ones, and emitting streamed ones.
 - Notes:
     - Fails if `ps` is `nullptr` or `dt` is negative.
     - Influence callbacks (registered via `psSetInfluence` and
-      `psSetSnapshotInfluence`) are applied before position integration.
+      `psSetSnapshotInfluence`) are applied after position integration; changes
+      take effect the following frame.
     - Call once per frame, before `psForEach`.
 
 ✅ Example
@@ -547,8 +548,8 @@ Configures the inner and outer emission spread around the origin.
 - Returns: `0` on success, or a negative result code on failure.
 
 - Notes:
-    - Fails if `ps` is `nullptr`, any extent is negative, or an inner extent
-      exceeds its corresponding outer extent.
+    - Fails if `ps` is `nullptr` or an inner extent exceeds its corresponding
+      outer extent.
     - Setting inner extents to `0` emits particles anywhere within the outer
       boundary, including at the origin.
     - The shape of the boundary is controlled by `psSetEmissionShape`.
@@ -631,7 +632,7 @@ Sets the random lifetime range assigned to each newly emitted particle.
 - Returns: `0` on success, or a negative result code on failure.
 
 - Notes:
-    - Fails if `ps` is `nullptr`, `min` is negative, or `min > max`.
+    - Fails if `ps` is `nullptr` or `min > max`.
     - Each emitted particle receives a lifetime sampled uniformly at random
       from `[min, max]`.
 

@@ -60,7 +60,7 @@ ParticleSystem *psCreate(int maxParticles, float originX, float originY);
 int psDestroy(ParticleSystem *ps);
 
 /**
- * @brief Deactivates all particles and resets streaming state without freeing the system.
+ * @brief Deactivates all particles without freeing the system or clearing the stream accumulator.
  *
  * @param ps ParticleSystem to reset.
  *
