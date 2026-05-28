@@ -30,9 +30,9 @@ formatter alone.
 
 - Use `SCREAMING_SNAKE_CASE` for named constants.
 - Do not use function-like macros.
-- Prefer `static constexpr` for typed compile-time constants, including those
+- Prefer `static const` for typed compile-time constants, including those
   defined in headers.
-- Object-like macros are allowed for named constants only when `static constexpr`
+- Object-like macros are allowed for named constants only when `static const`
   cannot be used.
 - Prefer named constants over repeated or meaningful literals.
 - Prefer `enum` for related integer constants.
@@ -176,7 +176,7 @@ Current module prefixes:
 | Causes       | `CSE_` |
 | Consequences | `CSQ_` |
 
-- Define shared message string constants as `static constexpr char NAME[] = "value";`.
+- Define shared message string constants as `static const char NAME[] = "value";`.
 - Constant names should use English words separated by underscores.
 - Constant values should match the constant name after the prefix, using spaces and
   normal capitalization.

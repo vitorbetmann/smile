@@ -21,34 +21,34 @@
 
 // Constant
 
-static constexpr int MAX_PARTICLES = 100;
-static constexpr int NEGATIVE_MAX_PARTICLES = -100;
-static constexpr int STRESS_ITERATIONS = 1000;
+static const int MAX_PARTICLES = 100;
+static const int NEGATIVE_MAX_PARTICLES = -100;
+static const int STRESS_ITERATIONS = 1000;
 
-static constexpr int BURST_AMOUNT = 50;
+static const int BURST_AMOUNT = 50;
 
-static constexpr float STREAM_RATE = 10.0f;
-static constexpr float NEGATIVE_RATE = -1.0f;
-static constexpr float STREAM_ACCUMULATOR = 0.7f;
+static const float STREAM_RATE = 10.0f;
+static const float NEGATIVE_RATE = -1.0f;
+static const float STREAM_ACCUMULATOR = 0.7f;
 
-static constexpr float ORIGIN_X = 3.0f;
-static constexpr float ORIGIN_Y = 7.0f;
+static const float ORIGIN_X = 3.0f;
+static const float ORIGIN_Y = 7.0f;
 
-static constexpr float MOCK_DT = 0.016667f;
+static const float MOCK_DT = 0.016667f;
 
-static constexpr float MOCK_VELOCITY_X = 10.0f;
-static constexpr float MOCK_VELOCITY_Y = 20.0f;
+static const float MOCK_VELOCITY_X = 10.0f;
+static const float MOCK_VELOCITY_Y = 20.0f;
 
-static constexpr float MOCK_ACCELERATION_X = 5.0f;
-static constexpr float MOCK_ACCELERATION_Y = 15.0f;
+static const float MOCK_ACCELERATION_X = 5.0f;
+static const float MOCK_ACCELERATION_Y = 15.0f;
 
-static constexpr float MOCK_LIFETIME = 0.5f;
-static constexpr float SHORT_LIFETIME = MOCK_DT;
+static const float MOCK_LIFETIME = 0.5f;
+static const float SHORT_LIFETIME = MOCK_DT;
 
-static constexpr float INNER_SPREAD_X = 1.0f;
-static constexpr float INNER_SPREAD_Y = 2.0f;
-static constexpr float OUTER_SPREAD_X = 3.0f;
-static constexpr float OUTER_SPREAD_Y = 4.0f;
+static const float INNER_SPREAD_X = 1.0f;
+static const float INNER_SPREAD_Y = 2.0f;
+static const float OUTER_SPREAD_X = 3.0f;
+static const float OUTER_SPREAD_Y = 4.0f;
 
 
 // Mutable

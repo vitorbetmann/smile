@@ -21,14 +21,14 @@
 
 // -- Constants
 
-static constexpr long NS_PER_S = 1000000000L;
-static constexpr float DT_TOLERANCE = 1e-6f;
-static constexpr long EXPECTED_DT_NS = 16667000L;
-static constexpr float EXPECTED_DT_S = 0.016667f;
+static const long NS_PER_S = 1000000000L;
+static const float DT_TOLERANCE = 1e-6f;
+static const long EXPECTED_DT_NS = 16667000L;
+static const float EXPECTED_DT_S = 0.016667f;
 
-static constexpr int FRAME_TIME_ITERATIONS = 300;
-static constexpr int IDEMPOTENT_ITERATIONS = 3;
-static constexpr int STRESS_ITERATIONS = 1000;
+static const int FRAME_TIME_ITERATIONS = 300;
+static const int IDEMPOTENT_ITERATIONS = 3;
+static const int STRESS_ITERATIONS = 1000;
 
 // Fixtures ————————————————————————————————————————————————————————————————————————————————————————
 
