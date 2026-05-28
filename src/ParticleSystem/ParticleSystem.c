@@ -302,7 +302,7 @@ int psSetSpread(ParticleSystem *ps, const float innerX, const float innerY, cons
 
     if (innerX > outerX || innerY > outerY)
     {
-        lgInternalLogWithArg(WARN, ORI, CSE_NULL_ARG, MSG_INVALID_SPREAD_RANGE, __func__,
+        lgInternalLogWithArg(WARN, ORI, CSE_INVALID_ARG, MSG_INVALID_SPREAD_RANGE, __func__,
                              CSQ_ABORT);
         return RES_INVALID_ARG;
     }
@@ -327,7 +327,7 @@ int psSetVelocity(ParticleSystem *ps, const float minX, const float minY, const 
 
     if (minX > maxX || minY > maxY)
     {
-        lgInternalLogWithArg(WARN, ORI, CSE_NULL_ARG, MSG_INVALID_VELOCITY_RANGE, __func__,
+        lgInternalLogWithArg(WARN, ORI, CSE_INVALID_ARG, MSG_INVALID_VELOCITY_RANGE, __func__,
                              CSQ_ABORT);
         return RES_INVALID_ARG;
     }
@@ -350,7 +350,7 @@ int psSetAcceleration(ParticleSystem *ps, const float minX, const float minY, co
 
     if (minX > maxX || minY > maxY)
     {
-        lgInternalLogWithArg(WARN, ORI, CSE_NULL_ARG, MSG_INVALID_ACCELERATION_RANGE, __func__,
+        lgInternalLogWithArg(WARN, ORI, CSE_INVALID_ARG, MSG_INVALID_ACCELERATION_RANGE, __func__,
                              CSQ_ABORT);
         return RES_INVALID_ARG;
     }
@@ -374,7 +374,7 @@ int psSetLifetime(ParticleSystem *ps, const float min, const float max)
 
     if (min > max)
     {
-        lgInternalLogWithArg(WARN, ORI, CSE_NULL_ARG, MSG_INVALID_LIFETIME_RANGE, __func__,
+        lgInternalLogWithArg(WARN, ORI, CSE_INVALID_ARG, MSG_INVALID_LIFETIME_RANGE, __func__,
                              CSQ_ABORT);
         return RES_INVALID_ARG;
     }
