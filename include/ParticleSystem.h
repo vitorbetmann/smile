@@ -22,10 +22,10 @@ typedef struct psInternalParticleSystem ParticleSystem;
 
 typedef void (*ParticleFn)(const Particle *p, void *context);
 
+typedef void (*InfluenceFn)(Particle *p, void *context);
+
 typedef void (*SnapshotInfluenceFn)(Particle *p, const Particle *snapshot, int count,
                                     void *context);
-
-typedef void (*InfluenceFn)(Particle *p, void *context);
 
 // Prototypes ——————————————————————————————————————————————————————————————————————————————————————
 

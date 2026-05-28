@@ -64,18 +64,41 @@ continuous emitters like fire.
 
 ## Decided: Data Model and Callbacks
 
-### Callback Signature
+### Callback Signatures
+
+Three distinct callback types cover the three distinct contracts:
 
 ```c
 typedef void (*ParticleFn)(const Particle *p, void *args);
+typedef void (*InfluenceFn)(Particle *p, void *context);
+typedef void (*SnapshotInfluenceFn)(Particle *p, const Particle *snapshot, int count, void *context);
 ```
 
-- `const Particle *p` — read-only access to one particle per invocation. Clients cannot modify
-  particles directly through this callback.
-- `void *args` — arbitrary client context (e.g. a color, a texture) without Smile needing to know
-  about it.
-- Iteration is controlled entirely by `psForEach` internally. Clients define what to do with a
-  particle, not which particle to act on, and never hold an index or access the array directly.
+These are not unified. Each type is honest about what its caller can do:
+
+- `ParticleFn` — read-only. Used by `psForEach` for observation (rendering, condition detection).
+  `const` is a compile-time contract: a draw callback that accidentally writes to `p->x` is a
+  compiler error, not a silent bug.
+- `InfluenceFn` — mutable. Used by `psSetInfluence` for stateless per-frame mutation driven by
+  external state. Every argument is used; nothing is ignored.
+- `SnapshotInfluenceFn` — mutable, with read-only access to all particles at frame start. Used by
+  `psSetSnapshotInfluence`. `snapshot` and `count` are the entire point of this type; they cannot
+  be dropped into a unified signature without introducing ignored arguments.
+
+Unifying `ParticleFn` and `InfluenceFn` by dropping `const` was rejected: the `const` on
+`ParticleFn` is not paternalism — it is a guarantee that `psForEach` is an observation tool.
+Removing it would silently allow rendering callbacks to mutate particle state.
+
+**`psForEach` is read-only by design.** Mutations belong in influence functions, which run inside
+`psUpdate`. This mirrors the SceneManager pattern: callbacks are registered once, the module owns
+the when. The user should not need to call `psForEach` every frame in the right order — that
+ordering is the library's responsibility. For one-time bulk mutation (e.g. shift all particles by
+10 units), set an influence function, let one `psUpdate` run, then unset it.
+
+**`void *args`** — arbitrary client context (e.g. a color, a texture) without Smile needing to
+know about it. Iteration is controlled entirely by `psForEach` internally. Clients define what to
+do with a particle, not which particle to act on, and never hold an index or access the array
+directly.
 
 This keeps Smile fully decoupled from raylib while giving the client everything needed to render.
 
@@ -264,8 +287,15 @@ int psSetInfluence(ParticleSystem *ps, void *context, InfluenceFn fn);
 int psSetSnapshotInfluence(ParticleSystem *ps, void *context, SnapshotInfluenceFn fn);
 ```
 
-**Naming rationale:** "external vs. internal" was rejected as the distinguishing axis. The real
-distinction is the update model:
+**Naming rationale:** "external vs. internal" and "external vs. snapshot" were both considered.
+"External/internal" describes the *source* of influence (outside the system vs. other particles),
+but the functions differ in their *update model*, which is the thing that actually matters to the
+caller. A user could pass `psForEach` on the same system as context to `psSetInfluence` to do
+sequential inter-particle effects — technically "internal" by source but going through the
+"external" function. "Snapshot" names the guarantee directly: every particle reads from a frozen
+frame-start state. It is also self-documenting to a reader unfamiliar with the distinction, making
+asymmetric names (`psSetInfluence` / `psSetSnapshotInfluence`) acceptable. The real distinction is
+the update model:
 
 - `psSetInfluence` — stateless, each particle updated independently.
 - `psSetSnapshotInfluence` — snapshot semantics: all particles read from time `t`, write to time

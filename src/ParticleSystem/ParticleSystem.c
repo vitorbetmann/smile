@@ -24,6 +24,8 @@ static bool psPrivateIsPsNull(const ParticleSystem *ps, const char *caller);
 
 // Functions - Public ——————————————————————————————————————————————————————————————————————————————
 
+// Lifecycle
+
 ParticleSystem *psCreate(const int maxParticles, const float originX, const float originY)
 {
     if (maxParticles <= 0)
@@ -67,26 +69,6 @@ int psDestroy(ParticleSystem *ps)
     return RES_OK;
 }
 
-int psGetActive(const ParticleSystem *ps)
-{
-    if (psPrivateIsPsNull(ps, __func__))
-    {
-        return RES_NULL_ARG;
-    }
-
-    return ps->activeParticles;
-}
-
-int psGetIdle(const ParticleSystem *ps)
-{
-    if (psPrivateIsPsNull(ps, __func__))
-    {
-        return RES_NULL_ARG;
-    }
-
-    return ps->maxParticles - ps->activeParticles;
-}
-
 int psReset(ParticleSystem *ps)
 {
     if (psPrivateIsPsNull(ps, __func__))
@@ -97,6 +79,8 @@ int psReset(ParticleSystem *ps)
     ps->activeParticles = 0;
     return RES_OK;
 }
+
+// Emission
 
 int psBurst(ParticleSystem *ps, const int amount)
 {
@@ -158,25 +142,7 @@ int psStream(ParticleSystem *ps, const float rate)
     return RES_OK;
 }
 
-float psGetX(const ParticleSystem *ps)
-{
-    if (psPrivateIsPsNull(ps, __func__))
-    {
-        return nanf("");
-    }
-
-    return ps->originX;
-}
-
-float psGetY(const ParticleSystem *ps)
-{
-    if (psPrivateIsPsNull(ps, __func__))
-    {
-        return nanf("");
-    }
-
-    return ps->originY;
-}
+// Update / Query
 
 int psUpdate(ParticleSystem *ps, const float dt)
 {
@@ -215,11 +181,121 @@ int psUpdate(ParticleSystem *ps, const float dt)
     ps->streamAccumulator += ps->streamRate * dt;
     const int newParticles = (int)ps->streamAccumulator;
     const int toSpawn = newParticles < psGetIdle(ps) ? newParticles : psGetIdle(ps);
-    if (toSpawn > 0) psBurst(ps, toSpawn);
+    if (toSpawn > 0)
+        psBurst(ps, toSpawn);
     ps->streamAccumulator -= (float)toSpawn;
 
     return RES_OK;
 }
+
+int psForEach(const ParticleSystem *ps, const ParticleFn fn, void *context)
+{
+    if (psPrivateIsPsNull(ps, __func__))
+    {
+        return RES_NULL_ARG;
+    }
+
+    if (!fn)
+    {
+        lgInternalLogWithArg(WARN, ORI, CSE_NULL_ARG, "fn", __func__, CSQ_ABORT);
+        return RES_INVALID_ARG;
+    }
+
+    for (int i = 0, active = ps->activeParticles; i < active; i++)
+    {
+        fn(&ps->particles[i], context);
+    }
+
+    return RES_OK;
+}
+
+// Getters
+
+// -- Position
+
+float psGetX(const ParticleSystem *ps)
+{
+    if (psPrivateIsPsNull(ps, __func__))
+    {
+        return nanf("");
+    }
+
+    return ps->originX;
+}
+
+float psGetY(const ParticleSystem *ps)
+{
+    if (psPrivateIsPsNull(ps, __func__))
+    {
+        return nanf("");
+    }
+
+    return ps->originY;
+}
+
+// -- Count
+
+int psGetActive(const ParticleSystem *ps)
+{
+    if (psPrivateIsPsNull(ps, __func__))
+    {
+        return RES_NULL_ARG;
+    }
+
+    return ps->activeParticles;
+}
+
+int psGetIdle(const ParticleSystem *ps)
+{
+    if (psPrivateIsPsNull(ps, __func__))
+    {
+        return RES_NULL_ARG;
+    }
+
+    return ps->maxParticles - ps->activeParticles;
+}
+
+// Setters
+
+// -- Position
+
+int psSetOrigin(ParticleSystem *ps, const float x, const float y)
+{
+    if (psPrivateIsPsNull(ps, __func__))
+    {
+        return RES_NULL_ARG;
+    }
+
+    ps->originX = x;
+    ps->originY = y;
+
+    return RES_OK;
+}
+
+int psSetSpread(ParticleSystem *ps, const float innerX, const float innerY, const float outerX,
+                const float outerY)
+{
+    if (psPrivateIsPsNull(ps, __func__))
+    {
+        return RES_NULL_ARG;
+    }
+
+    if (innerX > outerX || innerY > outerY)
+    {
+        lgInternalLogWithArg(WARN, ORI, CSE_NULL_ARG, MSG_INVALID_SPREAD_RANGE, __func__,
+                             CSQ_ABORT);
+        return RES_INVALID_ARG;
+    }
+
+    ps->emissionArea.innerSpreadX = innerX;
+    ps->emissionArea.innerSpreadY = innerY;
+    ps->emissionArea.outerSpreadX = outerX;
+    ps->emissionArea.outerSpreadY = outerY;
+
+    return RES_OK;
+}
+
+// -- Movement
 
 int psSetVelocity(ParticleSystem *ps, const float minX, const float minY, const float maxX,
                   const float maxY)
@@ -267,6 +343,8 @@ int psSetAcceleration(ParticleSystem *ps, const float minX, const float minY, co
     return RES_OK;
 }
 
+// -- Lifetime
+
 int psSetLifetime(ParticleSystem *ps, const float min, const float max)
 {
     if (psPrivateIsPsNull(ps, __func__))
@@ -287,6 +365,8 @@ int psSetLifetime(ParticleSystem *ps, const float min, const float max)
     return RES_OK;
 }
 
+// -- Shape
+
 int psSetEmissionShape(ParticleSystem *ps, const psEmissionShape shape)
 {
     if (psPrivateIsPsNull(ps, __func__))
@@ -304,62 +384,28 @@ int psSetEmissionShape(ParticleSystem *ps, const psEmissionShape shape)
     return RES_OK;
 }
 
-int psSetOrigin(ParticleSystem *ps, const float x, const float y)
+// -- Influence
+
+int psSetInfluence(ParticleSystem *ps, void *context, InfluenceFn fn)
 {
     if (psPrivateIsPsNull(ps, __func__))
     {
         return RES_NULL_ARG;
     }
 
-    ps->originX = x;
-    ps->originY = y;
-
     return RES_OK;
 }
 
-int psSetSpread(ParticleSystem *ps, const float innerX, const float innerY, const float outerX,
-                const float outerY)
+int psSetSnapshotInfluence(ParticleSystem *ps, void *context, SnapshotInfluenceFn fn)
 {
     if (psPrivateIsPsNull(ps, __func__))
     {
         return RES_NULL_ARG;
     }
 
-    if (innerX > outerX || innerY > outerY)
-    {
-        lgInternalLogWithArg(WARN, ORI, CSE_NULL_ARG, MSG_INVALID_SPREAD_RANGE, __func__,
-                             CSQ_ABORT);
-        return RES_INVALID_ARG;
-    }
-
-    ps->emissionArea.innerSpreadX = innerX;
-    ps->emissionArea.innerSpreadY = innerY;
-    ps->emissionArea.outerSpreadX = outerX;
-    ps->emissionArea.outerSpreadY = outerY;
-
     return RES_OK;
 }
 
-int psForEach(const ParticleSystem *ps, const ParticleFn fn, void *context)
-{
-    if (psPrivateIsPsNull(ps, __func__))
-    {
-        return RES_NULL_ARG;
-    }
-
-    if (!fn)
-    {
-        lgInternalLogWithArg(WARN, ORI, CSE_NULL_ARG, "fn", __func__, CSQ_ABORT);
-        return RES_INVALID_ARG;
-    }
-
-    for (int i = 0, active = ps->activeParticles; i < active; i++)
-    {
-        fn(&ps->particles[i], context);
-    }
-
-    return RES_OK;
-}
 
 // Functions - Internal ————————————————————————————————————————————————————————————————————————————
 
@@ -373,6 +419,7 @@ void psInternalSamplePosition(const psInternalEmissionArea area, const float ori
         return;
     }
 
+    float dx, dy;
     switch (area.shape)
     {
     case PS_SHAPE_ELLIPSE:
@@ -383,23 +430,22 @@ void psInternalSamplePosition(const psInternalEmissionArea area, const float ori
             *outY = originY + area.outerSpreadY * sinf(theta);
             break;
         }
+
+        do
         {
-            float dx, dy;
-            do
-            {
-                dx = ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f) * area.outerSpreadX;
-                dy = ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f) * area.outerSpreadY;
-            }
-            while (
-                (dx / area.outerSpreadX) * (dx / area.outerSpreadX) +
-                (dy / area.outerSpreadY) * (dy / area.outerSpreadY) > 1.0f ||
-                (area.innerSpreadX > 0.0f &&
-                 (dx / area.innerSpreadX) * (dx / area.innerSpreadX) +
-                 (dy / area.innerSpreadY) * (dy / area.innerSpreadY) < 1.0f)
-            );
-            *outX = originX + dx;
-            *outY = originY + dy;
+            dx = ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f) * area.outerSpreadX;
+            dy = ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f) * area.outerSpreadY;
         }
+        while (
+            dx / area.outerSpreadX * (dx / area.outerSpreadX) +
+            dy / area.outerSpreadY * (dy / area.outerSpreadY) > 1.0f ||
+            (area.innerSpreadX > 0.0f &&
+             dx / area.innerSpreadX * (dx / area.innerSpreadX) +
+             dy / area.innerSpreadY * (dy / area.innerSpreadY) < 1.0f)
+        );
+        *outX = originX + dx;
+        *outY = originY + dy;
+
         break;
     case PS_SHAPE_RECT:
         if (area.innerSpreadX == area.outerSpreadX && area.innerSpreadY == area.outerSpreadY)
@@ -418,18 +464,22 @@ void psInternalSamplePosition(const psInternalEmissionArea area, const float ori
             }
             break;
         }
+
+        do
         {
-            float dx, dy;
-            do
-            {
-                dx = ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f) * area.outerSpreadX;
-                dy = ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f) * area.outerSpreadY;
-            }
-            while (fabsf(dx) < area.innerSpreadX && fabsf(dy) < area.innerSpreadY);
-            *outX = originX + dx;
-            *outY = originY + dy;
+            dx = ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f) * area.outerSpreadX;
+            dy = ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f) * area.outerSpreadY;
         }
+        while (fabsf(dx) < area.innerSpreadX && fabsf(dy) < area.innerSpreadY);
+
+        *outX = originX + dx;
+        *outY = originY + dy;
+
         break;
+    case SHAPE_COUNT:
+    default:
+        *outX = originX;
+        *outY = originY;
     }
 }
 

@@ -622,11 +622,11 @@ void Test_psUpdate_KillsNonContiguousParticlesCorrectly(void)
 {
     setup();
     psSetLifetime(ps, SHORT_LIFETIME, SHORT_LIFETIME);
-    psBurst(ps, 1);                                      // index 0: dies on update
+    psBurst(ps, 1); // index 0: dies on update
     psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
-    psBurst(ps, 2);                                      // indices 1, 2: survive
+    psBurst(ps, 2); // indices 1, 2: survive
     psSetLifetime(ps, SHORT_LIFETIME, SHORT_LIFETIME);
-    psBurst(ps, 1);                                      // index 3: dies on update
+    psBurst(ps, 1); // index 3: dies on update
     psUpdate(ps, MOCK_DT);
     assert(ps->activeParticles == 2);
     teardown();
@@ -672,11 +672,11 @@ void Test_psUpdate_AccumulatorDecrementsOnlyByActualSpawns(void)
 {
     setup();
     psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
-    psBurst(ps, MAX_PARTICLES - 1);                      // 1 idle slot
+    psBurst(ps, MAX_PARTICLES - 1); // 1 idle slot
     psStream(ps, STREAM_RATE);
-    psUpdate(ps, 3.0f / STREAM_RATE);                   // accumulator = 3.0, only 1 spawned
+    psUpdate(ps, 3.0f / STREAM_RATE); // accumulator = 3.0, only 1 spawned
     assert(ps->activeParticles == MAX_PARTICLES);
-    assert(ps->streamAccumulator == 2.0f);               // 3.0 - 1 spawned = 2.0
+    assert(ps->streamAccumulator == 2.0f); // 3.0 - 1 spawned = 2.0
     teardown();
     tsPass(__func__);
 }
@@ -941,7 +941,7 @@ void Test_psSetAcceleration_AffectsSpawnedParticles(void)
 {
     setup();
     psSetAcceleration(ps, MOCK_ACCELERATION_X, MOCK_ACCELERATION_Y,
-        MOCK_ACCELERATION_X, MOCK_ACCELERATION_Y);
+                      MOCK_ACCELERATION_X, MOCK_ACCELERATION_Y);
     psBurst(ps, 1);
     assert(ps->particles[0].accelerationX == MOCK_ACCELERATION_X);
     assert(ps->particles[0].accelerationY == MOCK_ACCELERATION_Y);
@@ -1032,7 +1032,7 @@ void Test_psSetSpread_RejectsInnerXExceedingOuterX(void)
 {
     setup();
     assert(psSetSpread(ps, OUTER_SPREAD_X, INNER_SPREAD_Y, INNER_SPREAD_X, OUTER_SPREAD_Y) ==
-           RES_INVALID_ARG);
+        RES_INVALID_ARG);
     teardown();
     tsPass(__func__);
 }
@@ -1041,7 +1041,7 @@ void Test_psSetSpread_RejectsInnerYExceedingOuterY(void)
 {
     setup();
     assert(psSetSpread(ps, INNER_SPREAD_X, OUTER_SPREAD_Y, OUTER_SPREAD_X, INNER_SPREAD_Y) ==
-           RES_INVALID_ARG);
+        RES_INVALID_ARG);
     teardown();
     tsPass(__func__);
 }
@@ -1050,7 +1050,7 @@ void Test_psSetSpread_AllowsInnerEqualToOuter(void)
 {
     setup();
     assert(psSetSpread(ps, OUTER_SPREAD_X, OUTER_SPREAD_Y, OUTER_SPREAD_X, OUTER_SPREAD_Y) ==
-           RES_OK);
+        RES_OK);
     teardown();
     tsPass(__func__);
 }
@@ -1095,61 +1095,91 @@ void Test_psSetOrigin_IsNullSafe(void)
 
 // Influence ———————————————————————————————————————————————————————————————————————————————————————
 
-// void Test_psSetInfluence_SetsCallback(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psSetInfluence_SetsCallback(void)
+{
+    assert(false);
+    tsPass(__func__);
+}
 
-// void Test_psSetInfluence_NullCallbackClearsInfluence(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psSetInfluence_NullCallbackClearsInfluence(void)
+{
+    assert(false);
+    tsPass(__func__);
+}
 
-// void Test_psSetInfluence_IsAppliedDuringUpdate(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psSetInfluence_ContextIsPassedToCallback(void)
+{
+    assert(false);
+    tsPass(__func__);
+}
 
-// void Test_psSetInfluence_IsNullSafe(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psSetInfluence_CanBeSwappedAtRuntime(void)
+{
+    assert(false);
+    tsPass(__func__);
+}
+
+void Test_psSetInfluence_IsAppliedDuringUpdate(void)
+{
+    assert(false);
+    tsPass(__func__);
+}
+
+void Test_psSetInfluence_IsNullSafe(void)
+{
+    assert(false);
+    tsPass(__func__);
+}
 
 // Snapshot Influence ——————————————————————————————————————————————————————————————————————————————
 
-// void Test_psSetSnapshotInfluence_ReturnsZeroOnSuccess(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psSetSnapshotInfluence_ReturnsZeroOnSuccess(void)
+{
+    assert(false);
+    tsPass(__func__);
+}
 
-// void Test_psSetSnapshotInfluence_ReturnsNegativeWhenMallocFails(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psSetSnapshotInfluence_ReturnsNegativeWhenMallocFails(void)
+{
+    assert(false);
+    tsPass(__func__);
+}
 
-// void Test_psSetSnapshotInfluence_NullCallbackClearsInfluence(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psSetSnapshotInfluence_NullCallbackClearsInfluence(void)
+{
+    assert(false);
+    tsPass(__func__);
+}
 
-// void Test_psSetSnapshotInfluence_IsAppliedDuringUpdate(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psSetSnapshotInfluence_SecondBufferPersistsAfterCallbackCleared(void)
+{
+    assert(false);
+    tsPass(__func__);
+}
 
-// void Test_psSetSnapshotInfluence_IsNullSafe(void)
-// {
-//    assert(false);
-//    tsPass(__func__);
-// }
+void Test_psSetSnapshotInfluence_ContextIsPassedToCallback(void)
+{
+    assert(false);
+    tsPass(__func__);
+}
+
+void Test_psSetSnapshotInfluence_CountIsPassedToCallback(void)
+{
+    assert(false);
+    tsPass(__func__);
+}
+
+void Test_psSetSnapshotInfluence_IsAppliedDuringUpdate(void)
+{
+    assert(false);
+    tsPass(__func__);
+}
+
+void Test_psSetSnapshotInfluence_IsNullSafe(void)
+{
+    assert(false);
+    tsPass(__func__);
+}
 
 // Stress Tests ————————————————————————————————————————————————————————————————————————————————————
 
@@ -1298,6 +1328,8 @@ int main(void)
     puts("\nINFLUENCE TESTING");
     // Test_psSetInfluence_SetsCallback();
     // Test_psSetInfluence_NullCallbackClearsInfluence();
+    // Test_psSetInfluence_ContextIsPassedToCallback();
+    // Test_psSetInfluence_CanBeSwappedAtRuntime();
     // Test_psSetInfluence_IsAppliedDuringUpdate();
     // Test_psSetInfluence_IsNullSafe();
 
@@ -1305,6 +1337,9 @@ int main(void)
     // Test_psSetSnapshotInfluence_ReturnsZeroOnSuccess();
     // Test_psSetSnapshotInfluence_ReturnsNegativeWhenMallocFails();
     // Test_psSetSnapshotInfluence_NullCallbackClearsInfluence();
+    // Test_psSetSnapshotInfluence_SecondBufferPersistsAfterCallbackCleared();
+    // Test_psSetSnapshotInfluence_ContextIsPassedToCallback();
+    // Test_psSetSnapshotInfluence_CountIsPassedToCallback();
     // Test_psSetSnapshotInfluence_IsAppliedDuringUpdate();
     // Test_psSetSnapshotInfluence_IsNullSafe();
 
