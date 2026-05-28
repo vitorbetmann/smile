@@ -193,7 +193,7 @@ int main(void) {
 
 Checks whether SceneManager has been initialized.
 
-- Returns: True if SceneManager has been started, false otherwise.
+- Returns: true if running, false otherwise.
 
 ✅ Example
 
@@ -207,10 +207,10 @@ while (smIsRunning()) {
 
 ### — Scene Functions
 
-| `int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update, smDrawFn draw, smExitFn exit)` |
+| `int smAddScene(const char *name, smEnterFn enter, smUpdateFn update, smDrawFn draw, smExitFn exit)` |
 |---------------------------------------------------------------------------------------------------------|
 
-Creates a new scene with the specified name and callback functions.
+Registers a new named scene with its lifecycle callbacks.
 
 - Parameters:
     - `name` — Unique name identifying the scene.
@@ -272,7 +272,7 @@ void menuExit(void)
 int main(void)
 {
     smStart();
-    smCreateScene("menu", nullptr, menuUpdate, menuDraw, menuExit);
+    smAddScene("menu", nullptr, menuUpdate, menuDraw, menuExit);
     ...
 }
 ```
@@ -298,7 +298,7 @@ Checks whether a scene with the given name exists.
 ```c
 if (!smSceneExists("level 1"))
 {
-    smCreateScene("level 1", enter, update, draw, exit);
+    smAddScene("level 1", enter, update, draw, exit);
 }
 ```
 
@@ -307,12 +307,11 @@ if (!smSceneExists("level 1"))
 | `int smSetScene(const char *name, void *args)` |
 |------------------------------------------------|
 
-Sets the current active scene by name and triggers its enter function.
+Sets the active scene by name, calling the previous scene's exit and the new scene's enter.
 
 - Parameters:
     - `name` — Name of the scene to switch to.
-    - `args` — Optional pointer to arguments passed to the scene's enter
-      function.
+    - `args` — Optional pointer passed to the scene's enter callback.
 
 - Returns: `0` on success, or a negative result code on failure.
 
@@ -347,10 +346,9 @@ smSetScene("level 2", &score);
 | `const char *smGetCurrentSceneName(void)` |
 |-------------------------------------------|
 
-Retrieves the name of the currently active scene.
+Returns the name of the currently active scene.
 
-- Returns: A pointer to the name of the current scene, or `nullptr` if no scene
-  is
+- Returns: Pointer to the current scene name (owned by SceneManager), or `nullptr` if no scene is
   active or SceneManager is not running.
 
 - Notes:
@@ -372,13 +370,13 @@ if (currScene)
 
 <br>
 
-| `int smDeleteScene(const char *name)` |
+| `int smRemoveScene(const char *name)` |
 |---------------------------------------|
 
-Deletes a scene by name from SceneManager.
+Removes a non-active scene by name.
 
 - Parameters:
-    - `name` — Name of the scene to delete.
+    - `name` — Name of the scene to remove.
 
 - Returns: `0` on success, or a negative result code on failure.
 
@@ -389,7 +387,7 @@ Deletes a scene by name from SceneManager.
 ✅ Example
 
 ```c
-smDeleteScene("level 1");
+smRemoveScene("level 1");
 ```
 
 <br>
@@ -397,7 +395,7 @@ smDeleteScene("level 1");
 | `int smGetSceneCount(void)` |
 |-----------------------------|
 
-Retrieves the total number of registered scenes.
+Returns the total number of registered scenes.
 
 - Returns: The number of registered scenes on success, or a negative result
   code on failure.
@@ -443,10 +441,10 @@ while (smIsRunning())
 | `float smGetDt(void)` |
 |-----------------------|
 
-Calculates and returns the delta time since the last frame update.
+Calculates and returns the delta time since the last frame.
 
-- Returns: The time elapsed in seconds since the previous call to
-  `smGetDt()`, or a negative result code cast to `float` on failure.
+- Returns: Elapsed time in seconds since the previous call, or a negative result code cast to
+  `float` on failure.
 
 - Notes:
     - Delta time is measured using a high-resolution monotonic clock. On the
@@ -496,14 +494,13 @@ while (smIsRunning())
 | `int smStop(void)` |
 |--------------------|
 
-Stops SceneManager and frees all allocated memory associated with created
-scenes.
+Stops SceneManager and frees all registered scenes.
 
 - Returns: `0` on success, or a negative result code on failure.
 
 - Notes:
     - Fails if: SceneManager is not running.
-    - May fail with `RES_FREE_ALL_SCENES_FAIL` if cleanup invariants
+    - May fail with a negative result code if internal cleanup invariants
       are violated.
     - The exit function of the current scene is called before cleanup.
     - After stopping, all internal data is reset. SceneManager must be

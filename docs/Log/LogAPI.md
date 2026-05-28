@@ -24,7 +24,7 @@ For non-public API see: [LogInternal – API](../internal/LogInternalAPI.md)
 
 ## 😊Module Header
 
-The module’s header is `Log.h`. Its full Smile path is: `smile/include/Log.h`
+The module's header is `Log.h`. Its full Smile path is: `smile/include/Log.h`
 
 ✅ Example
 
@@ -62,12 +62,12 @@ void myFatalHandler(void)
 | `int lgLog(const char *msg, ...)` |
 |-----------------------------------|
 
-Logs a message to the terminal ending in a new line. Supports printf-style
-formatting.
+Logs a formatted message to the terminal, ending with a newline. Supports
+printf-style formatting.
 
 - Parameters:
     - `msg` — Format string for the message to log.
-    - `...` — Additional arguments related to the format specifiers in msg.
+    - `...` — Additional arguments matching the format specifiers in msg.
 
 - Returns: `0` on success, or a negative result code on failure.
 
@@ -98,9 +98,9 @@ lgLog("%s", untrustedInput); // Safe for arbitrary text input
 Sets a custom handler to be called when a fatal event occurs.
 
 - Parameters:
-    - `handler` — Function pointer to the custom fatal handler. If `NULL` or
-      `nullptr`, the default handler is set, which terminates the program with
-      failure status after logging the event to the terminal.
+    - `handler` — Function pointer to the custom fatal handler. Pass `NULL` or
+      `nullptr` to restore the default handler, which logs the event to the
+      terminal and terminates the program with failure status.
 
 - Returns:
     - `0` on success.

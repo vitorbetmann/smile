@@ -1,144 +1,81 @@
-/**
- * @file
- * @brief Declarations of internal data types and functions for the
- *        GenScene tool.
- *
- * @see GenScene.c
- *
- * @author Vitor Betmann
- */
+#pragma once
 
-
-#ifndef SMILE_GEN_SCENE_INTERNAL_H
-#define SMILE_GEN_SCENE_INTERNAL_H
-
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Includes
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Includes ————————————————————————————————————————————————————————————————————————————————————————
 
 #include <stdio.h>
 
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Defines
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-
-#define DEFAULT_SRC_DIR     "src"
-#define DEFAULT_INCLUDE_DIR "include"
-#define GS_NAME_MAX         64
-#define GS_SECTION_DIV      "// —————————————————————————————————————————————————————————————————————————————————————————————————"
-
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Data Types
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Data Types ——————————————————————————————————————————————————————————————————————————————————————
 
 /**
- * @brief Result codes for the GenScene tool.
- *
- * @note GenScene-specific failures cover the following range: `-100..-199`.
- *
- * @see  src/internal/Common/Common.h for common result codes
- *
- * @author Vitor Betmann
+ * @brief GenScene-exclusive result codes; range -100..-102.
  */
 typedef enum
 {
-    RES_INVALID_FLAG = -100,
-    RES_NO_CALLBACKS = -101,
-    RES_USER_ABORT = -102,
+    RES_INVALID_FLAG = -100, /**< An unrecognized CLI flag was passed. */
+    RES_NO_CALLBACKS = -101, /**< All callbacks were disabled; at least one is required. */
+    RES_USER_ABORT = -102, /**< User declined a confirmation prompt. */
 } gsInternalResult;
 
 /**
- * @brief Holds all parsed command-line arguments and options for the GenScene tool.
- *
- * @author Vitor Betmann
+ * @brief Arguments populated by gsInternalRun for the file-writing helpers.
  */
 typedef struct
 {
-    char *sceneName;
-    char *srcPath;
-    char *includePath;
+    const char *sceneName; /**< Sanitized scene name; stack lifetime tied to gsInternalRun. */
+    const char *srcPath; /**< .c output directory; defaults to "src". */
+    const char *includePath; /**< .h output directory; defaults to "include". */
 
-    bool addSection;
-    bool noEnter;
-    bool noUpdate;
-    bool noDraw;
-    bool noExit;
+    bool addSection; /**< Add section-header dividers to generated files. */
+    bool noEnter; /**< Omit the Enter callback. */
+    bool noUpdate; /**< Omit the Update callback. */
+    bool noDraw; /**< Omit the Draw callback. */
+    bool noExit; /**< Omit the Exit callback. */
 } gsInternalArgs;
 
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Prototypes
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Prototypes ——————————————————————————————————————————————————————————————————————————————————————
 
 /**
- * @brief Sanitizes a raw scene name into camelCase.
+ * @brief Sanitizes a raw scene name into a valid C identifier, trimming whitespace and
+ *        converting spaces to camelCase.
  *
- * Strips leading and trailing whitespace, converts word boundaries (spaces)
- * to uppercase letters, and validates that the result contains only
- * alphanumeric characters and underscores.
+ * @param buf     Output buffer for the sanitized name.
+ * @param bufSize Capacity of buf in bytes, including the null terminator.
+ * @param name    Raw scene name from the command line.
  *
- * @param buf     Output buffer for the sanitized name (null-terminated).
- * @param bufSize Capacity of @p buf in bytes.
- * @param name    Raw input name to sanitize.
- *
- * @return `RES_OK` on success, or a negative error code on failure.
- *
- * @note Fails if: @p buf or @p name is NULL (`RES_NULL_ARG`); @p name is
- *       empty or all whitespace (`RES_EMPTY_ARG`); the first character is
- *       not alphabetic, or the name contains characters other than letters,
- *       digits, underscores, or spaces, or the sanitized result exceeds
- *       @p bufSize (`RES_INVALID_ARG`).
- *
- * @author Vitor Betmann
+ * @return RES_OK, RES_NULL_ARG, RES_EMPTY_ARG, or RES_INVALID_ARG.
  */
 int gsInternalSanitizeName(char *buf, size_t bufSize, const char *name);
 
 /**
- * @brief Fatal handler for the GenScene tool.
- *
- * Prints usage instructions to stdout. When not compiled with `GS_TESTING`,
- * terminates the program with `exit(1)`.
- *
- * @note Side effects: in non-testing builds this function does not return.
- *
- * @author Vitor Betmann
+ * @brief Prints USAGE and calls exit(1); registered with lgSetFatal() in main.
+ *        Under GS_TESTING, exit is compiled out.
  */
 void gsInternalFatalHandler(void);
 
 /**
- * @brief Entry point for the GenScene tool.
+ * @brief Parses argv, sanitizes the name, prompts before filesystem changes, and generates
+ *        the scene files.
  *
- * Parses command-line arguments, validates the scene name and directory paths,
- * prompts the user for confirmation before creating directories or overwriting
- * files, then generates a `.c` source file and a `.h` header file containing
- * stubbed scene-lifecycle callbacks.
+ * @param argc Forwarded from main.
+ * @param argv Forwarded from main.
  *
- * @param argc Number of command-line arguments.
- * @param argv Array of command-line argument strings.
- *
- * @return `RES_OK` on success, or a negative error code on failure.
- *
- * @note Fails if: no scene name is provided (`RES_EMPTY_ARG`); the name
- *       is invalid (`RES_INVALID_ARG`); a path is invalid or the
- *       combined path exceeds `CM_PATH_MAX` (`RES_INVALID_PATH`); an
- *       unknown flag is supplied (`RES_INVALID_FLAG`); all callbacks are
- *       disabled (`RES_NO_CALLBACKS`); the user declines a prompt
- *       (`RES_USER_ABORT`); a directory cannot be created
- *       (`RES_CREATE_DIR_FAIL`); or a file cannot be written
- *       (`RES_CREATE_FILE_FAIL`).
- * @note Side effects: may create directories and files on the filesystem;
- *       reads user input interactively via `scanf`.
- *
- * @author Vitor Betmann
+ * @return RES_OK on success, or the first negative result code encountered.
  */
 int gsInternalRun(int argc, char *argv[]);
 
+// Variables  ——————————————————————————————————————————————————————————————————————————————————————
+
+// Constant
+
+/** @brief Max scene name length in bytes; also the sanitization buffer size. */
+static const int GS_NAME_MAX = 64;
+
+/** @brief Prefix of a section-divider line. */
+static const char GS_SECTION_DIV[] = "// Includes ";
+
+// Mutable
+
 #ifdef GS_TESTING
+/** @brief Replaces stdin reads in gsPrivatePrompt to control confirmation branches in tests. */
 extern bool gsTestUserConfirms;
-#endif
-
-
 #endif

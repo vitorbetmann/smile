@@ -6,9 +6,10 @@ that reduce boilerplate for common 2D game-development tasks such as `managing s
 
 Currently supported on `Mac` and `Windows` (Linux untested but POSIX-compliant),
 Smile is built for people who value development speed without sacrificing
-control. Its modules follow a consistent `Start → Use → Stop` pattern and
-encapsulate memory management, making it ideal for game jams and quick
-prototyping.
+control. Its modules follow a consistent lifecycle pattern — either
+`Start → Use → Stop` for global-state modules, or `Create → Use → Destroy`
+for per-instance ones — and encapsulate memory management, making it ideal
+for game jams and quick prototyping.
 
 You can also mix and match only the modules you need (for example, using
 SceneManager without ParticleSystem) to keep your project lightweight and
@@ -155,9 +156,9 @@ int main(void)
       */
     smStart();
     
-    // Pass in the scenes' functions into smCreateScene.
-    smCreateScene("menu", menuEnter, menuUpdate, menuDraw, menuExit);
-    smCreateScene("level 1", levelOneEnter, levelOneUpdate, levelOneDraw, levelOneExit);
+    // Pass in the scenes' functions into smAddScene.
+    smAddScene("menu", menuEnter, menuUpdate, menuDraw, menuExit);
+    smAddScene("level 1", levelOneEnter, levelOneUpdate, levelOneDraw, levelOneExit);
     
     smSetScene("menu", nullptr); // Choose where you want to start
     
@@ -182,8 +183,8 @@ int main(void)
 {
     smStart();
     
-    smCreateScene("menu", menuEnter, menuUpdate, menuDraw, menuExit);
-    smCreateScene("level 1", levelOneEnter, levelOneUpdate, levelOneDraw, levelOneExit);
+    smAddScene("menu", menuEnter, menuUpdate, menuDraw, menuExit);
+    smAddScene("level 1", levelOneEnter, levelOneUpdate, levelOneDraw, levelOneExit);
     
     smSetScene("menu", nullptr); 
     

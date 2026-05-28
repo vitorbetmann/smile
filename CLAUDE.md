@@ -46,6 +46,7 @@ ctest --test-dir build -R TestAPISceneManager --output-on-failure
 Current test targets (see `CMakeLists.txt` for the source of truth):
 
 - `TestAPILog` — `tests/Log.c`
+- `TestAPIParticleSystem` — `tests/ParticleSystem.c`
 - `TestAPISceneManager` — `tests/SceneManager.c`
 - `TestToolGenScene` — `tests/tools/GenScene.c`, compiled with `GS_TESTING` so it can link against `GenScene.c` without its `main`.
 
@@ -53,7 +54,7 @@ There is no `tests/internal/` — public-API tests are expected to exercise inte
 
 ## Formatting
 
-`.clang-format` is the source of truth (C23, 4-space indent, 120 col, `Right` pointer alignment, braces on their own line via `BreakBeforeBraces: Custom`). If `docs/CONVENTIONS.md` conflicts with the formatter, the formatter wins.
+`.clang-format` is the source of truth (C23, 4-space indent, 100 col, `Right` pointer alignment, braces on their own line via `BreakBeforeBraces: Custom`). If `docs/CONVENTIONS.md` conflicts with the formatter, the formatter wins.
 
 ## Architecture
 
@@ -67,7 +68,7 @@ The repo uses a convention that repeats under `src/`, `docs/`, and `tests/`:
 - `camelCase` directory = organizational bucket (`internal`, `tools`); `PascalCase` directory = an actual module/tool (`SceneManager`, `Common`, `GenScene`).
 - There is no `Public/` directory — public is the default.
 
-`include/` contains only public headers (`Log.h`, `SceneManager.h`). Everything else lives beside its implementation in `src/`.
+`include/` contains only public headers (`Log.h`, `ParticleSystem.h`, `SceneManager.h`). Everything else lives beside its implementation in `src/`.
 
 ### Anatomy of a public module
 
@@ -88,9 +89,14 @@ Both live entirely under `src/internal/` and, by convention, their types and fun
 - **Common** (`src/internal/Common/`, prefix `cm`) — cross-module utilities: the shared `cmResult` result-code enum (`RES_OK`, `RES_*` negatives, Common-exclusive range is `-1..-99`), `cmIsRunning` guard, filesystem helpers (`cmDirExists`, `cmValidatePath`, `cmCreateDir`, `cmFileExists`, `cmDeleteFile`, `cmDeleteDir`), and `CM_PATH_MAX`. `CommonMessages.h` holds shared `CSE_`/`CSQ_` message macros — check it before adding new module-specific messages.
 - **Test** (`src/internal/Test/`, prefix `ts`) — allocation-interception wrappers (`tsMalloc`, `tsDisable`, …) that let tests force `MALLOC`/`CALLOC`/`REALLOC`/`FOPEN`/`MKDIR` failures at specific call counts. Modules that need test-controllable allocations should call these wrappers instead of the libc functions directly.
 
-### Start → Use → Stop lifecycle
+### Module lifecycle
 
-Public modules follow a uniform `Start → Use → Stop` shape (e.g., `smStart()` → `smCreateScene`/`smUpdate`/`smDraw` → `smStop()`). Modules own their memory internally; users interact through the module prefix only. Public APIs guard entry points with `cmIsRunning` before doing work.
+Public modules follow one of two lifecycle shapes:
+
+- **Global-state modules** (e.g., `SceneManager`) use `Start → Use → Stop`: `smStart()` initializes shared state; `smStop()` tears it down.
+- **Per-instance modules** (e.g., `ParticleSystem`) use `Create → Use → Destroy`: `psCreate()` returns a caller-owned instance; `psDestroy()` frees it.
+
+Modules own their memory internally; users interact through the module prefix only. Public APIs guard entry points with `cmIsRunning` before doing work.
 
 ### Naming at a glance
 
@@ -122,7 +128,7 @@ Full style rules (C23 usage, include ordering, shared-message conventions, secti
 `docs/` mirrors the public/internal split:
 
 - `docs/<Module>/` — public API docs + README with an overview and example.
-- `docs/internal/` — internal API references (`CommonAPI.md`, `LogInternalAPI.md`, `SceneManagerInternalAPI.md`, `TestAPI.md`) and shared `Assets/` (GIFs, images, screenshots).
+- `docs/internal/` — internal API references (`CommonAPI.md`, `LogInternalAPI.md`, `SceneManagerInternalAPI.md`, `SceneManagerTestHooksAPI.md`, `TestAPI.md`) and shared `Assets/` (GIFs, images, screenshots).
 - `docs/tools/` — tool documentation.
 - `docs/CONTRIBUTING.md` and `docs/CONVENTIONS.md` — contributor entry points.
 

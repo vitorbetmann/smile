@@ -1,16 +1,4 @@
-/**
- * @file
- * @brief Implementation of the GenScene tool.
- *
- * @see GenSceneInternal.h
- * @see GenSceneMessages.h
- *
- * @author Vitor Betmann
- */
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Includes
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Includes ————————————————————————————————————————————————————————————————————————————————————————
 
 #include <ctype.h>
 #include <stdio.h>
@@ -25,236 +13,34 @@
 #include "LogInternal.h"
 #include "internal/Test/Test.h"
 
+// Variables ———————————————————————————————————————————————————————————————————————————————————————
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Variables
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Constant
+
+static const char DEFAULT_SRC_DIR[] = "src";
+static const char DEFAULT_INCLUDE_DIR[] = "include";
+
+// Mutable
 
 #ifdef GS_TESTING
 bool gsTestUserConfirms = false;
 #endif
 
-static const char *USAGE =
-    "Usage: GenScene <SceneName> [options]\n"
-    "Try 'GenScene --help' for more information.\n";
-
-static const char *HELP =
-    "Usage: GenScene <SceneName> [options]\n"
-    "\n"
-    "Options:\n"
-    "  -h,  --help                Show this message (only works as first flag)\n"
-    "\n"
-    "  -as, --add-sections        Adds smile-style section headers for code organization\n"
-    "\n"
-    "  -ne, --no-enter            Omit the enter callback\n"
-    "  -nu, --no-update           Omit the update callback\n"
-    "  -nd, --no-draw             Omit the draw callback\n"
-    "  -nx, --no-exit             Omit the exit callback\n"
-    "\n"
-    "  -si, --source-in <dir>     Outputs the .c file to <dir> (default: src/)\n"
-    "  -hi, --header-in <dir>     Outputs the .h file to <dir> (default: include/)\n"
-    "\n"
-    "  Note: The scene must have at least 1 callback\n"
-    "  Note: <SceneName> must start with a letter or underscore, contain only letters, digits, underscores, or spaces, and must not exceed 64 characters\n"
-    "  Note: <dir> is resolved relative to the current working directory, may not contain '..' segments\n"
-    "  Note: Neither path (i.e., `<dir>/<SceneName>.c` or `<dir>/<SceneName>.h`) must exceed 256 characters\n";
-
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Prototypes
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Prototypes ——————————————————————————————————————————————————————————————————————————————————————
 
 bool gsPrivatePrompt(const char *prompt);
 
 bool gsPrivateYesNoPrompt(const char *prompt);
 
+void gsPrivateWriteSection(FILE *f, const char *name);
+
 void gsPrivateWriteSrc(FILE *f, const gsInternalArgs *args);
 
 void gsPrivateWriteHeader(FILE *f, const gsInternalArgs *args);
 
+// Functions - Internal ————————————————————————————————————————————————————————————————————————————
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Functions - Internal
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-
-int gsInternalSanitizeName(char *buf, size_t bufSize, const char *name)
-{
-    if (!buf || !name)
-    {
-        return RES_NULL_ARG;
-    }
-    if (!name[0])
-    {
-        return RES_EMPTY_ARG;
-    }
-
-    const char *src = name;
-
-    while (*src && isspace((unsigned char)*src))
-    {
-        src++;
-    }
-
-    if (!*src)
-    {
-        return RES_EMPTY_ARG;
-    }
-
-    if (!isalpha((unsigned char)*src) && *src != '_')
-    {
-        return RES_INVALID_ARG;
-    }
-
-    size_t out = 0;
-    bool capitalizeNext = false;
-
-    while (*src)
-    {
-        if (isspace((unsigned char)*src))
-        {
-            while (*src && isspace((unsigned char)*src))
-            {
-                src++;
-            }
-
-            if (!*src)
-            {
-                break;
-            }
-
-            capitalizeNext = true;
-        }
-        else if (isalnum((unsigned char)*src) || *src == '_')
-        {
-            if (out + 1 >= bufSize)
-            {
-                return RES_INVALID_ARG;
-            }
-            buf[out++] = capitalizeNext ? (char)toupper((unsigned char)*src) : *src;
-            capitalizeNext = false;
-            src++;
-        }
-        else
-        {
-            return RES_INVALID_ARG;
-        }
-    }
-
-    buf[out] = '\0';
-    return RES_OK;
-}
-
-void gsInternalFatalHandler(void)
-{
-    printf("%s", USAGE);
-#ifndef GS_TESTING
-    exit(1);
-#endif
-}
-
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Functions - Private
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-
-bool gsPrivatePrompt(const char *prompt)
-{
-#ifdef GS_TESTING
-    (void)prompt;
-    return gsTestUserConfirms;
-#endif
-    return gsPrivateYesNoPrompt(prompt);
-}
-
-bool gsPrivateYesNoPrompt(const char *prompt)
-{
-    printf("%s (Y = ok | N = quit): ", prompt);
-    char answer;
-    scanf(" %c", &answer);
-    return answer == 'Y' || answer == 'y';
-}
-
-void gsPrivateWriteSrc(FILE *f, const gsInternalArgs *args)
-{
-    if (args->addSection)
-    {
-        fprintf(f, GS_SECTION_DIV "\n// Includes\n" GS_SECTION_DIV "\n");
-        fprintf(f, "\n#include <SceneManager.h>\n\n#include \"%s.h\"\n", args->sceneName);
-        fprintf(f, "\n\n" GS_SECTION_DIV "\n// Defines\n" GS_SECTION_DIV "\n");
-        fprintf(f, "\n\n" GS_SECTION_DIV "\n// Data Types\n" GS_SECTION_DIV "\n");
-        fprintf(f, "\n\n" GS_SECTION_DIV "\n// Prototypes\n" GS_SECTION_DIV "\n");
-        fprintf(f, "\n\n" GS_SECTION_DIV "\n// Variables\n" GS_SECTION_DIV "\n");
-        fprintf(f, "\n\n" GS_SECTION_DIV "\n// Functions\n" GS_SECTION_DIV "\n");
-    }
-    else
-    {
-        fprintf(f, "#include <SceneManager.h>\n\n#include \"%s.h\"\n", args->sceneName);
-    }
-
-    if (!args->noEnter)
-        fprintf(f, "\nvoid %sEnter(void *args)\n{\n    // TODO\n}\n", args->sceneName);
-    if (!args->noUpdate)
-        fprintf(f, "\nvoid %sUpdate(float dt)\n{\n    // TODO\n}\n", args->sceneName);
-    if (!args->noDraw)
-        fprintf(f, "\nvoid %sDraw(void)\n{\n    // TODO\n}\n", args->sceneName);
-    if (!args->noExit)
-        fprintf(f, "\nvoid %sExit(void)\n{\n    // TODO\n}\n", args->sceneName);
-}
-
-void gsPrivateWriteHeader(FILE *f, const gsInternalArgs *args)
-{
-    char upperName[GS_NAME_MAX + 1];
-    size_t len = strlen(args->sceneName);
-    for (size_t i = 0; i < len; i++)
-        upperName[i] = (char)toupper((unsigned char)args->sceneName[i]);
-    upperName[len] = '\0';
-
-    fprintf(f, "#ifndef %s_H\n", upperName);
-    fprintf(f, "#define %s_H\n", upperName);
-
-    if (args->addSection)
-    {
-        fprintf(f, "\n\n" GS_SECTION_DIV "\n// Includes\n" GS_SECTION_DIV "\n");
-        fprintf(f, "\n\n" GS_SECTION_DIV "\n// Defines\n" GS_SECTION_DIV "\n");
-        fprintf(f, "\n\n" GS_SECTION_DIV "\n// Data Types\n" GS_SECTION_DIV "\n");
-        fprintf(f, "\n\n" GS_SECTION_DIV "\n// Prototypes\n" GS_SECTION_DIV "\n");
-    }
-    else
-    {
-        fprintf(f, "\n");
-    }
-
-    if (!args->noEnter)
-    {
-        fprintf(f, "\nvoid %sEnter(void *args);\n", args->sceneName);
-    }
-    if (!args->noUpdate)
-    {
-        fprintf(f, "\nvoid %sUpdate(float dt);\n", args->sceneName);
-    }
-    if (!args->noDraw)
-    {
-        fprintf(f, "\nvoid %sDraw(void);\n", args->sceneName);
-    }
-    if (!args->noExit)
-    {
-        fprintf(f, "\nvoid %sExit(void);\n", args->sceneName);
-    }
-
-    if (args->addSection)
-    {
-        fprintf(f, "\n\n" GS_SECTION_DIV "\n// Variables\n" GS_SECTION_DIV "\n");
-    }
-
-    fprintf(f, "\n\n#endif\n");
-}
-
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Functions - Main
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-
-int gsInternalRun(int argc, char *argv[])
+int gsInternalRun(const int argc, char *argv[])
 {
     if (argc == 1)
     {
@@ -265,7 +51,7 @@ int gsInternalRun(int argc, char *argv[])
     if (strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0)
     {
         printf("%s", HELP);
-        return 0;
+        return RES_OK;
     }
 
     if (argv[1][0] == '-' || strlen(argv[1]) > GS_NAME_MAX)
@@ -465,8 +251,189 @@ int gsInternalRun(int argc, char *argv[])
     return RES_OK;
 }
 
+int gsInternalSanitizeName(char *buf, const size_t bufSize, const char *name)
+{
+    if (!buf || !name)
+    {
+        return RES_NULL_ARG;
+    }
+    if (!name[0])
+    {
+        return RES_EMPTY_ARG;
+    }
+
+    const char *src = name;
+
+    while (*src && isspace((unsigned char)*src))
+    {
+        src++;
+    }
+
+    if (!*src)
+    {
+        return RES_EMPTY_ARG;
+    }
+
+    if (!isalpha((unsigned char)*src) && *src != '_')
+    {
+        return RES_INVALID_ARG;
+    }
+
+    size_t out = 0;
+    bool capitalizeNext = false;
+
+    while (*src)
+    {
+        if (isspace((unsigned char)*src))
+        {
+            while (*src && isspace((unsigned char)*src))
+            {
+                src++;
+            }
+
+            if (!*src)
+            {
+                break;
+            }
+
+            capitalizeNext = true;
+        }
+        else if (isalnum((unsigned char)*src) || *src == '_')
+        {
+            if (out + 1 >= bufSize)
+            {
+                return RES_INVALID_ARG;
+            }
+            buf[out++] = capitalizeNext ? (char)toupper((unsigned char)*src) : *src;
+            capitalizeNext = false;
+            src++;
+        }
+        else
+        {
+            return RES_INVALID_ARG;
+        }
+    }
+
+    buf[out] = '\0';
+    return RES_OK;
+}
+
+void gsInternalFatalHandler(void)
+{
+    printf("%s", USAGE);
 #ifndef GS_TESTING
-int main(int argc, char *argv[])
+    exit(1);
+#endif
+}
+
+// Functions - Private —————————————————————————————————————————————————————————————————————————————
+
+bool gsPrivatePrompt(const char *prompt)
+{
+#ifdef GS_TESTING
+    (void)prompt;
+    return gsTestUserConfirms;
+#endif
+    return gsPrivateYesNoPrompt(prompt);
+}
+
+bool gsPrivateYesNoPrompt(const char *prompt)
+{
+    printf("%s (Y = ok | N = quit): ", prompt);
+    char answer;
+    scanf(" %c", &answer);
+    return answer == 'Y' || answer == 'y';
+}
+
+void gsPrivateWriteSection(FILE *f, const char *name)
+{
+    int dashCount = 96 - (int)strlen(name);
+    fprintf(f, "// %s ", name);
+    for (int i = 0; i < dashCount; i++)
+        fputs("—", f);
+    fputc('\n', f);
+}
+
+void gsPrivateWriteSrc(FILE *f, const gsInternalArgs *args)
+{
+    if (args->addSection)
+    {
+        gsPrivateWriteSection(f, "Includes");
+        fprintf(f, "\n#include <SceneManager.h>\n\n#include \"%s.h\"\n", args->sceneName);
+        fprintf(f, "\n\n");
+        gsPrivateWriteSection(f, "Defines");
+        fprintf(f, "\n\n");
+        gsPrivateWriteSection(f, "Data Types");
+        fprintf(f, "\n\n");
+        gsPrivateWriteSection(f, "Prototypes");
+        fprintf(f, "\n\n");
+        gsPrivateWriteSection(f, "Variables");
+        fprintf(f, "\n\n");
+        gsPrivateWriteSection(f, "Functions");
+    }
+    else
+    {
+        fprintf(f, "#include <SceneManager.h>\n\n#include \"%s.h\"\n", args->sceneName);
+    }
+
+    if (!args->noEnter)
+        fprintf(f, "\nvoid %sEnter(void *args)\n{\n    // TODO\n}\n", args->sceneName);
+    if (!args->noUpdate)
+        fprintf(f, "\nvoid %sUpdate(float dt)\n{\n    // TODO\n}\n", args->sceneName);
+    if (!args->noDraw)
+        fprintf(f, "\nvoid %sDraw(void)\n{\n    // TODO\n}\n", args->sceneName);
+    if (!args->noExit)
+        fprintf(f, "\nvoid %sExit(void)\n{\n    // TODO\n}\n", args->sceneName);
+}
+
+void gsPrivateWriteHeader(FILE *f, const gsInternalArgs *args)
+{
+    fprintf(f, "#pragma once");
+
+    if (args->addSection)
+    {
+        fprintf(f, "\n\n");
+        gsPrivateWriteSection(f, "Includes");
+        fprintf(f, "\n\n");
+        gsPrivateWriteSection(f, "Defines");
+        fprintf(f, "\n\n");
+        gsPrivateWriteSection(f, "Data Types");
+        fprintf(f, "\n\n");
+        gsPrivateWriteSection(f, "Prototypes");
+    }
+    else
+    {
+        fprintf(f, "\n");
+    }
+
+    if (!args->noEnter)
+    {
+        fprintf(f, "\nvoid %sEnter(void *args);\n", args->sceneName);
+    }
+    if (!args->noUpdate)
+    {
+        fprintf(f, "\nvoid %sUpdate(float dt);\n", args->sceneName);
+    }
+    if (!args->noDraw)
+    {
+        fprintf(f, "\nvoid %sDraw(void);\n", args->sceneName);
+    }
+    if (!args->noExit)
+    {
+        fprintf(f, "\nvoid %sExit(void);\n", args->sceneName);
+    }
+
+    if (args->addSection)
+    {
+        fprintf(f, "\n");
+        gsPrivateWriteSection(f, "Variables");
+    }
+}
+
+// Functions - Main ————————————————————————————————————————————————————————————————————————————————
+
+#ifndef GS_TESTING
+int main(const int argc, char *argv[])
 {
     lgSetFatal(gsInternalFatalHandler);
     return gsInternalRun(argc, argv) == RES_OK ? 0 : 1;

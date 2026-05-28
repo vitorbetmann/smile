@@ -26,13 +26,21 @@ jobs:
           cmake --version
           clang --version || true
 
+      - name: Install clang-18 (Ubuntu)
+        if: runner.os == 'Linux'
+        run: sudo apt-get install -y clang-18
+
       # Config
       - name: Configure (Windows)
         if: runner.os == 'Windows'
         run: cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER=clang -DSMILE_DEV=ON -DSMILE_INFO=OFF -DSMILE_WARN=OFF
 
-      - name: Configure (Non-Windows)
-        if: runner.os != 'Windows'
+      - name: Configure (Ubuntu)
+        if: runner.os == 'Linux'
+        run: cmake -S . -B build -DCMAKE_C_COMPILER=clang-18 -DSMILE_DEV=ON -DSMILE_INFO=OFF -DSMILE_WARN=OFF
+
+      - name: Configure (macOS)
+        if: runner.os == 'macOS'
         run: cmake -S . -B build -DCMAKE_C_COMPILER=clang -DSMILE_DEV=ON -DSMILE_INFO=OFF -DSMILE_WARN=OFF
 
       # Build
@@ -49,10 +57,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install clang-18
+        run: sudo apt-get install -y clang-18
+
       - name: Configure (ASan + UBSan)
         run: >
           cmake -S . -B build-sanitize
-          -DCMAKE_C_COMPILER=clang
+          -DCMAKE_C_COMPILER=clang-18
           -DSMILE_DEV=ON
           -DSMILE_INFO=OFF
           -DSMILE_WARN=OFF

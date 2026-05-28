@@ -16,6 +16,7 @@ throughout all modules.
 - [Functions](#-functions)
     - [Running Related](#-running-related)
     - [Filesystem Related](#-filesystem-related)
+- [Variables](#-variables)
 
 ---
 
@@ -205,3 +206,20 @@ the directory exists, then removes it.
     - Fails with `RES_DEL_DIR_FAIL` if deletion fails.
     - The directory must be empty; non-empty directories will fail.
     - Side effects: permanently removes the directory from the filesystem.
+
+---
+
+## 📦 Variables
+
+| `int CM_PATH_MAX` |
+|-------------------------|
+
+Maximum allowed path length in bytes, including the null terminator. Used by
+`cmValidatePath()` and any module that constructs file or directory paths.
+
+✅ Example
+
+```c
+char path[CM_PATH_MAX];
+snprintf(path, CM_PATH_MAX, "%s/%s.c", dir, name);
+```

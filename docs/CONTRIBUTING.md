@@ -17,7 +17,7 @@ structure, and coding-guideline entry points.
     - [Public and Internal](#public-and-internal)
     - [Directory Breakdown](#directory-breakdown)
 - [Coding Guidelines](#-coding-guidelines)
-- Documentation Guidelines (🚧 Under Development)
+- [Documentation Guidelines](#-documentation-guidelines)
 - Testing Guidelines (🚧 Under Development)
 - Pull Requesting (🚧 Under Development)
 - Issues and Suggestions (🚧 Under Development)
@@ -85,6 +85,17 @@ cmake -S . -B build -DSMILE_DEV=ON -DSMILE_WARN=OFF -DSMILE_INFO=OFF
 This disables Smile warning and info logging at build time. Errors cannot be
 disabled.
 
+### Running Tests
+
+With a developer build in place, run the full test suite with:
+
+```zsh
+ctest --test-dir build -R Test --output-on-failure
+```
+
+The `-R Test` regex matches all test targets (`TestAPILog`, `TestAPIParticleSystem`,
+`TestAPISceneManager`, `TestToolGenScene`). To run a single target, use its full name
+
 ---
 
 ## 🏛 Smile's Structure
@@ -122,8 +133,8 @@ Smile
   actual modules or tools.
 - Public modules and tools do not live under a dedicated `Public` directory —
   their absence from `internal/` or `tools/` makes them public by default.
-- `tests/` currently contains only public API tests (`Log.c`, `SceneManager.c`,
-  `tools/GenScene.c`). There is no `tests/internal/` — public-API tests are
+- `tests/` currently contains only public API tests (`Log.c`, `ParticleSystem.c`,
+  `SceneManager.c`, `tools/GenScene.c`). There is no `tests/internal/` — public-API tests are
   expected to exercise internal code transitively.
 
 ### Directory Breakdown
@@ -160,16 +171,30 @@ Public Smile modules commonly include these files:
 
 #### The `Common` module
 
-- The common module contains code and messages shared across multiple modules.
+- The `Common` module lives entirely under `src/internal/Common/` and is not part
+  of Smile's public API.
+- It provides utilities shared across multiple modules:
+    - `cmResult` — shared result-code enum; the `-1..-99` range is exclusive to Common.
+    - `CM_PATH_MAX` — maximum allowed path length (256 bytes, including null terminator).
+    - `cmIsRunning` — guard that verifies a module is running before a public API call proceeds.
+    - Filesystem helpers: `cmDirExists`, `cmValidatePath`, `cmCreateDir`, `cmFileExists`,
+      `cmDeleteFile`, `cmDeleteDir`.
+- `CommonMessages.h` defines shared `CSE_`/`CSQ_` string constants. Check it before
+  adding new module-specific messages so shared strings are reused consistently.
 
 #### The `Test` module
 
 - The `Test` module lives entirely under `src/internal/Test/` and is not part
   of Smile's public API.
-- It provides allocation-interception wrappers that tests use to validate
-  internal behavior such as memory-allocation failure paths.
-- Modules that need test-controllable allocations should call the `Test`
-  wrappers instead of the standard allocators directly.
+- It provides interception wrappers for system functions that tests use to validate
+  internal behavior, including memory-allocation and file-system failure paths:
+  `tsMalloc`, `tsCalloc`, `tsRealloc`, `tsFopen`, `tsMkdir`.
+- Use `tsDisable(FN, n)` to make the nth call to a wrapped function fail, and
+  `tsReset()` at the start of any test that uses `tsDisable()` to clear state.
+- Additional helpers: `tsMkdtemp` (portable `mkdtemp()`), `tsPass` (prints a
+  `[PASS]` line), and `TS_MOCK_DT` (mock delta-time, ≈ 60 fps).
+- Modules that need test-controllable system calls should call these wrappers
+  instead of the standard library functions directly.
 
 #### `docs/`
 
@@ -190,5 +215,126 @@ Internal APIs are documented directly under `docs/internal/` in files such as
 
 Please refer to [CONVENTIONS.md](CONVENTIONS.md) for Smile's conventions on code
 organization and style.
+
+---
+
+## 📝 Documentation Guidelines
+
+### File Placement
+
+Documentation mirrors the `src/` public/internal split:
+
+| Content                      | Location                |
+|------------------------------|-------------------------|
+| Public module docs           | `docs/<Module>/`        |
+| Internal module docs         | `docs/internal/`        |
+| Tool docs                    | `docs/tools/`           |
+| Shared assets (GIFs, images) | `docs/internal/Assets/` |
+
+New public modules need a `docs/<Module>/` directory. New internal modules get a
+single file directly under `docs/internal/`.
+
+### Two-Tier Structure for Public Modules
+
+Every public module ships two Markdown files.
+
+#### `README.md` — Getting Started
+
+Intended for first-time users. Sections in order:
+
+1. One-to-two sentence description and module contract.
+2. Thread-safety warning (`### 🚨 Warning! This module is not thread-safe!`) if
+   applicable.
+3. Table of Contents.
+4. Visual example — a GIF or screenshot hosted in `docs/internal/Assets/` or an
+   external URL.
+5. Module Header — the include path and a `✅ Example`.
+6. Lifecycle — numbered steps (1️⃣ 2️⃣ …) covering the module's lifecycle arc.
+   The shape depends on the module's state model:
+    - **Global-state modules** (e.g. `SceneManager`) follow `Start → Use → Stop`.
+      `xStart()` initializes a single shared state; `xStop()` tears it down.
+    - **Per-instance modules** (e.g. `ParticleSystem`) follow `Create → Use →
+      Destroy`. `xCreate()` returns a caller-owned instance; `xDestroy()` frees it.
+      Multiple instances can coexist.
+7. Quick Reference Table — function signatures and one-line descriptions.
+8. Workflow Example — complete, runnable code demonstrating a typical use case.
+
+#### `<Module>API.md` — API Reference
+
+Intended for look-up. Sections in order:
+
+1. One-to-two sentence description.
+2. Cross-reference links to the Getting Started README and the Internal API doc
+   (if one exists).
+3. Thread-safety warning if applicable.
+4. Table of Contents.
+5. Module Header — same as README.
+6. Data Types — sub-divided into Function Pointers, Enums, and Structs; omit
+   unused kinds.
+7. Functions — organized by logical category matching the header's subsection
+   comments.
+8. Variables — if the module exports named constants.
+
+Each entry (type or function) uses a single-cell Markdown table for its
+signature, followed by a prose description, a Parameters list, a Returns
+description, optional Notes, and a `✅ Example` code block.
+
+Internal modules (`Common`, `Test`) ship only a `<Module>API.md` under
+`docs/internal/` — no README.
+
+### Markdown Style
+
+- Use emoji section headers consistently. Common set:
+    - 📋 Table of Contents
+    - 😊 Module Header
+    - 👀 Visual Example
+    - 🔄 Lifecycle
+    - 🔍 Quick Reference
+    - 📦 Data Types
+    - 🛠️ Functions
+    - 🚨 Warnings
+- Delimit sections with `---`.
+- Put function or type signatures in a single-cell Markdown table:
+  ```md
+  | `returnType functionName(params)` |
+  |------------------------------------|
+  ```
+- Prefix all code examples with `✅ Example`.
+- Use `c` as the fenced-code language specifier.
+- Write prose in **American English** (`behavior`, `color`, `license`).
+- Keep descriptions concise. One sentence per entry; expand in a Notes list for
+  non-obvious behavior, ownership, or side effects.
+
+### In-Header Documentation (Doxygen)
+
+Refer to [CONVENTIONS.md § Doxygen](CONVENTIONS.md#doxygen) for full formatting
+rules. Key points:
+
+- Every declaration in a public or internal header **must** have a Doxygen
+  comment.
+- Single-line `/** @brief … */` for typedefs, function pointer types, enum/struct
+  type blocks, and variables.
+- `/**< … */` inline trailing comment for enum values and struct fields.
+- Multi-line block for function declarations:
+  ```c
+  /**
+   * @brief One-sentence summary.
+   *
+   * @param name Description.
+   *
+   * @return …
+   */
+  ```
+- `@return` wording by return type:
+    - **`int`** — `0 on success, or a negative result code on failure`.
+    - **`bool`** — `true if X, false otherwise`.
+    - **Pointer** — describe what the pointer refers to, state ownership, and
+      note when `nullptr` is returned. Use `"owned by <Module>"` when the module
+      retains ownership (caller must not free), or `"caller-owned"` when the
+      caller is responsible for freeing. Examples:
+        - `Pointer to the current scene name (owned by SceneManager), or nullptr
+          if no scene is active or SceneManager is not running.`
+        - `Pointer to the new ParticleSystem (caller-owned), or nullptr on
+          failure.`
 
 ---

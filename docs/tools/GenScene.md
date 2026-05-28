@@ -48,14 +48,14 @@ GenScene <SceneName> [options]
 | `-hi, --header-in <dir>` | Outputs the .h file to `<dir>` (default: include/). Prompts to create `<dir>` if it does not exist. |
 
 - Note: The scene must have at least 1 callback
-- Note: `<SceneName>` must start with a letter or underscore, contain only letters, digits,
-  underscores, or spaces (
-  spaces capitalize the next character and trailing/leading whitespace is ignored), and must not
-  exceed 64 characters.
-  To pass a name with spaces, wrap it in quotes: `GenScene "Level 1"` → `Level1.c` / `Level1.h`
+- Note: `<SceneName>` must start with a letter or underscore and contain only letters, digits,
+  underscores, or spaces (spaces capitalize the next character; leading/trailing whitespace is
+  ignored). Must not exceed 64 characters. Wrap names with spaces in quotes:
+  `GenScene "Level 1"` → `Level1.c` / `Level1.h`
 - Note: `<dir>` is resolved relative to the current working directory, may not contain '..' segments
 - Note: Neither path (i.e., `<dir>/<SceneName>.c` or `<dir>/<SceneName>.h`) must exceed 256
   characters
+- Note: If an output file already exists, GenScene will prompt before overwriting it
 
 ---
 
@@ -70,9 +70,7 @@ GenScene Menu
 Result — `include/Menu.h`:
 
 ```c
-#ifndef MENU_H
-#define MENU_H
-
+#pragma once
 
 void MenuEnter(void *args);
 
@@ -81,9 +79,6 @@ void MenuUpdate(float dt);
 void MenuDraw(void);
 
 void MenuExit(void);
-
-
-#endif
 ```
 
 Result — `src/Menu.c`:
@@ -126,16 +121,11 @@ GenScene "Main Menu" --no-enter --no-exit --source-in src/scenes --header-in inc
 Result — `include/scenes/MainMenu.h`:
 
 ```c
-#ifndef MAINMENU_H
-#define MAINMENU_H
-
+#pragma once
 
 void MainMenuUpdate(float dt);
 
 void MainMenuDraw(void);
-
-
-#endif
 ```
 
 Result — `src/scenes/MainMenu.c`:
@@ -167,28 +157,18 @@ GenScene HUD --add-sections --no-draw
 Result — `include/HUD.h`:
 
 ```c
-#ifndef HUD_H
-#define HUD_H
+#pragma once
+
+// Includes ————————————————————————————————————————————————————————————————————————————————————————
 
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Includes
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Defines —————————————————————————————————————————————————————————————————————————————————————————
 
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Defines
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Data Types ——————————————————————————————————————————————————————————————————————————————————————
 
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Data Types
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Prototypes
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Prototypes ——————————————————————————————————————————————————————————————————————————————————————
 
 void HUDEnter(void *args);
 
@@ -196,50 +176,32 @@ void HUDUpdate(float dt);
 
 void HUDExit(void);
 
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Variables
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-
-
-#endif
+// Variables ———————————————————————————————————————————————————————————————————————————————————————
 ```
 
 Result — `src/HUD.c`:
 
 ```c
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Includes
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Includes ————————————————————————————————————————————————————————————————————————————————————————
 
 #include <SceneManager.h>
 
 #include "HUD.h"
 
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Defines
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Defines —————————————————————————————————————————————————————————————————————————————————————————
 
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Data Types
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Data Types ——————————————————————————————————————————————————————————————————————————————————————
 
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Prototypes
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Prototypes ——————————————————————————————————————————————————————————————————————————————————————
 
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Variables
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Variables ———————————————————————————————————————————————————————————————————————————————————————
 
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Functions
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Functions ———————————————————————————————————————————————————————————————————————————————————————
 
 void HUDEnter(void *args)
 {

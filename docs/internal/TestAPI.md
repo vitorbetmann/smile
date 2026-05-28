@@ -1,10 +1,8 @@
-<!-- TODO #19 [Docs][Test] Add example for tsRealloc wrapper function -->
-
 # Test — API 🧪
 
-`Test` provides instrumented memory allocation wrappers and fatal hooks
-for SMILE. These functions can be used in production for safe allocations and
-logging, and in unit tests to simulate failures.
+`Test` provides instrumented wrappers around system functions used by Smile modules
+in place of their raw equivalents. Test suites call `tsDisable()` to force specific
+wrapper calls to fail, exercising error-handling paths without modifying production code.
 
 ### 🚨 Warning! This module is not thread-safe!
 
@@ -18,6 +16,7 @@ logging, and in unit tests to simulate failures.
 - [Functions](#-functions)
     - [Test Suites Related](#-test-suites-related)
     - [Allocation and I/O Related](#-allocation-and-io-related)
+- [Variables](#-variables)
 
 ---
 
@@ -58,14 +57,14 @@ to specify which function should be forced to fail on a given call count.
 void Test_smStart_FailsIfCallocFails(void)
 {
     tsDisable(CALLOC, 1);
-    assert(!smStart());
-    tsPass("Test_smStart_FailsIfCallocFails");
+    assert(smStart() == RES_MEM_ALLOC_FAIL);
+    tsPass(__func__);
 }
 ```
 
 ---
 
-## 🔧 Functions
+## 🛠️ Functions
 
 ### — Test Suites Related
 
@@ -80,10 +79,10 @@ Logs a `[PASS]` message for a successful test or operation.
 ✅ Example
 
 ```c
-void Test_smHasStarted_FailsPreStart(void)
+void Test_smIsRunning_FailsPreStart(void)
 {
-    assert(!smHasStarted());
-    tsPass("Test_smHasStarted_FailsPreStart");
+    assert(!smIsRunning());
+    tsPass(__func__);
 }
 ```
 
@@ -107,8 +106,8 @@ call count. After the failure occurs, normal behavior resumes.
 void Test_smStart_FailsIfCallocFails(void)
 {
     tsDisable(CALLOC, 1);
-    assert(!smStart());
-    tsPass("Test_smStart_FailsIfCallocFails");
+    assert(smStart() == RES_MEM_ALLOC_FAIL);
+    tsPass(__func__);
 }
 ```
 
@@ -165,13 +164,13 @@ if (!scene)
 
 <br>
 
-| `void *tsCalloc(size_t nitems, size_t size)` |
-|----------------------------------------------|
+| `void *tsCalloc(size_t numItems, size_t size)` |
+|------------------------------------------------|
 
 Wrapper around `calloc()` with optional failure simulation.
 
 - Parameters:
-    - `nitems` — Number of elements to allocate.
+    - `numItems` — Number of elements to allocate.
     - `size` — Size of each element in bytes.
 - Returns: Pointer to allocated memory, or `nullptr` if failure is
   simulated.
@@ -189,14 +188,14 @@ if (!tracker)
 
 <br>
 
-| `void *tsRealloc(void *ptr, size_t size)` |
-|-------------------------------------------|
+| `void *tsRealloc(void *dest, size_t size)` |
+|--------------------------------------------|
 
 Wrapper around `realloc()` with optional failure simulation.
 
 - Parameters:
-    - `ptr` — Pointer to an existing memory block.
-    - `size` — Number of bytes to allocate.
+    - `dest` — Pointer to the memory block to resize.
+    - `size` — New size in bytes.
 
 - Returns: Pointer to reallocated memory, or `nullptr` if failure is
   simulated.
@@ -204,7 +203,10 @@ Wrapper around `realloc()` with optional failure simulation.
 ✅ Example
 
 ```c
-// NO EXAMPLE YET
+psInternalEvent *grown = tsRealloc(ps->events, newCapacity * sizeof(psInternalEvent));
+if (!grown)
+    return RES_MEM_ALLOC_FAIL;
+ps->events = grown;
 ```
 
 <br>
@@ -272,4 +274,20 @@ the directory. On POSIX, delegates to `mkdtemp`; on Windows, uses `_mktemp` +
 char dir[] = "gstest_src_XXXXXX";
 assert(tsMkdtemp(dir) != nullptr);
 // dir is now e.g. "gstest_src_a01234" and the directory exists
+```
+
+---
+
+## 📦 Variables
+
+| `float TS_MOCK_DT` |
+|--------------------------|
+
+Mock delta-time value (`0.016` s ≈ 60 fps) for use in tests that call `psUpdate`,
+`smUpdate`, or any other time-stepped function.
+
+✅ Example
+
+```c
+psUpdate(ps, TS_MOCK_DT);
 ```

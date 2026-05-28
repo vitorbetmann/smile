@@ -1,40 +1,24 @@
-/**
- * @file
- * @brief Implementation of the GenScene Tool Tests.
- *
- * @author Vitor Betmann
- */
+// Includes ————————————————————————————————————————————————————————————————————————————————————————
 
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Includes
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-
-// External
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// Module Related
+
 #include "GenSceneInternal.h"
-// Support
+
 #include "internal/Common/Common.h"
 #include "internal/Test/Test.h"
 #include "Log.h"
 
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Defines
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Defines —————————————————————————————————————————————————————————————————————————————————————————
 
 #ifdef NDEBUG
 #error "TestToolGenScene must be compiled without NDEBUG (asserts required)."
 #endif
 
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Functions
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Functions ———————————————————————————————————————————————————————————————————————————————————————
 
 static bool fileContains(const char *path, const char *needle)
 {
@@ -68,10 +52,7 @@ static bool fileContains(const char *path, const char *needle)
     return found;
 }
 
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Tests - Name Sanitization
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Name Sanitization ———————————————————————————————————————————————————————————————————————————————
 
 void Test_gsInternalSanitizeName_SucceedsWithSimpleName(void)
 {
@@ -181,10 +162,7 @@ void Test_gsInternalSanitizeName_FailsExceedingMaxNameLength(void)
     tsPass(__func__);
 }
 
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Tests - Error Path
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Error Path ——————————————————————————————————————————————————————————————————————————————————————
 
 void Test_gsInternalRun_FailsWithNoArgs(void)
 {
@@ -256,10 +234,7 @@ void Test_gsInternalRun_FailsWithInvalidHeaderPath(void)
     tsPass(__func__);
 }
 
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Tests - File Generation
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// File Generation —————————————————————————————————————————————————————————————————————————————————
 
 void Test_gsInternalRun_SucceedsAndCreatesBothFiles(void)
 {
@@ -417,7 +392,7 @@ void Test_gsInternalRun_FailsWhenIncDirCannotBeCreated(void)
     tsPass(__func__);
 }
 
-void Test_gsInternalRun_GeneratedHeaderHasCorrectIncludeGuard(void)
+void Test_gsInternalRun_GeneratedHeaderHasPragmaOnce(void)
 {
     char srcDir[] = "gstest_src_XXXXXX";
     char incDir[] = "gstest_inc_XXXXXX";
@@ -432,9 +407,7 @@ void Test_gsInternalRun_GeneratedHeaderHasCorrectIncludeGuard(void)
     snprintf(srcPath, sizeof(srcPath), "%s/TestScene.c", srcDir);
     snprintf(incPath, sizeof(incPath), "%s/TestScene.h", incDir);
 
-    assert(fileContains(incPath, "#ifndef TESTSCENE_H"));
-    assert(fileContains(incPath, "#define TESTSCENE_H"));
-    assert(fileContains(incPath, "#endif"));
+    assert(fileContains(incPath, "#pragma once"));
 
     remove(srcPath);
     remove(incPath);
@@ -443,10 +416,7 @@ void Test_gsInternalRun_GeneratedHeaderHasCorrectIncludeGuard(void)
     tsPass(__func__);
 }
 
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Tests - Overwrite / Prompt
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Overwrite / Prompt ——————————————————————————————————————————————————————————————————————————————
 
 void Test_gsInternalRun_AbortsWhenUserDeclinesCreateSrcDir(void)
 {
@@ -599,10 +569,7 @@ void Test_gsInternalRun_GeneratedSrcHasNoSectionsWithoutFlag(void)
     tsPass(__func__);
 }
 
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Main
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Main ————————————————————————————————————————————————————————————————————————————————————————————
 
 int main(void)
 {
@@ -640,7 +607,7 @@ int main(void)
     Test_gsInternalRun_SucceedsAndCreatesBothFiles();
     Test_gsInternalRun_GeneratedSrcContainsAllCallbacks();
     Test_gsInternalRun_GeneratedSrcOmitsDisabledCallbacks();
-    Test_gsInternalRun_GeneratedHeaderHasCorrectIncludeGuard();
+    Test_gsInternalRun_GeneratedHeaderHasPragmaOnce();
     puts("\nOVERWRITE/PROMPT TESTING");
     Test_gsInternalRun_AbortsWhenUserDeclinesCreateSrcDir();
     Test_gsInternalRun_AbortsWhenUserDeclinesCreateIncDir();
@@ -651,5 +618,4 @@ int main(void)
     Test_gsInternalRun_GeneratedSrcHasNoSectionsWithoutFlag();
 
     puts("\nTIME TO SMILE! :)\n\tAll Tests Passed!");
-    return 0;
 }

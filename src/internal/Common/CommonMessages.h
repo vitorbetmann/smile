@@ -1,57 +1,53 @@
-/**
-* @file
- * @brief Definitions for shared log messages.
- *
- * @author Vitor Betmann
- */
+#pragma once
 
-
-#ifndef SMILE_COMMON_MESSAGES_H
-#define SMILE_COMMON_MESSAGES_H
-
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Causes
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Log - Causes ————————————————————————————————————————————————————————————————————————————————————
 
 // Infos
-#define CSE_MODULE_START  "Module Started"
-#define CSE_MODULE_STOP  "Module Stopped"
-#define CSE_FILE_CREATE "File Created"
-#define CSE_FILE_DELETE "File Deleted"
-#define CSE_DIR_CREATE "Directory Created"
-#define CSE_DIR_DELETE "Directory Deleted"
+
+static const char CSE_MODULE_START[] = "Module Started";
+static const char CSE_MODULE_STOP[] = "Module Stopped";
+static const char CSE_FILE_CREATE[] = "File Created";
+static const char CSE_FILE_DELETE[] = "File Deleted";
+static const char CSE_DIR_CREATE[] = "Directory Created";
+static const char CSE_DIR_DELETE[] = "Directory Deleted";
+
 // Warnings
-#define CSE_ALREADY_RUNNING  "Module Already Running"
+
+static const char CSE_ALREADY_RUNNING[] = "Module Already Running";
+
 // Errors
-#define CSE_MEM_ALLOC_FAIL  "Memory Allocation Failed"
-#define CSE_NOT_RUNNING  "Module Not Running"
-#define CSE_NULL_ARG  "Null Argument"
-#define CSE_EMPTY_ARG  "Empty Argument"
-#define CSE_INVALID_ARG "Invalid Argument"
-#define CSE_INVALID_PATH "Invalid Path"
-#define CSE_FILE_ALREADY_EXISTS "File Already Exists"
-#define CSE_DIR_ALREADY_EXISTS "Directory Already Exists"
+
+static const char CSE_MEM_ALLOC_FAIL[] = "Memory Allocation Failed";
+static const char CSE_NOT_RUNNING[] = "Module Not Running";
+static const char CSE_NULL_ARG[] = "Null Argument";
+static const char CSE_EMPTY_ARG[] = "Empty Argument";
+static const char CSE_INVALID_ARG[] = "Invalid Argument";
+static const char CSE_INVALID_PATH[] = "Invalid Path";
+static const char CSE_FILE_ALREADY_EXISTS[] = "File Already Exists";
+static const char CSE_DIR_ALREADY_EXISTS[] = "Directory Already Exists";
+
 // Fatals
-#define CSE_CREATE_FILE_FAIL "Failed To Create File"
-#define CSE_CREATE_DIR_FAIL "Failed To Create Directory"
-#define CSE_DEL_FILE_FAIL "Failed To Delete File"
-#define CSE_DEL_DIR_FAIL "Failed To Delete Directory"
-// Errors or Fatals
-#define CSE_FILE_NOT_EXISTS "File Does Not Exist"
-#define CSE_DIR_NOT_EXISTS "Directory Does Not Exist"
 
+static const char CSE_CREATE_FILE_FAIL[] = "Failed To Create File";
+static const char CSE_CREATE_DIR_FAIL[] = "Failed To Create Directory";
+static const char CSE_DEL_FILE_FAIL[] = "Failed To Delete File";
+static const char CSE_DEL_DIR_FAIL[] = "Failed To Delete Directory";
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Consequences
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Both Errors and Fatals
+
+static const char CSE_FILE_NOT_EXISTS[] = "File Does Not Exist";
+static const char CSE_DIR_NOT_EXISTS[] = "Directory Does Not Exist";
+
+// Log - Consequences ——————————————————————————————————————————————————————————————————————————————
 
 // Success
-#define CSQ_SUCCESS  "Successful"
+
+static const char CSQ_SUCCESS[] = "Successful";
+
 // Failure
-#define CSQ_ABORT  "Aborted"
+
+static const char CSQ_ABORT[] = "Aborted";
+
 // Pause
-#define CSQ_PAUSE "Paused"
 
-
-#endif
+static const char CSQ_PAUSE[] = "Paused";

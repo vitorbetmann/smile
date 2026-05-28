@@ -30,11 +30,13 @@ formatter alone.
 
 - Use `SCREAMING_SNAKE_CASE` for named constants.
 - Do not use function-like macros.
-- Object-like macros are allowed for named constants and shared message
-  definitions.
+- Prefer `static const` for typed compile-time constants, including those
+  defined in headers.
+- Object-like macros are allowed for named constants only when `static const`
+  cannot be used.
 - Prefer named constants over repeated or meaningful literals.
 - Prefer `enum` for related integer constants.
-- Prefer `static const` for typed immutable data private to a source file.
+- Prefer `static const` for typed immutable data that is not a compile-time constant.
 - Local `const` values inside functions are allowed when they improve clarity,
   but avoid filling function bodies with one-off constants.
 
@@ -130,9 +132,7 @@ Current module prefixes:
 - Module-private internal declarations belong in `[ModuleName]Internal.h`.
 - Shared internal utilities belong under `internal`, typically in files such as
   `Common.h`.
-- All headers must use include guards.
-- Smile include guards begin with `SMILE_` and use underscores between words.
-- Leave 2 blank lines before the closing `#endif` of an include guard.
+- All headers must use `#pragma once`.
 - Source files must include everything they directly use. Do not rely on
   transitive includes or implied dependencies.
 - Include statements should use only the file name, never an absolute or
@@ -156,12 +156,11 @@ Current module prefixes:
   internal headers, and message files, as the generated templates define
   Smile's standard boilerplate and file layout.
 - Smile code files are organized into named sections marked by a standardized
-  section-header comment block.
+  section-header comment of the form `// SectionName ————...` trailing to
+  column 100.
 - Omit sections that do not apply to the file.
 - Leave 1 blank line between a section header and the first line in that
   section.
-- Leave 2 blank lines between the last line of one section and the next section
-  header.
 - Long groups of messages, data types, or functions may be split into
   subsections using comments in the form `// <Subsection Name>`.
 - Leave 1 blank line between a subsection comment and functions or data types.
@@ -170,17 +169,18 @@ Current module prefixes:
 
 ## Shared Messages
 
-- Shared log and error message macros should use these prefixes:
+- Shared log and error message string constants should use these prefixes:
 
 | Element      | Prefix |
 |--------------|--------|
 | Causes       | `CSE_` |
 | Consequences | `CSQ_` |
 
-- Macro names should use English words separated by underscores.
-- Macro values should match the macro name after the prefix, using spaces and
+- Define shared message string constants as `static const char NAME[] = "value";`.
+- Constant names should use English words separated by underscores.
+- Constant values should match the constant name after the prefix, using spaces and
   normal capitalization.
-- Do not end message macro values with a period.
+- Do not end message constant values with a period.
 - Message files define strings used for logging operation success, warnings,
   errors, and fatal conditions.
 - Message files use this section order when sections are present:
@@ -200,6 +200,30 @@ Current module prefixes:
   clearer.
 - If a block needs heavy commentary to be understandable, refactor it into a
   better-named helper instead.
+
+### Doxygen
+
+Every declaration in a public or internal header must have a Doxygen comment.
+
+- Use a single-line `/** @brief … */` block for typedefs, function pointer
+  types, enum/struct type blocks, and variables.
+- Use `/**< … */` inline trailing comments for enum values and struct fields.
+- Use a multi-line block for function declarations:
+  ```c
+  /**
+   * @brief One-sentence summary.
+   *
+   * @param name Description.
+   *
+   * @return 0 on success, or a negative result code on failure.
+   */
+  ```
+- Keep `@brief` to one sentence.
+- For `int`-returning functions, write `@return` as
+  `0 on success, or a negative result code on failure` — never name specific
+  internal result codes such as `RES_ALREADY_RUNNING`.
+- For `bool`-returning functions, describe the true/false meaning directly,
+  for example `true if running, false otherwise`.
 
 ## File and Directory Names
 

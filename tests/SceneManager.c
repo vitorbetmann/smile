@@ -1,52 +1,36 @@
-/**
- * @file
- * @brief Implementation of the SceneManager API Tests.
- *
- * @author Vitor Betmann
- */
+// Includes ————————————————————————————————————————————————————————————————————————————————————————
 
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Includes
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-
-// External
 #include <assert.h>
 #include <math.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-// Module Related
+
 #include "SceneManager.h"
 #include "SceneManagerInternal.h"
 #include "SceneManagerTestHooks.h"
-// Support
+
 #include "internal/Common/Common.h"
 #include "internal/Test/Test.h"
 
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Defines
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Defines —————————————————————————————————————————————————————————————————————————————————————————
 
 #ifdef NDEBUG
 #error "TestAPISceneManager must be compiled without NDEBUG (asserts required)."
 #endif
 
-#define NS_PER_S 1000000000L
+// Variables ———————————————————————————————————————————————————————————————————————————————————————
 
-#define DT_TOLERANCE 1e-6f
-#define EXPECTED_DT_NS 16667000L
-#define EXPECTED_DT_S  0.016667f
+// -- Constants
 
-#define FRAME_TIME_ITERATIONS 300
-#define IDEMPOTENT_ITERATIONS 3
-#define STRESS_ITERATIONS 1000
+static const long NS_PER_S = 1000000000L;
+static const float DT_TOLERANCE = 1e-6f;
+static const long EXPECTED_DT_NS = 16667000L;
+static const float EXPECTED_DT_S = 0.016667f;
 
+static const int FRAME_TIME_ITERATIONS = 300;
+static const int IDEMPOTENT_ITERATIONS = 3;
+static const int STRESS_ITERATIONS = 1000;
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Functions
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Fixtures ————————————————————————————————————————————————————————————————————————————————————————
 
 // Mock
 
@@ -88,7 +72,7 @@ static void onExit(MockData *data)
     data->exitCount++;
 }
 
-// Fixtures
+// Routine
 
 static void resetHooks(void)
 {
@@ -100,6 +84,7 @@ static void resetHooks(void)
     smMockCurrTime = (struct timespec){0};
     smMockClockGettimeFails = false;
 }
+
 
 static void setup(void)
 {
@@ -114,11 +99,19 @@ static void teardown(void)
 }
 
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Variables
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Variables ———————————————————————————————————————————————————————————————————————————————————————
 
-static float mockDt = 0.016f;
+// Extern
+
+smTestEnterFn smTestEnter;
+smTestEnterWithArgsFn smTestEnterWithArgs;
+smTestExitFn smTestExit;
+MockData *smMockData;
+MockArgs *smMockArgs;
+struct timespec smMockCurrTime;
+bool smMockClockGettimeFails;
+
+// Static
 
 static smInternalScene mock = {
     .name = "mock",
@@ -136,18 +129,7 @@ static smInternalScene mock2 = {
     .exit = mockExit,
 };
 
-smTestEnterFn smTestEnter;
-smTestEnterWithArgsFn smTestEnterWithArgs;
-smTestExitFn smTestExit;
-MockData *smMockData;
-MockArgs *smMockArgs;
-struct timespec smMockCurrTime;
-bool smMockClockGettimeFails;
-
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Base Tests
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Base Tests ——————————————————————————————————————————————————————————————————————————————————————
 
 void Test_smStop_SucceedsPostStart(void)
 {
@@ -156,10 +138,7 @@ void Test_smStop_SucceedsPostStart(void)
     tsPass(__func__);
 }
 
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Pre-Start
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Pre-Start ———————————————————————————————————————————————————————————————————————————————————————
 
 // Start Related
 
@@ -171,10 +150,10 @@ void Test_smHasStarted_FailsPreStart(void)
 
 // Scene Functions
 
-void Test_smCreateScene_FailsPreStart(void)
+void Test_smAddScene_FailsPreStart(void)
 {
     assert(
-        smCreateScene(nullptr, nullptr, nullptr, nullptr, nullptr) ==
+        smAddScene(nullptr, nullptr, nullptr, nullptr, nullptr) ==
         RES_NOT_RUNNING);
     tsPass(__func__);
 }
@@ -197,9 +176,9 @@ void Test_smGetCurrentSceneName_FailsPreStart(void)
     tsPass(__func__);
 }
 
-void Test_smDeleteScene_FailsPreStart(void)
+void Test_smRemoveScene_FailsPreStart(void)
 {
-    assert(smDeleteScene(nullptr) == RES_NOT_RUNNING);
+    assert(smRemoveScene(nullptr) == RES_NOT_RUNNING);
     tsPass(__func__);
 }
 
@@ -213,7 +192,7 @@ void Test_smGetSceneCount_FailsPreStart(void)
 
 void Test_smUpdate_FailsPreStart(void)
 {
-    assert(smUpdate(mockDt) == RES_NOT_RUNNING);
+    assert(smUpdate(TS_MOCK_DT) == RES_NOT_RUNNING);
     tsPass(__func__);
 }
 
@@ -237,10 +216,7 @@ void Test_smStop_FailsPreStart(void)
     tsPass(__func__);
 }
 
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Start
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Start ———————————————————————————————————————————————————————————————————————————————————————————
 
 // Mem Alloc Fail
 
@@ -251,10 +227,7 @@ void Test_smStart_FailsWhenCallocFails(void)
     tsPass(__func__);
 }
 
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Post-Start
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Post-Start ——————————————————————————————————————————————————————————————————————————————————————
 
 // Start Related
 
@@ -279,48 +252,48 @@ void Test_smHasStarted_SucceedsPostStart(void)
 
 // Scene Functions
 
-// -- smCreateScene
+// -- smAddScene
 
 // -- -- Name Related
 
-void Test_smCreateScene_AcceptsValidName(void)
+void Test_smAddScene_AcceptsValidName(void)
 {
     setup();
     assert(
-        smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
+        smAddScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
         RES_OK);
     teardown();
     tsPass(__func__);
 }
 
-void Test_smCreateScene_RejectsExistingName(void)
+void Test_smAddScene_RejectsExistingName(void)
 {
     setup();
     assert(
-        smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
+        smAddScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
         RES_OK);
     assert(
-        smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
+        smAddScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
         RES_SCENE_ALREADY_EXISTS);
     teardown();
     tsPass(__func__);
 }
 
-void Test_smCreateScene_RejectsNullName(void)
+void Test_smAddScene_RejectsNullName(void)
 {
     setup();
     assert(
-        smCreateScene(nullptr, nullptr, nullptr, nullptr, nullptr) ==
+        smAddScene(nullptr, nullptr, nullptr, nullptr, nullptr) ==
         RES_NULL_ARG);
     teardown();
     tsPass(__func__);
 }
 
-void Test_smCreateScene_RejectsEmptyName(void)
+void Test_smAddScene_RejectsEmptyName(void)
 {
     setup();
     assert(
-        smCreateScene("", nullptr, nullptr, nullptr, nullptr) ==
+        smAddScene("", nullptr, nullptr, nullptr, nullptr) ==
         RES_EMPTY_ARG);
     teardown();
     tsPass(__func__);
@@ -328,7 +301,7 @@ void Test_smCreateScene_RejectsEmptyName(void)
 
 // -- -- Scene Functions Related
 
-void Test_smCreateScene_AcceptsAllValidFunctionCombinations(void)
+void Test_smAddScene_AcceptsAllValidFunctionCombinations(void)
 {
     typedef struct
     {
@@ -360,7 +333,7 @@ void Test_smCreateScene_AcceptsAllValidFunctionCombinations(void)
     {
         setup();
         assert(
-            smCreateScene(mock.name, CASES[i].enter, CASES[i].update,
+            smAddScene(mock.name, CASES[i].enter, CASES[i].update,
                 CASES[i].draw, CASES[i].exit) == RES_OK);
         teardown();
     }
@@ -368,22 +341,22 @@ void Test_smCreateScene_AcceptsAllValidFunctionCombinations(void)
     tsPass(__func__);
 }
 
-void Test_smCreateScene_RejectsValidNameAndAllNullFunctions(void)
+void Test_smAddScene_RejectsValidNameAndAllNullFunctions(void)
 {
     setup();
     assert(
-        smCreateScene(mock.name, nullptr, nullptr, nullptr, nullptr) ==
+        smAddScene(mock.name, nullptr, nullptr, nullptr, nullptr) ==
         RES_NO_VALID_FUNCS);
     teardown();
     tsPass(__func__);
 }
 
-void Test_smCreateScene_FailsWhenSceneAllocFails(void)
+void Test_smAddScene_FailsWhenSceneAllocFails(void)
 {
     setup();
     tsDisable(MALLOC, 1);
     assert(
-        smCreateScene("malloc-scene-fail", mockEnter, nullptr, nullptr,
+        smAddScene("malloc-scene-fail", mockEnter, nullptr, nullptr,
             nullptr) == RES_MEM_ALLOC_FAIL);
     assert(smGetSceneCount() == 0);
     assert(!smSceneExists("malloc-scene-fail"));
@@ -391,12 +364,12 @@ void Test_smCreateScene_FailsWhenSceneAllocFails(void)
     tsPass(__func__);
 }
 
-void Test_smCreateScene_FailsWhenNameAllocFails(void)
+void Test_smAddScene_FailsWhenNameAllocFails(void)
 {
     setup();
     tsDisable(MALLOC, 2);
     assert(
-        smCreateScene("malloc-name-fail", mockEnter, nullptr, nullptr,
+        smAddScene("malloc-name-fail", mockEnter, nullptr, nullptr,
             nullptr) == RES_MEM_ALLOC_FAIL);
     assert(smGetSceneCount() == 0);
     assert(!smSceneExists("malloc-name-fail"));
@@ -404,12 +377,12 @@ void Test_smCreateScene_FailsWhenNameAllocFails(void)
     tsPass(__func__);
 }
 
-void Test_smCreateScene_FailsWhenMapEntryAllocFails(void)
+void Test_smAddScene_FailsWhenMapEntryAllocFails(void)
 {
     setup();
     tsDisable(MALLOC, 3);
     assert(
-        smCreateScene("malloc-map-entry-fail", mockEnter, nullptr, nullptr,
+        smAddScene("malloc-map-entry-fail", mockEnter, nullptr, nullptr,
             nullptr) == RES_MEM_ALLOC_FAIL);
     assert(smGetSceneCount() == 0);
     assert(!smSceneExists("malloc-map-entry-fail"));
@@ -423,7 +396,7 @@ void Test_smSceneExists_AcceptsCreatedName(void)
 {
     setup();
     assert(
-        smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
+        smAddScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
         RES_OK);
     assert(smSceneExists(mock.name));
     teardown();
@@ -444,7 +417,7 @@ void Test_smSetScene_AcceptsValidSceneFromNull(void)
 {
     setup();
     assert(
-        smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
+        smAddScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
         RES_OK);
     assert(smSetScene(mock.name, nullptr) == RES_OK);
     teardown();
@@ -479,10 +452,10 @@ void Test_smSetScene_SucceedsChangingFromOneSceneToAnotherWithNoArgs(void)
 {
     setup();
     assert(
-        smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
+        smAddScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
         RES_OK);
     assert(
-        smCreateScene(mock2.name, mockEnter, nullptr, nullptr, nullptr) ==
+        smAddScene(mock2.name, mockEnter, nullptr, nullptr, nullptr) ==
         RES_OK);
     assert(smSetScene(mock.name, nullptr) == RES_OK);
     assert(smSetScene(mock2.name, nullptr) == RES_OK);
@@ -497,10 +470,10 @@ void Test_smSetScene_CallsNonNullExitOfCurrentScene(void)
     smMockData = &(MockData){0};
 
     assert(
-        smCreateScene(mock.name, nullptr, nullptr, nullptr, mockExit) ==
+        smAddScene(mock.name, nullptr, nullptr, nullptr, mockExit) ==
         RES_OK);
     assert(
-        smCreateScene(mock2.name, mockEnter, nullptr, nullptr, nullptr) ==
+        smAddScene(mock2.name, mockEnter, nullptr, nullptr, nullptr) ==
         RES_OK);
     assert(smSetScene(mock.name, nullptr) == RES_OK);
     assert(smSetScene(mock2.name, nullptr) == RES_OK);
@@ -517,10 +490,10 @@ void Test_smSetScene_SkipsNullExitOfCurrentScene(void)
     smMockData = &(MockData){0};
 
     assert(
-        smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
+        smAddScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
         RES_OK);
     assert(
-        smCreateScene(mock2.name, nullptr, nullptr, nullptr, mockExit) ==
+        smAddScene(mock2.name, nullptr, nullptr, nullptr, mockExit) ==
         RES_OK);
     assert(smSetScene(mock.name, nullptr) == RES_OK);
     assert(smSetScene(mock2.name, nullptr) == RES_OK);
@@ -537,10 +510,10 @@ void Test_smSetScene_CallsNonNullEnterOfTargetScene(void)
     smMockData = &(MockData){0};
 
     assert(
-        smCreateScene(mock.name, nullptr, nullptr, nullptr, mockExit) ==
+        smAddScene(mock.name, nullptr, nullptr, nullptr, mockExit) ==
         RES_OK);
     assert(
-        smCreateScene(mock2.name, mockEnter, nullptr, nullptr, nullptr) ==
+        smAddScene(mock2.name, mockEnter, nullptr, nullptr, nullptr) ==
         RES_OK);
     assert(smSetScene(mock.name, nullptr) == RES_OK);
     assert(smSetScene(mock2.name, nullptr) == RES_OK);
@@ -557,10 +530,10 @@ void Test_smSetScene_SkipsNullEnterOfTargetScene(void)
     smMockData = &(MockData){0};
 
     assert(
-        smCreateScene(mock.name, nullptr, mockUpdate, nullptr, nullptr) ==
+        smAddScene(mock.name, nullptr, mockUpdate, nullptr, nullptr) ==
         RES_OK);
     assert(
-        smCreateScene(mock2.name, nullptr, nullptr, nullptr, mockExit) ==
+        smAddScene(mock2.name, nullptr, nullptr, nullptr, mockExit) ==
         RES_OK);
     assert(smSetScene(mock.name, nullptr) == RES_OK);
     assert(smSetScene(mock2.name, nullptr) == RES_OK);
@@ -579,7 +552,7 @@ void Test_smSetScene_CallsNonNullExitAndNonNullEnterWhenTargetingSameScene(
     smMockData = &(MockData){0};
 
     assert(
-        smCreateScene(mock.name, mockEnter, nullptr, nullptr, mockExit) ==
+        smAddScene(mock.name, mockEnter, nullptr, nullptr, mockExit) ==
         RES_OK);
     assert(smSetScene(mock.name, nullptr) == RES_OK);
     assert(smSetScene(mock.name, nullptr) == RES_OK);
@@ -598,10 +571,10 @@ void Test_smSetScene_CallsNonNullEnterWithArgsOfTargetScene(void)
     smMockArgs = &(MockArgs){0};
 
     assert(
-        smCreateScene(mock.name, nullptr, nullptr, nullptr, mockExit) ==
+        smAddScene(mock.name, nullptr, nullptr, nullptr, mockExit) ==
         RES_OK);
     assert(
-        smCreateScene(mock2.name, mockEnter, nullptr, nullptr, nullptr) ==
+        smAddScene(mock2.name, mockEnter, nullptr, nullptr, nullptr) ==
         RES_OK);
     assert(smSetScene(mock.name, nullptr) == RES_OK);
     assert(smSetScene(mock2.name, smMockArgs) == RES_OK);
@@ -625,7 +598,7 @@ void Test_smGetCurrentSceneName_ReturnsCurrentSceneName(void)
 {
     setup();
     assert(
-        smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
+        smAddScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
         RES_OK);
     assert(smSetScene(mock.name, nullptr) == RES_OK);
     assert(strcmp(smGetCurrentSceneName(), mock.name) == 0);
@@ -633,55 +606,55 @@ void Test_smGetCurrentSceneName_ReturnsCurrentSceneName(void)
     tsPass(__func__);
 }
 
-// -- smDeleteScene
+// -- smRemoveScene
 
-void Test_smDeleteScene_FailsPreCreateScene(void)
+void Test_smRemoveScene_FailsPreCreateScene(void)
 {
     setup();
-    assert(smDeleteScene(mock.name) == RES_SCENE_NOT_FOUND);
+    assert(smRemoveScene(mock.name) == RES_SCENE_NOT_FOUND);
     teardown();
     tsPass(__func__);
 }
 
-void Test_smDeleteScene_FailsToDeleteCurrentScene(void)
+void Test_smRemoveScene_FailsToDeleteCurrentScene(void)
 {
     setup();
     assert(
-        smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
+        smAddScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
         RES_OK);
     assert(smSetScene(mock.name, nullptr) == RES_OK);
-    assert(smDeleteScene(mock.name) == RES_CANT_DEL_CURR_SCENE);
+    assert(smRemoveScene(mock.name) == RES_CANT_DEL_CURR_SCENE);
     teardown();
     tsPass(__func__);
 }
 
-void Test_smDeleteScene_AcceptsNonCurrentScene(void)
+void Test_smRemoveScene_AcceptsNonCurrentScene(void)
 {
     setup();
     assert(
-        smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
+        smAddScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
         RES_OK);
-    assert(smDeleteScene(mock.name) == RES_OK);
+    assert(smRemoveScene(mock.name) == RES_OK);
     teardown();
     tsPass(__func__);
 }
 
-void Test_smDeleteScene_RejectsEmptyName(void)
+void Test_smRemoveScene_RejectsEmptyName(void)
 {
     setup();
-    assert(smDeleteScene("") == RES_EMPTY_ARG);
+    assert(smRemoveScene("") == RES_EMPTY_ARG);
     teardown();
     tsPass(__func__);
 }
 
-void Test_smDeleteScene_FailsWhenDeletingSameSceneTwice(void)
+void Test_smRemoveScene_FailsWhenDeletingSameSceneTwice(void)
 {
     setup();
     assert(
-        smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
+        smAddScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
         RES_OK);
-    assert(smDeleteScene(mock.name) == RES_OK);
-    assert(smDeleteScene(mock.name) == RES_SCENE_NOT_FOUND);
+    assert(smRemoveScene(mock.name) == RES_OK);
+    assert(smRemoveScene(mock.name) == RES_SCENE_NOT_FOUND);
     teardown();
     tsPass(__func__);
 }
@@ -700,7 +673,7 @@ void Test_smGetSceneCount_ReturnsCorrectSceneCountPostCreateScene(void)
 {
     setup();
     assert(
-        smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
+        smAddScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
         RES_OK);
     assert(smGetSceneCount() == 1);
     teardown();
@@ -711,9 +684,9 @@ void Test_smGetSceneCount_ReturnsCorrectSceneCountPostDeleteScene(void)
 {
     setup();
     assert(
-        smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
+        smAddScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
         RES_OK);
-    assert(smDeleteScene(mock.name) == RES_OK);
+    assert(smRemoveScene(mock.name) == RES_OK);
     assert(smGetSceneCount() == 0);
     teardown();
     tsPass(__func__);
@@ -727,7 +700,7 @@ void Test_smUpdate_FailsWhenNullCurrentScene(void)
 {
     setup();
     assert(!smGetCurrentSceneName());
-    assert(smUpdate(mockDt) == RES_NO_CURR_SCENE);
+    assert(smUpdate(TS_MOCK_DT) == RES_NO_CURR_SCENE);
     teardown();
     tsPass(__func__);
 }
@@ -736,10 +709,10 @@ void Test_smUpdate_CallsNonNullUpdateOfCurrentScene(void)
 {
     setup();
     assert(
-        smCreateScene(mock.name, nullptr, mockUpdate, nullptr, nullptr) ==
+        smAddScene(mock.name, nullptr, mockUpdate, nullptr, nullptr) ==
         RES_OK);
     assert(smSetScene(mock.name, nullptr) == RES_OK);
-    assert(smUpdate(mockDt) == RES_OK);
+    assert(smUpdate(TS_MOCK_DT) == RES_OK);
     teardown();
     tsPass(__func__);
 }
@@ -748,10 +721,10 @@ void Test_smUpdate_FailsWhenNullUpdate(void)
 {
     setup();
     assert(
-        smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
+        smAddScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
         RES_OK);
     assert(smSetScene(mock.name, nullptr) == RES_OK);
-    assert(smUpdate(mockDt) == RES_NO_UPDATE_FUNC);
+    assert(smUpdate(TS_MOCK_DT) == RES_NO_UPDATE_FUNC);
     teardown();
     tsPass(__func__);
 }
@@ -817,7 +790,7 @@ void Test_smDraw_CallsValidDrawFunction(void)
 {
     setup();
     assert(
-        smCreateScene(mock.name, nullptr, nullptr, mockDraw, nullptr) ==
+        smAddScene(mock.name, nullptr, nullptr, mockDraw, nullptr) ==
         RES_OK);
     assert(smSetScene(mock.name, nullptr) == RES_OK);
     assert(smDraw() == RES_OK);
@@ -829,7 +802,7 @@ void Test_smDraw_FailsWhenNullDraw(void)
 {
     setup();
     assert(
-        smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
+        smAddScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
         RES_OK);
     assert(smSetScene(mock.name, nullptr) == RES_OK);
     assert(smDraw() == RES_NO_DRAW_FUNC);
@@ -846,7 +819,7 @@ void Test_smStop_CallsNonNullExitOfCurrentScene(void)
     smMockData = &(MockData){0};
 
     assert(
-        smCreateScene(mock.name, nullptr, nullptr, nullptr, mockExit) ==
+        smAddScene(mock.name, nullptr, nullptr, nullptr, mockExit) ==
         RES_OK);
     assert(smSetScene(mock.name, nullptr) == RES_OK);
     assert(smStop() == RES_OK);
@@ -863,7 +836,7 @@ void Test_smStop_SkipsNullExitOfCurrentScene(void)
     smMockData = &(MockData){0};
 
     assert(
-        smCreateScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
+        smAddScene(mock.name, mockEnter, nullptr, nullptr, nullptr) ==
         RES_OK);
     assert(smSetScene(mock.name, nullptr) == RES_OK);
     assert(smStop() == RES_OK);
@@ -873,10 +846,7 @@ void Test_smStop_SkipsNullExitOfCurrentScene(void)
     tsPass(__func__);
 }
 
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Post-Stop
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Post-Stop ———————————————————————————————————————————————————————————————————————————————————————
 
 // Start Related
 
@@ -890,12 +860,12 @@ void Test_smHasStarted_FailsPostStop(void)
 
 // Scene Functions
 
-void Test_smCreateScene_FailsPostStop(void)
+void Test_smAddScene_FailsPostStop(void)
 {
     setup();
     teardown();
     assert(
-        smCreateScene(nullptr, nullptr, nullptr, nullptr, nullptr) ==
+        smAddScene(nullptr, nullptr, nullptr, nullptr, nullptr) ==
         RES_NOT_RUNNING);
     tsPass(__func__);
 }
@@ -924,11 +894,11 @@ void Test_smGetCurrentSceneName_FailsPostStop(void)
     tsPass(__func__);
 }
 
-void Test_smDeleteScene_FailsPostStop(void)
+void Test_smRemoveScene_FailsPostStop(void)
 {
     setup();
     teardown();
-    assert(smDeleteScene(nullptr) == RES_NOT_RUNNING);
+    assert(smRemoveScene(nullptr) == RES_NOT_RUNNING);
     tsPass(__func__);
 }
 
@@ -946,7 +916,7 @@ void Test_smUpdate_FailsPostStop(void)
 {
     setup();
     teardown();
-    assert(smUpdate(mockDt) == RES_NOT_RUNNING);
+    assert(smUpdate(TS_MOCK_DT) == RES_NOT_RUNNING);
     tsPass(__func__);
 }
 
@@ -971,14 +941,11 @@ void Test_smStop_IsIdempotentPostStop(void)
     tsPass(__func__);
 }
 
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Stress tests
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Stress tests ————————————————————————————————————————————————————————————————————————————————————
 
 // Scene Functions
 
-void TestStress_smCreateScene_CreatingMultipleScenesCausesNoSkips(void)
+void TestStress_smAddScene_CreatingMultipleScenesCausesNoSkips(void)
 {
     setup();
     char buf[8];
@@ -986,7 +953,7 @@ void TestStress_smCreateScene_CreatingMultipleScenesCausesNoSkips(void)
     {
         snprintf(buf, sizeof(buf), "%d", i);
         assert(
-            smCreateScene(buf, mockEnter, nullptr, nullptr, nullptr) ==
+            smAddScene(buf, mockEnter, nullptr, nullptr, nullptr) ==
             RES_OK);
     }
     assert(smGetSceneCount() == STRESS_ITERATIONS);
@@ -1002,7 +969,7 @@ void TestStress_smSetScene_SettingScenesOftenCausesNoSkips(void)
     {
         snprintf(buf, sizeof(buf), "%d", i);
         assert(
-            smCreateScene(buf, mockEnter, nullptr, nullptr, nullptr) ==
+            smAddScene(buf, mockEnter, nullptr, nullptr, nullptr) ==
             RES_OK);
     }
     int counter = 0;
@@ -1037,17 +1004,14 @@ void TestStress_smStop_FreeingMultipleScenesCausesNoSkips(void)
     {
         snprintf(buf, sizeof(buf), "%d", i);
         assert(
-            smCreateScene(buf, mockEnter, nullptr, nullptr, nullptr) ==
+            smAddScene(buf, mockEnter, nullptr, nullptr, nullptr) ==
             RES_OK);
     }
     teardown();
     tsPass(__func__);
 }
 
-
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Main
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Main ————————————————————————————————————————————————————————————————————————————————————————————
 
 int main()
 {
@@ -1058,11 +1022,11 @@ int main()
     puts("• Start Related");
     Test_smHasStarted_FailsPreStart();
     puts("• Scene Functions");
-    Test_smCreateScene_FailsPreStart();
+    Test_smAddScene_FailsPreStart();
     Test_smSceneExists_FailsPreStart();
     Test_smSetScene_FailsPreStart();
     Test_smGetCurrentSceneName_FailsPreStart();
-    Test_smDeleteScene_FailsPreStart();
+    Test_smRemoveScene_FailsPreStart();
     Test_smGetSceneCount_FailsPreStart();
     puts("• Lifecycle Functions");
     Test_smUpdate_FailsPreStart();
@@ -1080,19 +1044,19 @@ int main()
     Test_smStart_IsIdempotentPostStart();
     Test_smHasStarted_SucceedsPostStart();
     puts("• Scene Functions");
-    puts(" • smCreateScene");
+    puts(" • smAddScene");
     puts("  • Name Related");
-    Test_smCreateScene_AcceptsValidName();
-    Test_smCreateScene_RejectsExistingName();
-    Test_smCreateScene_RejectsNullName();
-    Test_smCreateScene_RejectsEmptyName();
+    Test_smAddScene_AcceptsValidName();
+    Test_smAddScene_RejectsExistingName();
+    Test_smAddScene_RejectsNullName();
+    Test_smAddScene_RejectsEmptyName();
 
     puts("  • Scene Functions Related");
-    Test_smCreateScene_AcceptsAllValidFunctionCombinations();
-    Test_smCreateScene_RejectsValidNameAndAllNullFunctions();
-    Test_smCreateScene_FailsWhenSceneAllocFails();
-    Test_smCreateScene_FailsWhenNameAllocFails();
-    Test_smCreateScene_FailsWhenMapEntryAllocFails();
+    Test_smAddScene_AcceptsAllValidFunctionCombinations();
+    Test_smAddScene_RejectsValidNameAndAllNullFunctions();
+    Test_smAddScene_FailsWhenSceneAllocFails();
+    Test_smAddScene_FailsWhenNameAllocFails();
+    Test_smAddScene_FailsWhenMapEntryAllocFails();
     puts(" • smSceneExists");
     Test_smSceneExists_AcceptsCreatedName();
     Test_smSceneExists_RejectsNonCreatedName();
@@ -1111,12 +1075,12 @@ int main()
     puts(" • smGetCurrentSceneName");
     Test_smGetCurrentSceneName_FailsPreCreateScene();
     Test_smGetCurrentSceneName_ReturnsCurrentSceneName();
-    puts(" • smDeleteScene");
-    Test_smDeleteScene_FailsPreCreateScene();
-    Test_smDeleteScene_FailsToDeleteCurrentScene();
-    Test_smDeleteScene_AcceptsNonCurrentScene();
-    Test_smDeleteScene_RejectsEmptyName();
-    Test_smDeleteScene_FailsWhenDeletingSameSceneTwice();
+    puts(" • smRemoveScene");
+    Test_smRemoveScene_FailsPreCreateScene();
+    Test_smRemoveScene_FailsToDeleteCurrentScene();
+    Test_smRemoveScene_AcceptsNonCurrentScene();
+    Test_smRemoveScene_RejectsEmptyName();
+    Test_smRemoveScene_FailsWhenDeletingSameSceneTwice();
     puts(" • smGetSceneCount");
     Test_smGetSceneCount_ReturnsZeroPostStart();
     Test_smGetSceneCount_ReturnsCorrectSceneCountPostCreateScene();
@@ -1143,11 +1107,11 @@ int main()
     puts("• Start Related");
     Test_smHasStarted_FailsPostStop();
     puts("• Scene Functions");
-    Test_smCreateScene_FailsPostStop();
+    Test_smAddScene_FailsPostStop();
     Test_smSceneExists_FailsPostStop();
     Test_smSetScene_FailsPostStop();
     Test_smGetCurrentSceneName_FailsPostStop();
-    Test_smDeleteScene_FailsPostStop();
+    Test_smRemoveScene_FailsPostStop();
     Test_smGetSceneCount_FailsPostStop();
     puts("• Lifecycle Functions");
     Test_smUpdate_FailsPostStop();
@@ -1156,10 +1120,9 @@ int main()
     Test_smStop_IsIdempotentPostStop();
 
     puts("\nSTRESS TESTING");
-    TestStress_smCreateScene_CreatingMultipleScenesCausesNoSkips();
+    TestStress_smAddScene_CreatingMultipleScenesCausesNoSkips();
     TestStress_smSetScene_SettingScenesOftenCausesNoSkips();
     TestStress_smStop_FreeingMultipleScenesCausesNoSkips();
 
     puts("\nTIME TO SMILE! :)\n\tAll Tests Passed!");
-    return 0;
 }

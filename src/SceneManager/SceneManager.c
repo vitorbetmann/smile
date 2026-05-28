@@ -1,58 +1,35 @@
-/**
- * @file
- * @brief Implementation of the SceneManager module.
- *
- * @see SceneManager.h
- * @see SceneManagerInternal.h
- * @see SceneManagerMessages.h
- *
- * @note TODO #16 [Feature] for [SceneManager] - Create a function to limit the
- *       game's FPS to a max value
- * @note TODO #27 [Feature] for [SceneManager] - Create Internal Trim Function
- *       and Integrate into SceneManager Name Validation
- *
- * @author Vitor Betmann
- */
+// TODO #16 [Feature] for [SceneManager] - Create a function to limit the game's FPS to a max value
+// TODO #27 [Feature] for [SceneManager] - Create Internal Trim Function and Integrate into SceneManager Name Validation
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Includes
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Includes ————————————————————————————————————————————————————————————————————————————————————————
 
-// External
 #include <string.h>
-#include <time.h>
 #include <uthash.h>
-// Module Related
+
 #include "SceneManager.h"
 #include "SceneManagerInternal.h"
 #include "SceneManagerMessages.h"
 #include "SceneManagerTestHooks.h"
-// Support
+
 #include "internal/Common/Common.h"
 #include "internal/Common/CommonMessages.h"
 #include "internal/Test/Test.h"
 #include "LogInternal.h"
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Variables
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Variables ———————————————————————————————————————————————————————————————————————————————————————
 
 static smInternalTracker *tracker;
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Prototypes
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Prototypes ——————————————————————————————————————————————————————————————————————————————————————
 
 static int smPrivateIsValidName(const char *name, const char *caller);
 
 /* Wrapper around uthash insertion to keep hash-key usage localized and keep
- * smCreateScene focused on scene construction and validation.
+ * smAddScene focused on scene construction and validation.
  */
 static void smPrivateAddScene(smInternalSceneMap *mapEntry);
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Functions - Public
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Functions - Public ——————————————————————————————————————————————————————————————————————————————
 
 // Start Related
 
@@ -60,22 +37,20 @@ int smStart(void)
 {
     if (tracker)
     {
-        lgInternalLog(WARN, ORI, CSE_ALREADY_RUNNING, __func__,CSQ_ABORT);
+        lgInternalLog(WARN, ORI, CSE_ALREADY_RUNNING, __func__, CSQ_ABORT);
         return RES_ALREADY_RUNNING;
     }
 
     tracker = tsCalloc(1, sizeof(smInternalTracker));
     if (!tracker)
     {
-        lgInternalLog(ERROR, ORI, CSE_MEM_ALLOC_FAIL, __func__,CSQ_ABORT);
+        lgInternalLog(ERROR, ORI, CSE_MEM_ALLOC_FAIL, __func__, CSQ_ABORT);
         return RES_MEM_ALLOC_FAIL;
     }
 
-    tracker->fps = DEFAULT_FPS; /* Stored target FPS used by smGetDt() first-call fallback.
-                                 * Runtime FPS capping is not implemented.
-                                 */
+    tracker->fps = DEFAULT_FPS; // Stored target FPS used by smGetDt() first-call fallback.
 
-    lgInternalLog(INFO, ORI, CSE_MODULE_START, __func__,CSQ_SUCCESS);
+    lgInternalLog(INFO, ORI, CSE_MODULE_START, __func__, CSQ_SUCCESS);
     return RES_OK;
 }
 
@@ -83,8 +58,8 @@ bool smIsRunning(void) { return tracker; }
 
 // Scene Functions
 
-int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
-                  smDrawFn draw, smExitFn exit)
+int smAddScene(const char *name, const smEnterFn enter, const smUpdateFn update,
+               const smDrawFn draw, const smExitFn exit)
 {
     if (!cmIsRunning(smIsRunning, ORI, __func__))
     {
@@ -113,7 +88,7 @@ int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
     smInternalScene *scene = tsMalloc(sizeof(smInternalScene));
     if (!scene)
     {
-        lgInternalLog(ERROR, ORI, CSE_MEM_ALLOC_FAIL, __func__,CSQ_ABORT);
+        lgInternalLog(ERROR, ORI, CSE_MEM_ALLOC_FAIL, __func__, CSQ_ABORT);
         return RES_MEM_ALLOC_FAIL;
     }
 
@@ -121,7 +96,7 @@ int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
     char *nameCopy = tsMalloc(NAME_SIZE);
     if (!nameCopy)
     {
-        lgInternalLog(ERROR, ORI, CSE_MEM_ALLOC_FAIL, __func__,CSQ_ABORT);
+        lgInternalLog(ERROR, ORI, CSE_MEM_ALLOC_FAIL, __func__, CSQ_ABORT);
         goto nameCopyError;
     }
     memcpy(nameCopy, name, NAME_SIZE);
@@ -135,7 +110,7 @@ int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
     smInternalSceneMap *mapEntry = tsMalloc(sizeof(smInternalSceneMap));
     if (!mapEntry)
     {
-        lgInternalLog(ERROR, ORI, CSE_MEM_ALLOC_FAIL, __func__,CSQ_ABORT);
+        lgInternalLog(ERROR, ORI, CSE_MEM_ALLOC_FAIL, __func__, CSQ_ABORT);
         goto mapEntryError;
     }
     mapEntry->scene = scene;
@@ -144,7 +119,7 @@ int smCreateScene(const char *name, smEnterFn enter, smUpdateFn update,
 
     tracker->sceneCount++;
 
-    lgInternalLogWithArg(INFO, ORI, CSE_SCENE_CREATED, name, __func__,CSQ_SUCCESS);
+    lgInternalLogWithArg(INFO, ORI, CSE_SCENE_CREATED, name, __func__, CSQ_SUCCESS);
     return RES_OK;
 
 mapEntryError:
@@ -186,7 +161,7 @@ int smSetScene(const char *name, void *args)
     const smInternalScene *NEXT_SCENE = smInternalGetScene(name);
     if (!NEXT_SCENE)
     {
-        lgInternalLogWithArg(WARN, ORI, CSE_SCENE_NOT_FOUND, name, __func__,CSQ_ABORT);
+        lgInternalLogWithArg(WARN, ORI, CSE_SCENE_NOT_FOUND, name, __func__, CSQ_ABORT);
         return RES_SCENE_NOT_FOUND;
     }
 
@@ -218,7 +193,7 @@ int smSetScene(const char *name, void *args)
         tracker->currScene->enter(args);
     }
 
-    lgInternalLogWithArg(INFO, ORI, CSE_SCENE_SET_TO, name, __func__,CSQ_SUCCESS);
+    lgInternalLogWithArg(INFO, ORI, CSE_SCENE_SET_TO, name, __func__, CSQ_SUCCESS);
     return RES_OK;
 }
 
@@ -242,7 +217,7 @@ int smGetSceneCount(void)
     return tracker->sceneCount;
 }
 
-int smDeleteScene(const char *name)
+int smRemoveScene(const char *name)
 {
     if (!cmIsRunning(smIsRunning, ORI, __func__))
     {
@@ -264,7 +239,7 @@ int smDeleteScene(const char *name)
     smInternalSceneMap *entry = smInternalGetEntry(name);
     if (!entry)
     {
-        lgInternalLogWithArg(WARN, ORI, CSE_SCENE_NOT_FOUND, name, __func__,CSQ_ABORT);
+        lgInternalLogWithArg(WARN, ORI, CSE_SCENE_NOT_FOUND, name, __func__, CSQ_ABORT);
         return RES_SCENE_NOT_FOUND;
     }
 
@@ -275,7 +250,7 @@ int smDeleteScene(const char *name)
 
     tracker->sceneCount--;
 
-    lgInternalLogWithArg(INFO, ORI, CSE_SCENE_DELETED, name, __func__,CSQ_SUCCESS);
+    lgInternalLogWithArg(INFO, ORI, CSE_SCENE_DELETED, name, __func__, CSQ_SUCCESS);
     return RES_OK;
 }
 
@@ -290,13 +265,14 @@ int smUpdate(float dt)
 
     if (!tracker->currScene)
     {
-        lgInternalLog(ERROR, ORI, CSE_NULL_CURR_SCENE, __func__,CSQ_ABORT);
+        lgInternalLog(ERROR, ORI, CSE_NULL_CURR_SCENE, __func__, CSQ_ABORT);
         return RES_NO_CURR_SCENE;
     }
 
     if (!tracker->currScene->update)
     {
-        lgInternalLogWithArg(WARN, ORI, CSE_NULL_SCENE_UPDATE_FN, tracker->currScene->name, __func__,
+        lgInternalLogWithArg(WARN, ORI, CSE_NULL_SCENE_UPDATE_FN, tracker->currScene->name,
+                             __func__,
                              CSQ_ABORT);
         return RES_NO_UPDATE_FUNC;
     }
@@ -325,7 +301,7 @@ float smGetDt(void)
 #else
     if (clock_gettime(CLOCK_MONOTONIC, &currentTime) != 0)
     {
-        lgInternalLog(ERROR, ORI, CSE_CLOCK_GETTIME_FAILED, __func__,CSQ_ABORT);
+        lgInternalLog(ERROR, ORI, CSE_CLOCK_GETTIME_FAILED, __func__, CSQ_ABORT);
         return RES_CLOCK_GETTIME_FAIL;
     }
 #endif
@@ -359,13 +335,14 @@ int smDraw(void)
 
     if (!tracker->currScene)
     {
-        lgInternalLog(ERROR, ORI, CSE_NULL_CURR_SCENE, __func__,CSQ_ABORT);
+        lgInternalLog(ERROR, ORI, CSE_NULL_CURR_SCENE, __func__, CSQ_ABORT);
         return RES_NO_CURR_SCENE;
     }
 
     if (!tracker->currScene->draw)
     {
-        lgInternalLogWithArg(WARN, ORI, CSE_NULL_SCENE_DRAW_FN, tracker->currScene->name, __func__, CSQ_ABORT);
+        lgInternalLogWithArg(WARN, ORI, CSE_NULL_SCENE_DRAW_FN, tracker->currScene->name, __func__,
+                             CSQ_ABORT);
         return RES_NO_DRAW_FUNC;
     }
 
@@ -415,17 +392,15 @@ int smStop(void)
 
     if (isFatal)
     {
-        lgInternalLog(FATAL, ORI, CSE_FAILED_TO_FREE_ALL_SCENES, __func__,CSQ_ABORT);
+        lgInternalLog(FATAL, ORI, CSE_FAILED_TO_FREE_ALL_SCENES, __func__, CSQ_ABORT);
         return RES_FREE_ALL_SCENES_FAIL;
     }
 
-    lgInternalLog(INFO, ORI, CSE_MODULE_STOP, __func__,CSQ_SUCCESS);
+    lgInternalLog(INFO, ORI, CSE_MODULE_STOP, __func__, CSQ_SUCCESS);
     return RES_OK;
 }
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Functions - Internal
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Functions - Internal ————————————————————————————————————————————————————————————————————————————
 
 const smInternalScene *smInternalGetScene(const char *name)
 {
@@ -440,21 +415,19 @@ smInternalSceneMap *smInternalGetEntry(const char *name)
     return entry;
 }
 
-// —————————————————————————————————————————————————————————————————————————————————————————————————
-// Functions - Private
-// —————————————————————————————————————————————————————————————————————————————————————————————————
+// Functions - Private —————————————————————————————————————————————————————————————————————————————
 
 int smPrivateIsValidName(const char *name, const char *caller)
 {
     if (!name)
     {
-        lgInternalLogWithArg(ERROR, ORI, CSE_NULL_ARG, "name", caller,CSQ_ABORT);
+        lgInternalLogWithArg(ERROR, ORI, CSE_NULL_ARG, "name", caller, CSQ_ABORT);
         return RES_NULL_ARG;
     }
 
     if (strlen(name) == 0)
     {
-        lgInternalLogWithArg(ERROR, ORI, CSE_EMPTY_ARG, "name", caller,CSQ_ABORT);
+        lgInternalLogWithArg(ERROR, ORI, CSE_EMPTY_ARG, "name", caller, CSQ_ABORT);
         return RES_EMPTY_ARG;
     }
 

@@ -63,8 +63,8 @@ your custom handler.
 
 | Signature                                | Description                                                                                                                                                                                                  |
 |------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `int lgLog(const char *msg, ...)`        | Logs a formatted message to the terminal. Supports printf-style formatting. Output is written to `stderr`. Returns `0` on success, negative error code on failure.                                           |
-| `int lgSetFatal(lgFatalHandler handler)` | Sets a custom handler to be called when a fatal event occurs. If `NULL` or `nullptr`, resets to the default handler which logs the event to the terminal and terminates the program. Returns `0` on success. |
+| `int lgLog(const char *msg, ...)`        | Logs a formatted message to the terminal, ending with a newline. Supports printf-style formatting. Output is written to `stderr`. Returns `0` on success, or a negative result code on failure.                                                                          |
+| `int lgSetFatal(lgFatalHandler handler)` | Sets a custom handler to be called when a fatal event occurs. Pass `NULL` or `nullptr` to restore the default handler, which logs the event to the terminal and terminates the program with failure status. Returns `0` on success. |
 
 ---
 
