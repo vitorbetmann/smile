@@ -199,7 +199,8 @@ int psUpdate(ParticleSystem *ps, float dt)
     // Stream particles
     ps->streamAccumulator += ps->streamRate * dt;
     const int newParticles = (int)ps->streamAccumulator;
-    const int toSpawn = newParticles < psGetIdle(ps) ? newParticles : psGetIdle(ps);
+    const int idle = ps->maxParticles - ps->activeParticles;
+    const int toSpawn = newParticles < idle ? newParticles : idle;
     if (toSpawn > 0)
         psBurst(ps, toSpawn);
     ps->streamAccumulator -= (float)toSpawn;
@@ -463,18 +464,29 @@ void psInternalSamplePosition(psInternalEmissionArea area, float originX, float 
             break;
         }
 
+        int attempts = 0;
         do
         {
             dx = ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f) * area.outerSpreadX;
             dy = ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f) * area.outerSpreadY;
+            attempts++;
         }
         while (
-            dx / area.outerSpreadX * (dx / area.outerSpreadX) +
-            dy / area.outerSpreadY * (dy / area.outerSpreadY) > 1.0f ||
-            (area.innerSpreadX > 0.0f &&
-             dx / area.innerSpreadX * (dx / area.innerSpreadX) +
-             dy / area.innerSpreadY * (dy / area.innerSpreadY) < 1.0f)
+            attempts < 100 &&
+            (dx / area.outerSpreadX * (dx / area.outerSpreadX) +
+             dy / area.outerSpreadY * (dy / area.outerSpreadY) > 1.0f ||
+             (area.innerSpreadX > 0.0f &&
+              dx / area.innerSpreadX * (dx / area.innerSpreadX) +
+              dy / area.innerSpreadY * (dy / area.innerSpreadY) < 1.0f))
         );
+
+        if (attempts == 100)
+        {
+            const float theta = (float)rand() / (float)RAND_MAX * 6.28318530718f;
+            dx = area.outerSpreadX * cosf(theta);
+            dy = area.outerSpreadY * sinf(theta);
+        }
+
         *outX = originX + dx;
         *outY = originY + dy;
 
