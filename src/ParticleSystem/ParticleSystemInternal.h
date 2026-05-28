@@ -33,6 +33,9 @@ typedef struct psInternalParticleSystem
 
     psInternalEmissionArea emissionArea;
 
+    InfluenceFn influenceFn;
+    void *influenceContext;
+
     Particle particles[];
 } psInternalParticleSystem;
 

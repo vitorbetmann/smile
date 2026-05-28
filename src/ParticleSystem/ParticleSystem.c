@@ -174,6 +174,11 @@ int psUpdate(ParticleSystem *ps, const float dt)
             continue;
         }
 
+        if (ps->influenceFn)
+        {
+            ps->influenceFn(p, ps->influenceContext);
+        }
+
         i++;
     }
 
@@ -386,12 +391,15 @@ int psSetEmissionShape(ParticleSystem *ps, const psEmissionShape shape)
 
 // -- Influence
 
-int psSetInfluence(ParticleSystem *ps, void *context, InfluenceFn fn)
+int psSetInfluence(ParticleSystem *ps, void *context, const InfluenceFn fn)
 {
     if (psPrivateIsPsNull(ps, __func__))
     {
         return RES_NULL_ARG;
     }
+
+    ps->influenceFn = fn;
+    ps->influenceContext = context;
 
     return RES_OK;
 }

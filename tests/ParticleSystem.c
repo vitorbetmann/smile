@@ -57,6 +57,40 @@ static ParticleSystem *ps;
 
 // Fixtures ————————————————————————————————————————————————————————————————————————————————————————
 
+// Callbacks
+
+static void *psInfluenceCapturedContext;
+
+static void psInfluenceSetVelocityCallback(Particle *p, void *context)
+{
+    (void)context;
+    p->velocityX = MOCK_VELOCITY_X;
+    p->velocityY = MOCK_VELOCITY_Y;
+}
+
+static void psInfluenceCaptureContextCallback(Particle *p, void *context)
+{
+    (void)p;
+    psInfluenceCapturedContext = context;
+}
+
+static void psInfluenceAlternateCallback(Particle *p, void *context)
+{
+    (void)context;
+    p->velocityX = -MOCK_VELOCITY_X;
+}
+
+static int psInfluenceCallCount;
+
+static void psInfluenceCountCallback(Particle *p, void *context)
+{
+    (void)p;
+    (void)context;
+    psInfluenceCallCount++;
+}
+
+// Routine
+
 static void setup(void)
 {
     ps = psCreate(MAX_PARTICLES, ORIGIN_X, ORIGIN_Y);
@@ -1097,37 +1131,116 @@ void Test_psSetOrigin_IsNullSafe(void)
 
 void Test_psSetInfluence_SetsCallback(void)
 {
-    assert(false);
+    setup();
+    assert(psSetInfluence(ps, nullptr, psInfluenceSetVelocityCallback) == RES_OK);
+    assert(ps->influenceFn == psInfluenceSetVelocityCallback);
+    teardown();
     tsPass(__func__);
 }
 
 void Test_psSetInfluence_NullCallbackClearsInfluence(void)
 {
-    assert(false);
+    setup();
+    psSetInfluence(ps, nullptr, psInfluenceSetVelocityCallback);
+    assert(psSetInfluence(ps, nullptr, nullptr) == RES_OK);
+    assert(ps->influenceFn == nullptr);
+    teardown();
     tsPass(__func__);
 }
 
 void Test_psSetInfluence_ContextIsPassedToCallback(void)
 {
-    assert(false);
+    setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    int sentinel = 42;
+    psInfluenceCapturedContext = nullptr;
+    psSetInfluence(ps, &sentinel, psInfluenceCaptureContextCallback);
+    psBurst(ps, 1);
+    psUpdate(ps, MOCK_DT);
+    assert(psInfluenceCapturedContext == &sentinel);
+    teardown();
     tsPass(__func__);
 }
 
 void Test_psSetInfluence_CanBeSwappedAtRuntime(void)
 {
-    assert(false);
+    setup();
+    psSetInfluence(ps, nullptr, psInfluenceSetVelocityCallback);
+    assert(psSetInfluence(ps, nullptr, psInfluenceAlternateCallback) == RES_OK);
+    assert(ps->influenceFn == psInfluenceAlternateCallback);
+    teardown();
     tsPass(__func__);
 }
 
 void Test_psSetInfluence_IsAppliedDuringUpdate(void)
 {
-    assert(false);
+    setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    psSetInfluence(ps, nullptr, psInfluenceSetVelocityCallback);
+    psBurst(ps, 1);
+    psUpdate(ps, MOCK_DT);
+    assert(ps->particles[0].velocityX == MOCK_VELOCITY_X);
+    assert(ps->particles[0].velocityY == MOCK_VELOCITY_Y);
+    teardown();
     tsPass(__func__);
 }
 
 void Test_psSetInfluence_IsNullSafe(void)
 {
-    assert(false);
+    assert(psSetInfluence(nullptr, nullptr, psInfluenceSetVelocityCallback) == RES_NULL_ARG);
+    tsPass(__func__);
+}
+
+void Test_psSetInfluence_SwapUpdatesContext(void)
+{
+    setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    int sentinel1 = 1, sentinel2 = 2;
+    psInfluenceCapturedContext = nullptr;
+    psSetInfluence(ps, &sentinel1, psInfluenceCaptureContextCallback);
+    psSetInfluence(ps, &sentinel2, psInfluenceCaptureContextCallback);
+    psBurst(ps, 1);
+    psUpdate(ps, MOCK_DT);
+    assert(psInfluenceCapturedContext == &sentinel2);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetInfluence_IsAppliedToAllActiveParticles(void)
+{
+    setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    psSetInfluence(ps, nullptr, psInfluenceCountCallback);
+    psBurst(ps, BURST_AMOUNT);
+    psInfluenceCallCount = 0;
+    psUpdate(ps, MOCK_DT);
+    assert(psInfluenceCallCount == BURST_AMOUNT);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetInfluence_IsNotCalledOnDyingParticles(void)
+{
+    setup();
+    psSetLifetime(ps, SHORT_LIFETIME, SHORT_LIFETIME);
+    psSetInfluence(ps, nullptr, psInfluenceCountCallback);
+    psBurst(ps, 1);
+    psInfluenceCallCount = 0;
+    psUpdate(ps, MOCK_DT);
+    assert(ps->activeParticles == 0);
+    assert(psInfluenceCallCount == 0);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetInfluence_IsNotCalledWhenNoActiveParticles(void)
+{
+    setup();
+    psSetInfluence(ps, nullptr, psInfluenceCountCallback);
+    psInfluenceCallCount = 0;
+    assert(psUpdate(ps, MOCK_DT) == RES_OK);
+    assert(psInfluenceCallCount == 0);
+    teardown();
     tsPass(__func__);
 }
 
@@ -1326,12 +1439,16 @@ int main(void)
     Test_psSetOrigin_IsNullSafe();
 
     puts("\nINFLUENCE TESTING");
-    // Test_psSetInfluence_SetsCallback();
-    // Test_psSetInfluence_NullCallbackClearsInfluence();
-    // Test_psSetInfluence_ContextIsPassedToCallback();
-    // Test_psSetInfluence_CanBeSwappedAtRuntime();
-    // Test_psSetInfluence_IsAppliedDuringUpdate();
-    // Test_psSetInfluence_IsNullSafe();
+    Test_psSetInfluence_SetsCallback();
+    Test_psSetInfluence_NullCallbackClearsInfluence();
+    Test_psSetInfluence_ContextIsPassedToCallback();
+    Test_psSetInfluence_CanBeSwappedAtRuntime();
+    Test_psSetInfluence_SwapUpdatesContext();
+    Test_psSetInfluence_IsAppliedDuringUpdate();
+    Test_psSetInfluence_IsAppliedToAllActiveParticles();
+    Test_psSetInfluence_IsNotCalledOnDyingParticles();
+    Test_psSetInfluence_IsNotCalledWhenNoActiveParticles();
+    Test_psSetInfluence_IsNullSafe();
 
     puts("\nSNAPSHOT INFLUENCE TESTING");
     // Test_psSetSnapshotInfluence_ReturnsZeroOnSuccess();
