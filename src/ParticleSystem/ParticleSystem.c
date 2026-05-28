@@ -3,11 +3,10 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 #include "ParticleSystem.h"
-
-#include <string.h>
 
 #include "ParticleSystemInternal.h"
 #include "ParticleSystemMessages.h"
@@ -29,7 +28,7 @@ static bool psPrivateIsPsNull(const ParticleSystem *ps, const char *caller);
 
 // Lifecycle
 
-ParticleSystem *psCreate(const int maxParticles, const float originX, const float originY)
+ParticleSystem *psCreate(int maxParticles, float originX, float originY)
 {
     if (maxParticles <= 0)
     {
@@ -86,7 +85,7 @@ int psReset(ParticleSystem *ps)
 
 // Emission
 
-int psBurst(ParticleSystem *ps, const int amount)
+int psBurst(ParticleSystem *ps, int amount)
 {
     if (psPrivateIsPsNull(ps, __func__))
     {
@@ -128,7 +127,7 @@ int psBurst(ParticleSystem *ps, const int amount)
     return RES_OK;
 }
 
-int psStream(ParticleSystem *ps, const float rate)
+int psStream(ParticleSystem *ps, float rate)
 {
     if (psPrivateIsPsNull(ps, __func__))
     {
@@ -148,7 +147,7 @@ int psStream(ParticleSystem *ps, const float rate)
 
 // Update / Query
 
-int psUpdate(ParticleSystem *ps, const float dt)
+int psUpdate(ParticleSystem *ps, float dt)
 {
     if (psPrivateIsPsNull(ps, __func__))
     {
@@ -279,7 +278,7 @@ int psGetIdle(const ParticleSystem *ps)
 
 // -- Position
 
-int psSetOrigin(ParticleSystem *ps, const float x, const float y)
+int psSetOrigin(ParticleSystem *ps, float x, float y)
 {
     if (psPrivateIsPsNull(ps, __func__))
     {
@@ -292,8 +291,7 @@ int psSetOrigin(ParticleSystem *ps, const float x, const float y)
     return RES_OK;
 }
 
-int psSetSpread(ParticleSystem *ps, const float innerX, const float innerY, const float outerX,
-                const float outerY)
+int psSetSpread(ParticleSystem *ps, float innerX, float innerY, float outerX, float outerY)
 {
     if (psPrivateIsPsNull(ps, __func__))
     {
@@ -317,8 +315,7 @@ int psSetSpread(ParticleSystem *ps, const float innerX, const float innerY, cons
 
 // -- Movement
 
-int psSetVelocity(ParticleSystem *ps, const float minX, const float minY, const float maxX,
-                  const float maxY)
+int psSetVelocity(ParticleSystem *ps, float minX, float minY, float maxX, float maxY)
 {
     if (psPrivateIsPsNull(ps, __func__))
     {
@@ -340,8 +337,7 @@ int psSetVelocity(ParticleSystem *ps, const float minX, const float minY, const 
     return RES_OK;
 }
 
-int psSetAcceleration(ParticleSystem *ps, const float minX, const float minY, const float maxX,
-                      const float maxY)
+int psSetAcceleration(ParticleSystem *ps, float minX, float minY, float maxX, float maxY)
 {
     if (psPrivateIsPsNull(ps, __func__))
     {
@@ -365,7 +361,7 @@ int psSetAcceleration(ParticleSystem *ps, const float minX, const float minY, co
 
 // -- Lifetime
 
-int psSetLifetime(ParticleSystem *ps, const float min, const float max)
+int psSetLifetime(ParticleSystem *ps, float min, float max)
 {
     if (psPrivateIsPsNull(ps, __func__))
     {
@@ -436,7 +432,6 @@ int psSetSnapshotInfluence(ParticleSystem *ps, void *context, const SnapshotInfl
         }
     }
 
-
     ps->snapshotFn = fn;
     ps->snapshotContext = context;
 
@@ -446,8 +441,8 @@ int psSetSnapshotInfluence(ParticleSystem *ps, void *context, const SnapshotInfl
 
 // Functions - Internal ————————————————————————————————————————————————————————————————————————————
 
-void psInternalSamplePosition(const psInternalEmissionArea area, const float originX,
-                              float const originY, float *outX, float *outY)
+void psInternalSamplePosition(psInternalEmissionArea area, float originX, float originY,
+                              float *outX, float *outY)
 {
     if (area.outerSpreadX == 0.0f && area.outerSpreadY == 0.0f)
     {
