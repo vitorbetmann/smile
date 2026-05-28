@@ -89,6 +89,47 @@ static void psInfluenceCountCallback(Particle *p, void *context)
     psInfluenceCallCount++;
 }
 
+static int psSnapshotCallCount;
+static void *psSnapshotCapturedContext;
+static int psSnapshotCapturedCount;
+static float psSnapshotCapturedPreUpdateX;
+
+static void psSnapshotCountCallback(Particle *p, const Particle *snapshot, int count, void *context)
+{
+    (void)p;
+    (void)snapshot;
+    (void)count;
+    (void)context;
+    psSnapshotCallCount++;
+}
+
+static void psSnapshotCaptureContextCallback(Particle *p, const Particle *snapshot, int count,
+                                             void *context)
+{
+    (void)p;
+    (void)snapshot;
+    (void)count;
+    psSnapshotCapturedContext = context;
+}
+
+static void psSnapshotCaptureCountCallback(Particle *p, const Particle *snapshot, int count,
+                                           void *context)
+{
+    (void)p;
+    (void)snapshot;
+    (void)context;
+    psSnapshotCapturedCount = count;
+}
+
+static void psSnapshotCapturePreUpdateXCallback(Particle *p, const Particle *snapshot, int count,
+                                                void *context)
+{
+    (void)p;
+    (void)count;
+    (void)context;
+    psSnapshotCapturedPreUpdateX = snapshot[0].x;
+}
+
 // Routine
 
 static void setup(void)
@@ -1248,49 +1289,180 @@ void Test_psSetInfluence_IsNotCalledWhenNoActiveParticles(void)
 
 void Test_psSetSnapshotInfluence_ReturnsZeroOnSuccess(void)
 {
-    assert(false);
+    setup();
+    assert(psSetSnapshotInfluence(ps, nullptr, psSnapshotCountCallback) == RES_OK);
+    teardown();
     tsPass(__func__);
 }
 
 void Test_psSetSnapshotInfluence_ReturnsNegativeWhenMallocFails(void)
 {
-    assert(false);
+    setup();
+    tsDisable(MALLOC, 1);
+    assert(psSetSnapshotInfluence(ps, nullptr, psSnapshotCountCallback) < 0);
+    teardown();
     tsPass(__func__);
 }
 
 void Test_psSetSnapshotInfluence_NullCallbackClearsInfluence(void)
 {
-    assert(false);
+    setup();
+    psSetSnapshotInfluence(ps, nullptr, psSnapshotCountCallback);
+    assert(psSetSnapshotInfluence(ps, nullptr, nullptr) == RES_OK);
+    assert(ps->snapshotFn == nullptr);
+    teardown();
     tsPass(__func__);
 }
 
 void Test_psSetSnapshotInfluence_SecondBufferPersistsAfterCallbackCleared(void)
 {
-    assert(false);
+    setup();
+    psSetSnapshotInfluence(ps, nullptr, psSnapshotCountCallback);
+    const Particle *bufferBefore = ps->snapshotBuffer;
+    psSetSnapshotInfluence(ps, nullptr, nullptr);
+    assert(ps->snapshotBuffer == bufferBefore);
+    assert(ps->snapshotBuffer != nullptr);
+    teardown();
     tsPass(__func__);
 }
 
 void Test_psSetSnapshotInfluence_ContextIsPassedToCallback(void)
 {
-    assert(false);
+    setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    int sentinel = 42;
+    psSnapshotCapturedContext = nullptr;
+    psSetSnapshotInfluence(ps, &sentinel, psSnapshotCaptureContextCallback);
+    psBurst(ps, 1);
+    psUpdate(ps, MOCK_DT);
+    assert(psSnapshotCapturedContext == &sentinel);
+    teardown();
     tsPass(__func__);
 }
 
 void Test_psSetSnapshotInfluence_CountIsPassedToCallback(void)
 {
-    assert(false);
+    setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    psSetSnapshotInfluence(ps, nullptr, psSnapshotCaptureCountCallback);
+    psBurst(ps, BURST_AMOUNT);
+    psSnapshotCapturedCount = -1;
+    psUpdate(ps, MOCK_DT);
+    assert(psSnapshotCapturedCount == BURST_AMOUNT);
+    teardown();
     tsPass(__func__);
 }
 
 void Test_psSetSnapshotInfluence_IsAppliedDuringUpdate(void)
 {
-    assert(false);
+    setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    psSetSnapshotInfluence(ps, nullptr, psSnapshotCountCallback);
+    psBurst(ps, BURST_AMOUNT);
+    psSnapshotCallCount = 0;
+    psUpdate(ps, MOCK_DT);
+    assert(psSnapshotCallCount == BURST_AMOUNT);
+    teardown();
     tsPass(__func__);
 }
 
 void Test_psSetSnapshotInfluence_IsNullSafe(void)
 {
-    assert(false);
+    assert(psSetSnapshotInfluence(nullptr, nullptr, psSnapshotCountCallback) == RES_NULL_ARG);
+    tsPass(__func__);
+}
+
+void Test_psSetSnapshotInfluence_SetsCallback(void)
+{
+    setup();
+    assert(psSetSnapshotInfluence(ps, nullptr, psSnapshotCountCallback) == RES_OK);
+    assert(ps->snapshotFn == psSnapshotCountCallback);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetSnapshotInfluence_AllocatesSecondBufferOnFirstSet(void)
+{
+    setup();
+    assert(psSetSnapshotInfluence(ps, nullptr, psSnapshotCountCallback) == RES_OK);
+    assert(ps->snapshotBuffer != nullptr);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetSnapshotInfluence_BufferNotAllocatedWhenFnIsNull(void)
+{
+    setup();
+    assert(psSetSnapshotInfluence(ps, nullptr, nullptr) == RES_OK);
+    assert(ps->snapshotBuffer == nullptr);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetSnapshotInfluence_SnapshotReadsFromPreUpdateState(void)
+{
+    setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    psSetVelocity(ps, MOCK_VELOCITY_X, MOCK_VELOCITY_Y, MOCK_VELOCITY_X, MOCK_VELOCITY_Y);
+    psBurst(ps, 1);
+    const float preUpdateX = ps->particles[0].x;
+    psSetSnapshotInfluence(ps, nullptr, psSnapshotCapturePreUpdateXCallback);
+    psUpdate(ps, MOCK_DT);
+    assert(psSnapshotCapturedPreUpdateX == preUpdateX);
+    assert(ps->particles[0].x != preUpdateX);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetSnapshotInfluence_SwapUpdatesContext(void)
+{
+    setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    int sentinel1 = 1, sentinel2 = 2;
+    psSnapshotCapturedContext = nullptr;
+    psSetSnapshotInfluence(ps, &sentinel1, psSnapshotCaptureContextCallback);
+    psSetSnapshotInfluence(ps, &sentinel2, psSnapshotCaptureContextCallback);
+    psBurst(ps, 1);
+    psUpdate(ps, MOCK_DT);
+    assert(psSnapshotCapturedContext == &sentinel2);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetSnapshotInfluence_SecondBufferNotReallocatedOnReSet(void)
+{
+    setup();
+    psSetSnapshotInfluence(ps, nullptr, psSnapshotCountCallback);
+    const Particle *bufferBefore = ps->snapshotBuffer;
+    psSetSnapshotInfluence(ps, nullptr, psSnapshotCountCallback);
+    assert(ps->snapshotBuffer == bufferBefore);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetSnapshotInfluence_CountReflectsPreDeathActiveCount(void)
+{
+    setup();
+    psSetLifetime(ps, SHORT_LIFETIME, SHORT_LIFETIME);
+    psBurst(ps, BURST_AMOUNT / 2); // these die this frame
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    psBurst(ps, BURST_AMOUNT / 2); // these survive
+    psSetSnapshotInfluence(ps, nullptr, psSnapshotCaptureCountCallback);
+    psSnapshotCapturedCount = -1;
+    psUpdate(ps, MOCK_DT);
+    assert(psSnapshotCapturedCount == BURST_AMOUNT);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetSnapshotInfluence_IsNotCalledWhenNoActiveParticles(void)
+{
+    setup();
+    psSetSnapshotInfluence(ps, nullptr, psSnapshotCountCallback);
+    psSnapshotCallCount = 0;
+    assert(psUpdate(ps, MOCK_DT) == RES_OK);
+    assert(psSnapshotCallCount == 0);
+    teardown();
     tsPass(__func__);
 }
 
@@ -1451,14 +1623,22 @@ int main(void)
     Test_psSetInfluence_IsNullSafe();
 
     puts("\nSNAPSHOT INFLUENCE TESTING");
-    // Test_psSetSnapshotInfluence_ReturnsZeroOnSuccess();
-    // Test_psSetSnapshotInfluence_ReturnsNegativeWhenMallocFails();
-    // Test_psSetSnapshotInfluence_NullCallbackClearsInfluence();
-    // Test_psSetSnapshotInfluence_SecondBufferPersistsAfterCallbackCleared();
-    // Test_psSetSnapshotInfluence_ContextIsPassedToCallback();
-    // Test_psSetSnapshotInfluence_CountIsPassedToCallback();
-    // Test_psSetSnapshotInfluence_IsAppliedDuringUpdate();
-    // Test_psSetSnapshotInfluence_IsNullSafe();
+    Test_psSetSnapshotInfluence_ReturnsZeroOnSuccess();
+    Test_psSetSnapshotInfluence_ReturnsNegativeWhenMallocFails();
+    Test_psSetSnapshotInfluence_NullCallbackClearsInfluence();
+    Test_psSetSnapshotInfluence_SecondBufferPersistsAfterCallbackCleared();
+    Test_psSetSnapshotInfluence_ContextIsPassedToCallback();
+    Test_psSetSnapshotInfluence_CountIsPassedToCallback();
+    Test_psSetSnapshotInfluence_IsAppliedDuringUpdate();
+    Test_psSetSnapshotInfluence_IsNullSafe();
+    Test_psSetSnapshotInfluence_SetsCallback();
+    Test_psSetSnapshotInfluence_AllocatesSecondBufferOnFirstSet();
+    Test_psSetSnapshotInfluence_BufferNotAllocatedWhenFnIsNull();
+    Test_psSetSnapshotInfluence_SnapshotReadsFromPreUpdateState();
+    Test_psSetSnapshotInfluence_SwapUpdatesContext();
+    Test_psSetSnapshotInfluence_SecondBufferNotReallocatedOnReSet();
+    Test_psSetSnapshotInfluence_CountReflectsPreDeathActiveCount();
+    Test_psSetSnapshotInfluence_IsNotCalledWhenNoActiveParticles();
 
     puts("\nSTRESS TESTING");
     // TestStress_psBurst_EmittingManyParticlesCausesNoSkips();

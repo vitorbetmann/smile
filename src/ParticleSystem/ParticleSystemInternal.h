@@ -36,6 +36,10 @@ typedef struct psInternalParticleSystem
     InfluenceFn influenceFn;
     void *influenceContext;
 
+    SnapshotInfluenceFn snapshotFn;
+    void *snapshotContext;
+    Particle *snapshotBuffer;
+
     Particle particles[];
 } psInternalParticleSystem;
 

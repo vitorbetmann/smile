@@ -6,6 +6,9 @@
 #include <time.h>
 
 #include "ParticleSystem.h"
+
+#include <string.h>
+
 #include "ParticleSystemInternal.h"
 #include "ParticleSystemMessages.h"
 
@@ -65,6 +68,7 @@ int psDestroy(ParticleSystem *ps)
         return RES_NULL_ARG;
     }
 
+    free(ps->snapshotBuffer);
     free(ps);
     return RES_OK;
 }
@@ -157,6 +161,12 @@ int psUpdate(ParticleSystem *ps, const float dt)
         return RES_INVALID_ARG;
     }
 
+    const int snapshotCount = ps->activeParticles;
+    if (ps->snapshotFn)
+    {
+        memcpy(ps->snapshotBuffer, ps->particles, snapshotCount * sizeof(Particle));
+    }
+
     int i = 0;
     while (i < ps->activeParticles)
     {
@@ -177,6 +187,11 @@ int psUpdate(ParticleSystem *ps, const float dt)
         if (ps->influenceFn)
         {
             ps->influenceFn(p, ps->influenceContext);
+        }
+
+        if (ps->snapshotFn)
+        {
+            ps->snapshotFn(p, ps->snapshotBuffer, snapshotCount, ps->snapshotContext);
         }
 
         i++;
@@ -404,12 +419,26 @@ int psSetInfluence(ParticleSystem *ps, void *context, const InfluenceFn fn)
     return RES_OK;
 }
 
-int psSetSnapshotInfluence(ParticleSystem *ps, void *context, SnapshotInfluenceFn fn)
+int psSetSnapshotInfluence(ParticleSystem *ps, void *context, const SnapshotInfluenceFn fn)
 {
     if (psPrivateIsPsNull(ps, __func__))
     {
         return RES_NULL_ARG;
     }
+
+    if (fn && !ps->snapshotBuffer)
+    {
+        ps->snapshotBuffer = tsMalloc(ps->maxParticles * sizeof(Particle));
+        if (!ps->snapshotBuffer)
+        {
+            lgInternalLog(ERROR, ORI, CSE_MEM_ALLOC_FAIL, __func__, CSQ_ABORT);
+            return RES_MEM_ALLOC_FAIL;
+        }
+    }
+
+
+    ps->snapshotFn = fn;
+    ps->snapshotContext = context;
 
     return RES_OK;
 }
