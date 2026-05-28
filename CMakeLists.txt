@@ -87,6 +87,10 @@ target_include_directories(smile
         ${CMAKE_CURRENT_SOURCE_DIR}/src/
 )
 
+if (NOT WIN32)
+    target_link_libraries(smile PUBLIC m)
+endif ()
+
 
 # ——————————————————————————————————————————————————————————————————————————————
 # TOOLS
