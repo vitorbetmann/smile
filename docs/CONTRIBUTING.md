@@ -18,7 +18,7 @@ structure, and coding-guideline entry points.
     - [Directory Breakdown](#directory-breakdown)
 - [Coding Guidelines](#-coding-guidelines)
 - [Documentation Guidelines](#-documentation-guidelines)
-- Testing Guidelines (🚧 Under Development)
+- [Testing Guidelines](#-testing-guidelines)
 - Pull Requesting (🚧 Under Development)
 - Issues and Suggestions (🚧 Under Development)
 
@@ -336,5 +336,117 @@ rules. Key points:
           if no scene is active or SceneManager is not running.`
         - `Pointer to the new ParticleSystem (caller-owned), or nullptr on
           failure.`
+
+---
+
+## 🧪 Testing Guidelines
+
+### File Placement
+
+| Content              | Location               |
+|----------------------|------------------------|
+| Public module tests  | `tests/<Module>.c`     |
+| Tool tests           | `tests/tools/<Tool>.c` |
+
+There is no `tests/internal/` — public API tests are expected to exercise internal code transitively.
+
+### Test Targets
+
+| CTest Target            | Source                   |
+|-------------------------|--------------------------|
+| `TestAPILog`            | `tests/Log.c`            |
+| `TestAPIParticleSystem` | `tests/ParticleSystem.c` |
+| `TestAPISceneManager`   | `tests/SceneManager.c`   |
+| `TestToolGenScene`      | `tests/tools/GenScene.c` |
+
+### Naming Convention
+
+- **Regular tests:** `Test_<functionName>_<Behavior>` — e.g., `Test_psCreate_ReturnsNullWhenMaxParticlesIsZero`
+- **Stress tests:** `TestStress_<functionName>_<Behavior>`
+- Call `tsPass(__func__)` at the end of every passing test function.
+
+### Test Structure
+
+Each test file is a standalone executable with a hand-rolled `main()` that calls every test function in order, grouped by logical category using `puts()` banners. Tests rely on `assert()` from `<assert.h>` — there is no external test framework.
+
+Every test file must include a compile-time guard against `NDEBUG`:
+
+```c
+#ifdef NDEBUG
+#error "<TargetName> must be compiled without NDEBUG (asserts required)."
+#endif
+```
+
+### Setup and Teardown
+
+Use static `setup()` and `teardown()` helpers to bracket each test:
+
+- **Global-state modules** (e.g., `SceneManager`): `setup()` calls `xStart()`; `teardown()` calls `xStop()`.
+- **Per-instance modules** (e.g., `ParticleSystem`): `setup()` calls `xCreate()`; `teardown()` calls `xDestroy()`.
+
+### The Test Module (`tsXxx` Helpers)
+
+The internal `Test` module (`src/internal/Test/`) provides allocation-interception wrappers and failure-simulation helpers. Include it via `"Test.h"`. Full reference in [TestAPI.md](internal/TestAPI.md).
+
+| Helper | Description |
+|--------|-------------|
+| `tsPass(const char *fnName)` | Prints `[PASS] fnName` on success. |
+| `tsDisable(tsSysFn fn, unsigned int at)` | Makes the `at`-th call to `fn` return a failure; auto-resets after firing. Values: `MALLOC`, `CALLOC`, `REALLOC`, `FOPEN`, `MKDIR`. |
+| `tsReset()` | Clears all pending failures. Call defensively at the start of any test that uses `tsDisable()`. |
+| `tsMalloc` / `tsCalloc` / `tsRealloc` / `tsFopen` / `tsMkdir` | Wrappers that production modules must call instead of the libc functions so `tsDisable()` can intercept them. |
+| `tsMkdtemp(char *tmpl)` | Portable `mkdtemp()` for temporary test directories. **Not** intercepted by `tsDisable(MKDIR, n)`. |
+| `TS_MOCK_DT` | `0.016f` (≈ 60 fps). Use as the delta-time argument when calling time-stepped functions in tests. |
+
+✅ Example — forcing an allocation failure:
+
+```c
+void Test_psCreate_ReturnsNullWhenCallocFails(void)
+{
+    tsReset();
+    tsDisable(CALLOC, 1);
+    ps = psCreate(MAX_PARTICLES, ORIGIN_X, ORIGIN_Y);
+    assert(!ps);
+    tsPass(__func__);
+}
+```
+
+### TestHooks
+
+Modules that ship a `*TestHooks.h` (currently only `SceneManager`) expose `extern` variables that tests can set to intercept callbacks and mock system behavior. Always include them under `#ifdef SMILE_DEV`, and reset every hook pointer in `teardown()` to prevent cross-test pollution.
+
+✅ Example — intercepting a scene enter callback:
+
+```c
+#ifdef SMILE_DEV
+#include "SceneManagerTestHooks.h"
+#endif
+
+static void onEnter(MockData *data) { data->enterCount++; }
+
+static void resetHooks(void)
+{
+    smTestEnter             = nullptr;
+    smTestEnterWithArgs     = nullptr;
+    smTestExit              = nullptr;
+    smMockData              = nullptr;
+    smMockArgs              = nullptr;
+    smMockCurrTime          = (struct timespec){0};
+    smMockClockGettimeFails = false;
+}
+
+static void teardown(void)
+{
+    resetHooks();
+    assert(smStop() == RES_OK);
+}
+```
+
+### Adding Tests for a New Module
+
+1. Create `tests/<Module>.c` (public module) or `tests/tools/<Tool>.c` (tool).
+2. Register the target in `CMakeLists.txt` using `add_smile_test()` or `add_smile_tool_test()`.
+3. Add the `NDEBUG` compile-time guard.
+4. Write test functions following the `Test_<functionName>_<Behavior>` naming convention.
+5. Wire them up in `main()` with `puts()` section banners and explicit function calls.
 
 ---
