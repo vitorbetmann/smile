@@ -122,6 +122,7 @@ int psBurst(ParticleSystem *ps, int amount)
         // Lifetime
         const float lifetimeDiff = ps->maxLifetime - ps->minLifetime;
         p->lifetime = ps->minLifetime + (float)rand() / (float)RAND_MAX * lifetimeDiff;
+        p->age = 0.0f;
     }
 
     return RES_OK;

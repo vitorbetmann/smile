@@ -448,6 +448,41 @@ void Test_psBurst_SpawnsParticlesOutsideInnerEllipseBounds(void)
     tsPass(__func__);
 }
 
+void Test_psBurst_SetsAgeToZeroOnFreshSlot(void)
+{
+    setup();
+    psBurst(ps, 1);
+    assert(ps->particles[0].age == 0.0f);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psBurst_ResetsAgeWhenSlotIsReused(void)
+{
+    setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    psBurst(ps, 1);
+    psUpdate(ps, MOCK_LIFETIME);
+    assert(ps->activeParticles == 0);
+    psBurst(ps, 1);
+    assert(ps->particles[0].age == 0.0f);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psBurst_ReusedParticleDoesNotExpireImmediately(void)
+{
+    setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    psBurst(ps, 1);
+    psUpdate(ps, MOCK_LIFETIME);
+    psBurst(ps, 1);
+    psUpdate(ps, MOCK_DT);
+    assert(ps->activeParticles == 1);
+    teardown();
+    tsPass(__func__);
+}
+
 // Stream ——————————————————————————————————————————————————————————————————————————————————————————
 
 void Test_psStream_SetsRate(void)
@@ -1623,6 +1658,9 @@ int main(void)
     Test_psBurst_DoesNotOverwriteExistingParticlesOnSecondBurst();
     Test_psBurst_SpawnsParticlesOutsideInnerRectBounds();
     Test_psBurst_SpawnsParticlesOutsideInnerEllipseBounds();
+    Test_psBurst_SetsAgeToZeroOnFreshSlot();
+    Test_psBurst_ResetsAgeWhenSlotIsReused();
+    Test_psBurst_ReusedParticleDoesNotExpireImmediately();
 
     puts("\nSTREAM TESTING");
     Test_psStream_SetsRate();
