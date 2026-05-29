@@ -45,6 +45,8 @@ static const float MOCK_ACCELERATION_Y = 15.0f;
 static const float MOCK_LIFETIME = 0.5f;
 static const float SHORT_LIFETIME = MOCK_DT;
 
+static const float MOCK_ANGULAR_VELOCITY = 2.0f;
+
 static const float INNER_SPREAD_X = 1.0f;
 static const float INNER_SPREAD_Y = 2.0f;
 static const float OUTER_SPREAD_X = 3.0f;
@@ -204,6 +206,15 @@ void Test_psCreate_StartsWithZeroActiveParticles(void)
     tsPass(__func__);
 }
 
+void Test_psCreate_DefaultLifetimeIsOne(void)
+{
+    setup();
+    assert(ps->minLifetime == 1.0f);
+    assert(ps->maxLifetime == 1.0f);
+    teardown();
+    tsPass(__func__);
+}
+
 // Destroy —————————————————————————————————————————————————————————————————————————————————————————
 
 void Test_psDestroy_FreesSystem(void)
@@ -295,6 +306,17 @@ void Test_psReset_DoesNotResetSpread(void)
     assert(ps->emissionArea.innerSpreadY == INNER_SPREAD_Y);
     assert(ps->emissionArea.outerSpreadX == OUTER_SPREAD_X);
     assert(ps->emissionArea.outerSpreadY == OUTER_SPREAD_Y);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psReset_DoesNotResetAngularVelocityRange(void)
+{
+    setup();
+    psSetAngularVelocity(ps, MOCK_ANGULAR_VELOCITY, MOCK_ANGULAR_VELOCITY * 2);
+    assert(psReset(ps) == RES_OK);
+    assert(ps->minAngularVelocity == MOCK_ANGULAR_VELOCITY);
+    assert(ps->maxAngularVelocity == MOCK_ANGULAR_VELOCITY * 2);
     teardown();
     tsPass(__func__);
 }
@@ -453,6 +475,26 @@ void Test_psBurst_SetsAgeToZeroOnFreshSlot(void)
     setup();
     psBurst(ps, 1);
     assert(ps->particles[0].age == 0.0f);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psBurst_SetsAngleToZero(void)
+{
+    setup();
+    psSetAngularVelocity(ps, MOCK_ANGULAR_VELOCITY, MOCK_ANGULAR_VELOCITY);
+    psBurst(ps, 1);
+    assert(ps->particles[0].angle == 0.0f);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psBurst_SetsAngularVelocityFromRange(void)
+{
+    setup();
+    psSetAngularVelocity(ps, MOCK_ANGULAR_VELOCITY, MOCK_ANGULAR_VELOCITY);
+    psBurst(ps, 1);
+    assert(ps->particles[0].angularVelocity == MOCK_ANGULAR_VELOCITY);
     teardown();
     tsPass(__func__);
 }
@@ -832,6 +874,51 @@ void Test_psUpdate_AccumulatorContinuesWhenPoolExhausted(void)
     tsPass(__func__);
 }
 
+void Test_psUpdate_ParticleWithDefaultLifetimeSurvivesOneTick(void)
+{
+    setup();
+    psBurst(ps, 1);
+    psUpdate(ps, MOCK_DT);
+    assert(ps->activeParticles == 1);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psUpdate_ParticleWithInfiniteLifetimeNeverDies(void)
+{
+    setup();
+    psSetLifetime(ps, INFINITY, INFINITY);
+    psBurst(ps, 1);
+    for (int i = 0; i < STRESS_ITERATIONS; i++)
+        psUpdate(ps, MOCK_DT);
+    assert(ps->activeParticles == 1);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psUpdate_AdvancesAngleByAngularVelocity(void)
+{
+    setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    psSetAngularVelocity(ps, MOCK_ANGULAR_VELOCITY, MOCK_ANGULAR_VELOCITY);
+    psBurst(ps, 1);
+    psUpdate(ps, MOCK_DT);
+    assert(ps->particles[0].angle == MOCK_ANGULAR_VELOCITY * MOCK_DT);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psUpdate_DefaultAngularVelocityKeepsAngleAtZero(void)
+{
+    setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    psBurst(ps, 1);
+    psUpdate(ps, MOCK_DT);
+    assert(ps->particles[0].angle == 0.0f);
+    teardown();
+    tsPass(__func__);
+}
+
 void Test_psUpdate_AccumulatorDecrementsOnlyByActualSpawns(void)
 {
     setup();
@@ -1010,6 +1097,18 @@ void Test_psSetLifetime_AffectsSpawnedParticles(void)
     psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
     psBurst(ps, 1);
     assert(ps->particles[0].lifetime == MOCK_LIFETIME);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetLifetime_AllowsInfinity(void)
+{
+    setup();
+    assert(psSetLifetime(ps, INFINITY, INFINITY) == RES_OK);
+    psBurst(ps, 1);
+    for (int i = 0; i < STRESS_ITERATIONS; i++)
+        psUpdate(ps, MOCK_DT);
+    assert(ps->activeParticles == 1);
     teardown();
     tsPass(__func__);
 }
@@ -1254,6 +1353,60 @@ void Test_psSetOrigin_UpdatesOrigin(void)
 void Test_psSetOrigin_IsNullSafe(void)
 {
     assert(psSetOrigin(nullptr, ORIGIN_X, ORIGIN_Y) == RES_NULL_ARG);
+    tsPass(__func__);
+}
+
+void Test_psSetAngularVelocity_SetsRange(void)
+{
+    setup();
+    assert(psSetAngularVelocity(ps, MOCK_ANGULAR_VELOCITY, MOCK_ANGULAR_VELOCITY * 2) == RES_OK);
+    assert(ps->minAngularVelocity == MOCK_ANGULAR_VELOCITY);
+    assert(ps->maxAngularVelocity == MOCK_ANGULAR_VELOCITY * 2);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetAngularVelocity_IsNullSafe(void)
+{
+    assert(psSetAngularVelocity(nullptr, MOCK_ANGULAR_VELOCITY, MOCK_ANGULAR_VELOCITY) ==
+        RES_NULL_ARG);
+    tsPass(__func__);
+}
+
+void Test_psSetAngularVelocity_RejectsMinGreaterThanMax(void)
+{
+    setup();
+    assert(psSetAngularVelocity(ps, MOCK_ANGULAR_VELOCITY * 2, MOCK_ANGULAR_VELOCITY) ==
+        RES_INVALID_ARG);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetAngularVelocity_AllowsMinEqualToMax(void)
+{
+    setup();
+    assert(psSetAngularVelocity(ps, 0.0f, 0.0f) == RES_OK);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetAngularVelocity_DefaultIsZero(void)
+{
+    setup();
+    assert(ps->minAngularVelocity == 0.0f);
+    assert(ps->maxAngularVelocity == 0.0f);
+    teardown();
+    tsPass(__func__);
+}
+
+void Test_psSetAngularVelocity_AffectsSpawnedParticles(void)
+{
+    setup();
+    psSetLifetime(ps, MOCK_LIFETIME, MOCK_LIFETIME);
+    psSetAngularVelocity(ps, MOCK_ANGULAR_VELOCITY, MOCK_ANGULAR_VELOCITY);
+    psBurst(ps, 1);
+    assert(ps->particles[0].angularVelocity == MOCK_ANGULAR_VELOCITY);
+    teardown();
     tsPass(__func__);
 }
 
@@ -1630,6 +1783,7 @@ int main(void)
     Test_psCreate_ReturnsNullWhenCallocFails();
     Test_psCreate_StoresOrigin();
     Test_psCreate_StartsWithZeroActiveParticles();
+    Test_psCreate_DefaultLifetimeIsOne();
 
     puts("\nDESTROY TESTING");
     Test_psDestroy_FreesSystem();
@@ -1643,6 +1797,7 @@ int main(void)
     Test_psReset_DoesNotResetVelocityRange();
     Test_psReset_DoesNotResetEmissionShape();
     Test_psReset_DoesNotResetSpread();
+    Test_psReset_DoesNotResetAngularVelocityRange();
     Test_psReset_IsNullSafe();
 
     puts("\nBURST TESTING");
@@ -1659,6 +1814,8 @@ int main(void)
     Test_psBurst_SpawnsParticlesOutsideInnerRectBounds();
     Test_psBurst_SpawnsParticlesOutsideInnerEllipseBounds();
     Test_psBurst_SetsAgeToZeroOnFreshSlot();
+    Test_psBurst_SetsAngleToZero();
+    Test_psBurst_SetsAngularVelocityFromRange();
     Test_psBurst_ResetsAgeWhenSlotIsReused();
     Test_psBurst_ReusedParticleDoesNotExpireImmediately();
 
@@ -1700,6 +1857,10 @@ int main(void)
     Test_psUpdate_AdvancesParticleAge();
     Test_psUpdate_MovesParticlesWithVelocity();
     Test_psUpdate_AppliesAccelerationToVelocity();
+    Test_psUpdate_ParticleWithDefaultLifetimeSurvivesOneTick();
+    Test_psUpdate_ParticleWithInfiniteLifetimeNeverDies();
+    Test_psUpdate_AdvancesAngleByAngularVelocity();
+    Test_psUpdate_DefaultAngularVelocityKeepsAngleAtZero();
     Test_psUpdate_KillsParticleWhenLifetimeExpires();
     Test_psUpdate_KillsMultipleExpiredParticlesInSameFrame();
     Test_psUpdate_KillsNonContiguousParticlesCorrectly();
@@ -1725,6 +1886,7 @@ int main(void)
     Test_psSetLifetime_IsNullSafe();
     Test_psSetLifetime_RejectsMinGreaterThanMax();
     Test_psSetLifetime_AffectsSpawnedParticles();
+    Test_psSetLifetime_AllowsInfinity();
     puts("• psSetVelocity");
     Test_psSetVelocity_SetsRange();
     Test_psSetVelocity_IsNullSafe();
@@ -1755,6 +1917,13 @@ int main(void)
     Test_psSetOrigin_AffectsSpawnedParticles();
     Test_psSetOrigin_UpdatesOrigin();
     Test_psSetOrigin_IsNullSafe();
+    puts("• psSetAngularVelocity");
+    Test_psSetAngularVelocity_SetsRange();
+    Test_psSetAngularVelocity_IsNullSafe();
+    Test_psSetAngularVelocity_RejectsMinGreaterThanMax();
+    Test_psSetAngularVelocity_AllowsMinEqualToMax();
+    Test_psSetAngularVelocity_DefaultIsZero();
+    Test_psSetAngularVelocity_AffectsSpawnedParticles();
 
     puts("\nINFLUENCE TESTING");
     Test_psSetInfluence_SetsCallback();

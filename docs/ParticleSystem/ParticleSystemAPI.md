@@ -52,7 +52,9 @@ Represents a single active particle in the system.
     - `float velocityX, velocityY` — Current velocity components.
     - `float accelerationX, accelerationY` — Current acceleration components.
     - `float age` — Time elapsed since emission, in seconds.
-    - `float lifetime` — Total lifespan of the particle, in seconds.
+    - `float lifetime` — Total lifespan of the particle, in seconds. Pass `INFINITY` for a particle that never expires.
+    - `float angle` — Current rotation angle, in radians. Starts at `0` on emission.
+    - `float angularVelocity` — Rotation speed, in radians per second.
 
 - Notes:
     - Passed as `const Particle *` to `ParticleFn` and as the snapshot array
@@ -635,12 +637,49 @@ Sets the random lifetime range assigned to each newly emitted particle.
     - Fails if `ps` is `nullptr` or `min > max`.
     - Each emitted particle receives a lifetime sampled uniformly at random
       from `[min, max]`.
+    - Pass `INFINITY` for both `min` and `max` to emit particles that never
+      expire. Use `psReset()` to remove them.
+    - Defaults to `1.0f` for both `min` and `max` if never called.
 
 ✅ Example
 
 ```c
 // Particles live between half a second and two seconds.
 psSetLifetime(ps, 0.5f, 2.0f);
+
+// Immortal particles — only removed by psReset() or psDestroy().
+psSetLifetime(ps, INFINITY, INFINITY);
+```
+
+<br>
+
+| `int psSetAngularVelocity(ParticleSystem *ps, float min, float max)` |
+|----------------------------------------------------------------------|
+
+Sets the random angular velocity range assigned to each newly emitted particle.
+
+- Parameters:
+    - `ps` — ParticleSystem to configure.
+    - `min` — Minimum angular velocity in radians per second.
+    - `max` — Maximum angular velocity in radians per second.
+
+- Returns: `0` on success, or a negative result code on failure.
+
+- Notes:
+    - Fails if `ps` is `nullptr` or `min > max`.
+    - Each emitted particle receives an angular velocity sampled uniformly at
+      random from `[min, max]`. Its `angle` field is initialized to `0` on
+      emission and advances by `angularVelocity * dt` each update.
+    - Defaults to `0.0f` for both `min` and `max` (no rotation).
+    - Negative values produce counter-clockwise rotation; positive values
+      produce clockwise rotation (or vice versa, depending on your coordinate
+      system).
+
+✅ Example
+
+```c
+// Spin each particle between half and two full rotations per second.
+psSetAngularVelocity(ps, 3.14f, 12.57f);
 ```
 
 <br>

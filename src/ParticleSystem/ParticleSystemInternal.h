@@ -38,6 +38,9 @@ typedef struct psInternalParticleSystem
     float minLifetime; /**< Minimum lifetime in seconds for new particles. */
     float maxLifetime; /**< Maximum lifetime in seconds for new particles. */
 
+    float minAngularVelocity; /**< Minimum angular velocity in radians per second for new particles. */
+    float maxAngularVelocity; /**< Maximum angular velocity in radians per second for new particles. */
+
     float streamRate;        /**< Continuous emission rate in particles per second. */
     float streamAccumulator; /**< Fractional particle count accumulated since the last emit. */
 
