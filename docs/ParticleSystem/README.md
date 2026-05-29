@@ -80,50 +80,50 @@ frees all memory and invalidates the pointer.
 
 — Structs
 
-| Signature    | Description                                                  |
-|--------------|--------------------------------------------------------------|
-| `Particle`   | Represents a single active particle with position, velocity, acceleration, age, lifetime, angle, and angular velocity. |
+| Signature  | Description                                                                                                            |
+|------------|------------------------------------------------------------------------------------------------------------------------|
+| `Particle` | Represents a single active particle with position, velocity, acceleration, age, lifetime, angle, and angular velocity. |
 
 — Enums
 
-| Signature          | Description                                                     |
-|--------------------|-----------------------------------------------------------------|
-| `psEmissionShape`  | Geometric shape used to sample particle spawn positions (`PS_SHAPE_ELLIPSE`, `PS_SHAPE_RECT`). |
+| Signature         | Description                                                                                    |
+|-------------------|------------------------------------------------------------------------------------------------|
+| `psEmissionShape` | Geometric shape used to sample particle spawn positions (`PS_SHAPE_ELLIPSE`, `PS_SHAPE_RECT`). |
 
 — Function Pointers
 
-| Signature                                                                          | Description                                                              |
-|------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
-| `void (*ParticleFn)(const Particle *p, void *context)`                             | Callback invoked for each active particle during `psForEach`.            |
-| `void (*InfluenceFn)(Particle *p, void *context)`                                  | Callback that modifies a particle once per update step.                  |
+| Signature                                                                                      | Description                                                                            |
+|------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
+| `void (*ParticleFn)(const Particle *p, void *context)`                                         | Callback invoked for each active particle during `psForEach`.                          |
+| `void (*InfluenceFn)(Particle *p, void *context)`                                              | Callback that modifies a particle once per update step.                                |
 | `void (*SnapshotInfluenceFn)(Particle *p, const Particle *snapshot, int count, void *context)` | Callback that modifies a particle using a pre-update snapshot of all active particles. |
 
 <br>
 
 ### Functions
 
-| Signature                                                                                                      | Description                                                                   |
-|----------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
-| `ParticleSystem *psCreate(int maxParticles, float originX, float originY)`                                     | Allocates and initializes a new ParticleSystem.                               |
-| `int psDestroy(ParticleSystem *ps)`                                                                            | Frees all memory associated with the ParticleSystem.                          |
-| `int psReset(ParticleSystem *ps)`                                                                              | Deactivates all particles without freeing the instance or clearing configuration. |
-| `int psBurst(ParticleSystem *ps, int amount)`                                                                  | Emits a fixed number of particles immediately.                                |
-| `int psStream(ParticleSystem *ps, float rate)`                                                                 | Sets the continuous emission rate in particles per second.                    |
-| `int psUpdate(ParticleSystem *ps, float dt)`                                                                   | Advances the simulation by dt seconds.                                        |
-| `int psForEach(const ParticleSystem *ps, ParticleFn fn, void *context)`                                        | Iterates over all active particles and invokes fn for each one.               |
-| `float psGetX(const ParticleSystem *ps)`                                                                       | Returns the X coordinate of the emission origin.                              |
-| `float psGetY(const ParticleSystem *ps)`                                                                       | Returns the Y coordinate of the emission origin.                              |
-| `int psGetActive(const ParticleSystem *ps)`                                                                    | Returns the number of currently active particles.                             |
-| `int psGetIdle(const ParticleSystem *ps)`                                                                      | Returns the number of currently idle particle slots.                          |
-| `int psSetOrigin(ParticleSystem *ps, float x, float y)`                                                        | Sets the emission origin to the given coordinates.                            |
-| `int psSetSpread(ParticleSystem *ps, float innerX, float innerY, float outerX, float outerY)`                  | Configures the inner and outer emission spread around the origin.             |
-| `int psSetVelocity(ParticleSystem *ps, float minX, float minY, float maxX, float maxY)`                        | Sets the random velocity range assigned to each newly emitted particle.       |
-| `int psSetAcceleration(ParticleSystem *ps, float minX, float minY, float maxX, float maxY)`                    | Sets the random acceleration range assigned to each newly emitted particle.   |
-| `int psSetLifetime(ParticleSystem *ps, float min, float max)`                                                  | Sets the random lifetime range assigned to each newly emitted particle. Pass `INFINITY` for immortal particles. Defaults to `1.0f`. |
-| `int psSetAngularVelocity(ParticleSystem *ps, float min, float max)`                                           | Sets the random angular velocity range (radians/sec) assigned to each newly emitted particle. Defaults to `0.0f`. |
-| `int psSetEmissionShape(ParticleSystem *ps, psEmissionShape shape)`                                            | Sets the geometric shape used to sample particle spawn positions.             |
-| `int psSetInfluence(ParticleSystem *ps, void *context, InfluenceFn fn)`                                        | Registers a per-particle callback applied each update.                        |
-| `int psSetSnapshotInfluence(ParticleSystem *ps, void *context, SnapshotInfluenceFn fn)`                        | Registers a snapshot-based influence callback applied each update.            |
+| Signature                                                                                     | Description                                                                                                                         |
+|-----------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| `ParticleSystem *psCreate(int maxParticles, float originX, float originY)`                    | Allocates and initializes a new ParticleSystem.                                                                                     |
+| `int psDestroy(ParticleSystem *ps)`                                                           | Frees all memory associated with the ParticleSystem.                                                                                |
+| `int psReset(ParticleSystem *ps)`                                                             | Deactivates all particles without freeing the instance or clearing configuration.                                                   |
+| `int psBurst(ParticleSystem *ps, int amount)`                                                 | Emits a fixed number of particles immediately.                                                                                      |
+| `int psStream(ParticleSystem *ps, float rate)`                                                | Sets the continuous emission rate in particles per second.                                                                          |
+| `int psUpdate(ParticleSystem *ps, float dt)`                                                  | Advances the simulation by dt seconds.                                                                                              |
+| `int psForEach(const ParticleSystem *ps, ParticleFn fn, void *context)`                       | Iterates over all active particles and invokes fn for each one.                                                                     |
+| `float psGetX(const ParticleSystem *ps)`                                                      | Returns the X coordinate of the emission origin.                                                                                    |
+| `float psGetY(const ParticleSystem *ps)`                                                      | Returns the Y coordinate of the emission origin.                                                                                    |
+| `int psGetActive(const ParticleSystem *ps)`                                                   | Returns the number of currently active particles.                                                                                   |
+| `int psGetIdle(const ParticleSystem *ps)`                                                     | Returns the number of currently idle particle slots.                                                                                |
+| `int psSetOrigin(ParticleSystem *ps, float x, float y)`                                       | Sets the emission origin to the given coordinates.                                                                                  |
+| `int psSetSpread(ParticleSystem *ps, float innerX, float innerY, float outerX, float outerY)` | Configures the inner and outer emission spread around the origin.                                                                   |
+| `int psSetVelocity(ParticleSystem *ps, float minX, float minY, float maxX, float maxY)`       | Sets the random velocity range assigned to each newly emitted particle.                                                             |
+| `int psSetAcceleration(ParticleSystem *ps, float minX, float minY, float maxX, float maxY)`   | Sets the random acceleration range assigned to each newly emitted particle.                                                         |
+| `int psSetAngularVelocity(ParticleSystem *ps, float min, float max)`                          | Sets the random angular velocity range (radians/sec) assigned to each newly emitted particle. Defaults to `0.0f`.                   |
+| `int psSetLifetime(ParticleSystem *ps, float min, float max)`                                 | Sets the random lifetime range assigned to each newly emitted particle. Pass `INFINITY` for immortal particles. Defaults to `1.0f`. |
+| `int psSetEmissionShape(ParticleSystem *ps, psEmissionShape shape)`                           | Sets the geometric shape used to sample particle spawn positions.                                                                   |
+| `int psSetInfluence(ParticleSystem *ps, void *context, InfluenceFn fn)`                       | Registers a per-particle callback applied each update.                                                                              |
+| `int psSetSnapshotInfluence(ParticleSystem *ps, void *context, SnapshotInfluenceFn fn)`       | Registers a snapshot-based influence callback applied each update.                                                                  |
 
 ---
 
