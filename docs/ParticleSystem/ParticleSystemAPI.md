@@ -713,8 +713,8 @@ psSetEmissionShape(ps, PS_SHAPE_RECT);
 | `int psSetInfluence(ParticleSystem *ps, void *context, InfluenceFn fn)` |
 |-------------------------------------------------------------------------|
 
-Registers a per-particle callback applied to every active particle each
-update.
+Registers a per-particle callback applied to every active particle each update. It's called before
+the snapshot influence callback if both are set.
 
 - Parameters:
     - `ps` — ParticleSystem to configure.

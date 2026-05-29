@@ -254,7 +254,8 @@ int psSetEmissionShape(ParticleSystem *ps, psEmissionShape shape);
 // -- Influence
 
 /**
- * @brief Registers a per-particle callback applied to every active particle each update.
+ * @brief Registers a per-particle callback applied to every active particle each update. It's
+ * called before the snapshot influence callback if both are set.
  *
  * @param ps      ParticleSystem to configure.
  * @param context Optional caller-supplied pointer passed to fn on each call.
