@@ -5,13 +5,14 @@
 /** @brief Represents a single active particle in the system. */
 typedef struct
 {
-    float x, y;                         /**< Current position. */
-    float velocityX, velocityY;         /**< Current velocity components. */
+    float x, y; /**< Current position. */
+    float velocityX, velocityY; /**< Current velocity components. */
     float accelerationX, accelerationY; /**< Current acceleration components. */
-    float age;                          /**< Time elapsed since emission, in seconds. */
-    float lifetime;                     /**< Total lifespan of the particle, in seconds. Pass INFINITY for an immortal particle. */
-    float angle;                        /**< Current rotation angle, in radians. */
-    float angularVelocity;              /**< Rotation speed, in radians per second. */
+    float age; /**< Time elapsed since emission, in seconds. */
+    float lifetime;
+    /**< Total lifespan of the particle, in seconds. Pass INFINITY for an immortal particle. */
+    float angle; /**< Current rotation angle, in radians. */
+    float angularVelocity; /**< Rotation speed, in radians per second. */
 } Particle;
 
 /**
@@ -20,8 +21,8 @@ typedef struct
 typedef enum
 {
     PS_SHAPE_ELLIPSE, /**< Particles emitted within an elliptical area. */
-    PS_SHAPE_RECT,    /**< Particles emitted within a rectangular area. */
-    SHAPE_COUNT       /**< Number of emission shapes (sentinel). */
+    PS_SHAPE_RECT, /**< Particles emitted within a rectangular area. */
+    SHAPE_COUNT /**< Number of emission shapes (sentinel). */
 } psEmissionShape;
 
 /** @brief Opaque handle representing a ParticleSystem instance. */
@@ -214,6 +215,17 @@ int psSetVelocity(ParticleSystem *ps, float minX, float minY, float maxX, float 
  */
 int psSetAcceleration(ParticleSystem *ps, float minX, float minY, float maxX, float maxY);
 
+/**
+ * @brief Sets the random angular velocity range assigned to each newly emitted particle.
+ *
+ * @param ps  ParticleSystem to configure.
+ * @param min Minimum angular velocity in radians per second.
+ * @param max Maximum angular velocity in radians per second.
+ *
+ * @return 0 on success, or a negative result code on failure.
+ */
+int psSetAngularVelocity(ParticleSystem *ps, float min, float max);
+
 // -- Lifetime
 
 /**
@@ -226,17 +238,6 @@ int psSetAcceleration(ParticleSystem *ps, float minX, float minY, float maxX, fl
  * @return 0 on success, or a negative result code on failure.
  */
 int psSetLifetime(ParticleSystem *ps, float min, float max);
-
-/**
- * @brief Sets the random angular velocity range assigned to each newly emitted particle.
- *
- * @param ps  ParticleSystem to configure.
- * @param min Minimum angular velocity in radians per second.
- * @param max Maximum angular velocity in radians per second.
- *
- * @return 0 on success, or a negative result code on failure.
- */
-int psSetAngularVelocity(ParticleSystem *ps, float min, float max);
 
 // -- Shape
 
@@ -253,7 +254,8 @@ int psSetEmissionShape(ParticleSystem *ps, psEmissionShape shape);
 // -- Influence
 
 /**
- * @brief Registers a per-particle callback applied to every active particle each update.
+ * @brief Registers a per-particle callback applied to every active particle each update. It's
+ * called before the snapshot influence callback if both are set.
  *
  * @param ps      ParticleSystem to configure.
  * @param context Optional caller-supplied pointer passed to fn on each call.

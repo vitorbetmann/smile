@@ -369,6 +369,26 @@ int psSetAcceleration(ParticleSystem *ps, float minX, float minY, float maxX, fl
     return RES_OK;
 }
 
+int psSetAngularVelocity(ParticleSystem *ps, float min, float max)
+{
+    if (psPrivateIsPsNull(ps, __func__))
+    {
+        return RES_NULL_ARG;
+    }
+
+    if (min > max)
+    {
+        lgInternalLogWithArg(WARN, ORI, CSE_INVALID_ARG, MSG_INVALID_ANGULAR_VELOCITY_RANGE,
+                             __func__, CSQ_ABORT);
+        return RES_INVALID_ARG;
+    }
+
+    ps->minAngularVelocity = min;
+    ps->maxAngularVelocity = max;
+
+    return RES_OK;
+}
+
 // -- Lifetime
 
 int psSetLifetime(ParticleSystem *ps, float min, float max)
@@ -387,26 +407,6 @@ int psSetLifetime(ParticleSystem *ps, float min, float max)
 
     ps->minLifetime = min;
     ps->maxLifetime = max;
-
-    return RES_OK;
-}
-
-int psSetAngularVelocity(ParticleSystem *ps, float min, float max)
-{
-    if (psPrivateIsPsNull(ps, __func__))
-    {
-        return RES_NULL_ARG;
-    }
-
-    if (min > max)
-    {
-        lgInternalLogWithArg(WARN, ORI, CSE_INVALID_ARG, MSG_INVALID_ANGULAR_VELOCITY_RANGE,
-                             __func__, CSQ_ABORT);
-        return RES_INVALID_ARG;
-    }
-
-    ps->minAngularVelocity = min;
-    ps->maxAngularVelocity = max;
 
     return RES_OK;
 }
