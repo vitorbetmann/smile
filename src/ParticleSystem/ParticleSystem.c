@@ -50,6 +50,8 @@ ParticleSystem *psCreate(int maxParticles, float originX, float originY)
     ps->maxParticles = maxParticles;
     ps->originX = originX;
     ps->originY = originY;
+    ps->minLifetime = 1.0f;
+    ps->maxLifetime = 1.0f;
 
     if (!isSeedSet)
     {
@@ -123,6 +125,11 @@ int psBurst(ParticleSystem *ps, int amount)
         const float lifetimeDiff = ps->maxLifetime - ps->minLifetime;
         p->lifetime = ps->minLifetime + (float)rand() / (float)RAND_MAX * lifetimeDiff;
         p->age = 0.0f;
+        // Angular velocity
+        const float angularVelocityDiff = ps->maxAngularVelocity - ps->minAngularVelocity;
+        p->angularVelocity =
+            ps->minAngularVelocity + (float)rand() / (float)RAND_MAX * angularVelocityDiff;
+        p->angle = 0.0f;
     }
 
     return RES_OK;
@@ -176,6 +183,7 @@ int psUpdate(ParticleSystem *ps, float dt)
         p->velocityY += p->accelerationY * dt;
         p->x += p->velocityX * dt;
         p->y += p->velocityY * dt;
+        p->angle += p->angularVelocity * dt;
 
         if (p->age >= p->lifetime)
         {
@@ -379,6 +387,26 @@ int psSetLifetime(ParticleSystem *ps, float min, float max)
 
     ps->minLifetime = min;
     ps->maxLifetime = max;
+
+    return RES_OK;
+}
+
+int psSetAngularVelocity(ParticleSystem *ps, float min, float max)
+{
+    if (psPrivateIsPsNull(ps, __func__))
+    {
+        return RES_NULL_ARG;
+    }
+
+    if (min > max)
+    {
+        lgInternalLogWithArg(WARN, ORI, CSE_INVALID_ARG, MSG_INVALID_ANGULAR_VELOCITY_RANGE,
+                             __func__, CSQ_ABORT);
+        return RES_INVALID_ARG;
+    }
+
+    ps->minAngularVelocity = min;
+    ps->maxAngularVelocity = max;
 
     return RES_OK;
 }

@@ -9,7 +9,9 @@ typedef struct
     float velocityX, velocityY;         /**< Current velocity components. */
     float accelerationX, accelerationY; /**< Current acceleration components. */
     float age;                          /**< Time elapsed since emission, in seconds. */
-    float lifetime;                     /**< Total lifespan of the particle, in seconds. */
+    float lifetime;                     /**< Total lifespan of the particle, in seconds. Pass INFINITY for an immortal particle. */
+    float angle;                        /**< Current rotation angle, in radians. */
+    float angularVelocity;              /**< Rotation speed, in radians per second. */
 } Particle;
 
 /**
@@ -224,6 +226,17 @@ int psSetAcceleration(ParticleSystem *ps, float minX, float minY, float maxX, fl
  * @return 0 on success, or a negative result code on failure.
  */
 int psSetLifetime(ParticleSystem *ps, float min, float max);
+
+/**
+ * @brief Sets the random angular velocity range assigned to each newly emitted particle.
+ *
+ * @param ps  ParticleSystem to configure.
+ * @param min Minimum angular velocity in radians per second.
+ * @param max Maximum angular velocity in radians per second.
+ *
+ * @return 0 on success, or a negative result code on failure.
+ */
+int psSetAngularVelocity(ParticleSystem *ps, float min, float max);
 
 // -- Shape
 
