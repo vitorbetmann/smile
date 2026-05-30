@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Smile is a dependency-free C23 static library of modules (Log, SceneManager, SaveLoad 🚧, ParticleSystem 🚧) that reduce boilerplate for 2D game development, plus command-line tools (GenScene). It builds as `libsmile.a` / `smile.lib` and exposes only the headers under `include/`.
+Smile is a dependency-free C23 static library of modules (Log, SceneManager, ParticleSystem 🚧, SaveLoad 🚧) that reduce boilerplate for 2D game development, plus command-line tools (GenScene). It builds as `libsmile.a` / `smile.lib` and exposes only the headers under `include/`. SaveLoad is planned but not yet started — no source files exist for it.
 
 ## Build
 
@@ -52,9 +52,11 @@ Current test targets (see `CMakeLists.txt` for the source of truth):
 
 There is no `tests/internal/` — public-API tests are expected to exercise internal code transitively. Tool tests use `add_smile_tool_test` in `CMakeLists.txt`, which takes a `testing_define` that the tool's source guards its `main` behind.
 
+Tests use a hand-rolled `main()` with `assert()` — there is no external test framework. CI runs the suite on Linux (clang-18), macOS (clang), and Windows (Ninja + clang), plus a sanitizer job (ASan/UBSan).
+
 ## Formatting
 
-`.clang-format` is the source of truth (C23, 4-space indent, 100 col, `Right` pointer alignment, braces on their own line via `BreakBeforeBraces: Custom`). If `docs/CONVENTIONS.md` conflicts with the formatter, the formatter wins.
+`.clang-format` is the source of truth (C23, 4-space indent, 100 col, `Right` pointer alignment, braces on their own line via `BreakBeforeBraces: Custom`). If `docs/CONVENTIONS.md` conflicts with the formatter, the formatter wins. Every public and internal header declaration requires a Doxygen comment — see `docs/CONVENTIONS.md` for the required format.
 
 ## Architecture
 
@@ -80,14 +82,14 @@ A typical public module (`SceneManager` is the canonical example) consists of:
 4. `src/<Module>/<Module>Messages.h` — `CSE_` (causes) and `CSQ_` (consequences) message macros for logs/errors.
 5. `src/<Module>/<Module>TestHooks.h` — test-only hooks that expose internal state to tests without leaking into the public API.
 
-`Log` is the one exception: no `LogTestHooks.h`, because its public API already covers everything tests need.
+`Log` is the one exception: it has neither `LogTestHooks.h` nor `LogMessages.h`, because its public API already covers everything tests need and its log strings are defined inline.
 
 ### The `Common` and `Test` internal modules
 
 Both live entirely under `src/internal/` and, by convention, their types and functions drop the `Internal` segment from their names since the parent directory already signals it.
 
 - **Common** (`src/internal/Common/`, prefix `cm`) — cross-module utilities: the shared `cmResult` result-code enum (`RES_OK`, `RES_*` negatives, Common-exclusive range is `-1..-99`), `cmIsRunning` guard, filesystem helpers (`cmDirExists`, `cmValidatePath`, `cmCreateDir`, `cmFileExists`, `cmDeleteFile`, `cmDeleteDir`), and `CM_PATH_MAX`. `CommonMessages.h` holds shared `CSE_`/`CSQ_` message macros — check it before adding new module-specific messages.
-- **Test** (`src/internal/Test/`, prefix `ts`) — allocation-interception wrappers (`tsMalloc`, `tsDisable`, …) that let tests force `MALLOC`/`CALLOC`/`REALLOC`/`FOPEN`/`MKDIR` failures at specific call counts. Modules that need test-controllable allocations should call these wrappers instead of the libc functions directly.
+- **Test** (`src/internal/Test/`, prefix `ts`) — allocation-interception wrappers (`tsMalloc`, `tsDisable`, …) that let tests force `MALLOC`/`CALLOC`/`REALLOC`/`FOPEN`/`MKDIR` failures at specific call counts. Production module code must call these wrappers instead of the libc functions directly whenever the module's tests need failure-injection coverage.
 
 ### Module lifecycle
 
