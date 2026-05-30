@@ -4,7 +4,7 @@ Smile (`Simple Modularity Is Lowkey Elegant`) is an open-source, dependency-free
 that reduce boilerplate for common 2D game-development tasks such as `managing scenes`, `simulating particles`, and
 `saving/loading`.
 
-Currently supported on `Mac` and `Windows` (Linux untested but POSIX-compliant),
+Currently supported on `Mac`, `Windows`, and `Linux`,
 Smile is built for people who value development speed without sacrificing
 control. Its modules follow a consistent lifecycle pattern — either
 `Start → Use → Stop` for global-state modules, or `Create → Use → Destroy`
@@ -303,12 +303,12 @@ background so you can focus on letting your creativity out!
 If you're interested, feel free to explore the modules and tools for detailed
 guides and examples:
 
-| Module                                | Description                               |
-|---------------------------------------|-------------------------------------------|
-| [Log](/docs/Log)                      | Debug code and handle fatal errors easily |
-| ParticleSystem (🚧 Under Development) | Simulate smoke, dust, fire, and more      |
-| SaveLoad (🚧 Under Development)       | Quickly save and load your game           |
-| [SceneManager](/docs/SceneManager)    | Manage scenes and transitions cleanly     |
+| Module                                 | Description                               |
+|----------------------------------------|-------------------------------------------|
+| [Log](/docs/Log)                       | Debug code and handle fatal errors easily |
+| [ParticleSystem](/docs/ParticleSystem) | Simulate smoke, dust, fire, and more      |
+| SaveLoad (🚧 Under Development)        | Quickly save and load your game           |
+| [SceneManager](/docs/SceneManager)     | Manage scenes and transitions cleanly     |
 
 | Tool                                | Description                                                                    |
 |-------------------------------------|--------------------------------------------------------------------------------|

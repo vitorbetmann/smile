@@ -2,107 +2,72 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project
+## What is Smile
 
-Smile is a dependency-free C23 static library of modules (Log, SceneManager, ParticleSystem 🚧, SaveLoad 🚧) that reduce boilerplate for 2D game development, plus command-line tools (GenScene). It builds as `libsmile.a` / `smile.lib` and exposes only the headers under `include/`. SaveLoad is planned but not yet started — no source files exist for it.
+Smile (`Simple Modularity Is Lowkey Elegant`) is a dependency-free C23 static library for 2D game development. It provides modules (`SceneManager`, `ParticleSystem`, `Log`, `SaveLoad`) and tools (`GenScene`). It builds as `libsmile.a` (Mac/Linux) or `smile.lib` (Windows).
 
-## Build
-
-All work is driven by CMake (≥3.30). There are two build personas:
+## Build Commands
 
 ```zsh
-# User build (default): Release, no tests, no internal checks.
+# Developer mode (debug build + tests enabled)
+cmake -S . -B build -DSMILE_DEV=ON
+cmake --build build
+
+# Run all tests
+ctest --test-dir build -R Test --output-on-failure
+
+# Run a single test target (e.g. TestAPISceneManager)
+ctest --test-dir build -R TestAPISceneManager --output-on-failure
+
+# Release build (user mode, no tests)
 cmake -S . -B build
 cmake --build build
 
-# Developer build: Debug, tests ON, SMILE_DEV defined.
-cmake -S . -B build -DSMILE_DEV=ON
-cmake --build build
+# Install tools system-wide
+sudo cmake --install build   # Mac/Linux
+cmake --install build        # Windows (admin terminal)
 ```
 
-Flag reference (all `ON` by default except `SMILE_DEV`):
-
-- `-DSMILE_DEV=ON` — developer mode. Flips `SMILE_TESTS` default to `ON`, sets `CMAKE_BUILD_TYPE=Debug` on single-config generators, and compiles `smile` with `-DSMILE_DEV`.
-- `-DSMILE_TESTS=ON|OFF` — build test executables independently of `SMILE_DEV`.
-- `-DSMILE_WARN=OFF` / `-DSMILE_INFO=OFF` — strip runtime warning/info logs at compile time. Error logs can never be disabled.
-
-Pre-existing build directories in the repo: `build/`, `build-strict/`, `build_ci_check/`, `cmake-build-debug/`. Prefer configuring into one of these (don't invent new ones) unless the user asks.
-
-## Test
-
-Tests are CTest targets. They only exist when `SMILE_TESTS=ON` (implied by `SMILE_DEV=ON`).
-
-```zsh
-# Run the whole suite from the build directory.
-ctest --test-dir build --output-on-failure
-
-# Run a single test by name.
-ctest --test-dir build -R TestAPISceneManager --output-on-failure
-
-# Or run the executable directly for faster iteration.
-./build/TestAPISceneManager
-```
-
-Current test targets (see `CMakeLists.txt` for the source of truth):
-
-- `TestAPILog` — `tests/Log.c`
-- `TestAPIParticleSystem` — `tests/ParticleSystem.c`
-- `TestAPISceneManager` — `tests/SceneManager.c`
-- `TestToolGenScene` — `tests/tools/GenScene.c`, compiled with `GS_TESTING` so it can link against `GenScene.c` without its `main`.
-
-There is no `tests/internal/` — public-API tests are expected to exercise internal code transitively. Tool tests use `add_smile_tool_test` in `CMakeLists.txt`, which takes a `testing_define` that the tool's source guards its `main` behind.
-
-Tests use a hand-rolled `main()` with `assert()` — there is no external test framework. CI runs the suite on Linux (clang-18), macOS (clang), and Windows (Ninja + clang), plus a sanitizer job (ASan/UBSan).
-
-## Formatting
-
-`.clang-format` is the source of truth (C23, 4-space indent, 100 col, `Right` pointer alignment, braces on their own line via `BreakBeforeBraces: Custom`). If `docs/CONVENTIONS.md` conflicts with the formatter, the formatter wins. Every public and internal header declaration requires a Doxygen comment — see `docs/CONVENTIONS.md` for the required format.
+Optional CMake flags:
+- `-DSMILE_WARN=OFF` / `-DSMILE_INFO=OFF` — disable runtime warning/info logs at build time
+- `-DSMILE_TESTS=ON` — enable tests without full `SMILE_DEV`
 
 ## Architecture
 
-### Public vs internal layout
+### Public vs Internal
 
-The repo uses a convention that repeats under `src/`, `docs/`, and `tests/`:
+- `include/` — public headers only (`Log.h`, `ParticleSystem.h`, `SceneManager.h`)
+- `src/<Module>/` — public module: `<Module>.c`, `<Module>Internal.h`, `<Module>Messages.h`, `<Module>TestHooks.h`
+- `src/internal/` — internal-only modules (`Common`, `Test`), never exposed publicly
+- `tests/` — public API tests; no `tests/internal/` (internal code is exercised transitively)
+- `external/` — third-party headers (`uthash.h`); not public API
+- `docs/` — mirrors `src/` split: `docs/<Module>/` for public, `docs/internal/` for internal
 
-- Anything directly under these roots is **public** (e.g., `src/Log/`, `src/SceneManager/`).
-- `internal/` holds modules that support the implementation but are not public API (`src/internal/Common/`, `src/internal/Test/`).
-- `tools/` holds standalone CLI executables (`src/tools/GenScene/`).
-- `camelCase` directory = organizational bucket (`internal`, `tools`); `PascalCase` directory = an actual module/tool (`SceneManager`, `Common`, `GenScene`).
-- There is no `Public/` directory — public is the default.
+### Module Lifecycle Patterns
 
-`include/` contains only public headers (`Log.h`, `ParticleSystem.h`, `SceneManager.h`). Everything else lives beside its implementation in `src/`.
+- **Global-state modules** (`SceneManager`, `Log`): `xStart()` → use → `xStop()`
+- **Per-instance modules** (`ParticleSystem`): `xCreate()` → use → `xDestroy()` (multiple instances can coexist)
 
-### Anatomy of a public module
+### Internal Modules
 
-A typical public module (`SceneManager` is the canonical example) consists of:
+**Common** (`src/internal/Common/`): Shared utilities across all modules.
+- `cmResult` — shared result-code enum; Common's own codes are in `-1..-99`
+- `CM_PATH_MAX` — max path length (256 bytes including null terminator)
+- `cmIsRunning` — guard for verifying a module is active before API calls
+- Filesystem helpers: `cmDirExists`, `cmValidatePath`, `cmCreateDir`, `cmFileExists`, `cmDeleteFile`, `cmDeleteDir`
+- `CommonMessages.h` — check here before adding new log message strings (`CSE_` for causes, `CSQ_` for consequences)
 
-1. `include/<Module>.h` — public API only. No variable declarations.
-2. `src/<Module>/<Module>.c` — implements both public and internal functions, plus `static` file-private `Private` helpers.
-3. `src/<Module>/<Module>Internal.h` — cross-TU-internal declarations for helpers needed by the module's own code or by tests, not by users.
-4. `src/<Module>/<Module>Messages.h` — `CSE_` (causes) and `CSQ_` (consequences) message macros for logs/errors.
-5. `src/<Module>/<Module>TestHooks.h` — test-only hooks that expose internal state to tests without leaking into the public API.
+**Test** (`src/internal/Test/`): Allocation and syscall interception for tests.
+- `tsDisable(FN, n)` — makes the nth call to `FN` fail (`MALLOC`, `CALLOC`, `REALLOC`, `FOPEN`, `MKDIR`)
+- `tsReset()` — clears all pending failures; call at the start of any test using `tsDisable()`
+- `tsMalloc` / `tsCalloc` / `tsRealloc` / `tsFopen` / `tsMkdir` — wrappers production modules must call instead of libc so tests can intercept
+- `tsMkdtemp(char *tmpl)` — portable `mkdtemp()` (not intercepted by `tsDisable`)
+- `tsPass(__func__)` — prints `[PASS] fnName`; call at the end of every passing test
+- `TS_MOCK_DT` — `0.016f` (~60 fps); use as delta-time in time-stepped tests
 
-`Log` is the one exception: it has neither `LogTestHooks.h` nor `LogMessages.h`, because its public API already covers everything tests need and its log strings are defined inline.
+## Naming Conventions
 
-### The `Common` and `Test` internal modules
-
-Both live entirely under `src/internal/` and, by convention, their types and functions drop the `Internal` segment from their names since the parent directory already signals it.
-
-- **Common** (`src/internal/Common/`, prefix `cm`) — cross-module utilities: the shared `cmResult` result-code enum (`RES_OK`, `RES_*` negatives, Common-exclusive range is `-1..-99`), `cmIsRunning` guard, filesystem helpers (`cmDirExists`, `cmValidatePath`, `cmCreateDir`, `cmFileExists`, `cmDeleteFile`, `cmDeleteDir`), and `CM_PATH_MAX`. `CommonMessages.h` holds shared `CSE_`/`CSQ_` message macros — check it before adding new module-specific messages.
-- **Test** (`src/internal/Test/`, prefix `ts`) — allocation-interception wrappers (`tsMalloc`, `tsDisable`, …) that let tests force `MALLOC`/`CALLOC`/`REALLOC`/`FOPEN`/`MKDIR` failures at specific call counts. Production module code must call these wrappers instead of the libc functions directly whenever the module's tests need failure-injection coverage.
-
-### Module lifecycle
-
-Public modules follow one of two lifecycle shapes:
-
-- **Global-state modules** (e.g., `SceneManager`) use `Start → Use → Stop`: `smStart()` initializes shared state; `smStop()` tears it down.
-- **Per-instance modules** (e.g., `ParticleSystem`) use `Create → Use → Destroy`: `psCreate()` returns a caller-owned instance; `psDestroy()` frees it.
-
-Modules own their memory internally; users interact through the module prefix only. Public APIs guard entry points with `cmIsRunning` before doing work.
-
-### Naming at a glance
-
-Two-letter lowercase module prefix + PascalCase verb. Prefix table:
+**Module prefixes:**
 
 | Module         | Prefix |
 |----------------|--------|
@@ -113,25 +78,56 @@ Two-letter lowercase module prefix + PascalCase verb. Prefix table:
 | Common         | `cm`   |
 | Test           | `ts`   |
 
-- `smStart` — public function.
-- `smInternalGetScene` — declared in `SceneManagerInternal.h`.
-- `smPrivateIsNameValid` — file-`static` helper inside the `.c`.
-- `cmDirExists` / `tsMalloc` — internal modules drop the `Internal` segment.
-- Types follow the same pattern: `smEnterFn` (public), `smInternalScene` (per-module internal), `cmResult` (under `internal/`).
+**Function naming:**
+- Public: `smStart`, `psCreate`
+- Module-private (in `*Internal.h`): `smInternalGetScene`
+- File-private (`static`): `smPrivateIsNameValid`
+- Modules entirely under `internal/` drop the `Internal` segment: `cmDirExists`, `tsMalloc`
 
-Full style rules (C23 usage, include ordering, shared-message conventions, section-header layout, etc.) live in `docs/CONVENTIONS.md`. Read it before adding a new module or touching cross-cutting code.
+**Types:** public types use module prefix (`smEnterFn`); per-module internal types add `Internal` (`smInternalScene`); types in `internal/` modules drop `Internal` (`cmResult`, `tsSysFn`).
 
-## Tools
+## Coding Style
 
-`GenScene` (`src/tools/GenScene/`) is a CLI that emits template `.h`/`.c` files for a new SceneManager scene into `include/` and `src/`. It is built as its own executable and installed to `bin/` via `cmake --install`. When modifying it, remember its test target (`TestToolGenScene`) compiles the same source with `GS_TESTING` defined — guard anything test-unfriendly (notably `main`) behind that macro.
+- C23 — use `nullptr` not `NULL`
+- All headers use `#pragma once`
+- 4-space indent, 100-column limit (see `.clang-format`)
+- `Type *name` (pointer right), one pointer per declaration
+- File-scoped variables must be `static`; no externally linked globals except for test hooks
+- Includes: three groups separated by one blank line — angle-bracket headers, module headers, other Smile headers; alphabetical within each group
+- Include only by filename, never by path
+- `goto` only for cleanup paths in error handling
+- Source files use named sections: `// SectionName ——————...` trailing to column 100
 
-## Docs
+## Testing
 
-`docs/` mirrors the public/internal split:
+Tests are standalone executables with a hand-rolled `main()` using `assert()` from `<assert.h>` — no external test framework.
 
-- `docs/<Module>/` — public API docs + README with an overview and example.
-- `docs/internal/` — internal API references (`CommonAPI.md`, `LogInternalAPI.md`, `SceneManagerInternalAPI.md`, `SceneManagerTestHooksAPI.md`, `TestAPI.md`) and shared `Assets/` (GIFs, images, screenshots).
-- `docs/tools/` — tool documentation.
-- `docs/CONTRIBUTING.md` and `docs/CONVENTIONS.md` — contributor entry points.
+Every test file requires:
+```c
+#ifdef NDEBUG
+#error "<TargetName> must be compiled without NDEBUG (asserts required)."
+#endif
+```
 
-Smile uses American English in prose (the repo ships a `LICENSE`, not a `LICENCE`) — prefer `behavior`, `license`, `color`, etc. in documentation.
+**Naming:** `Test_<functionName>_<Behavior>` (e.g. `Test_psCreate_ReturnsNullWhenMaxParticlesIsZero`); stress tests prefix with `TestStress_`.
+
+**Setup/teardown pattern:**
+- Global-state modules: `setup()` calls `xStart()`, `teardown()` calls `xStop()`
+- Per-instance modules: `setup()` calls `xCreate()`, `teardown()` calls `xDestroy()`
+
+**TestHooks** (e.g. `SceneManagerTestHooks.h`): include under `#ifdef SMILE_DEV`; reset all hook pointers in `teardown()`.
+
+**Adding a new test file:**
+1. Create `tests/<Module>.c` or `tests/tools/<Tool>.c`
+2. Register in `CMakeLists.txt` with `add_smile_test()` or `add_smile_tool_test()`
+
+## Documentation
+
+Every declaration in a public or internal header must have a Doxygen comment. Function pointers, typedefs, enum/struct type blocks, and variables use single-line `/** @brief … */`; struct fields and enum values use `/**< … */` trailing comments; function declarations use the multi-line block with `@brief`, `@param`, and `@return`.
+
+Write `@return` as:
+- `int` → `0 on success, or a negative result code on failure`
+- `bool` → `true if X, false otherwise`
+- Pointer → describe the value, state ownership (`"owned by <Module>"` vs `"caller-owned"`), and note when `nullptr` is returned
+
+Docs mirror `src/` layout: `docs/<Module>/README.md` (getting started) + `docs/<Module>/<Module>API.md` (reference); internal modules get only `docs/internal/<Module>API.md`. Check `docs/CONVENTIONS.md` for the full Markdown style and section-header emoji set.
