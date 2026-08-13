@@ -346,5 +346,7 @@ To learn more, check out the [Contributing Guide](/docs/CONTRIBUTING.md).
 
 ## 🪪 License
 
-Smile is released under the MIT License. See the [LICENSE](LICENSE) file for
-details.
+Smile is released under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+Smile vendors one third-party header — [uthash](https://github.com/troydhanson/uthash)
+by Troy D. Hanson, under a 1-clause BSD license. See [THIRD_PARTY.md](THIRD_PARTY.md).
